@@ -39,8 +39,7 @@ INSTALLED_APPS = (
 	'django.contrib.admin', 'django.contrib.admindocs',
 	
 	#	Third-party apps
-	'mptt',
-	'django_mptt_admin',
+	'mptt', 'django_mptt_admin',
 	's3_folder_storage',
 	'django_summernote',
 	'django_processinfo',
