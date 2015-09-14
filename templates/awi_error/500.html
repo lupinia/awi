@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{block.super}} - System Error (500){% endblock %}
+
+{% block content_left %}
+<div class="transbox fulltext_page">
+<h3>I'm Sorry...Something's Wrong, and I Couldn't Fix It!  (500)</h3>
+<p><img src="{{STATIC_PREFIX}}images/sad_fluttershy.jpg" alt="Sad Fluttershy" title="Fluttershy is really sad that the site is broken!" /></p>
+<p>I'm really sorry, but there's an error in the site.  I'm really sorry, I tried so hard to get everything right.  Would you like to <a href="/">return home</a>?  Do you need a hug?  Natasha's been notified, so she'll fix it soon, I'm sure of it.  You can try again in a little while, if that's ok with you, it'll probably work then.</p>
+<hr />
+<p><em>Error 500:  System Error<br />
+<a href="http://johnjoseco.deviantart.com/art/Rain-Won-t-Wipe-Away-the-Tears-212771889">Image by John Joseco</a></em></p>
+</div>
+{% endblock %}

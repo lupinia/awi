@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{block.super}} - File Not Found (404){% endblock %}
+
+{% block content_left %}
+<div class="transbox fulltext_page">
+<h3>I'm Sorry...I Tried To Find It, I Really Did!  (404)</h3>
+<p><img src="{{STATIC_PREFIX}}images/sad_fluttershy.jpg" alt="Sad Fluttershy" title="Fluttershy is really sad that we couldn't find your file!" /></p>
+<p>I tried to find "{{old_url}}", but I just don't know where it is.  I'm so sorry!  Would you like to <a href="/">return home</a>?  Do you need a hug?</p>
+<hr />
+<p><em>Error 404:  File Not Found<br />
+<a href="http://johnjoseco.deviantart.com/art/Rain-Won-t-Wipe-Away-the-Tears-212771889">Image by John Joseco</a></em></p>
+</div>
+{% endblock %}
