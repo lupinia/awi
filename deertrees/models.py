@@ -1,12 +1,12 @@
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
-#from model_utils.managers import InheritanceManager
 
 from awi_access.models import access_control
 
 class category(MPTTModel):
 	title=models.CharField(max_length=60)
 	slug=models.SlugField()
+	summary=models.CharField(max_length=255)
 	desc=models.TextField(null=True,blank=True)
 	parent=TreeForeignKey('self',null=True,blank=True,related_name='children')
 	cached_url=models.CharField(max_length=255,null=True,blank=True)
@@ -36,16 +36,15 @@ class tag(models.Model):
 		else:
 			return self.slug
 
-class leaf(models.Model):
+#	This model has been modified for the Awi website, and requires the Awi Access app
+class leaf(access_control):
 	cat=models.ForeignKey(category,null=True,blank=True)
 	tags=models.ManyToManyField(tag,null=True,blank=True)
-#	nodes=InheritanceManager()
 	
 	def __unicode__(self):
 		return str(self.id)
 
-#	This model has been modified for the Awi website, and requires the Awi Access app
-class special_feature(leaf, access_control):
+class special_feature(leaf):
 	url=models.CharField(max_length=60,unique=True)
 	title=models.CharField(max_length=60)
 	desc=models.TextField(null=True,blank=True)

@@ -13,3 +13,7 @@ class access_admin(ModelAdmin):
 		if not change:
 			obj.owner = request.user
 		obj.save()
+	
+	class Media:
+		js=['js/foldable-list-filter.js',]
+		css={'all':['css/foldable-list-filter.css',],}

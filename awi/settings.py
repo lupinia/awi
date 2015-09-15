@@ -63,7 +63,6 @@ INSTALLED_APPS = (
 TEMPLATES = [{
 	'BACKEND': 'django.template.backends.django.DjangoTemplates',
 	'DIRS' : [os.path.abspath(os.path.join(BASE_DIR,'./templates')),],
-	'APP_DIRS': True,
 	'OPTIONS' : {
 		'context_processors' : [
 			'django.contrib.auth.context_processors.auth',
@@ -77,6 +76,14 @@ TEMPLATES = [{
 			#	Non-standard ones
 			'django.core.context_processors.request',
 			'awi.context_processors.site'
+		],
+		'loaders' : [
+			#	It's really stupid that I have to add a custom template loader for django-admin-tools.
+			#	Might be looking for a new alternative.
+			
+			'django.template.loaders.filesystem.Loader',
+			'django.template.loaders.app_directories.Loader',
+			'admin_tools.template_loaders.Loader',
 		],
 	},
 },]

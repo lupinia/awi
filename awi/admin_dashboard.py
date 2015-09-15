@@ -106,7 +106,7 @@ class CustomAppIndexDashboard(AppIndexDashboard):
             modules.ModelList(self.app_title, self.models),
             modules.RecentActions(
                 _('Recent Actions'),
-                include_list=self.get_app_content_types(),
+                include_list=self.models,
                 limit=10
             )
         ]

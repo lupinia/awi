@@ -50,7 +50,7 @@ def attachment_path(instance, filename):
 SUMMERNOTE_CONFIG = {
 	'iframe': False,
 	'airMode': False,
-	'width': '100%',
+	'width': '90%',
 	'height': 600,
 	
 	'styleWithTags': True,
