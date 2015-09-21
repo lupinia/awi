@@ -55,8 +55,6 @@ class leaf_parent():
 		blocks_map = settings.DEERTREES_BLOCKS
 		blocks = {}
 		blocks_count = {}
-		order_main = {}
-		order_sidebar = {}
 		assigned_to_blocks = []
 		returned_data = [False,{}]
 		
@@ -70,10 +68,6 @@ class leaf_parent():
 		for type, settings_dict in blocks_map.iteritems():
 			blocks[type] = []
 			blocks_count[type] = 0
-		
-		#	And now put them in order
-		blockorder_main = OrderedDict(sorted(order_main.items(), key=lambda t: t[0]))
-		blockorder_sidebar = OrderedDict(sorted(order_sidebar.items(), key=lambda t: t[0]))
 		
 		#	Content time!
 		#	First, check for subcategories
@@ -117,6 +111,11 @@ class leaf_parent():
 			
 			#	Make sure we didn't just pop off the last/only one.
 			if blocks:
+				order_main = {}
+				order_sidebar = {}
+				blockorder_main_iter = False
+				blockorder_sidebar_iter = False
+				
 				#	Now, let's build a priority list per region
 				for type, content in blocks.iteritems():
 					if blocks_map[type].get('sidebar',False):
@@ -134,12 +133,12 @@ class leaf_parent():
 				
 				#	Assign the main blocks first 
 				for blockname in blocks_to_assign:
-					if 'main' in blockname:
+					if 'main' in blockname and blockorder_main_iter:
 						blockdata = next(blockorder_main_iter,False)
 						if blockdata and blockdata['type'] not in assigned_to_blocks:
 							returned_data[1][blockname] = blockdata
 							assigned_to_blocks.append(blockdata['type'])
-					elif 'sidebar' in blockname:
+					elif 'sidebar' in blockname and blockorder_sidebar_iter:
 						blockdata = next(blockorder_sidebar_iter,False)
 						if blockdata and blockdata['type'] not in assigned_to_blocks:
 							if not returned_data[1].get('sidebar',False):
@@ -223,7 +222,7 @@ class tag_list(leaf_parent, generic.DetailView):
 	model=tag
 	
 	def get_context_data(self, **kwargs):
-		context = super(category_list,self).get_context_data(**kwargs)
+		context = super(tag_list,self).get_context_data(**kwargs)
 		
 		blocks = self.assemble_blocks(context['object'],'tag')
 		if blocks[0]:

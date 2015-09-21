@@ -1,19 +1,19 @@
 {% extends "base.html" %}
-{% block title %}{{block.super}} - {{category.title}}{% endblock %}
-{% block bg_image %}{% include 'bg_image.html' with tag=category.background %}{% endblock %}
+{% block title %}{{block.super}} - {{object.title}}{% endblock %}
+{% block bg_image %}{% include 'bg_image.html' with tag=object.background %}{% endblock %}
 
 {% block content_left %}
 	<div class="transbox left_sidebar">
-		<h2>{{category.title}}</h2>
-		{% if main_full_1 and category.content_priority and category.content_priority != "desc" and category.summary %}
-			<div>{{category.summary}}</div>
-		{% elif category.desc %}
+		<h2>{{object.title}}</h2>
+		{% if main_full_1 and object.content_priority and object.content_priority != "desc" and object.summary %}
+			<div>{{object.summary}}</div>
+		{% elif object.desc %}
 			<div>
 			{% autoescape off %}
-			{% if "<p>" in category.desc or "<br" in category.desc %}
-				{{category.desc}}
+			{% if "<p>" in object.desc or "<br" in object.desc %}
+				{{object.desc}}
 			{% else %}
-				{{category.desc|linebreaks}}
+				{{object.desc|linebreaks}}
 			{% endif %}
 			{% endautoescape %}
 			</div>

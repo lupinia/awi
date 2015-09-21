@@ -13,7 +13,7 @@ from django.conf import settings
 
 from awi_error.views import system_error
 from deerfind.views import not_found
-from deertrees.views import category_list
+from deertrees import views as deertrees_views
 
 admin.autodiscover()
 
@@ -31,8 +31,9 @@ urlpatterns = patterns('',
 	#	Custom Apps
 	url(r'^gamescripts/', include('secondlife.urls')),
 	
-	#	DeerTrees is a special case for this site, since it can be any directory or URL not otherwise specified.
-	url(r'^(?P<cached_url>[\w\d_/-]+)/$',category_list.as_view(),name='category'),
+	#	DeerTrees is a special case for this site.
+	url(r'^tags/(?P<slug>.*)/$',deertrees_views.tag_list.as_view(),name='tag'),
+	url(r'^(?P<cached_url>[\w\d_/-]+)/$',deertrees_views.category_list.as_view(),name='category'),
 )
 
 #	django-debug-toolbar
