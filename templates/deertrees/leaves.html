@@ -1,9 +1,14 @@
 {% extends "base.html" %}
-{% block title %}{{block.super}} - {{object.title}}{% endblock %}
-{% block bg_image %}{% include 'bg_image.html' with tag=object.background %}{% endblock %}
+{% block title %}{{block.super}} - {% if homepage %}Photography, Writing, and Creative Works by {% if site.name == 'Furry' %}Meadow Whisper (Natasha L.){%else%}Natasha L.{%endif%}{% else %}{{object.title}}{% endif %}{% endblock %}
+{% block bg_image %}{% if homepage %}{{block.super}}{% else %}{% include 'bg_image.html' with tag=object.background %}{% endif %}{% endblock %}
 
 {% block content_left %}
-	{% if object.desc %}
+	{% if homepage %}
+		{% if error %}
+			{% load errors %}
+			<div class="transbox left_sidebar">{% error_display error %}</div>
+		{% endif %}
+	{% elif object.desc %}
 		{% if object.content_priority == "desc" %}
 			<div class="transbox fulltext_page">
 				<div id="fulltext_page_title"><div id="fulltext_page_title_main"><h2>{{object.title}}</h2></div></div>

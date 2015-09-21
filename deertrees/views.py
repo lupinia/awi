@@ -15,7 +15,7 @@ from deertrees.models import category, tag, leaf
 
 class leaf_parent():
 	template_name = 'deertrees/leaves.html'
-	homepage = False
+	highlight_featured = True
 	
 	def get_leaves(self, parent=False, parent_type=False):
 		leaf_filters = {}
@@ -23,7 +23,7 @@ class leaf_parent():
 		leaf_ordering = ['-featured','-timestamp_post']
 		leaf_filters['timestamp_post__lte'] = timezone.now()
 		
-		if self.homepage == True:
+		if parent_type == 'homepage':
 			leaf_ordering = ['-timestamp_post',]
 			leaf_filters['featured'] = True
 		elif parent_type == 'main_feed':
@@ -39,7 +39,16 @@ class leaf_parent():
 		if leaves:
 			return leaves
 		else:
-			return False
+			if parent_type == 'category' and parent:
+				descendants = parent.get_descendants()
+				leaves = leaf.objects.filter(featured=True, cat__in=descendants).filter(access_query(self.request)).order_by('-timestamp_post').select_related()
+				if leaves:
+					self.highlight_featured = False
+					return leaves
+				else:
+					return False
+			else:
+				return False
 	
 	def assemble_blocks(self, parent=False, parent_type=False):
 		#	BLOCK STRUCTURE
@@ -170,29 +179,16 @@ class leaf_parent():
 
 
 class homepage(leaf_parent, generic.TemplateView):
-	template_name='deertrees/home.html'
-	homepage = True
+	highlight_featured = False
 	
 	def get_context_data(self, **kwargs):
 		context = super(homepage,self).get_context_data(**kwargs)
+		context['highlight_featured'] = self.highlight_featured
+		context['homepage'] = True
 		
 		blocks = self.assemble_blocks(parent_type = 'homepage')
 		if blocks[0]:
 			context.update(blocks[1])
-		
-		return context
-
-class all_tags(generic.TemplateView):
-	template_name='deertrees/taglist.html'
-	
-	def get_context_data(self, **kwargs):
-		context = super(all_tags,self).get_context_data(**kwargs)
-		
-		tag_list = tag.objects.all().order_by('title')
-		if tag_list:
-			context['tags'] = tag_list
-		else:
-			context['error'] = 'no_tags'
 		
 		return context
 
@@ -201,6 +197,7 @@ class main_rssfeed(leaf_parent, generic.TemplateView):
 	
 	def get_context_data(self, **kwargs):
 		context = super(homepage,self).get_context_data(**kwargs)
+		context['highlight_featured'] = self.highlight_featured
 		
 		leaves = self.get_leaves(parent_type = 'homepage')
 		if leaves:
@@ -227,6 +224,7 @@ class category_list(leaf_parent, generic.DetailView):
 	
 	def get_context_data(self, **kwargs):
 		context = super(category_list,self).get_context_data(**kwargs)
+		context['highlight_featured'] = self.highlight_featured
 		
 		blocks = self.assemble_blocks(context['object'],'category')
 		if blocks[0]:
@@ -241,11 +239,26 @@ class tag_list(leaf_parent, generic.DetailView):
 	
 	def get_context_data(self, **kwargs):
 		context = super(tag_list,self).get_context_data(**kwargs)
+		context['highlight_featured'] = self.highlight_featured
 		
 		blocks = self.assemble_blocks(context['object'],'tag')
 		if blocks[0]:
 			context.update(blocks[1])
 		else:
 			context['error'] = 'tag_empty'
+		
+		return context
+
+class all_tags(generic.TemplateView):
+	template_name='deertrees/taglist.html'
+	
+	def get_context_data(self, **kwargs):
+		context = super(all_tags,self).get_context_data(**kwargs)
+		
+		tag_list = tag.objects.all().order_by('title')
+		if tag_list:
+			context['tags'] = tag_list
+		else:
+			context['error'] = 'no_tags'
 		
 		return context
