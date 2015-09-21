@@ -72,10 +72,12 @@
 	{% if user.is_superuser %}
 	&bull; <a href="/admin/">Administration</a>
 	{% endif %}
+ &bull; <span id="processinfo"></span>
 {% else %}
 <a href="{% url 'django.contrib.auth.views.login' %}">Login</a>
 {% endif %}
-{% endblock %}</span></div>
+{% endblock %}
+</span></div>
 </footer>
 </div>
 </body>

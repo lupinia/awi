@@ -1,4 +1,11 @@
-#	500 Error Handler
+#	Awi Error (Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Views
+#	system_error:	500 error handler.  Just displays a template, further information is emailed.
+#	=================
 
 def system_error(request):
 	from django.http import HttpResponseServerError

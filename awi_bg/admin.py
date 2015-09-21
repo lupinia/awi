@@ -1,3 +1,11 @@
+#	Awi Background (Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Admin
+#	=================
+
 from django.contrib import admin
 from awi_bg.models import background,background_tag
 

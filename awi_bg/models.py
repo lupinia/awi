@@ -1,3 +1,12 @@
+#	Awi Background (Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Models
+#	background_tag is how other objects can filter their background options
+#	=================
+
 from django.db import models
 
 class background(models.Model):

@@ -1,4 +1,13 @@
-from django.http import HttpResponsePermanentRedirect, HttpResponseNotFound, HttpResponse
+#	DeerFind (Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Views
+#	not_found:	Tries to find a redirect before giving up and showing a 404 error.
+#	=================
+
+from django.http import HttpResponsePermanentRedirect, HttpResponseNotFound
 
 from deerfind.models import pointer,hitlog
 

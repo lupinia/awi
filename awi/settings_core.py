@@ -1,9 +1,9 @@
 #	Lupinia Studios
-#	By Natasha Long
-#	www.lupinia.net - natasha@lupinia.net
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
 #	
 #	=================
-#	Django Settings File
+#	Django Settings File - Core Defaults
 #	All of these are default settings that ship with Django.
 #	Everything modified from the default value is elsewhere.
 #	=================

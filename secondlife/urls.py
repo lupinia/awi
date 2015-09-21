@@ -1,3 +1,11 @@
+#	secondlife (Legacy Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	URL Map
+#	=================
+
 from django.conf.urls import patterns, include, url
 from secondlife import views
 

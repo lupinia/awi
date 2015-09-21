@@ -1,3 +1,14 @@
+#	DeerFind (Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Models
+#	category:	Purely organizational.
+#	pointer:	Maps a known-bad URL to a known-good URL.
+#	hitlog:		Tracks basic request information for a hit on a known-bad URL.
+#	=================
+
 from django.db import models
 
 class category(models.Model):

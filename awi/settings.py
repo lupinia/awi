@@ -1,10 +1,10 @@
 #	Lupinia Studios
-#	By Natasha Long
-#	www.lupinia.net - natasha@lupinia.net
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
 #	
 #	=================
-#	Django Settings File
-#	Everything below this line should be the same across all sites
+#	Django Settings File - Main
+#	Primary Django settings
 #	=================
 
 from settings_core import *
@@ -88,9 +88,18 @@ TEMPLATES = [{
 	},
 },]
 
+CACHES = {
+	'default': {
+		'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+		'LOCATION': 'dbcache',
+	}
+}
+
 MIDDLEWARE_CLASSES = (
 	'django_processinfo.middlewares.django_processinfo.ProcessInfoMiddleware',
 	'debug_toolbar.middleware.DebugToolbarMiddleware',
+	
+	#'django.middleware.cache.UpdateCacheMiddleware',
 	
 	'django.middleware.common.CommonMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
@@ -99,4 +108,6 @@ MIDDLEWARE_CLASSES = (
 	'django.contrib.messages.middleware.MessageMiddleware',
 	# Uncomment the next line for simple clickjacking protection:
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	
+	#'django.middleware.cache.FetchFromCacheMiddleware',
 )

@@ -1,6 +1,32 @@
+#	Awi Access (Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Models
+#	This is just a meta class to be extended by other models in other apps.
+#	=================
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+
+def access_query(request=False):
+	from django.db.models import Q
+	from django.conf import settings
+	
+	returned_query = Q(sites__id = settings.SITE_ID)
+	
+	if request.user.is_authenticated():
+		if not request.user.is_superuser or not request.user.is_staff:
+			#	Regular User
+			published_query = Q(published = True) or Q(owner = request.user)
+			returned_query = returned_query & Q(security__lt = 2) & published_query
+	else:
+		#	Anonymous User
+		returned_query = returned_query & Q(security__lt = 2) & Q(published = True) & Q(mature = False)
+	
+	return returned_query
 
 class access_control(models.Model):
 	SECURITY_OPTIONS=((0,'Public'),(1,'Logged-In Users'),(2,'Staff'))

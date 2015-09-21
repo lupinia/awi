@@ -1,9 +1,9 @@
 #	Lupinia Studios
-#	By Natasha Long
-#	www.lupinia.net - natasha@lupinia.net
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
 #	
 #	=================
-#	Django Settings File
+#	Django Settings File - Local
 #	This information is sensitive and should not be committed to Github.
 #	=================
 

@@ -1,3 +1,14 @@
+#	Awi Error (Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Template Tags
+#	error_display:	Formats the specified error for its severity, and returns its error message
+#	
+#	TODO:	Multilingual support
+#	=================
+
 from django import template
 from awi_error.models import error
 register = template.Library()

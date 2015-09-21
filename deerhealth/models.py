@@ -1,3 +1,11 @@
+#	DeerHealth (Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Models
+#	=================
+
 from datetime import date,timedelta
 from django.db import models
 from django.contrib.auth.models import User
@@ -25,6 +33,7 @@ class prescription(models.Model):
 		return pills_remaining
 	
 	#	Get the date when they'll run out
+	@property
 	def end_date(self):
 		if self.per_day:
 			pills_remaining=self.remaining()

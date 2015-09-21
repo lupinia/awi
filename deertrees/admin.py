@@ -1,3 +1,11 @@
+#	DeerTrees (Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Admin
+#	=================
+
 from django.contrib import admin
 
 from django_mptt_admin.admin import DjangoMpttAdmin
@@ -27,7 +35,6 @@ class leaf_admin(access_admin):
 	list_filter = access_admin.list_filter + ['cat',]
 
 class special_feature_admin(leaf_admin):
-	list_select_related = True
 	search_fields = ['url','title','desc'] + leaf_admin.search_fields
 	fieldsets = [(None,{'fields':(('url','title'),'desc'),},),] + leaf_admin.fieldsets
 

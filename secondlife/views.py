@@ -1,4 +1,11 @@
-# Create your views here.
+#	secondlife (Legacy Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Views
+#	=================
+
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt

@@ -10,6 +10,15 @@ And to activate the app index dashboard::
     ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'awi-dev.dashboard.CustomAppIndexDashboard'
 """
 
+#	Lupinia Studios
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Custom dashboard for admin_tools module
+#	TODO:  Merge admin_tools.py and admin_dashboard.py
+#	=================
+
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
@@ -105,9 +114,9 @@ class CustomAppIndexDashboard(AppIndexDashboard):
         self.children += [
             modules.ModelList(self.app_title, self.models),
             modules.RecentActions(
-                _('Recent Actions'),
+                _('Recent Actions (This App)'),
                 include_list=self.models,
-                limit=10
+                limit=20
             )
         ]
 

@@ -1,3 +1,13 @@
+#	DeerFind (Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Admin
+#	log_list:		Informational display only, for hitlog objects.
+#	pointer_admin:	Manage pointers.
+#	=================
+
 from django.contrib import admin
 from deerfind.models import *
 

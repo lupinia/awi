@@ -1,3 +1,11 @@
+#	secondlife (Legacy Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Models
+#	=================
+
 from django.db import models
 
 class security_control(models.Model):

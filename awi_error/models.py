@@ -1,3 +1,13 @@
+#	Awi Error (Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Models
+#	
+#	TODO:	Multilingual support
+#	=================
+
 from django.db import models
 
 class error(models.Model):

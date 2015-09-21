@@ -1,3 +1,12 @@
+#	Awi Access (Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Admin
+#	Extend admin_access to gain admin features specific to this app.
+#	=================
+
 from django.contrib.admin import ModelAdmin
 from django.forms.widgets import CheckboxSelectMultiple
 from django.db.models import ManyToManyField

@@ -1,16 +1,30 @@
-from django.db import models
-from mptt.models import MPTTModel, TreeForeignKey
+#	DeerTrees (Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Models
+#	=================
 
+from django.db import models
+from django.utils import timezone
+
+from mptt.models import MPTTModel, TreeForeignKey
 from awi_access.models import access_control
 
 class category(MPTTModel):
+	PRIORITY_OPTIONS = (('photo','Photos'),('page','Writing'),('desc','Category Description'),)
+	
 	title=models.CharField(max_length=60)
 	slug=models.SlugField()
 	summary=models.CharField(max_length=255)
 	desc=models.TextField(null=True,blank=True)
 	parent=TreeForeignKey('self',null=True,blank=True,related_name='children')
 	cached_url=models.CharField(max_length=255,null=True,blank=True)
+	
 	background=models.ForeignKey('awi_bg.background_tag',null=True,blank=True)
+	content_priority=models.CharField(max_length=10,null=True,blank=True)		#	An option to override the content given top priority
+	sitemap_include=models.BooleanField(default=True)
 	
 	def __unicode__(self):
 		return self.title
@@ -26,9 +40,14 @@ class category(MPTTModel):
 		order_insertion_by = ['title']
 
 class tag(models.Model):
+	PRIORITY_OPTIONS = (('photo','Photos'),('page','Writing'),('desc','Category Description'),)
+	
 	title=models.CharField(max_length=200,null=True,blank=True)
 	slug=models.SlugField(max_length=200)
 	desc=models.TextField(null=True,blank=True)
+	
+	content_priority=models.CharField(max_length=10,null=True,blank=True)		#	An option to override the content given top priority
+	sitemap_include=models.BooleanField(default=True)
 	
 	def __unicode__(self):
 		if self.title:
@@ -37,17 +56,43 @@ class tag(models.Model):
 			return self.slug
 
 #	This model has been modified for the Awi website, and requires the Awi Access app
+#	This is a single categorized node; everything else that belongs to a category should extend this class
 class leaf(access_control):
+	TIMEDISP_OPTIONS=(('post','Posted'),('mod','Modified'))
+	
 	cat=models.ForeignKey(category,null=True,blank=True)
-	tags=models.ManyToManyField(tag,null=True,blank=True)
+	tags=models.ManyToManyField(tag,blank=True)
+	
+	timestamp_mod=models.DateTimeField(auto_now=True)
+	timestamp_post=models.DateTimeField(default=timezone.now)
+	timedisp=models.CharField(max_length=10,choices=TIMEDISP_OPTIONS,default='post')
 	
 	def __unicode__(self):
 		return str(self.id)
+	
+	def display_times(self):
+		return_times=[{},{}]
+		if self.timedisp=='post':
+			return_mod=1
+			return_post=0
+		else:
+			return_mod=0
+			return_post=1
+		
+		return_times[return_post]['timestamp']=self.timestamp_post
+		return_times[return_mod]['timestamp']=self.timestamp_mod
+		return_times[return_post]['label']='Posted'
+		return_times[return_mod]['label']='Updated'
+		
+		return return_times
+		
 
+#	Create a leaf that links to something else that isn't part of this category system.
+#	Handy for things like third-party apps, or self-contained apps with their own organizational structure.
 class special_feature(leaf):
 	url=models.CharField(max_length=60,unique=True)
 	title=models.CharField(max_length=60)
-	desc=models.TextField(null=True,blank=True)
+	desc=models.CharField(max_length=255,null=True,blank=True)
 	
 	def __unicode__(self):
 		return self.title

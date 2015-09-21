@@ -1,11 +1,9 @@
 #	Lupinia Studios
-#	By Natasha Long
-#	www.lupinia.net - natasha@lupinia.net
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
 #	
 #	=================
-#	Django Settings File
-#	App-Specific Config
-#
+#	Django Settings - App-Specific Config
 #	Config options for apps that aren't part of Django
 #	=================
 
@@ -37,6 +35,10 @@ STATIC_S3_PATH = 'awi-hagata'
 #	django_processinfo
 #	include app settings from ./django_processinfo/app_settings.py
 from django_processinfo import app_settings as PROCESSINFO
+PROCESSINFO.ADD_INFO = True
+PROCESSINFO.INFO_SEARCH_STRING = '<span id="processinfo"></span>'
+PROCESSINFO.INFO_FORMATTER = '<span id="processinfo">Render time:  %(total).1f ms &bull; Processinfo Module:  %(own).1f ms, %(perc).1f%% of total</span>'
+
 
 
 #	django_summernote
@@ -81,3 +83,23 @@ SUMMERNOTE_CONFIG = {
 		'//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js',
 	),
 }
+
+
+#	deertrees
+#	This stores a list of known models that can be attached to a category, their hierarchy when displayed, and a template file's path
+#	Model Name { template: Path to importable template, sidebar: Hierarchy for sidebar, main: Hierarchy for main content area }
+DEERTREES_BLOCKS = {
+	'special_feature': {'template':'deertrees/feature_%(type)s.html', 'sidebar':1},
+	'category': {'template':'deertrees/childcat_%(type)s.html', 'sidebar':2, 'main':1},
+}
+
+#	Planned; roughly in order of content volume.
+#DEERTREES_BLOCKS = {
+#	'photo' : {'template':'sunset/catlistphoto_%(type).html', 'main':1}
+#	'page' : {'template':'deerbooks/catlistpage_%(type).html', 'sidebar':4, 'main':3}
+#	'menu_item' : {'template':'deerdine/menuitem_%(type).html', 'main':2}
+#	'link' : {'template':'deerguide/link_%(type).html', 'sidebar':5}
+#	'contact_link' : {'template':'deerguide/contactlink_%(type).html', 'sidebar':1}
+#	'special_feature' : {'template':'deertrees/feature_%(type).html', 'sidebar':3}
+#	'category' : {'template':'deertrees/childcat_%(type).html', 'sidebar':2, 'main':4}
+#}

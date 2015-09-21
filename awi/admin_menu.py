@@ -6,6 +6,15 @@ To activate your custom menu add the following to your settings.py::
     ADMIN_TOOLS_MENU = 'awi-dev.menu.CustomMenu'
 """
 
+#	Lupinia Studios
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Custom menu for admin_tools module
+#	TODO:  Merge admin_tools.py and admin_dashboard.py
+#	=================
+
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 

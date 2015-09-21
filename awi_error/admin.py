@@ -1,3 +1,11 @@
+#	Awi Error (Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Admin
+#	=================
+
 from django.contrib import admin
 from awi_error.models import error
 

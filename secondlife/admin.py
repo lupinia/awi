@@ -1,3 +1,11 @@
+#	secondlife (Legacy Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Admin
+#	=================
+
 from django.contrib import admin
 from secondlife.models import security_control
 

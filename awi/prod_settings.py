@@ -1,10 +1,11 @@
 #	Lupinia Studios
-#	By Natasha Long
-#	www.lupinia.net - natasha@lupinia.net
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
 #	
 #	=================
-#	Django Settings File
-#	Everything in this first section is site-specific
+#	Django Settings File - Site (Production)
+#	
+#	Site-specific Django settings
 #	=================
 
 SITE_ID = 1
