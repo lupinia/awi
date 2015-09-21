@@ -3,12 +3,23 @@
 {% block bg_image %}{% include 'bg_image.html' with tag=object.background %}{% endblock %}
 
 {% block content_left %}
-	<div class="transbox left_sidebar">
-		<h2>{{object.title}}</h2>
-		{% if main_full_1 and object.content_priority and object.content_priority != "desc" and object.summary %}
-			<div>{{object.summary}}</div>
-		{% elif object.desc %}
-			<div>
+	{% if object.desc %}
+		{% if object.content_priority == "desc" %}
+			<div class="transbox fulltext_page">
+				<div id="fulltext_page_title"><div id="fulltext_page_title_main"><h2>{{object.title}}</h2></div></div>
+		{% else %}
+			<div class="transbox left_sidebar">
+				<h2>{{object.title}}</h2>
+			</div>
+			<div class="transbox fulltext_page">
+		{% endif %}
+		
+			<div {% if object.content_priority == "desc" %}class="fulltext_page_body"{% endif %}>
+			{% if error %}
+				{% load errors %}
+				{% error_display error %}
+				<br /><hr /><br />
+			{% endif %}
 			{% autoescape off %}
 			{% if "<p>" in object.desc or "<br" in object.desc %}
 				{{object.desc}}
@@ -17,13 +28,21 @@
 			{% endif %}
 			{% endautoescape %}
 			</div>
-		{% endif %}
+		</div>
+	{% else %}
+		<div class="transbox left_sidebar">
+			<h2>{{object.title}}</h2>
+			{% if object.summary %}
+				<div>{{object.summary}}</div>
+			{% endif %}
 
-		{% if error == "cat_empty" %}
-			{% load errors %}
-			{% error_display error %}
-		{% endif %}
-	</div>
+			{% if error %}
+				{% load errors %}
+				<br /><hr /><br />
+				{% error_display error %}
+			{% endif %}
+		</div>
+	{% endif %}
 
 	{% if error != "cat_empty" %}
 		{% if main_full_1 %}

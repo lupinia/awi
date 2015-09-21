@@ -34,7 +34,7 @@ class leaf_parent():
 			leaf_filters['tags'] = parent
 		
 		from awi_access.models import access_query
-		leaves = leaf.objects.filter().filter(access_query(self.request)).order_by(*leaf_ordering).select_related()
+		leaves = leaf.objects.filter(**leaf_filters).filter(access_query(self.request)).order_by(*leaf_ordering).select_related()
 		
 		if leaves:
 			return leaves
@@ -182,6 +182,20 @@ class homepage(leaf_parent, generic.TemplateView):
 		
 		return context
 
+class all_tags(generic.TemplateView):
+	template_name='deertrees/taglist.html'
+	
+	def get_context_data(self, **kwargs):
+		context = super(all_tags,self).get_context_data(**kwargs)
+		
+		tag_list = tag.objects.all().order_by('title')
+		if tag_list:
+			context['tags'] = tag_list
+		else:
+			context['error'] = 'no_tags'
+		
+		return context
+
 class main_rssfeed(leaf_parent, generic.TemplateView):
 	template_name='deertrees/rss.xml'
 	
@@ -191,6 +205,8 @@ class main_rssfeed(leaf_parent, generic.TemplateView):
 		leaves = self.get_leaves(parent_type = 'homepage')
 		if leaves:
 			context['leaves'] = leaves[:30]
+		else:
+			context['error'] = 'feed_empty'
 		
 		return context
 
@@ -215,6 +231,8 @@ class category_list(leaf_parent, generic.DetailView):
 		blocks = self.assemble_blocks(context['object'],'category')
 		if blocks[0]:
 			context.update(blocks[1])
+		else:
+			context['error'] = 'cat_empty'
 		
 		return context
 
@@ -227,5 +245,7 @@ class tag_list(leaf_parent, generic.DetailView):
 		blocks = self.assemble_blocks(context['object'],'tag')
 		if blocks[0]:
 			context.update(blocks[1])
+		else:
+			context['error'] = 'tag_empty'
 		
 		return context

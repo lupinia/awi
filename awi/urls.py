@@ -32,6 +32,7 @@ urlpatterns = patterns('',
 	url(r'^gamescripts/', include('secondlife.urls')),
 	
 	#	DeerTrees is a special case for this site.
+	url(r'^tags/$',deertrees_views.all_tags.as_view(),name='all_tags'),
 	url(r'^tags/(?P<slug>.*)/$',deertrees_views.tag_list.as_view(),name='tag'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/$',deertrees_views.category_list.as_view(),name='category'),
 )
