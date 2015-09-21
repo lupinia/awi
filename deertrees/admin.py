@@ -14,25 +14,38 @@ from awi_access.admin import access_admin
 
 from deertrees.models import *
 
-class cat_admin(DjangoMpttAdmin,SummernoteModelAdmin):
-	list_display=('title','slug','parent','cached_url')
-	list_filter=('background',)
-	fields = (('title','slug'),('parent','background'),'summary','desc')
+class cat_admin(DjangoMpttAdmin,SummernoteModelAdmin,access_admin):
+	fieldsets = [
+		(None,{'fields':(('title','slug'),'summary','desc'),},),
+		("Options",{'fields':(('parent','background','sitemap_include',),('content_priority','highlights_category',),),},),
+	] + access_admin.fieldsets
+	list_filter = access_admin.list_filter + ['background','content_priority','highlights_category','sitemap_include']
+	
+	list_display = ('title','slug','parent','cached_url')
 	prepopulated_fields={'slug':('title',)}
 	search_fields = ('title','slug','parent','cached_url','desc')
 
 class tag_admin(SummernoteModelAdmin):
+	fieldsets = [
+		(None,{'fields':(('title','slug'),'desc'),},),
+		("Options",{'fields':(('content_priority','sitemap_include'),),},),
+	]
+
 	list_display=('title','slug')
-	fields = (('title','slug'),'desc')
 	prepopulated_fields={'slug':('title',)}
 	search_fields = ('title','slug')
 
 class leaf_admin(access_admin):
 	list_select_related = True
-	search_fields = ['cat','tags']
-	fieldsets = [('Categorization',{'fields': ('cat','tags'),},),] + access_admin.fieldsets
-	filter_horizontal = ('tags',)
 	list_filter = access_admin.list_filter + ['cat',]
+	fieldsets = [
+		('Time Options',{'fields': (('timestamp_post','timestamp_mod','timedisp'),),},),
+		('Categorization',{'fields': ('cat','tags'),},),
+	] + access_admin.fieldsets
+	
+	readonly_fields = ['timestamp_mod',]
+	search_fields = ['cat','tags']
+	filter_horizontal = ('tags',)
 
 class special_feature_admin(leaf_admin):
 	search_fields = ['url','title','desc'] + leaf_admin.search_fields

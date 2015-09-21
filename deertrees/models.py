@@ -23,7 +23,7 @@ class category(MPTTModel, access_control):
 	cached_url=models.CharField(max_length=255,null=True,blank=True)
 	
 	background=models.ForeignKey('awi_bg.background_tag',null=True,blank=True)
-	content_priority=models.CharField(max_length=10,null=True,blank=True,help_text="Manually specify a content type to prioritize during display.")		#	An option to override the content given top priority
+	content_priority=models.CharField(choices=PRIORITY_OPTIONS,max_length=10,null=True,blank=True,help_text="Manually specify a content type to prioritize during display.")		#	An option to override the content given top priority
 	sitemap_include=models.BooleanField(default=True)
 	highlights_category=models.BooleanField(default=False,help_text="If this box is checked, this category will only show Featured items of its descendants, and cannot hold items on its own.")
 	
@@ -47,7 +47,7 @@ class tag(models.Model):
 	slug=models.SlugField(max_length=200)
 	desc=models.TextField(null=True,blank=True)
 	
-	content_priority=models.CharField(max_length=10,null=True,blank=True)		#	An option to override the content given top priority
+	content_priority=models.CharField(choices=PRIORITY_OPTIONS,max_length=10,null=True,blank=True)		#	An option to override the content given top priority
 	sitemap_include=models.BooleanField(default=True)
 	
 	def __unicode__(self):
