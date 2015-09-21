@@ -25,7 +25,6 @@ class category(MPTTModel, access_control):
 	background=models.ForeignKey('awi_bg.background_tag',null=True,blank=True)
 	content_priority=models.CharField(choices=PRIORITY_OPTIONS,max_length=10,null=True,blank=True,help_text="Manually specify a content type to prioritize during display.")		#	An option to override the content given top priority
 	sitemap_include=models.BooleanField(default=True)
-	highlights_category=models.BooleanField(default=False,help_text="If this box is checked, this category will only show Featured items of its descendants, and cannot hold items on its own.")
 	
 	def __unicode__(self):
 		return self.title

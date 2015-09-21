@@ -15,11 +15,12 @@ from awi_access.admin import access_admin
 from deertrees.models import *
 
 class cat_admin(DjangoMpttAdmin,SummernoteModelAdmin,access_admin):
+	list_select_related = True
 	fieldsets = [
 		(None,{'fields':(('title','slug'),'summary','desc'),},),
-		("Options",{'fields':(('parent','background','sitemap_include',),('content_priority','highlights_category',),),},),
+		("Options",{'fields':(('parent','background','sitemap_include','content_priority',),),},),
 	] + access_admin.fieldsets
-	list_filter = access_admin.list_filter + ['background','content_priority','highlights_category','sitemap_include']
+	list_filter = access_admin.list_filter + ['background','content_priority','sitemap_include']
 	
 	list_display = ('title','slug','parent','cached_url')
 	prepopulated_fields={'slug':('title',)}
