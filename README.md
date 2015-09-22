@@ -9,6 +9,7 @@ Domains
 
 - **beta.lupinia.net** *(v5.1)* - Dev server for this project, runs the latest version of this codebase at all times.
 - **seneca.lupinia.net** *(v4.1)* - Pseudo-staging server; this will become the production server once the site is fully finished.  
+	- *Current development goal is to bring v5.1 up to the same featureset as the incomplete v4.1, to upgrade Seneca.  New features will follow.*
 - **www.lupinia.net** *(v3.2)* - Production server; currently runs a legacy PHP version, and is a separate physical server from the other two.
 
 Apps/Modules Included
@@ -42,7 +43,7 @@ Third-Party Apps/Modules Used
 Infrastructure
 --------------
 
-The site's current server uses Nginx as a front-end web server, uWSGI to serve its Django applications, and PostregSQL Server 9.2 as a database back-end.  It also uses Amazon S3 for all static and media file hosting.
+The site's current server uses Nginx as a front-end web server, uWSGI to serve its Django applications, and PostgreSQL Server 9.2 as a database back-end.  It also uses Amazon S3 for all static and media file hosting.
 
 License
 -------
