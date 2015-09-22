@@ -1,0 +1,24 @@
+{% if 'sidebar' in blockname %}
+	{% for subcat in leaves %}
+	<a href="{% url 'category' subcat.cached_url %}" title="{{subcat.title}} - {{subcat.summary}}" class="sidebar_link">
+		<span class="sidebar_link_title">{{subcat.title}}</span>
+	</a>
+	{% empty %}
+		<div><sub><em>No Subcategories</em></sub></div>
+	{% endfor %}
+	
+{% elif 'main' in blockname %}
+<div class="cat_links_large category_two_columns">
+	{% for subcat in leaves %}
+		<div class="cms_link">
+			<a href="{% url 'category' subcat.cached_url %}" title="{{subcat.title}}">
+				<span class="article_summary_head"><span class="article_summary_title">{{subcat.title}}</span></span><br />
+				<span class="article_summary_body">{{subcat.summary}}</span>
+			</a>
+		</div>
+	{% empty %}
+		<div><sub><em>No Subcategories</em></sub></div>
+	{% endfor %}
+<br style="clear:left;" />
+</div>
+{% endif %}

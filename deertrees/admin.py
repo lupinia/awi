@@ -7,6 +7,7 @@
 #	=================
 
 from django.contrib import admin
+from django.core.urlresolvers import reverse
 
 from django_mptt_admin.admin import DjangoMpttAdmin
 from django_summernote.admin import SummernoteModelAdmin
@@ -25,6 +26,9 @@ class cat_admin(DjangoMpttAdmin,SummernoteModelAdmin,access_admin):
 	list_display = ('title','slug','parent','cached_url')
 	prepopulated_fields={'slug':('title',)}
 	search_fields = ('title','slug','parent','cached_url','desc')
+	
+	def view_on_site(self, obj):
+		return reverse('category',kwargs={'cached_url':obj.cached_url,})
 
 class tag_admin(SummernoteModelAdmin):
 	fieldsets = [
@@ -35,6 +39,9 @@ class tag_admin(SummernoteModelAdmin):
 	list_display=('title','slug')
 	prepopulated_fields={'slug':('title',)}
 	search_fields = ('title','slug')
+	
+	def view_on_site(self, obj):
+		return reverse('tag',kwargs={'slug':obj.slug,})
 
 class leaf_admin(access_admin):
 	list_select_related = True
@@ -50,7 +57,11 @@ class leaf_admin(access_admin):
 
 class special_feature_admin(leaf_admin):
 	search_fields = ['url','title','desc'] + leaf_admin.search_fields
-	fieldsets = [(None,{'fields':(('url','title'),'desc'),},),] + leaf_admin.fieldsets
+	fieldsets = [(None,{'fields':(('title','url'),'desc'),},),] + leaf_admin.fieldsets
+	prepopulated_fields={'url':('title',)}
+	
+	def view_on_site(self, obj):
+		return '/' + obj.cat.cached_url + '/' + obj.url
 
 admin.site.register(category,cat_admin)
 admin.site.register(tag,tag_admin)

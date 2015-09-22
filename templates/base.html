@@ -1,84 +1,99 @@
 <!DOCTYPE html>
 <html>
-<head>
+
 {% load static %}
 {% load awibg %}
 {% get_static_prefix as STATIC_PREFIX %}
-<meta charset="UTF-8">
-<meta name="author" content="Natasha {% if site.name == 'Furry' %}Softpaw{%else%}L.{%endif%}" />
-<meta name="designer" content="Lupinia Studios - www.lupinia.net" />
-<meta name="description" content="Lupinia Studios is Natasha {% if site.name == 'Furry' %}Softpaw{%else%}L.{%endif%}'s personal portfolio, featuring her written works, digital photography, and digital graphics - " />
-<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{% now 'Y' %} by Natasha {% if site.name == 'Furry' %}Softpaw{%else%}L.{%endif%}" />
 
-<title>{% block title %}Lupinia Studios{% endblock %}</title>
-<link href="http://private.lupinia.net/CSS/showcase.css" type="text/css" rel="stylesheet" id="main_css" /><!-- Temporary -->
+<head>
+	<meta charset="UTF-8">
+	<meta name="author" content="{% include 'authorname.txt' %}" />
+	<meta name="designer" content="Lupinia Studios - www.lupinia.net" />
+	<meta name="description" content="Lupinia Studios is {% include 'authorname.txt' %}'s personal portfolio, featuring her written works, digital photography, and digital graphics" />
+	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{% now 'Y' as curyear %} by {% include 'authorname.txt' %}" />
+
+	<title>{% block title %}Lupinia Studios{% endblock %}</title>
+	<link href="http://private.lupinia.net/CSS/showcase.css" type="text/css" rel="stylesheet" id="main_css" /><!-- Temporary -->
 </head>
-{% block bg_image %}{% include 'bg_image.html' with tag="main" %}{% endblock %}
+
+{% block bg_image %}{% include 'awi_bg/bg_image.html' with tag="main" %}{% endblock %}
+
 <div id="mainwrap">
-<header>
-	<nav class="hoverlinks transbox">
-	<a id="header_nav_first" href="/photo/" style="background-image:url({{ STATIC_PREFIX }}images/nav/photo-off.png)" title="Photography"><img src="{{ STATIC_PREFIX }}images/nav/photo-on.png" alt="Photography" /></a>
-	
-	<a href="/websites/" style="background-image:url({{ STATIC_PREFIX }}images/nav/websites-off.png)" title="Websites"><img src="{{ STATIC_PREFIX }}images/nav/websites-on.png" alt="Websites" /></a>
-	<a href="/writing/" style="background-image:url({{ STATIC_PREFIX }}images/nav/writing-off.png)" title="Writing"><img src="{{ STATIC_PREFIX }}images/nav/writing-on.png" alt="Writing" /></a>
-	<a href="/contact/" style="background-image:url({{ STATIC_PREFIX }}images/nav/contact-off.png)" title="Contact"><img src="{{ STATIC_PREFIX }}images/nav/contact-on.png" alt="Contact" /></a>
-	<a href="/personal/" style="background-image:url({{ STATIC_PREFIX }}images/nav/personal-off.png)" title="Personal"><img src="{{ STATIC_PREFIX }}images/nav/personal-on.png" alt="Personal" /></a>
-	</nav>
+	<header>
+		<nav class="hoverlinks transbox">
+			<a id="header_nav_first" href="/photo/" style="background-image:url({{ STATIC_PREFIX }}images/nav/photo-off.png)" title="Photography"><img src="{{ STATIC_PREFIX }}images/nav/photo-on.png" alt="Photography" /></a>
+			
+			<a href="/websites/" style="background-image:url({{ STATIC_PREFIX }}images/nav/websites-off.png)" title="Websites"><img src="{{ STATIC_PREFIX }}images/nav/websites-on.png" alt="Websites" /></a>
+			<a href="/writing/" style="background-image:url({{ STATIC_PREFIX }}images/nav/writing-off.png)" title="Writing"><img src="{{ STATIC_PREFIX }}images/nav/writing-on.png" alt="Writing" /></a>
+			<a href="/contact/" style="background-image:url({{ STATIC_PREFIX }}images/nav/contact-off.png)" title="Contact"><img src="{{ STATIC_PREFIX }}images/nav/contact-on.png" alt="Contact" /></a>
+			<a href="/personal/" style="background-image:url({{ STATIC_PREFIX }}images/nav/personal-off.png)" title="Personal"><img src="{{ STATIC_PREFIX }}images/nav/personal-on.png" alt="Personal" /></a>
+		</nav>
 
-	<div id="header_logo" class="transbox">
-	<a href="/"><img src="{{ STATIC_PREFIX }}images/text/title.png" title="Lupinia Studios (Beta)" alt="Lupinia Studios (Beta)" /><br /></a>
-	<a href="/about/"><img id="sig_image" src="{{ STATIC_PREFIX }}images/text/name-{% if site.name == 'Furry' %}ff{%else%}fr{%endif%}.png" title="By Natasha {% if site.name == 'Furry' %}Softpaw{%else%}L.{%endif%}" alt="By Natasha {% if site.name == 'Furry' %}Softpaw{%else%}L.{%endif%}" /></a>
-		
-		<div id="social_icons">
-		{% if site.name == 'Furry' %}<a href="http://www.furaffinity.net/user/softpaw"><img src="{{ STATIC_PREFIX }}images/icons/furaffinity.png" alt="Furaffinity" title="Furaffinity" /></a> {% endif %}
-		<a href="http://twitter.com/lupinia"><img src="{{ STATIC_PREFIX }}images/icons/twitter_icon.gif" alt="Twitter" title="Twitter" /></a> 
-		<a href="http://www.flickr.com/photos/lupiniastudios/"><img src="{{ STATIC_PREFIX }}images/icons/flickr.png" alt="Flickr" title="Flickr" /></a> 
-		<a href="http://500px.com/lupinia"><img src="{{ STATIC_PREFIX }}images/icons/500px.png" alt="500px" title="500px" /></a> 
+		<div id="header_logo" class="transbox">
+			<a href="/"><img src="{{ STATIC_PREFIX }}images/text/title.png" title="Lupinia Studios (Beta)" alt="Lupinia Studios (Beta)" /><br /></a>
+			<a href="/about/"><img id="sig_image" src="{{ STATIC_PREFIX }}images/text/name-{% if site.name == 'Furry' %}ff{%else%}fr{%endif%}.png" title="By Natasha {% if site.name == 'Furry' %}Softpaw{%else%}L.{%endif%}" alt="By Natasha {% if site.name == 'Furry' %}Softpaw{%else%}L.{%endif%}" /></a>
+			
+			<div id="social_icons">
+				{% if site.name == 'Furry' %}<a href="http://www.furaffinity.net/user/softpaw"><img src="{{ STATIC_PREFIX }}images/icons/furaffinity.png" alt="Furaffinity" title="Furaffinity" /></a> {% endif %}
+				<a href="http://twitter.com/lupinia"><img src="{{ STATIC_PREFIX }}images/icons/twitter_icon.gif" alt="Twitter" title="Twitter" /></a> 
+				<a href="http://www.flickr.com/photos/lupiniastudios/"><img src="{{ STATIC_PREFIX }}images/icons/flickr.png" alt="Flickr" title="Flickr" /></a> 
+				<a href="http://500px.com/lupinia"><img src="{{ STATIC_PREFIX }}images/icons/500px.png" alt="500px" title="500px" /></a> 
+			</div>
 		</div>
+	</header>
+
+	<div id="content_area">
+		{% block content_right %}
+			{% comment %}<!-- This section is for float:right sidebar elements.  -->{% endcomment %}
+		{% endblock %}
+
+		{% block content_left %}
+			{% comment %}<!-- This section is for primary content, but can be used for float:left sidebars too.  -->{% endcomment %}
+		{% endblock %}
+
+		{% block content_center %}
+			{% comment %}<!-- This section can be used to put something between left and right.  -->{% endcomment %}
+		{% endblock %}
 	</div>
-</header>
 
-<div id="content_area">
-{% block content_right %}
-<!-- float:right goes here -->
-{% endblock %}
-
-{% block content_left %}
-{% endblock %}
-
-{% block content_center %}
-{% endblock %}
+	<footer class="transbox">
+		<div id="footer-right">
+			{% bg_info %}<br />
+			<span class="lower">&copy;2000-{{curyear}} {% include 'authorname.txt' %}</span>
+		</div>
+		
+		<nav>
+			<a href="/">Home</a> &bull; 
+			<a href="/about/">About</a> &bull; 
+			<a href="/photo/">Photography</a> &bull; 
+			<a href="/websites/">Websites</a> &bull; 
+			<a href="/writing/">Writing</a> &bull; 
+			<a href="/cherokee/">Cherokee Language &amp; Culture</a> &bull; 
+			<a href="/personal/">Personal</a> &bull; 
+			<a href="/furry/">Furry</a> &bull; 
+			<a href="/contact/">Contact</a><br />
+		
+			<span class="lower">
+			{% block userinfo %}
+				{% if user.is_authenticated %}
+					{% if user.get_full_name %}
+						{{user.get_full_name}} ({{user.get_username}})
+					{% else %}
+						{{user.get_username}}
+					{% endif %}
+					&bull; <a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a>
+					{% if user.is_superuser %}
+					&bull; <a href="/admin/">Administration</a>
+					{% endif %}
+				 &bull; <span id="processinfo"></span>
+				{% else %}
+					<a href="{% url 'django.contrib.auth.views.login' %}">Login</a>
+				{% endif %}
+			{% endblock %}
+			</span>
+		</nav>
+	</footer>
 </div>
 
-<footer class="transbox">
-<div id="footer-right">{% bg_info %}<br /><span class="lower">&copy;2000-{% now "Y" %} Natasha Lockhart</span></div>
-<div><a href="/">Home</a> &bull; 
-<a href="/about/">About</a> &bull; 
-<a href="/photo/">Photography</a> &bull; 
-<a href="/websites/">Websites</a> &bull; 
-<a href="/writing/">Writing</a> &bull; 
-<a href="/personal/">Personal</a> &bull; 
-<a href="/personal/cars/">Cars</a> &bull; 
-<a href="/furry/">Furry</a> &bull; 
-<a href="/contact/">Contact</a><br />
-<span class="lower">{% block userinfo %}
-{% if user.is_authenticated %}
-	{% if user.get_full_name %}
-		{{user.get_full_name}} ({{user.get_username}})
-	{% else %}
-		{{user.get_username}}
-	{% endif %}
-	&bull; <a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a>
-	{% if user.is_superuser %}
-	&bull; <a href="/admin/">Administration</a>
-	{% endif %}
- &bull; <span id="processinfo"></span>
-{% else %}
-<a href="{% url 'django.contrib.auth.views.login' %}">Login</a>
-{% endif %}
-{% endblock %}
-</span></div>
-</footer>
-</div>
 </body>
 </html>

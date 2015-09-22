@@ -87,10 +87,14 @@ SUMMERNOTE_CONFIG = {
 
 #	deertrees
 #	This stores a list of known models that can be attached to a category, their hierarchy when displayed, and a template file's path
-#	Model Name { template: Path to importable template, sidebar: Hierarchy for sidebar, main: Hierarchy for main content area }
+#	Model Name { 
+#				title: Displayable title, OR an image URL relative to {{static}},
+#				template: Path to importable template,
+#				sidebar: Hierarchy for sidebar,
+#				main: Hierarchy for main content area, }
 DEERTREES_BLOCKS = {
-	'special_feature': {'template':'deertrees/feature_%(type)s.html', 'sidebar':1},
-	'category': {'template':'deertrees/childcat_%(type)s.html', 'sidebar':2, 'main':1},
+	'special_feature': {'title':'Special Features', 'template':'deertrees/leaf_feature.html', 'sidebar':1},
+	'category': {'title':'Subcategories', 'template':'deertrees/leaf_subcat.html', 'sidebar':2, 'main':1},
 }
 
 #	Planned; roughly in order of content volume.

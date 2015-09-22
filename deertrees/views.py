@@ -70,7 +70,7 @@ class leaf_parent():
 		#	Build the list of blocks to assign
 		blockname_cycle = cycle(['sidebar','main_half'])
 		blocks_to_assign = ['sidebar','sidebar','main_full_2']
-		if parent and parent.content_priority is not 'desc':
+		if parent and parent.content_priority != 'desc':
 			blocks_to_assign.insert(0,'main_full_1')
 		
 		#	Loop the known-existing content types, to get a list.  We'll deal with priority later.
@@ -114,7 +114,7 @@ class leaf_parent():
 			#	Assignment time!
 			#	Start with the special case
 			if blocks_to_assign[0] == 'main_full_1' and blocks.get(parent.content_priority,False):
-				returned_data[1]['main_full_1'] = {'type':parent.content_priority,'data':blocks[parent.content_priority],'template':blocks_map[parent.content_priority]['template'] % {'type':'main',}}
+				returned_data[1]['main_full_1'] = {'type':parent.content_priority,'title':blocks_map[parent.content_priority]['title'],'data':blocks[parent.content_priority],'template':blocks_map[parent.content_priority]['template']}
 				blocks_to_assign.pop(0)
 				blocks.pop(parent.content_priority)
 			
@@ -128,9 +128,9 @@ class leaf_parent():
 				#	Now, let's build a priority list per region
 				for type, content in blocks.iteritems():
 					if blocks_map[type].get('sidebar',False):
-						order_sidebar[str(blocks_map[type]['sidebar'])] = {'type':type,'data':content,'template':blocks_map[type]['template'] % {'type':'sidebar',}}
+						order_sidebar[str(blocks_map[type]['sidebar'])] = {'type':type,'title':blocks_map[type]['title'],'data':content,'template':blocks_map[type]['template']}
 					if blocks_map[type].get('main',False):
-						order_main[str(blocks_map[type]['main'])] = {'type':type,'data':content,'template':blocks_map[type]['template'] % {'type':'main',}}
+						order_main[str(blocks_map[type]['main'])] = {'type':type,'title':blocks_map[type]['title'],'data':content,'template':blocks_map[type]['template']}
 				
 				#	And now put them in order
 				if order_main:

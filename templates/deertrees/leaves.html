@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% block title %}{{block.super}} - {% if homepage %}Photography, Writing, and Creative Works by {% if site.name == 'Furry' %}Meadow Whisper (Natasha L.){%else%}Natasha L.{%endif%}{% else %}{{object.title}}{% endif %}{% endblock %}
-{% block bg_image %}{% if homepage %}{{block.super}}{% else %}{% include 'bg_image.html' with tag=object.background %}{% endif %}{% endblock %}
+{% block title %}{{block.super}} - {% if homepage %}Photography, Writing, and Creative Works by {% include 'authorname.txt' %}{% else %}{{object.title}}{% endif %}{% endblock %}
+{% block bg_image %}{% if homepage or not object.background %}{{block.super}}{% else %}{% include 'awi_bg/bg_image.html' with tag=object.background %}{% endif %}{% endblock %}
 
 {% block content_left %}
 	{% if homepage %}
@@ -52,20 +52,23 @@
 	{% if error != "cat_empty" %}
 		{% if main_full_1 %}
 			<div class="transbox fulltext_page">
-				<h3>main_full_1 - {{main_full_1.type}}</h3>
+				<h3>{{main_full_1.title}}</h3>
+				{% include main_full_1.template with leaves=main_full_1.data blockname="main_full_1" highlight_featured=highlight_featured only %}
 			</div>
 		{% endif %}
 
 		{% if main_full_2 %}
 			<div class="transbox fulltext_page">
-				<h3>main_full_2 - {{main_full_2.type}}</h3>
+				<h3>{{main_full_2.title}}</h3>
+				{% include main_full_2.template with leaves=main_full_2.data blockname="main_full_2" highlight_featured=highlight_featured only %}
 			</div>
 		{% endif %}
 
 		{% if main_half %}
 			{% for main_block in main_half %}
 				<div class="transbox left_sidebar">
-				<h4>main_half - {{main_block.type}}</h4>
+					<h4>{{main_block.title}}</h4>
+					{% include main_block.template with leaves=main_block.data blockname="main_half" highlight_featured=highlight_featured only %}
 				</div>
 			{% endfor %}
 		{% endif %}
@@ -77,7 +80,8 @@
 		<div class="right_sidebar">
 		{% for sidebar_block in sidebar %}
 			<div class="transbox right_sidebar_section">
-			<h4>{{sidebar_block.type}}</h4>
+			<h4>{{sidebar_block.title}}</h4>
+			{% include sidebar_block.template with leaves=sidebar_block.data blockname="sidebar" highlight_featured=highlight_featured only %}
 			</div>
 		{% endfor %}
 		</div>
