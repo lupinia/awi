@@ -1,0 +1,33 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+{% if 'sidebar' in blockname %}
+	{% for page in leaves %}
+	<a href="/" title="{{page.title}} - {{page.body_summary}}" class="sidebar_link">
+		<span class="sidebar_link_title">{{page.title}}</span>
+	</a>
+	{% empty %}
+		<div><sub><em>No articles</em></sub></div>
+	{% endfor %}
+	
+{% elif 'main' in blockname %}
+<div class="cms_links_large category_two_columns">
+	{% for page in leaves %}
+		<div class="cms_link">
+			<a href="/" title="{{page.title}}" {% if page.featured %}class="featured"{% elif page.mature %}class="mature"{% endif %}>
+				{% if page.featured %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured.png" alt="Featured" title="Featured" /></span>
+				{% elif page.mature %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
+				
+				<span class="article_summary_head"><span class="article_summary_title">{{page.title}}</span><br /> 
+					{{page.display_times.0.label}}: {{page.display_times.0.timestamp}}
+				</span>
+				<span class="article_summary_body">{{page.body_summary}}</span>
+			</a>
+		</div>
+	{% empty %}
+		<div><sub><em>No Subcategories</em></sub></div>
+	{% endfor %}
+<br style="clear:left;" />
+</div>
+{% endif %}
+{% comment %}{% url 'page_htm' page.cat.cached_url page.slug %}{% endcomment %}

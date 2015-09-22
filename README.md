@@ -23,6 +23,7 @@ Full feature list for these in-progress.
 	- **DeerFind**:  Intelligent 404 handler.
 - **Main Content**
 	- **DeerTrees**:  Multi-level object-agnostic category system.
+	- **DeerBooks**:  Enhanced text/writing management.
 - **Other**
 	- **DeerHealth**:  Prescription medication tracker.
 	- **secondlife**:  Legacy support for security/authentication scripts in Second Life.  Pending a rebuild, but unlike the others to be rebuilt, this one needs to stay running until it's replaced.

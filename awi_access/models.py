@@ -17,14 +17,14 @@ def access_query(request=False):
 	
 	returned_query = Q(sites__id = settings.SITE_ID)
 	
-	if request.user.is_authenticated():
+	if request and request.user.is_authenticated():
 		if not request.user.is_superuser or not request.user.is_staff:
 			#	Regular User
 			published_query = Q(published = True) or Q(owner = request.user)
 			returned_query = returned_query & Q(security__lt = 2) & published_query
 	else:
 		#	Anonymous User
-		returned_query = returned_query & Q(security__lt = 2) & Q(published = True) & Q(mature = False)
+		returned_query = returned_query & Q(security__lt = 1) & Q(published = True) & Q(mature = False)
 	
 	return returned_query
 

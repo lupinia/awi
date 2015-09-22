@@ -93,8 +93,9 @@ SUMMERNOTE_CONFIG = {
 #				sidebar: Hierarchy for sidebar,
 #				main: Hierarchy for main content area, }
 DEERTREES_BLOCKS = {
+	'page': {'title':'Writing', 'template':'deerbooks/leaf_page.html', 'sidebar':3, 'main':1},
 	'special_feature': {'title':'Special Features', 'template':'deertrees/leaf_feature.html', 'sidebar':1},
-	'category': {'title':'Subcategories', 'template':'deertrees/leaf_subcat.html', 'sidebar':2, 'main':1},
+	'category': {'title':'Subcategories', 'template':'deertrees/leaf_subcat.html', 'sidebar':2, 'main':2},
 }
 
 #	Planned; roughly in order of content volume.

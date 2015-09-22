@@ -53,7 +53,7 @@ class leaf_admin(access_admin):
 	
 	readonly_fields = ['timestamp_mod',]
 	search_fields = ['cat','tags']
-	filter_horizontal = ('tags',)
+	filter_horizontal = ['tags',]
 
 class special_feature_admin(leaf_admin):
 	search_fields = ['url','title','desc'] + leaf_admin.search_fields

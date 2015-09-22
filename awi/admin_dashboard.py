@@ -50,14 +50,14 @@ class CustomIndexDashboard(Dashboard):
         # append an app list module for "Applications"
         self.children.append(modules.AppList(
             _('Content'),
-            models=('deertrees.*','django_summernote.*',),
+            models=('deerbooks.*','deertrees.*','django_summernote.*',),
         ))
 
         # append an app list module for "Administration"
         self.children.append(modules.AppList(
             _('Miscellaneous'),
             exclude=('django.contrib.*','awi_error.*','awi_bg.*','awi_access.*','deerfind.*','django_processinfo.*',
-                     'deertrees.*','django_summernote.*',),
+                     'deerbooks.*','deertrees.*','django_summernote.*',),
         ))
 
         # append an app list module for "Administration"

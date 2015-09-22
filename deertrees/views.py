@@ -196,10 +196,10 @@ class main_rssfeed(leaf_parent, generic.TemplateView):
 	template_name='deertrees/rss.xml'
 	
 	def get_context_data(self, **kwargs):
-		context = super(homepage,self).get_context_data(**kwargs)
+		context = super(main_rssfeed,self).get_context_data(**kwargs)
 		context['highlight_featured'] = self.highlight_featured
 		
-		leaves = self.get_leaves(parent_type = 'homepage')
+		leaves = self.get_leaves(parent_type = 'main_feed')
 		if leaves:
 			context['leaves'] = leaves[:30]
 		else:

@@ -33,7 +33,7 @@ class CustomMenu(Menu):
             items.Bookmarks(),
             items.AppList(
                 _('Content'),
-                models=('deertrees.*','django_summernote.*',),
+                models=('deerbooks.*','deertrees.*','django_summernote.*',),
             ),
             items.AppList(
                 _('System'),
@@ -42,7 +42,7 @@ class CustomMenu(Menu):
             items.AppList(
                 _('Miscellaneous'),
                 exclude=('django.contrib.*','awi_error.*','awi_bg.*','awi_access.*','deerfind.*','django_processinfo.*',
-                         'deertrees.*','django_summernote.*',),
+                         'deertrees.*','django_summernote.*','deerbooks.*',),
             ),
             items.MenuItem(_('Server Health'), reverse('admin:django_processinfo_processinfo_changelist')),
         ]

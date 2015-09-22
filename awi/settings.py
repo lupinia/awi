@@ -54,6 +54,7 @@ INSTALLED_APPS = (
 	
 	#	My Apps - Primary Content Objects
 	'deertrees',	# Categories
+	'deerbooks',	# Text-based content
 	
 	#	My Apps - Other
 	'deerhealth',	# Prescription Tracker
