@@ -1,29 +1,32 @@
 {% extends "base.html" %}
 
-{% block breadcrumbs %}{% endblock %}
 {% block userinfo %}{% endblock %}
 
 {% block content_left %}
-<div class="transbox left_sidebar loginform">
+	<div class="transbox left_sidebar loginform">
 
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
+		{% if form.errors %}
+			<p>Your username and password didn't match. Please try again.</p>
+		{% endif %}
 
-{% if not form %}
-<p>Successfully logged out.  <a href="{% url 'django.contrib.auth.views.login' %}">Login again?</a></p>
-{% else %}
-<form method="post" action="{% url 'django.contrib.auth.views.login' %}">
-{% csrf_token %}
-<div>
-<div><sub>{{ form.username.label_tag }}</sub>
-{{ form.username }}</div>
-<div><sub>{{ form.password.label_tag }}</sub>
-{{ form.password }}</div>
-</div>
-<input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
-{% endif %}
-</div>
+		{% if not form %}
+			<p>Successfully logged out.  <a href="{% url 'django.contrib.auth.views.login' %}">Login again?</a></p>
+		{% else %}
+			<form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+				{% csrf_token %}
+				<div>
+					<div>
+						<sub>{{ form.username.label_tag }}</sub>
+						{{ form.username }}
+						</div>
+					<div>
+						<sub>{{ form.password.label_tag }}</sub>
+						{{ form.password }}
+					</div>
+				</div>
+				<input type="submit" value="login" />
+				<input type="hidden" name="next" value="{{ next }}" />
+			</form>
+		{% endif %}
+	</div>
 {% endblock %}

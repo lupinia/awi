@@ -1,11 +1,15 @@
 {% extends "base.html" %}
-{% block title %}{{block.super}} - File Not Found (404){% endblock %}
+{% block title %}{{block.super}} - Access Denied (403){% endblock %}
 
 {% block content_left %}
 	<div class="transbox errorpage">
-		<h3>I'm Sorry...I Tried To Find It, I Really Did!  (404)</h3>
-		<p class="errorpage_image"><img src="{{STATIC_PREFIX}}images/scared_fluttershy.gif" alt="Scared Fluttershy" title="Fluttershy is really sorry we couldn't find your file!" /></p>
-		<p>I'm so sorry!  I tried to find "{{old_url}}", but I just don't know where it is.  I looked everywhere!  Would you like to <a href="/">return home</a>?  Please don't be mad!</p>
+		<h3>And Just Where Do You Think You're Going?  (403)</h3>
+		<p class="errorpage_image"><img src="{{STATIC_PREFIX}}images/angry_fluttershy.gif" alt="Angry Fluttershy" title="How dare you intrude on Fluttershy's privacy!" /></p>
+		<p>Hold it right there!  What do you think you're doing?  You think you can just barge in and do whatever?  You should really be more considerate of other ponies' privacy.  Just because you know the name of "{{bad_url}}", doesn't mean you're supposed to look at it.  You should be ashamed of yourself.</p>
+		<p>Now I want you to <a href="/">go home</a> and think about what you've done.</p>
+		<p><sub>Umm, I mean, if you're not too busy or anything.</sub></p>
+		<p><sub><em>Did you see that?  I was so assertive!  I'm so proud of myself I could scream!</em></sub></p>
+		<p><sub><em>*squeak!*</em></sub></p>
 	</div>
 {% endblock %}
 
@@ -27,14 +31,14 @@
 		<div class="transbox right_sidebar_section">
 			<h3>Error Details</h3>
 			<p><em>
-				HTTP 404<br />
-				File Not Found<br />
+				HTTP 403<br />
+				Forbidden<br />
 				seneca.lupinia.net<br />
 				(Django)
 			</em></p>
 			<p><em><sub>
 				<strong>Request:</strong><br />
-				{{old_url}}
+				{{bad_url}}
 			</sub></em></p>
 		</div>
 

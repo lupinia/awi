@@ -3,7 +3,7 @@
 
 {% if 'sidebar' in blockname %}
 	{% for page in leaves %}
-	<a href="/" title="{{page.title}} - {{page.body_summary}}" class="sidebar_link">
+	<a href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.title}} - {{page.body_summary}}" class="sidebar_link {% if page.featured and highlight_featured %}featured{% elif page.mature %}mature{% endif %}">
 		<span class="sidebar_link_title">{{page.title}}</span>
 	</a>
 	{% empty %}
@@ -14,8 +14,8 @@
 <div class="cms_links_large category_two_columns">
 	{% for page in leaves %}
 		<div class="cms_link">
-			<a href="/" title="{{page.title}}" {% if page.featured %}class="featured"{% elif page.mature %}class="mature"{% endif %}>
-				{% if page.featured %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured.png" alt="Featured" title="Featured" /></span>
+			<a href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.title}}" {% if page.featured and highlight_featured %}class="featured"{% elif page.mature %}class="mature"{% endif %}>
+				{% if page.featured and highlight_featured %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured.png" alt="Featured" title="Featured" /></span>
 				{% elif page.mature %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
 				
 				<span class="article_summary_head"><span class="article_summary_title">{{page.title}}</span><br /> 
@@ -30,4 +30,3 @@
 <br style="clear:left;" />
 </div>
 {% endif %}
-{% comment %}{% url 'page_htm' page.cat.cached_url page.slug %}{% endcomment %}

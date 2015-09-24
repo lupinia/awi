@@ -218,6 +218,7 @@ class category_list(leaf_parent, generic.DetailView):
 		#	For example, /photo/?g2_itemId=2289
 		#	All other contingencies (full ".php?g2_itemId=" URL, shortened .g2 URL) are handled elsewhere.
 		if 'g2_itemId' in self.request.META.get('QUERY_STRING',''):
+			from django.http import Http404
 			raise Http404
 		else:
 			return super(category_list,self).dispatch(*args, **kwargs)

@@ -13,7 +13,7 @@
 	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{% now 'Y' as curyear %} by {% include 'authorname.txt' %}" />
 
 	<title>{% block title %}Lupinia Studios{% endblock %}</title>
-	<link href="http://private.lupinia.net/CSS/showcase.css" type="text/css" rel="stylesheet" id="main_css" /><!-- Temporary -->
+	<link href="/devCSS/showcase.css" type="text/css" rel="stylesheet" id="main_css" /><!-- Temporary -->
 </head>
 
 {% block bg_image %}{% include 'awi_bg/bg_image.html' with tag="main" %}{% endblock %}
@@ -34,9 +34,7 @@
 			<a href="/about/"><img id="sig_image" src="{{ STATIC_PREFIX }}images/text/name-{% if site.name == 'Furry' %}ff{%else%}fr{%endif%}.png" title="By Natasha {% if site.name == 'Furry' %}Softpaw{%else%}L.{%endif%}" alt="By Natasha {% if site.name == 'Furry' %}Softpaw{%else%}L.{%endif%}" /></a>
 			
 			<div id="social_icons">
-				{% if site.name == 'Furry' %}<a href="http://www.furaffinity.net/user/softpaw"><img src="{{ STATIC_PREFIX }}images/icons/furaffinity.png" alt="Furaffinity" title="Furaffinity" /></a> {% endif %}
 				<a href="http://twitter.com/lupinia"><img src="{{ STATIC_PREFIX }}images/icons/twitter_icon.gif" alt="Twitter" title="Twitter" /></a> 
-				<a href="http://www.flickr.com/photos/lupiniastudios/"><img src="{{ STATIC_PREFIX }}images/icons/flickr.png" alt="Flickr" title="Flickr" /></a> 
 				<a href="http://500px.com/lupinia"><img src="{{ STATIC_PREFIX }}images/icons/500px.png" alt="500px" title="500px" /></a> 
 			</div>
 		</div>
