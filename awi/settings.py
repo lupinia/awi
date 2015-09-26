@@ -22,6 +22,7 @@ MEDIA_URL = 'http://cdn.fur.vc/awi/'
 STATIC_URL = 'http://cdn.fur.vc/awi-hagata/'
 #	Moved STATICFILES_STORAGE and DEFAULT_FILE_STORAGE to settings_apps because they're used in other apps' settings
 
+SECURE_CONTENT_TYPE_NOSNIFF = True
 LOGIN_REDIRECT_URL='/'
 ROOT_URLCONF = 'awi.urls'
 
@@ -83,8 +84,7 @@ TEMPLATES = [{
 			#	Might be looking for a new alternative.
 			
 			'django.template.loaders.filesystem.Loader',
-			'django.template.loaders.app_directories.Loader',
-			'admin_tools.template_loaders.Loader',
+			'django.template.loaders.cached.Loader', ['django.template.loaders.app_directories.Loader','admin_tools.template_loaders.Loader',]
 		],
 	},
 },]
@@ -106,8 +106,9 @@ MIDDLEWARE_CLASSES = (
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
-	# Uncomment the next line for simple clickjacking protection:
+	'django.middleware.security.SecurityMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 	
 	#'django.middleware.cache.FetchFromCacheMiddleware',
