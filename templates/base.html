@@ -31,7 +31,7 @@
 
 		<div id="header_logo" class="transbox">
 			<a href="/"><img src="{{ STATIC_PREFIX }}images/text/title.png" title="Lupinia Studios (Beta)" alt="Lupinia Studios (Beta)" /><br /></a>
-			<a href="/about/"><img id="sig_image" src="{{ STATIC_PREFIX }}images/text/name-{% if site.name == 'Furry' %}ff{%else%}fr{%endif%}.png" title="By Natasha {% if site.name == 'Furry' %}Softpaw{%else%}L.{%endif%}" alt="By Natasha {% if site.name == 'Furry' %}Softpaw{%else%}L.{%endif%}" /></a>
+			<a href="/about/"><img id="sig_image" src="{{ STATIC_PREFIX }}images/text/name-{% if site.name == 'Furry' %}ff{%else%}fr{%endif%}.png" title="By {% include 'authorname.txt' %}" alt="By {% include 'authorname.txt' %}" /></a>
 			
 			<div id="social_icons">
 				<a href="http://twitter.com/lupinia"><img src="{{ STATIC_PREFIX }}images/icons/twitter_icon.gif" alt="Twitter" title="Twitter" /></a> 
@@ -68,7 +68,6 @@
 			<a href="/writing/">Writing</a> &bull; 
 			<a href="/cherokee/">Cherokee Language &amp; Culture</a> &bull; 
 			<a href="/personal/">Personal</a> &bull; 
-			<a href="/furry/">Furry</a> &bull; 
 			<a href="/contact/">Contact</a><br />
 		
 			<span class="lower">

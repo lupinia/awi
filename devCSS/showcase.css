@@ -1,9 +1,9 @@
 @charset "utf-8";
 /*
-Lupinia Studios
-Main Theme - "Showcase"
-By Natasha Lockhart
-www.lupinia.net
+	Lupinia Studios
+	Main Theme - "Showcase"
+	By Natasha L.
+	www.lupinia.net | github.com/lupinia
 */
 
 /*	Large screens (height)	*/
@@ -242,7 +242,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 #fulltext_page_title_extra {
-	width:150px;
+	width:170px;
 	text-align:right;
 	margin:2px;
 	position:absolute;

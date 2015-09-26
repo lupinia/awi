@@ -6,7 +6,7 @@
 #	URL map for entire site
 #	=================
 
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
 from django.contrib import admin
 from django.conf import settings
@@ -21,7 +21,7 @@ handler404 = not_found
 handler500 = system_error
 handler403 = denied_error
 
-urlpatterns = patterns('',
+urlpatterns = [
 	#	System/Core
 	url(r'^admin/', include(admin.site.urls)),
 	url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -45,16 +45,16 @@ urlpatterns = patterns('',
 	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.md',deerbooks_views.single_page_md.as_view(),name='page_md'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.tex',deerbooks_views.single_page_tex.as_view(),name='page_tex'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/$',deertrees_views.category_list.as_view(),name='category'),
-)
+]
 
 #	django-debug-toolbar
 #	This varies a bit from the documentation, because these need to come before any wildcard URL maps
 if settings.DEBUG:
 	import debug_toolbar
-	urlpatterns_debug = patterns('',
+	urlpatterns_debug = [
 		url(r'^__debug__/', include(debug_toolbar.urls)),
 		url(r'^intentional500/', system_error, name='intentional500'),
 		url(r'^intentional404/', not_found, name='intentional404'),
 		url(r'^intentional403/', denied_error, name='intentional403'),
-	)
+	]
 	urlpatterns = urlpatterns_debug + urlpatterns

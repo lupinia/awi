@@ -39,6 +39,7 @@ Third-Party Apps/Modules Used
 - **[Django Processinfo](https://github.com/jedie/django-processinfo)**:  Basic server stats/health report.
 - **[Django S3 Folder Storage](https://github.com/jamstooks/django-s3-folder-storage)**:  Adds Amazon S3 as a file storage provider, with the ability to use folders within the same bucket (instead of separate buckets for everything).
 - **[Django Summernote](https://github.com/summernote/django-summernote)**:  WYSIWYG editor.
+- **[HTML2Text](https://github.com/Alir3z4/html2text)**:  Library for converting HTML to Markdown.
 
 Infrastructure
 --------------

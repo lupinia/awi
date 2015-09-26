@@ -2,6 +2,7 @@
 awi/settings_local.py
 awi/fur_*.py
 *.svn
+HISTORY.md
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
