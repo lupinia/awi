@@ -1,22 +1,9 @@
-"""
-This file was generated with the customdashboard management command, it
-contains the two classes for the main dashboard and app index dashboard.
-You can customize these classes as you want.
-
-To activate your index dashboard add the following to your settings.py::
-    ADMIN_TOOLS_INDEX_DASHBOARD = 'awi-dev.dashboard.CustomIndexDashboard'
-
-And to activate the app index dashboard::
-    ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'awi-dev.dashboard.CustomAppIndexDashboard'
-"""
-
-#	Lupinia Studios
+﻿#	Lupinia Studios
 #	By Natasha L.
 #	www.lupinia.net | github.com/lupinia
 #	
 #	=================
-#	Custom dashboard for admin_tools module
-#	TODO:  Merge admin_tools.py and admin_dashboard.py
+#	Custom dashboards and menu for admin_tools module
 #	=================
 
 from django.utils.translation import ugettext_lazy as _
@@ -24,6 +11,64 @@ from django.core.urlresolvers import reverse
 
 from admin_tools.dashboard import modules, Dashboard, AppIndexDashboard
 from admin_tools.utils import get_admin_site_name
+from admin_tools.menu import items, Menu
+
+itemlist_content = (
+	'deerbooks.*',
+	'deertrees.*',
+	'deerconnect.models.link',
+	'django_summernote.*',
+)
+
+itemlist_system = (
+	'django.contrib.*',
+	'awi_error.*',
+	'awi_bg.models.background',
+	'awi_access.*',
+	'deerfind.models.pointer',
+	'deerconnect.models.contact_link',
+)
+
+itemlist_misc_exclude = (
+	'django.contrib.*',
+	'django_processinfo.*',
+	'django_summernote.*',
+	'awi_error.*',
+	'awi_bg.*',
+	'awi_access.*',
+	'deerfind.*',
+	'deerbooks.*',
+	'deertrees.*',
+	'deerconnect.*',
+)
+
+class CustomMenu(Menu):
+    def __init__(self, **kwargs):
+        Menu.__init__(self, **kwargs)
+        self.children += [
+            items.MenuItem(u' ', '/'),
+            items.MenuItem(_('Dashboard'), reverse('admin:index')),
+            items.Bookmarks(),
+            items.AppList(
+                _('Content'),
+                models=itemlist_content,
+            ),
+            items.AppList(
+                _('System'),
+                models=itemlist_system,
+            ),
+            items.AppList(
+                _('Miscellaneous'),
+                exclude=itemlist_misc_exclude,
+            ),
+            items.MenuItem(_('Server Health'), reverse('admin:django_processinfo_processinfo_changelist')),
+        ]
+
+    def init_with_context(self, context):
+        """
+        Use this method if you need to access the request context.
+        """
+        return super(CustomMenu, self).init_with_context(context)
 
 
 class CustomIndexDashboard(Dashboard):
@@ -50,20 +95,19 @@ class CustomIndexDashboard(Dashboard):
         # append an app list module for "Applications"
         self.children.append(modules.AppList(
             _('Content'),
-            models=('deerbooks.*','deertrees.*','django_summernote.*',),
+            models=itemlist_content,
         ))
 
         # append an app list module for "Administration"
         self.children.append(modules.AppList(
             _('Miscellaneous'),
-            exclude=('django.contrib.*','awi_error.*','awi_bg.*','awi_access.*','deerfind.*','django_processinfo.*',
-                     'deerbooks.*','deertrees.*','django_summernote.*',),
+            exclude=itemlist_misc_exclude,
         ))
 
         # append an app list module for "Administration"
         self.children.append(modules.AppList(
             _('System Management'),
-            models=('django.contrib.*','awi_error.*','awi_bg.models.background','awi_access.*','deerfind.models.pointer',),
+            models=itemlist_system,
         ))
 
         # append a recent actions module

@@ -17,9 +17,9 @@ DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 
 #	django_admin_tools
-ADMIN_TOOLS_INDEX_DASHBOARD = 'awi.admin_dashboard.CustomIndexDashboard'
-ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'awi.admin_dashboard.CustomAppIndexDashboard'
-ADMIN_TOOLS_MENU = 'awi.admin_menu.CustomMenu'
+ADMIN_TOOLS_INDEX_DASHBOARD = 'awi.admin_tools_custom.CustomIndexDashboard'
+ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'awi.admin_tools_custom.CustomAppIndexDashboard'
+ADMIN_TOOLS_MENU = 'awi.admin_tools_custom.CustomMenu'
 
 
 #	s3_folder_storage

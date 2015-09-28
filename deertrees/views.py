@@ -13,6 +13,7 @@ from itertools import cycle
 
 from deertrees.models import category, tag, leaf
 from awi_access.models import access_query
+from deerconnect.models import contact_link
 
 class leaf_parent():
 	template_name = 'deertrees/leaves.html'
@@ -87,7 +88,8 @@ class leaf_parent():
 			if child_cats:
 				blocks['category'] = child_cats
 			
-			contact_links = parent.contact_link_set.all().filter(access_query(self.request)).order_by('-timestamp_mod')
+			ancestors = parent.get_ancestors(include_self=True)
+			contact_links = contact_link.objects.filter(cat__in=ancestors).filter(access_query(self.request)).order_by('-timestamp_mod')
 			if contact_links:
 				blocks['contact_link'] = contact_links
 		
