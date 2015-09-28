@@ -91,20 +91,19 @@ SUMMERNOTE_CONFIG = {
 #				title: Displayable title, OR an image URL relative to {{static}},
 #				template: Path to importable template,
 #				sidebar: Hierarchy for sidebar,
-#				main: Hierarchy for main content area, }
+#				main: Hierarchy for main content area,
+#				is_leaf: Boolean; if False, this entry is data for a block that isn't a leaf, }
 DEERTREES_BLOCKS = {
-	'page': {'title':'Writing', 'template':'deerbooks/leaf_page.html', 'sidebar':3, 'main':1},
-	'special_feature': {'title':'Special Features', 'template':'deertrees/leaf_feature.html', 'sidebar':1},
-	'category': {'title':'Subcategories', 'template':'deertrees/leaf_subcat.html', 'sidebar':2, 'main':2},
+	'page': {'title':'Writing', 'template':'deerbooks/leaf_page.html', 'sidebar':3, 'main':1, 'is_leaf':True},
+	'link': {'title':'Links', 'template':'deerconnect/leaf_link.html', 'sidebar':4, 'is_leaf':True},
+	'special_feature': {'title':'Special Features', 'template':'deertrees/leaf_feature.html', 'sidebar':1, 'is_leaf':True},
+	
+	'contact_link': {'title':'Contact Info', 'template':'deerconnect/leaf_contact_link.html', 'sidebar':5, 'is_leaf':False},
+	'category': {'title':'Subcategories', 'template':'deertrees/leaf_subcat.html', 'sidebar':2, 'main':2, 'is_leaf':False},
 }
 
 #	Planned; roughly in order of content volume.
 #DEERTREES_BLOCKS = {
 #	'photo' : {'template':'sunset/catlistphoto_%(type).html', 'main':1}
-#	'page' : {'template':'deerbooks/catlistpage_%(type).html', 'sidebar':4, 'main':3}
 #	'menu_item' : {'template':'deerdine/menuitem_%(type).html', 'main':2}
-#	'link' : {'template':'deerguide/link_%(type).html', 'sidebar':5}
-#	'contact_link' : {'template':'deerguide/contactlink_%(type).html', 'sidebar':1}
-#	'special_feature' : {'template':'deertrees/feature_%(type).html', 'sidebar':3}
-#	'category' : {'template':'deertrees/childcat_%(type).html', 'sidebar':2, 'main':4}
 #}

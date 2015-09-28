@@ -16,6 +16,7 @@ from awi_access.models import access_control
 class access_admin(ModelAdmin):
 	fieldsets = [('Security Options',{'fields': (('published','featured','mature','sites','security'),),},),]
 	list_filter=['published','featured','mature','sites','security','owner']
+	list_display = ('published','featured','mature','security',)
 	#formfield_overrides = {ManyToManyField: {'widget':CheckboxSelectMultiple,},}
 	
 	def save_model(self, request, obj, form, change):

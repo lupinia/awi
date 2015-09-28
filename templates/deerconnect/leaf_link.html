@@ -1,0 +1,43 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+{% if 'sidebar' in blockname %}
+	{% for link in leaves %}
+	<a href="{{link.url}}" title="{{link.label}} - {{link.desc}}" class="sidebar_link {% if link.featured and highlight_featured %}featured{% elif link.mature %}mature{% endif %}">
+		<span class="sidebar_link_title">{{link.label}}</span>
+		{% if link.involved %}
+			<br />
+			<span class="sidebar_link_subtext">Natasha's Project</span>
+		{% endif %}
+		{% if link.featured %}
+			<br />
+			<span class="sidebar_link_subtext">Featured</span>
+		{% elif link.mature %}
+			<br />
+			<span class="sidebar_link_subtext">Mature Content</span>
+		{% endif %}
+	</a>
+	{% empty %}
+		<div><sub><em>No Links</em></sub></div>
+	{% endfor %}
+	
+{% elif 'main' in blockname %}
+<div class="cms_links_large category_two_columns">
+	{% for link in leaves %}
+		<div class="cms_link">
+			<a href="{{link.url}}" title="{{link.label}}" {% if link.featured and highlight_featured %}class="featured"{% elif link.mature %}class="mature"{% endif %}>
+				{% if link.featured and highlight_featured %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured.png" alt="Featured" title="Featured" /></span>
+				{% elif link.mature %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
+				
+				<span class="article_summary_head"><span class="article_summary_title">{{link.label}}</span><br /> 
+					{{link.display_times.0.label}}: {{link.display_times.0.timestamp}}
+				</span>
+				<span class="article_summary_body">{{link.desc}}</span>
+			</a>
+		</div>
+	{% empty %}
+		<div><sub><em>No Links</em></sub></div>
+	{% endfor %}
+<br style="clear:left;" />
+</div>
+{% endif %}

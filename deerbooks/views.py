@@ -29,7 +29,7 @@ class single_page(generic.DetailView):
 				context['error'] = canview[1]
 		else:
 			if context['page'].book_title:
-				context['toc'] = context['page'].book_title.page_set.all().order_by('page__book_order')
+				context['toc'] = context['page'].book_title.page_set.all().order_by('book_order')
 			
 			if context['page'].docfiles:
 				context['docfiles'] = context['page'].docfiles.all().order_by('filetype')
@@ -41,9 +41,14 @@ class single_page_htm(single_page):
 
 class single_page_txt(single_page):
 	template_name='deerbooks/page.txt'
+	content_type = 'text/plain'
 
 class single_page_md(single_page):
 	template_name='deerbooks/page.md'
-
+	#content_type = 'text/markdown'			#	Temporarily switched to plain text MIME type for easier testing.
+	content_type = 'text/plain'
+	
 class single_page_tex(single_page):
 	template_name='deerbooks/page.tex'
+	#content_type = 'application/x-tex'		#	Temporarily switched to plain text MIME type for easier testing.
+	content_type = 'text/plain'

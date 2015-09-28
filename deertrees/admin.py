@@ -23,7 +23,7 @@ class cat_admin(DjangoMpttAdmin,SummernoteModelAdmin,access_admin):
 	] + access_admin.fieldsets
 	list_filter = access_admin.list_filter + ['background','content_priority','sitemap_include']
 	
-	list_display = ('title','slug','parent','cached_url')
+	list_display = ('title','slug','parent','cached_url','sitemap_include','content_priority','background') + access_admin.list_display
 	prepopulated_fields={'slug':('title',)}
 	search_fields = ('title','slug','parent','cached_url','desc')
 	
@@ -45,20 +45,22 @@ class tag_admin(SummernoteModelAdmin):
 
 class leaf_admin(access_admin):
 	list_select_related = True
-	list_filter = access_admin.list_filter + ['cat',]
+	list_filter = access_admin.list_filter + ['timestamp_post','timestamp_mod','cat','tags',]
+	list_display = ('cat','timestamp_post','timestamp_mod',) + access_admin.list_display
 	fieldsets = [
 		('Time Options',{'fields': (('timestamp_post','timestamp_mod','timedisp'),),},),
 		('Categorization',{'fields': ('cat','tags'),},),
 	] + access_admin.fieldsets
 	
 	readonly_fields = ['timestamp_mod',]
-	search_fields = ['cat','tags']
+	search_fields = ['cat__title','cat__slug','tags__title','tags__slug']
 	filter_horizontal = ['tags',]
 
 class special_feature_admin(leaf_admin):
 	search_fields = ['url','title','desc'] + leaf_admin.search_fields
 	fieldsets = [(None,{'fields':(('title','url'),'desc'),},),] + leaf_admin.fieldsets
 	prepopulated_fields={'url':('title',)}
+	list_display = ('title','url') + leaf_admin.list_display
 	
 	def view_on_site(self, obj):
 		return '/' + obj.cat.cached_url + '/' + obj.url

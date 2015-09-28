@@ -56,6 +56,7 @@ INSTALLED_APPS = (
 	#	My Apps - Primary Content Objects
 	'deertrees',	# Categories
 	'deerbooks',	# Text-based content
+	'deerconnect',	# Link directory and contact form/links
 	
 	#	My Apps - Other
 	'deerhealth',	# Prescription Tracker
@@ -77,7 +78,8 @@ TEMPLATES = [{
 			
 			#	Non-standard ones
 			'django.core.context_processors.request',
-			'awi.context_processors.site'
+			'awi.context_processors.site',
+			'deerconnect.context_processors.social_icons',
 		],
 		'loaders' : [
 			#	It's really stupid that I have to add a custom template loader for django-admin-tools.

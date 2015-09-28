@@ -1,1 +1,1 @@
-{% if site.name == 'Furry' %}Meadow Whisper (Natasha L.){%else%}Natasha L.{%endif%}
+{% if type == 'image' %}{% if site.name == 'Furry' %}ff{%else%}fr{%endif%}{%else%}{% if site.name == 'Furry' %}Meadow Whisper (Natasha L.){%else%}Natasha L.{%endif%}{%endif%}

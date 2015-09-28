@@ -12,6 +12,7 @@ from collections import OrderedDict
 from itertools import cycle
 
 from deertrees.models import category, tag, leaf
+from awi_access.models import access_query
 
 class leaf_parent():
 	template_name = 'deertrees/leaves.html'
@@ -33,7 +34,6 @@ class leaf_parent():
 		elif parent_type == 'tag' and parent:
 			leaf_filters['tags'] = parent
 		
-		from awi_access.models import access_query
 		leaves = leaf.objects.filter(**leaf_filters).filter(access_query(self.request)).order_by(*leaf_ordering).select_related()
 		
 		if leaves:
@@ -68,10 +68,12 @@ class leaf_parent():
 		returned_data = [False,{}]
 		
 		#	Build the list of blocks to assign
-		blockname_cycle = cycle(['sidebar','main_half'])
-		blocks_to_assign = ['sidebar','sidebar','main_full_2']
-		if parent and parent.content_priority != 'desc':
-			blocks_to_assign.insert(0,'main_full_1')
+		if parent_type == 'homepage':
+			blocks_to_assign = ['main_half','sidebar','sidebar','main_half']
+		else:
+			blocks_to_assign = ['sidebar','sidebar','main_full_2']
+			if parent and parent.content_priority != 'desc':
+				blocks_to_assign.insert(0,'main_full_1')
 		
 		#	Loop the known-existing content types, to get a list.  We'll deal with priority later.
 		for type, settings_dict in blocks_map.iteritems():
@@ -79,11 +81,15 @@ class leaf_parent():
 			blocks_count[type] = 0
 		
 		#	Content time!
-		#	First, check for subcategories
+		#	First, check for subcategories and contact links
 		if parent_type == 'category' and parent:
-			child_cats = parent.children.all().order_by('title')
+			child_cats = parent.children.all().filter(access_query(self.request)).order_by('title')
 			if child_cats:
 				blocks['category'] = child_cats
+			
+			contact_links = parent.contact_link_set.all().filter(access_query(self.request)).order_by('-timestamp_mod')
+			if contact_links:
+				blocks['contact_link'] = contact_links
 		
 		#	Now get items in this category
 		leaves = self.get_leaves(parent,parent_type)
@@ -93,12 +99,12 @@ class leaf_parent():
 			#	3.  Once that check is successful, put it in the correct block dictionary
 			for leaf_item in leaves:
 				for type, settings in blocks_map.iteritems():
-					leaf_assigned = False
-					if blocks_count[type] <= 12:
-						leaf_content = getattr(leaf_item,type,None)
-						if leaf_content:
-							blocks[type].append(leaf_content)
-							blocks_count[type] += 1
+					if settings['is_leaf']:
+						if blocks_count[type] <= 12:
+							leaf_content = getattr(leaf_item,type,None)
+							if leaf_content:
+								blocks[type].append(leaf_content)
+								blocks_count[type] += 1
 		
 		#	Clean up empty elements
 		empty_keys = [k for k,v in blocks.iteritems() if not v]
@@ -127,10 +133,10 @@ class leaf_parent():
 				
 				#	Now, let's build a priority list per region
 				for type, content in blocks.iteritems():
-					if blocks_map[type].get('sidebar',False):
-						order_sidebar[str(blocks_map[type]['sidebar'])] = {'type':type,'title':blocks_map[type]['title'],'data':content,'template':blocks_map[type]['template']}
 					if blocks_map[type].get('main',False):
 						order_main[str(blocks_map[type]['main'])] = {'type':type,'title':blocks_map[type]['title'],'data':content,'template':blocks_map[type]['template']}
+					if blocks_map[type].get('sidebar',False):
+						order_sidebar[str(blocks_map[type]['sidebar'])] = {'type':type,'title':blocks_map[type]['title'],'data':content,'template':blocks_map[type]['template']}
 				
 				#	And now put them in order
 				if order_main:
@@ -145,7 +151,13 @@ class leaf_parent():
 					if 'main' in blockname and blockorder_main_iter:
 						blockdata = next(blockorder_main_iter,False)
 						if blockdata and blockdata['type'] not in assigned_to_blocks:
-							returned_data[1][blockname] = blockdata
+							if not returned_data[1].get('main_half',False):
+								returned_data[1]['main_half'] = []
+								
+							if blockname == 'main_half':
+								returned_data[1]['main_half'].append(blockdata)
+							else:
+								returned_data[1][blockname] = blockdata
 							assigned_to_blocks.append(blockdata['type'])
 					elif 'sidebar' in blockname and blockorder_sidebar_iter:
 						blockdata = next(blockorder_sidebar_iter,False)
@@ -225,7 +237,6 @@ class category_list(leaf_parent, generic.DetailView):
 	
 	def get_context_data(self, **kwargs):
 		context = super(category_list,self).get_context_data(**kwargs)
-		context['highlight_featured'] = self.highlight_featured
 		
 		blocks = self.assemble_blocks(context['object'],'category')
 		if blocks[0]:
@@ -233,6 +244,7 @@ class category_list(leaf_parent, generic.DetailView):
 		else:
 			context['error'] = 'cat_empty'
 		
+		context['highlight_featured'] = self.highlight_featured
 		return context
 
 class tag_list(leaf_parent, generic.DetailView):

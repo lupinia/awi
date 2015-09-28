@@ -24,12 +24,12 @@ class page_admin(SummernoteModelAdmin,leaf_admin):
 		('Manage Files',{'fields':('docfiles',),},),
 	]
 	prepopulated_fields={'slug':('title',)}
-	list_filter = leaf_admin.list_filter + ['book_title','timestamp_post','timestamp_mod','export']
-	list_display = ('title','cat','book_title','timestamp_post','timestamp_mod','export','published','featured','mature','security',)
+	list_filter = leaf_admin.list_filter + ['book_title','export']
+	list_display = ('title','book_title','export',) + leaf_admin.list_display
 	filter_horizontal = ['docfiles',] + leaf_admin.filter_horizontal
 	
-	#def view_on_site(self, obj):
-	#	return reverse('category',kwargs={'cached_url':obj.cached_url,})
+	def view_on_site(self, obj):
+		return reverse('page_htm',kwargs={'cached_url':obj.cat.cached_url, 'slug':obj.slug,})
 
 admin.site.register(page,page_admin)
 admin.site.register(toc)
