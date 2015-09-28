@@ -1,8 +1,9 @@
+{% load static %}
 {% if header_icons %}
-	<div id="social_icons">
+	<div id="social_icons" class="hovericons16">
 		{% for link in header_icons %}
 			{% if link.icon %}
-				<a href="{{link.url}}"><img src="{{link.icon.url}}" alt="{{link.label}} - {{link.name}}" title="{{link.label}} - {{link.name}}" /></a>
+				<a href="{{link.url}}"><img src="{{MEDIA_URL}}{{link.icon.name}}" alt="{{link.label}} - {{link.name}}" title="{{link.label}} - {{link.name}}" /></a>
 			{% endif %}
 		{% endfor %}
 	</div>

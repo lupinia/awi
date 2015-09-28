@@ -120,15 +120,6 @@ a:hover, a:active {
 	margin-top:0px;
 }
 
-#social_icons { 
-display: inline-block;
-float: right;
-margin: 0px;
-margin-right:15px;
-margin-top:2px;
-padding: 0px;
-}
-
 .transbox {
 	box-shadow:-1px 1px 3px 1px #2a2038;
 	background:rgba(42, 24, 60, 0.85);
@@ -457,15 +448,51 @@ header nav a:link, header nav a:visited, header nav a:hover, header nav a:active
 	float:left;
 }
 
-.cms_icons a:link, .cms_icons a:visited, .cms_icons a:hover, .cms_icons a:active  {
+#social_icons {
+	display: inline-block;
+	float: right;
+	margin: 0px;
+	margin-right:15px;
+	margin-top:2px;
+	padding: 0px;
+}
+
+.page_icons {
+	text-align:left;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:5px;
+	margin-bottom:5px;
+	width:130px;
+	line-height:28px;
+}
+
+
+.hovericons16 a {
+	width:16px !important;
+	height:16px !important;
+	display:inline-block;
+	padding:3px;
+	border-radius:3px;
+}
+
+.hovericons16 a:link, .hovericons16 a:visited  { background:none; }
+.hovericons16 a:hover, .hovericons16 a:active, .hovericons16 a:focus { background:#5b4a71; }
+
+.hovericons32 a {
 	width:32px !important;
 	height:32px !important;
 	display:inline-block;
+	margin:1px;
+	padding:3px;
+	border-radius:5px;
 }
 
-.cms_icons {
-	
-}
+.hovericons32 a:link, .hovericons32 a:visited  { background:#5b4a71; }
+.hovericons32 a:hover, .hovericons32 a:active, .hovericons32 a:focus { background:#5b4aFF; }	/*	Default to blue	*/
+
+.hovericons32 a.grey:hover, .hovericons32 a.grey:active, .hovericons32 a.grey:focus { background:#5b6364; }
+.hovericons32 a.red:hover, .hovericons32 a.red:active, .hovericons32 a.red:focus { background:#c0283a; }
 
 footer {
 	width:100%;

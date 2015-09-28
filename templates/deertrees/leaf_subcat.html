@@ -2,6 +2,13 @@
 	{% for subcat in leaves %}
 	<a href="{% url 'category' subcat.cached_url %}" title="{{subcat.title}} - {{subcat.summary}}" class="sidebar_link">
 		<span class="sidebar_link_title">{{subcat.title}}</span>
+		{% if subcat.featured and highlight_featured %}
+			<br />
+			<span class="sidebar_link_subtext">Featured</span>
+		{% elif subcat.mature %}
+			<br />
+			<span class="sidebar_link_subtext">Mature Content</span>
+		{% endif %}
 	</a>
 	{% empty %}
 		<div><sub><em>No Subcategories</em></sub></div>

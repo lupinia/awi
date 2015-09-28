@@ -2,6 +2,13 @@
 	{% for link in leaves %}
 		<a href="/{{link.cat.cached_url}}/{{link.url}}" title="{{link.title}} - {{link.desc}}" class="sidebar_link">
 			<span class="sidebar_link_title">{{link.title}}</span>
+		{% if link.featured and highlight_featured %}
+			<br />
+			<span class="sidebar_link_subtext">Featured</span>
+		{% elif link.mature %}
+			<br />
+			<span class="sidebar_link_subtext">Mature Content</span>
+		{% endif %}
 		</a>
 	{% empty %}
 		<div><sub><em>No Links</em></sub></div>

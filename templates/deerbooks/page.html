@@ -8,10 +8,11 @@
 			<div id="fulltext_page_title">
 				{% if user.is_superuser %}
 					<div id="fulltext_page_title_extra">
-						<img src="http://cdn.fur.vc/icons/{{page.featured|yesno:',un'}}feature.gif" alt="{{page.featured|yesno:',Not '}}Featured" title="{{page.featured|yesno:',Not '}}Featured" /> 
-						<img src="http://cdn.fur.vc/icons/{{page.published|yesno:'public,private'}}.gif" alt="{{page.published|yesno:',Not '}}Published" title="{{page.published|yesno:',Not '}}Published" /> 
-						<a href="{% url 'admin:deerbooks_page_change' page.pk %}"><img src="http://cdn.fur.vc/icons/edit.png" alt="Edit" title="Edit" /></a>
-						<br />
+						<div class="hovericons16">
+							<img src="http://cdn.fur.vc/icons/{{page.featured|yesno:',un'}}feature.gif" alt="{{page.featured|yesno:',Not '}}Featured" title="{{page.featured|yesno:',Not '}}Featured" /> 
+							<img src="http://cdn.fur.vc/icons/{{page.published|yesno:'public,private'}}.gif" alt="{{page.published|yesno:',Not '}}Published" title="{{page.published|yesno:',Not '}}Published" /> 
+							<a href="{% url 'admin:deerbooks_page_change' page.pk %}"><img src="http://cdn.fur.vc/icons/edit.png" alt="Edit" title="Edit" /></a>
+						</div>
 						<span class="secondary_time">{{page.display_times.1.label}}:  {{page.display_times.1.timestamp|date:'F j, Y  G:i:s'}}</span>
 					</div>
 				{% endif %}
@@ -59,38 +60,29 @@
 				</div>
 			{% endif %}
 			
-			{% comment %}<!-- Exported document files -->{% endcomment %}
-			{% if docfiles %}
-				<div class="transbox right_sidebar_section">
-					<h3>Download/Print</h3>
-					<p style="text-align:center">
-						{% for file in docfiles %}
-							<a href="{{MEDIA_URL}}{{file.filename}}"><img src="http://cdn.fur.vc/icons/{{file.filetype}}.gif" alt="{{file.get_filetype_display}}" title="{{file.get_filetype_display}}" /></a>
-						{% endfor %}
-					</p>
-				</div>
-			{% endif %}
-			
-			{% comment %}<!-- Alternate views -->{% endcomment %}
+			{% comment %}<!-- Alternate views and exported document files -->{% endcomment %}
 			<div class="transbox right_sidebar_section">
-				<h3>Alternative Formats</h3>
-				<p style="text-align:center">
-					<a href="{% url 'page_txt' page.cat.cached_url page.slug %}"><img src="http://cdn.fur.vc/icons/text.gif" alt="Plain Text" title="Plain Text" /></a>
-					<a href="{% url 'page_md' page.cat.cached_url page.slug %}"><img src="http://cdn.fur.vc/icons/text.gif" alt="Markdown" title="Markdown" /></a>
-					{% if user.is_superuser %}<a href="{% url 'page_tex' page.cat.cached_url page.slug %}"><img src="http://cdn.fur.vc/icons/tex.png" alt="LaTeX Source (.tex)" title="LaTeX Source (.tex)" /></a>{% endif %}
-				</p>
+				<h3>Download/Print</h3>
+				<div class="page_icons hovericons32">
+					<a href="{% url 'page_txt' page.cat.cached_url page.slug %}"><img src="{{ STATIC_PREFIX }}images/icons/page-txt.png" alt="Plain Text" title="Plain Text" /></a>
+					<a href="{% url 'page_md' page.cat.cached_url page.slug %}"><img src="{{ STATIC_PREFIX }}images/icons/page-md.png" alt="Markdown" title="Markdown" /></a>
+					{% if user.is_superuser %}<a href="{% url 'page_tex' page.cat.cached_url page.slug %}"><img src="{{ STATIC_PREFIX }}images/icons/page-tex.png" alt="LaTeX Source (.tex)" title="LaTeX Source (.tex)" /></a>{% endif %}
+					{% if docfiles %}
+						{% for file in docfiles %}
+							<a href="{{MEDIA_URL}}{{file.name}}"><img src="{{ STATIC_PREFIX }}images/icons/page-{{file.filetype}}.png" alt="{{file.get_filetype_display}}" title="{{file.get_filetype_display}}" /></a>
+						{% endfor %}
+					{% endif %}
+				</div>
 			</div>
 			
 			{% comment %}<!-- External services -->{% endcomment %}
 			<div class="transbox right_sidebar_section">
 				<h3>External</h3>
-				<p style="text-align:center">
-					<div class="hoverlinks cms_icons">
-						<a href="http://readability.com/save?url={{request.build_absolute_uri}}" style="background-image:url({{ STATIC_PREFIX }}images/icons/readability32-off.png)"><img src="{{ STATIC_PREFIX }}images/icons/readability32-on.png" alt="Readability" title="Readability.com (External service)" /></a>
-						<a href="http://www.instapaper.com/hello2?url={{request.build_absolute_uri}}&title=Lupinia - {{page.title}}" style="background-image:url({{ STATIC_PREFIX }}images/icons/instapaper32-off.png)"><img src="{{ STATIC_PREFIX }}images/icons/instapaper32-on.png" alt="Readability" title="Instapaper (External service)" /></a>
-						<a href="https://getpocket.com/save?url={{request.build_absolute_uri}}&title=Lupinia - {{page.title}}" style="background-image:url({{ STATIC_PREFIX }}images/icons/pocket32-off.png)"><img src="{{ STATIC_PREFIX }}images/icons/pocket32-on.png" alt="Pocket" title="Pocket (External service)" /></a>
-					</div>
-				</p>
+				<div class="page_icons hovericons32">
+					<a class="red" href="http://readability.com/save?url={{request.build_absolute_uri}}"><img src="{{ STATIC_PREFIX }}images/icons/service-readability.png" alt="Readability" title="Readability.com (External service)" /></a>
+					<a class="grey" href="http://www.instapaper.com/hello2?url={{request.build_absolute_uri}}&title=Lupinia - {{page.title}}"><img src="{{ STATIC_PREFIX }}images/icons/service-instapaper.png" alt="Readability" title="Instapaper (External service)" /></a>
+					<a class="red" href="https://getpocket.com/save?url={{request.build_absolute_uri}}&title=Lupinia - {{page.title}}"><img src="{{ STATIC_PREFIX }}images/icons/service-pocket.png" alt="Pocket" title="Pocket (External service)" /></a>
+				</div>
 			</div>
 		</div>
 	{% endif %}

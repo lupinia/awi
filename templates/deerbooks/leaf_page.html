@@ -5,6 +5,13 @@
 	{% for page in leaves %}
 	<a href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.title}} - {{page.body_summary}}" class="sidebar_link {% if page.featured and highlight_featured %}featured{% elif page.mature %}mature{% endif %}">
 		<span class="sidebar_link_title">{{page.title}}</span>
+		{% if page.featured and highlight_featured %}
+			<br />
+			<span class="sidebar_link_subtext">Featured</span>
+		{% elif page.mature %}
+			<br />
+			<span class="sidebar_link_subtext">Mature Content</span>
+		{% endif %}
 	</a>
 	{% empty %}
 		<div><sub><em>No Articles</em></sub></div>
