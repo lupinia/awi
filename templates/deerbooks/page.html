@@ -69,7 +69,7 @@
 					{% if user.is_superuser %}<a href="{% url 'page_tex' page.cat.cached_url page.slug %}"><img src="{{ STATIC_PREFIX }}images/icons/page-tex.png" alt="LaTeX Source (.tex)" title="LaTeX Source (.tex)" /></a>{% endif %}
 					{% if docfiles %}
 						{% for file in docfiles %}
-							<a href="{{MEDIA_URL}}{{file.name}}"><img src="{{ STATIC_PREFIX }}images/icons/page-{{file.filetype}}.png" alt="{{file.get_filetype_display}}" title="{{file.get_filetype_display}}" /></a>
+							<a href="{{file.get_url}}"><img src="{{ STATIC_PREFIX }}images/icons/page-{{file.filetype}}.png" alt="{{file.get_filetype_display}}" title="{{file.get_filetype_display}}" /></a>
 						{% endfor %}
 					{% endif %}
 				</div>

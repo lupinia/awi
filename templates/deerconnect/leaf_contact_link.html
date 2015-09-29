@@ -1,20 +1,19 @@
 {% load static %}
 {% get_static_prefix as STATIC_PREFIX %}
+{% get_media_prefix as MEDIA_PREFIX %}
 
 {% if 'sidebar' in blockname %}
 	{% for link in leaves %}
-	<a href="{{link.url}}" title="{{link.label}} - {{link.name}}" class="sidebar_link {% if link.featured and highlight_featured %}featured{% elif link.mature %}mature{% endif %}">
-		<span class="sidebar_link_title">{{link.label}} - {{link.name}}</span>
+	<a href="{{link.url}}" target="_BLANK" title="{{link.label}} - {{link.name}}" class="sidebar_link {% if link.featured and highlight_featured %}featured{% elif link.mature %}mature{% endif %}">
+		{% if link.icon %}<img src="{{MEDIA_PREFIX}}{{link.icon.name}}" alt="{{link.label}}" title="{{link.label}}" class="sidebar_link_img" />{% endif %}
+		<span class="sidebar_link_title">{% if not link.icon %}{{link.label}} - {% endif %}{{link.name}}</span>
 		{% if link.im %}
-			<br />
-			<span class="sidebar_link_subtext">Messaging System</span>
+			<div class="sidebar_link_subtext">Messaging System</div>
 		{% endif %}
 		{% if link.featured %}
-			<br />
-			<span class="sidebar_link_subtext">Featured</span>
+			<div class="sidebar_link_subtext">Featured</div>
 		{% elif link.mature %}
-			<br />
-			<span class="sidebar_link_subtext">Mature Content</span>
+			<div class="sidebar_link_subtext">Mature Content</div>
 		{% endif %}
 	</a>
 	{% empty %}
@@ -25,9 +24,9 @@
 <div class="cms_links_large category_two_columns">
 	{% for link in leaves %}
 		<div class="cms_link">
-			<a href="{{link.url}}" title="{{link.label}} - {{link.name}}" {% if link.featured and highlight_featured %}class="featured"{% elif link.mature %}class="mature"{% endif %}>
-				{% if link.featured and highlight_featured %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured.png" alt="Featured" title="Featured" /></span>
-				{% elif link.mature %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
+			<a href="{{link.url}}" target="_BLANK" title="{{link.label}} - {{link.name}}" {% if link.featured and highlight_featured %}class="featured"{% elif link.mature %}class="mature"{% endif %}>
+				{% if link.featured and highlight_featured %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
+				{% elif link.mature %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
 				
 				<span class="article_summary_head"><span class="article_summary_title">{{link.label}} - {{link.name}}</span><br /> 
 					Modified: {{link.timestamp_mod}}

@@ -19,6 +19,7 @@
 	{% for subcat in leaves %}
 		<div class="cms_link">
 			<a href="{% url 'category' subcat.cached_url %}" title="{{subcat.title}}">
+				{% if link.mature %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
 				<span class="article_summary_head"><span class="article_summary_title">{{subcat.title}}</span></span><br />
 				<span class="article_summary_body">{{subcat.summary}}</span>
 			</a>

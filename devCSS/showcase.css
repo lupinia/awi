@@ -270,6 +270,15 @@ a.sidebar_link .sidebar_link_subtext {
 
 a.sidebar_link .sidebar_link_title {
 	color:#fff2ff !important;
+	height:16px;
+	line-height:16px;
+	vertical-align:top;
+}
+
+a.sidebar_link .sidebar_link_img {
+	margin-right:3px;
+	height:16px;
+	vertical-align:top;
 }
 
 .cms_link a, .cms_link .menu_item {
@@ -334,13 +343,13 @@ a.sidebar_link .sidebar_link_title {
 	float:right;
 	margin:0px;
 	padding:0px;
-	width:40px;
-	height:40px;
+	width:30px;
+	height:30px;
 }
 
 .cms_feature_mark img {
-	width:40px;
-	height:40px;
+	width:24px;
+	height:24px;
 }
 
 a.article_summary_link:hover, a.article_summary_link:active {
@@ -381,23 +390,29 @@ a.article_summary_link:hover, a.article_summary_link:active {
 .error {
 	margin:3px;
 	padding:5px;
+	padding-left:42px;
 	border: 1px solid;
 	border-radius:5px;
+	background-position:5px 10px;
+	background-repeat:no-repeat;
 }
 
 .error_warning {
+	background-image:url(http://cdn.fur.vc/awi-hagata/images/icons/warning.png);
 	background-color:rgba(100, 50, 0, 0.25);
 	color:#FFCCAA;
 	border-color:#AA8855;
 }
 
 .error_critical {
+	background-image:url(http://cdn.fur.vc/awi-hagata/images/icons/error.png);
 	background-color:rgba(100, 0, 0, 0.25);
 	color:#FFAAAA;
 	border-color:#AA5555;
 }
 
 .error_notice {
+	background-image:url(http://cdn.fur.vc/awi-hagata/images/icons/info.png);
 	background-color:rgba(0, 0, 100, 0.25);
 	color:#AAAAFF;
 	border-color:#5555AA;

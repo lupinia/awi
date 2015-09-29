@@ -7,6 +7,7 @@
 #	=================
 
 from django.db import models
+from django.conf import settings
 
 from deertrees.models import leaf
 
@@ -14,10 +15,14 @@ class export_file(models.Model):
 	FILETYPE_OPTIONS=(('tex','TeX'),('pdf','PDF'),('dvi','DVI'),('ps','PostScript'),('epub','ePub'),)
 	
 	filetype=models.CharField(max_length=10,choices=FILETYPE_OPTIONS)
-	filename=models.FileField(upload_to='writing')
+	docfile=models.FileField(upload_to='writing')
 	timestamp_mod=models.DateTimeField(auto_now=True)
+	
 	def __unicode__(self):
-		return self.filename
+		return self.docfile
+	
+	def get_url(self):
+		return "%s/%s" % (settings.MEDIA_URL,self.docfile.name)
 
 #	Table of Contents
 class toc(models.Model):
