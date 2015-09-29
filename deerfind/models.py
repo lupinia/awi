@@ -7,6 +7,7 @@
 #	category:	Purely organizational.
 #	pointer:	Maps a known-bad URL to a known-good URL.
 #	hitlog:		Tracks basic request information for a hit on a known-bad URL.
+#	g2map:		Connects old Gallery2 item IDs with actual URLs in the new system.
 #	=================
 
 from django.db import models
@@ -45,3 +46,11 @@ class hitlog(models.Model):
 	def __unicode__(self):
 		hit_date = self.time.strftime('%b %-d, %Y %H:%M:%S')
 		return '%s - %s' % (self.pointer.old_url,hit_date)
+
+class g2map(models.Model):
+	g2id = models.IntegerField()
+	category = models.ForeignKey('deertrees.category',null=True,blank=True)
+	#	Once the Sunset photo gallery is up and running, there will be a separate foreign key to an image object.
+	
+	def __unicode__(self):
+		return str(self.g2id)

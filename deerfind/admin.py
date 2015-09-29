@@ -28,11 +28,21 @@ class pointer_admin(admin.ModelAdmin):
 	list_display_links  =  ('old_url',)
 	list_filter = ('category',)
 	fields = (('old_url','new_url'),'category')
-	list_per_page = 20
 	list_select_related = True
 	ordering = ('new_url',)
 	search_fields = ('old_url','new_url')
 	inlines = [log_list,]
 
+class g2_admin(admin.ModelAdmin):
+	list_display = ('g2id','category')
+	ordering = ('g2id',)
+	search_fields = ('g2id','category__title','category__slug')
+	list_select_related = True
+
+class g2_inline(admin.TabularInline):
+	model=g2map
+	extra=1
+
 admin.site.register(category)
 admin.site.register(pointer,pointer_admin)
+admin.site.register(g2map,g2_admin)

@@ -12,6 +12,7 @@ from django.core.urlresolvers import reverse
 from django_mptt_admin.admin import DjangoMpttAdmin
 from django_summernote.admin import SummernoteModelAdmin
 from awi_access.admin import access_admin
+from deerfind.admin import g2_inline
 
 from deertrees.models import *
 
@@ -26,6 +27,7 @@ class cat_admin(DjangoMpttAdmin,SummernoteModelAdmin,access_admin):
 	list_display = ('title','slug','parent','cached_url','sitemap_include','content_priority','background') + access_admin.list_display
 	prepopulated_fields={'slug':('title',)}
 	search_fields = ('title','slug','parent','cached_url','desc')
+	inlines=[g2_inline,]
 	
 	def view_on_site(self, obj):
 		return reverse('category',kwargs={'cached_url':obj.cached_url,})

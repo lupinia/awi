@@ -94,12 +94,12 @@ SUMMERNOTE_CONFIG = {
 #				main: Hierarchy for main content area,
 #				is_leaf: Boolean; if False, this entry is data for a block that isn't a leaf, }
 DEERTREES_BLOCKS = {
-	'page': {'title':'Writing', 'template':'deerbooks/leaf_page.html', 'sidebar':3, 'main':1, 'is_leaf':True},
-	'link': {'title':'Links', 'template':'deerconnect/leaf_link.html', 'sidebar':4, 'is_leaf':True},
-	'special_feature': {'title':'Special Features', 'template':'deertrees/leaf_feature.html', 'sidebar':1, 'is_leaf':True},
+	'page': {'title':'Writing', 'template':'deerbooks/leaf_page.html', 'sidebar':4, 'main':1, 'is_leaf':True},
+	'link': {'title':'Links', 'template':'deerconnect/leaf_link.html', 'sidebar':5, 'main':3, 'is_leaf':True},
+	'special_feature': {'title':'Special Features', 'template':'deertrees/leaf_feature.html', 'sidebar':3, 'is_leaf':True},
 	
-	'contact_link': {'title':'Contact Info', 'template':'deerconnect/leaf_contact_link.html', 'sidebar':5, 'is_leaf':False},
-	'category': {'title':'Subcategories', 'template':'deertrees/leaf_subcat.html', 'sidebar':2, 'main':2, 'is_leaf':False},
+	'contact_link': {'title':'Contact Natasha', 'template':'deerconnect/leaf_contact_link.html', 'sidebar':2, 'is_leaf':False},
+	'category': {'title':'Subcategories', 'template':'deertrees/leaf_subcat.html', 'sidebar':1, 'main':2, 'is_leaf':False},
 }
 
 #	Planned; roughly in order of content volume.
@@ -107,3 +107,16 @@ DEERTREES_BLOCKS = {
 #	'photo' : {'template':'sunset/catlistphoto_%(type).html', 'main':1}
 #	'menu_item' : {'template':'deerdine/menuitem_%(type).html', 'main':2}
 #}
+
+
+#	deerfind
+#	Stores a list of apps and their associated finder functions, in the event of a 404
+#	If DeerFind can't match the URL to a known-bad one, it will check these until it gets a True, or runs out.
+#	Finder functions should return a tuple; first value boolean (match found), second value a string (empty if no match, root-relative URL if match)
+#	Can be on a per-app basis, not necessarily per-model
+#	Ordering based on frequency of use is recommended, for increased efficiency
+DEERFIND_FINDERS = (
+	'deerfind.views.g2_finder',
+	'deerbooks.views.finder',
+	'deertrees.views.finder',
+)

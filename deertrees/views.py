@@ -277,3 +277,26 @@ class all_tags(generic.TemplateView):
 			context['error'] = 'no_tags'
 		
 		return context
+
+def finder(request):
+	import os
+	from django.core.urlresolvers import reverse
+	return_data = (False,'')
+	
+	#	Fix the trailing slash
+	if request.path.endswith('/'):
+		basename=os.path.basename(request.path[:-1])
+	else:
+		basename=os.path.basename(request.path)
+	
+	if '.' in basename:
+		#	Categories don't have dots in the slug
+		return return_data
+	else:
+		cat_check = category.objects.filter(slug=basename)
+		if cat_check.exists():
+			access_check = cat_check[0].can_view(request)
+			if access_check[0]:
+				return_data = (True,reverse('category',kwargs={'cached_url':cat_check[0].cached_url,}))
+	
+	return return_data

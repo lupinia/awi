@@ -26,6 +26,7 @@ itemlist_system = (
 	'awi_bg.models.background',
 	'awi_access.*',
 	'deerfind.models.pointer',
+	'deerfind.models.g2map',
 	'deerconnect.models.contact_link',
 )
 
