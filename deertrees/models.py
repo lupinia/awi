@@ -70,6 +70,12 @@ class leaf(access_control):
 	def __unicode__(self):
 		return str(self.id)
 	
+	def scheduled(self):
+		if self.published and self.timestamp_post > timezone.now():
+			return True
+		else:
+			return False
+	
 	def display_times(self):
 		return_times=[{},{}]
 		if self.timedisp=='post':

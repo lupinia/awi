@@ -28,6 +28,11 @@ class single_page(generic.DetailView):
 			else:
 				context['page'] = ''
 				context['error'] = canview[1]
+		elif context['page'].scheduled():
+			if not self.request.user.is_authenticated() or (not self.request.user.is_staff and context['page'].owner != self.request.user):
+				from django.http import Http404
+				self.request.session['deerfind_norecover'] = True
+				raise Http404
 		else:
 			if context['page'].book_title:
 				context['toc'] = context['page'].book_title.page_set.all().order_by('book_order')

@@ -9,9 +9,13 @@
 				{% if user.is_superuser %}
 					<div id="fulltext_page_title_extra">
 						<div class="hovericons16">
-							<img src="http://cdn.fur.vc/icons/{{page.featured|yesno:',un'}}feature.gif" alt="{{page.featured|yesno:',Not '}}Featured" title="{{page.featured|yesno:',Not '}}Featured" /> 
-							<img src="http://cdn.fur.vc/icons/{{page.published|yesno:'public,private'}}.gif" alt="{{page.published|yesno:',Not '}}Published" title="{{page.published|yesno:',Not '}}Published" /> 
-							<a href="{% url 'admin:deerbooks_page_change' page.pk %}"><img src="http://cdn.fur.vc/icons/edit.png" alt="Edit" title="Edit" /></a>
+							<img src="{{ STATIC_PREFIX }}images/icons/{{page.featured|yesno:',un'}}featured16.png" alt="{{page.featured|yesno:',Not '}}Featured" title="{{page.featured|yesno:',Not '}}Featured" /> 
+							{% if page.scheduled %}
+								<img src="{{ STATIC_PREFIX }}images/icons/publish-scheduled.png" alt="Scheduled - Will be published on {{page.timestamp_post|date:'F j, Y  G:i:s'}}" title="Scheduled - Will be published on {{page.timestamp_post|date:'F j, Y  G:i:s'}}" /> 
+							{% else %}
+								<img src="{{ STATIC_PREFIX }}images/icons/publish-{{page.published|yesno:'on,off'}}.png" alt="{{page.published|yesno:',Not '}}Published" title="{{page.published|yesno:',Not '}}Published" /> 
+							{% endif %}
+							<a href="{% url 'admin:deerbooks_page_change' page.pk %}"><img src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit" title="Edit" /></a>
 						</div>
 						<span class="secondary_time">{{page.display_times.1.label}}:  {{page.display_times.1.timestamp|date:'F j, Y  G:i:s'}}</span>
 					</div>
