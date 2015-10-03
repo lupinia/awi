@@ -18,20 +18,20 @@
 	{% endfor %}
 	
 {% elif 'main' in blockname %}
-<div class="cms_links_large category_two_columns">
+<div class="leaf_links_wrapper">
 	{% for page in leaves %}
 		{% if blockname == 'main_half' and forloop.counter > 4 %}
 			{% comment %}<!-- Do nothing.  -->{% endcomment %}
 		{% else %}
-			<div class="cms_link">
+			<div class="leaf_link tall">
 				<a href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.title}}" {% if page.featured and highlight_featured %}class="featured"{% elif page.mature %}class="mature"{% endif %}>
-					{% if page.featured and highlight_featured %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
-					{% elif page.mature %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
+					{% if page.featured and highlight_featured %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
+					{% elif page.mature %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
 					
-					<span class="article_summary_head"><span class="article_summary_title">{{page.title}}</span><br /> 
+					<span class="item_summary_head"><span class="item_summary_title">{{page.title}}</span><br /> 
 						{{page.display_times.0.label}}: {{page.display_times.0.timestamp}}
 					</span>
-					<span class="article_summary_body">{{page.body_summary}}</span>
+					<span class="item_summary_body">{{page.body_summary}}</span>
 				</a>
 			</div>
 		{% endif %}

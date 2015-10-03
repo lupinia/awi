@@ -13,15 +13,18 @@
 	</div>
 
 	{% if error != "no_tags" %}
-		<div class="transbox fulltext_page"><div class="cat_links_large category_two_columns">
-		{% for tag in tags %}
-			<div class="cms_link">
-				<a href="{% url 'tag' tag.slug %}" title="{{tag.title}}">
-				<span class="article_summary_head"><span class="article_summary_title">{{tag.title}}</span></span>
-				</a>
+		<div class="transbox fulltext_page">
+			<h2>All Tags</h2>
+			<div class="leaf_links_wrapper">
+			{% for tag in tags %}
+				<div class="leaf_link midheight">
+					<a href="{% url 'tag' tag.slug %}" title="{{tag.title}}">
+						<span class="item_summary_head"><span class="item_summary_title">{{tag.title}}</span></span>
+					</a>
+				</div>
+			{% endfor %}
+			<br style="clear:left;" />
 			</div>
-		{% endfor %}
-		<br style="clear:left;" />
-		</div></div>
+		</div>
 	{% endif %}
 {% endblock %}

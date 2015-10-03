@@ -1,0 +1,58 @@
+//	Lupinia Studios Main Theme - "Showcase"
+//	SASS Mixins
+//	By Natasha L.
+//	www.lupinia.net | github.com/lupinia
+
+@mixin error($bgimg,$bgcolor,$color,$border) {
+	margin:3px;
+	padding:5px;
+	padding-left:42px;
+	border: 1px solid;
+	border-radius:5px;
+	background-position:5px 10px;
+	background-repeat:no-repeat;
+	background-image: $bgimg;
+	background-color: $bgcolor;
+	color: $color;
+	border-color: $border;
+}
+
+@mixin hovericons($size,$inactive_bg,$active_bg,$border_radius:5px) {
+	a {
+		width:$size !important;
+		height:$size !important;
+		display:inline-block;
+		padding:3px;
+		margin:1px;
+		border-radius:$border_radius;
+		
+		&:link, &:visited {
+			background: $inactive_bg;
+		}
+		
+		&:hover, &:active, &:focus {
+			background: $active_bg;
+		}
+		
+		&.blue:hover, &.blue:active, &.blue:focus { background: $color_bg_hover_blue; }
+		&.red:hover, &.red:active, &.red:focus { background: $color_bg_hover_red; }
+		&.grey:hover, &.grey:active, &.grey:focus { background: $color_bg_hover_grey; }
+	}
+}
+
+@mixin leaf_links {
+	background:$color_bgdark;
+	color:$color_subtext;
+	
+	&:hover, &:active, &:focus { background-color:$color_bg_leaf_hover; }
+	
+	&.featured {
+		&:link, &:visited { background-color:$color_bg_leaf_featured; }
+		&:hover, &:active, &:focus { background-color:$color_bg_leaf_featured_hover; }
+	}
+	
+	&.mature {
+		&:link, &:visited { background-color:$color_bg_leaf_mature; }
+		&:hover, &:active, &:focus { background-color:$color_bg_leaf_mature_hover; }
+	}
+}

@@ -6,10 +6,57 @@
 #	Django Settings - App-Specific Config
 #	Config options for apps that aren't part of Django
 #	=================
+import os
 
 #	Not an external setting, but it's used in this file, so it needs to be here.
 DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
 STATICFILES_STORAGE = 's3_folder_storage.s3.StaticStorage'
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+#	CUSTOM APPS
+#	==============
+#	deertrees
+#	This stores a list of known models that can be attached to a category, their hierarchy when displayed, and a template file's path
+#	Model Name { 
+#				title: Displayable title, OR an image URL relative to {{static}},
+#				template: Path to importable template,
+#				sidebar: Hierarchy for sidebar,
+#				main: Hierarchy for main content area,
+#				is_leaf: Boolean; if False, this entry is data for a block that isn't a leaf, }
+DEERTREES_BLOCKS = {
+	'page': {'title':'Writing', 'template':'deerbooks/leaf_page.html', 'sidebar':4, 'main':1, 'is_leaf':True},
+	'link': {'title':'Links', 'template':'deerconnect/leaf_link.html', 'sidebar':5, 'main':3, 'is_leaf':True},
+	'special_feature': {'title':'Special Features', 'template':'deertrees/leaf_feature.html', 'sidebar':3, 'is_leaf':True},
+	
+	'contact_link': {'title':'Contact Natasha', 'template':'deerconnect/leaf_contact_link.html', 'sidebar':2, 'is_leaf':False},
+	'category': {'title':'Subcategories', 'template':'deertrees/leaf_subcat.html', 'sidebar':1, 'main':2, 'is_leaf':False},
+	
+	# Planned but not yet implemented
+	#	'photo' : {'template':'sunset/catlistphoto_%(type).html', 'main':1, 'is_leaf':True},
+}
+
+
+#	deerfind
+#	Stores a list of apps and their associated finder functions, in the event of a 404
+#	If DeerFind can't match the URL to a known-bad one, it will check these until it gets a True, or runs out.
+#	Finder functions should return a tuple; first value boolean (match found), second value a string (empty if no match, root-relative URL if match)
+#	Can be on a per-app basis, not necessarily per-model
+#	Ordering based on frequency of use is recommended, for increased efficiency
+DEERFIND_FINDERS = (
+	'deerfind.views.g2_finder',
+	'deerbooks.views.finder',
+	'deertrees.views.finder',
+)
+
+
+#	CUSTOM APPS
+#	==============
+#	static_precompiler
+STATIC_PRECOMPILER_DISABLE_AUTO_COMPILE = True
+STATIC_PRECOMPILER_COMPILERS = ( ('static_precompiler.compilers.SCSS', {"executable": "/usr/local/bin/sassc", "compass_enabled": False}), )
+STATIC_PRECOMPILER_ROOT = os.path.abspath(os.path.join(BASE_DIR,'devCSS/'))
+STATIC_PRECOMPILER_OUTPUT_DIR = 'css'
 
 
 #	debug_toolbar
@@ -85,38 +132,3 @@ SUMMERNOTE_CONFIG = {
 }
 
 
-#	deertrees
-#	This stores a list of known models that can be attached to a category, their hierarchy when displayed, and a template file's path
-#	Model Name { 
-#				title: Displayable title, OR an image URL relative to {{static}},
-#				template: Path to importable template,
-#				sidebar: Hierarchy for sidebar,
-#				main: Hierarchy for main content area,
-#				is_leaf: Boolean; if False, this entry is data for a block that isn't a leaf, }
-DEERTREES_BLOCKS = {
-	'page': {'title':'Writing', 'template':'deerbooks/leaf_page.html', 'sidebar':4, 'main':1, 'is_leaf':True},
-	'link': {'title':'Links', 'template':'deerconnect/leaf_link.html', 'sidebar':5, 'main':3, 'is_leaf':True},
-	'special_feature': {'title':'Special Features', 'template':'deertrees/leaf_feature.html', 'sidebar':3, 'is_leaf':True},
-	
-	'contact_link': {'title':'Contact Natasha', 'template':'deerconnect/leaf_contact_link.html', 'sidebar':2, 'is_leaf':False},
-	'category': {'title':'Subcategories', 'template':'deertrees/leaf_subcat.html', 'sidebar':1, 'main':2, 'is_leaf':False},
-}
-
-#	Planned; roughly in order of content volume.
-#DEERTREES_BLOCKS = {
-#	'photo' : {'template':'sunset/catlistphoto_%(type).html', 'main':1}
-#	'menu_item' : {'template':'deerdine/menuitem_%(type).html', 'main':2}
-#}
-
-
-#	deerfind
-#	Stores a list of apps and their associated finder functions, in the event of a 404
-#	If DeerFind can't match the URL to a known-bad one, it will check these until it gets a True, or runs out.
-#	Finder functions should return a tuple; first value boolean (match found), second value a string (empty if no match, root-relative URL if match)
-#	Can be on a per-app basis, not necessarily per-model
-#	Ordering based on frequency of use is recommended, for increased efficiency
-DEERFIND_FINDERS = (
-	'deerfind.views.g2_finder',
-	'deerbooks.views.finder',
-	'deertrees.views.finder',
-)

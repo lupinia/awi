@@ -22,17 +22,17 @@
 	{% endfor %}
 	
 {% elif 'main' in blockname %}
-<div class="cms_links_large category_two_columns">
+<div class="leaf_links_wrapper">
 	{% for link in leaves %}
-		<div class="cms_link">
+		<div class="leaf_link midheight">
 			<a href="{{link.url}}" target="_BLANK" title="{{link.label}}" {% if link.featured and highlight_featured %}class="featured"{% elif link.mature %}class="mature"{% endif %}>
-				{% if link.featured and highlight_featured %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
-				{% elif link.mature %}<span class="cms_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
+				{% if link.featured and highlight_featured %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
+				{% elif link.mature %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
 				
-				<span class="article_summary_head"><span class="article_summary_title">{{link.label}}</span><br /> 
+				<span class="item_summary_head"><span class="item_summary_title">{{link.label}}</span><br /> 
 					{{link.display_times.0.label}}: {{link.display_times.0.timestamp}}
 				</span>
-				<span class="article_summary_body">{{link.desc}}</span>
+				<span class="item_summary_body">{{link.desc}}</span>
 			</a>
 		</div>
 	{% empty %}
