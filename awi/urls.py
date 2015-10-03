@@ -34,7 +34,7 @@ urlpatterns = [
 	
 	#	Custom Apps
 	url(r'^gamescripts/', include('secondlife.urls')),
-	url(r'^personal/cooking/menu/', include('deerfood.urls')),
+	url(r'^personal/cooking/menu/', include('deerfood.urls',namespace='deerfood')),
 	
 	#	DeerTrees and DeerBooks are special cases for this site.
 	url(r'^$',deertrees_views.homepage.as_view(),name='home'),

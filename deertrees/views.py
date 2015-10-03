@@ -8,6 +8,7 @@
 
 from django.views import generic
 from django.utils import timezone
+from django.core.urlresolvers import reverse
 from collections import OrderedDict
 from itertools import cycle
 
@@ -246,6 +247,13 @@ class category_list(leaf_parent, generic.DetailView):
 		else:
 			context['error'] = 'cat_empty'
 		
+		ancestors = context['object'].get_ancestors(include_self=True)
+		if not context.get('breadcrumbs',False):
+			context['breadcrumbs'] = []
+		
+		for crumb in ancestors:
+			context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
+		
 		context['highlight_featured'] = self.highlight_featured
 		return context
 
@@ -280,7 +288,6 @@ class all_tags(generic.TemplateView):
 
 def finder(request):
 	import os
-	from django.core.urlresolvers import reverse
 	return_data = (False,'')
 	
 	#	Fix the trailing slash

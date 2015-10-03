@@ -36,6 +36,19 @@
 			{% block social_icons %}{% include 'deerconnect/header_social_icons.html' %}{% endblock %}
 		</div>
 	</header>
+	{% block breadcrumbs %}
+		{% if breadcrumbs %}
+			<div class="breadcrumbs">
+				<span>
+					<a href="/" title="Home">Home</a> 
+					{% for link in breadcrumbs %}
+						<span class="separator">&gt;</span> {% if forloop.last %}{{link.title}}{% else %}<a href="{{link.url}}" title="{{link.title}}">{{link.title}}</a>{% endif %} 
+					{% endfor %}
+				</span>
+			</div>
+			<span style="clear:left;">&nbsp;</span>
+		{% endif %}
+	{% endblock %}
 
 	<div id="content_area">
 		{% block content_right %}

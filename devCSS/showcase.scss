@@ -335,6 +335,34 @@ header {
 		padding: 0px;
 	}
 }
+
+.breadcrumbs {
+	background-color:  $color_bgtrans_dark;
+	color:  $color_breadcrumbs;
+	box-shadow:-1px 1px 3px 1px $color_shadow;
+	font-size:x-small;
+	font-style:italic;
+	border-bottom-right-radius:  5px;
+	margin-bottom:5px;
+	margin-left:0px;
+	margin-top:0px;
+	padding-top:3px;
+	padding-right:10px;
+	padding-bottom:5px;
+	padding-left:8px;
+	float:left;
+	max-width:385px;
+	overflow:hidden;
+	
+	@media #{$scr_midwidth} { max-width:90%; }
+	
+	a {
+		&:link, &:visited { text-decoration:none; }
+		&:hover, &:active, focus { text-decoration:underline; }
+	}
+	
+	.separator { color:$color_border; }
+}
 /*	=====	*/
 
 
@@ -349,6 +377,8 @@ footer {
 	padding-bottom:3px;
 	font-size:small;
 	font-style:italic;
+	
+	nav { padding-left:5px; }
 	
 	div {
 		margin-left:10px;

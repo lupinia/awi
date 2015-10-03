@@ -24,7 +24,7 @@
 {% elif 'main' in blockname %}
 <div class="leaf_links_wrapper">
 	{% for link in leaves %}
-		<div class="leaf_link midheight">
+		<div class="leaf_link tall">
 			<a href="{{link.url}}" target="_BLANK" title="{{link.label}}" {% if link.featured and highlight_featured %}class="featured"{% elif link.mature %}class="mature"{% endif %}>
 				{% if link.featured and highlight_featured %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
 				{% elif link.mature %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}

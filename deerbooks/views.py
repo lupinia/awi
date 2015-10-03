@@ -7,6 +7,7 @@
 #	=================
 
 from django.views import generic
+from django.core.urlresolvers import reverse
 
 from deerbooks.models import page, toc, export_file
 
@@ -40,6 +41,15 @@ class single_page(generic.DetailView):
 			if context['page'].docfiles:
 				context['docfiles'] = context['page'].docfiles.all().order_by('filetype')
 			
+			ancestors = context['object'].cat.get_ancestors(include_self=True)
+			if not context.get('breadcrumbs',False):
+				context['breadcrumbs'] = []
+			
+			for crumb in ancestors:
+				context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
+			
+			context['breadcrumbs'].append({'url':reverse('page_htm',kwargs={'cached_url':crumb.cached_url,'slug':context['page'].slug}), 'title':context['page'].title})
+			
 		return context
 
 class single_page_htm(single_page):
@@ -62,7 +72,6 @@ class single_page_tex(single_page):
 
 def finder(request):
 	import os
-	from django.core.urlresolvers import reverse
 	return_data = (False,'')
 	
 	basename=os.path.basename(request.path)
