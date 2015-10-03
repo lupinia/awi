@@ -64,6 +64,7 @@ INSTALLED_APPS = (
 	
 	#	My Apps - Other
 	'deerhealth',	# Prescription Tracker
+	'deerfood',		# Restaurant-style menu
 )
 
 #	System Settings
@@ -90,12 +91,33 @@ TEMPLATES = [{
 			#	Might be looking for a new alternative.
 			
 			'django.template.loaders.filesystem.Loader',
-			('django.template.loaders.cached.Loader', ['django.template.loaders.app_directories.Loader',],),
+			'django.template.loaders.app_directories.Loader',
 			
 			'admin_tools.template_loaders.Loader',
 		],
 	},
 },]
+
+#	Middleware got a little interesting, to get the caching middleware inserted in the correct order, but not on the dev server.
+middleware_first = (
+	'django_processinfo.middlewares.django_processinfo.ProcessInfoMiddleware',
+	'debug_toolbar.middleware.DebugToolbarMiddleware',
+)
+
+middleware_main = (
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.security.SecurityMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+
+middleware_cache_update = ('django.middleware.cache.UpdateCacheMiddleware',)
+middleware_cache_fetch = ('django.middleware.cache.FetchFromCacheMiddleware',)
+#	End Middleware
 
 CACHES = {
 	'default': {
@@ -103,24 +125,6 @@ CACHES = {
 		'LOCATION': 'dbcache',
 	}
 }
-
-MIDDLEWARE_CLASSES = (
-	'django_processinfo.middlewares.django_processinfo.ProcessInfoMiddleware',
-	'debug_toolbar.middleware.DebugToolbarMiddleware',
-	
-	#'django.middleware.cache.UpdateCacheMiddleware',
-	
-	'django.middleware.common.CommonMiddleware',
-	'django.contrib.sessions.middleware.SessionMiddleware',
-	'django.middleware.csrf.CsrfViewMiddleware',
-	'django.contrib.auth.middleware.AuthenticationMiddleware',
-	'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-	'django.contrib.messages.middleware.MessageMiddleware',
-	'django.middleware.security.SecurityMiddleware',
-	'django.middleware.clickjacking.XFrameOptionsMiddleware',
-	
-	#'django.middleware.cache.FetchFromCacheMiddleware',
-)
 
 STATICFILES_FINDERS = (
 	'django.contrib.staticfiles.finders.FileSystemFinder',

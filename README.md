@@ -7,9 +7,7 @@ Built by Natasha L. (@lupinia)
 Domains
 -------
 
-- **beta.lupinia.net** *(v5.1)* - Dev server for this project, runs the latest version of this codebase at all times.
-- **seneca.lupinia.net** *(v4.1)* - Pseudo-staging server; this will become the production server once the site is fully finished.  
-	- *Current development goal is to bring v5.1 up to the same featureset as the incomplete v4.1, to upgrade Seneca.  New features will follow.*
+- **[seneca.lupinia.net](http://seneca.lupinia.net/)** *(v5.1)* - Pseudo-staging server; this will become the production server once the site is fully finished.  It runs the current stable version of this codebase at all times.
 - **www.lupinia.net** *(v3.2)* - Production server; currently runs a legacy PHP version, and is a separate physical server from the other two.
 
 Apps/Modules Included
@@ -28,6 +26,7 @@ Full feature list for these in-progress.
 	- **DeerConnect**:  Link directory and contact information manager.
 - **Other**
 	- **DeerHealth**:  Prescription medication tracker.
+	- **DeerFood**:  Restaurant-style menu system.
 	- **secondlife**:  Legacy support for security/authentication scripts in Second Life.  Pending a rebuild, but unlike the others to be rebuilt, this one needs to stay running until it's replaced.
 
 Third-Party Apps/Modules Used
