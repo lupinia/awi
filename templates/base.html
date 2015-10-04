@@ -3,8 +3,8 @@
 
 {% load static %}
 {% load awibg %}
+{% load cookielaw_tags %}
 {% get_static_prefix as STATIC_PREFIX %}
-
 <head>
 	<meta charset="UTF-8">
 	<meta name="author" content="{% include 'authorname.txt' %}" />
@@ -14,9 +14,11 @@
 
 	<title>{% block title %}Lupinia Studios{% endblock %}</title>
 	<link href="/devCSS/css/showcase.css" type="text/css" rel="stylesheet" id="main_css" /><!-- Temporary -->
+	<script src="{{ STATIC_PREFIX }}cookielaw/js/cookielaw.js" type="text/javascript"></script>
 </head>
 
 {% block bg_image %}{% include 'awi_bg/bg_image.html' with tag="main" %}{% endblock %}
+{% cookielaw_banner %}
 
 <div id="mainwrap">
 	<header>

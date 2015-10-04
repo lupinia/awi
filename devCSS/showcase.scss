@@ -363,6 +363,23 @@ header {
 	
 	.separator { color:$color_border; }
 }
+
+#CookielawBanner {
+	z-index:90;
+	background-color: $color_bgtrans_solid;
+	width:100%;
+	text-align:center;
+	font-size:small;
+	margin:0px;
+	padding:0px;
+	box-shadow:-1px 1px 5px 3px $color_shadow;
+	
+	div {
+		background-color: $color_bg_err_info;
+		color: $color_text_err_info;
+		padding:5px;
+	}
+}
 /*	=====	*/
 
 
@@ -443,6 +460,8 @@ a {
 	&.article_summary_link:focus {
 		text-decoration:none;
 	}
+	
+	&.boldlink { font-weight: bold; }
 }
 
 .hovericons16 { @include hovericons(16px,none,$color_bg_hover,3px); }
