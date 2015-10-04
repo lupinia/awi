@@ -20,12 +20,12 @@ class page_admin(SummernoteModelAdmin,leaf_admin):
 	fieldsets = [
 		(None,{'fields':(('title','slug'),'summary','body'),},),
 	] + leaf_admin.fieldsets + [
-		("Options",{'fields':(('export','book_title','book_order',),),},),
+		("Options",{'fields':(('auto_export','book_title','book_order',),),},),
 		('Manage Files',{'fields':('docfiles',),},),
 	]
 	prepopulated_fields={'slug':('title',)}
-	list_filter = leaf_admin.list_filter + ['book_title','export']
-	list_display = ('title','book_title','export',) + leaf_admin.list_display
+	list_filter = leaf_admin.list_filter + ['book_title','auto_export']
+	list_display = ('title','book_title','auto_export',) + leaf_admin.list_display
 	filter_horizontal = ['docfiles',] + leaf_admin.filter_horizontal
 	
 	def view_on_site(self, obj):

@@ -36,7 +36,7 @@ class page(leaf):
 	body = models.TextField()
 	summary = models.CharField(max_length=255,null=True,blank=True)
 	
-	export = models.BooleanField()
+	auto_export = models.BooleanField(default=True,help_text="Uncheck this to disable automatic generation of document files.  Markdown and Plain Text will still be available.")
 	docfiles = models.ManyToManyField(export_file,blank=True)
 	
 	book_title = models.ForeignKey(toc,null=True,blank=True)

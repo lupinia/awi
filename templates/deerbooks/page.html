@@ -70,7 +70,7 @@
 				<div class="page_icons hovericons32">
 					<a href="{% url 'page_txt' page.cat.cached_url page.slug %}"><img src="{{ STATIC_PREFIX }}images/icons/page-txt.png" alt="Plain Text" title="Plain Text" /></a>
 					<a href="{% url 'page_md' page.cat.cached_url page.slug %}"><img src="{{ STATIC_PREFIX }}images/icons/page-md.png" alt="Markdown" title="Markdown" /></a>
-					{% if user.is_superuser %}<a href="{% url 'page_tex' page.cat.cached_url page.slug %}"><img src="{{ STATIC_PREFIX }}images/icons/page-tex.png" alt="LaTeX Source (.tex)" title="LaTeX Source (.tex)" /></a>{% endif %}
+					{% if page.auto_export %}<a href="{% url 'page_tex' page.cat.cached_url page.slug %}"><img src="{{ STATIC_PREFIX }}images/icons/page-tex.png" alt="LaTeX Source (.tex)" title="LaTeX Source (.tex)" /></a>{% endif %}
 					{% if docfiles %}
 						{% for file in docfiles %}
 							<a href="{{file.get_url}}"><img src="{{ STATIC_PREFIX }}images/icons/page-{{file.filetype}}.png" alt="{{file.get_filetype_display}}" title="{{file.get_filetype_display}}" /></a>

@@ -57,17 +57,15 @@ class single_page_htm(single_page):
 
 class single_page_txt(single_page):
 	template_name='deerbooks/page.txt'
-	content_type = 'text/plain'
+	content_type = 'text/plain; charset=utf-8'
 
 class single_page_md(single_page):
 	template_name='deerbooks/page.md'
-	#content_type = 'text/markdown'			#	Temporarily switched to plain text MIME type for easier testing.
-	content_type = 'text/plain'
+	content_type = 'text/markdown; charset=utf-8'
 	
 class single_page_tex(single_page):
 	template_name='deerbooks/page.tex'
-	#content_type = 'application/x-tex'		#	Temporarily switched to plain text MIME type for easier testing.
-	content_type = 'text/plain'
+	content_type = 'application/x-tex'
 
 
 def finder(request):
