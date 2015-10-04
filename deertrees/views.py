@@ -131,8 +131,8 @@ class leaf_parent():
 			if blocks:
 				order_main = {}
 				order_sidebar = {}
-				blockorder_main_iter = False
-				blockorder_sidebar_iter = False
+				blockorder_main = False
+				blockorder_sidebar = False
 				
 				#	Now, let's build a priority list per region
 				for type, content in blocks.iteritems():
@@ -147,14 +147,10 @@ class leaf_parent():
 					for key,value in sorted(order_main.iteritems()):
 						blockorder_main.append(value)
 					
-					blockorder_main_iter = iter(blockorder_main)
-					
 				if order_sidebar:
 					blockorder_sidebar = []
 					for key,value in sorted(order_sidebar.iteritems()):
 						blockorder_sidebar.append(value)
-						
-					blockorder_sidebar_iter = iter(blockorder_sidebar)
 				
 				#	Assign the main blocks first 
 				for blockname in blocks_to_assign:
