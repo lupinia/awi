@@ -143,32 +143,42 @@ class leaf_parent():
 				
 				#	And now put them in order
 				if order_main:
-					blockorder_main = OrderedDict(sorted(order_main.items(), key=lambda t: t[0]))
-					blockorder_main_iter = blockorder_main.itervalues()
+					blockorder_main = []
+					for key,value in sorted(order_main.iteritems()):
+						blockorder_main.append(value)
+					
+					blockorder_main_iter = iter(blockorder_main)
+					
 				if order_sidebar:
-					blockorder_sidebar = OrderedDict(sorted(order_sidebar.items(), key=lambda t: t[0]))
-					blockorder_sidebar_iter = blockorder_sidebar.itervalues()
+					blockorder_sidebar = []
+					for key,value in sorted(order_sidebar.iteritems()):
+						blockorder_sidebar.append(value)
+						
+					blockorder_sidebar_iter = iter(blockorder_sidebar)
 				
 				#	Assign the main blocks first 
 				for blockname in blocks_to_assign:
-					if 'main' in blockname and blockorder_main_iter:
-						blockdata = next(blockorder_main_iter,False)
-						if blockdata and blockdata['type'] not in assigned_to_blocks:
-							if not returned_data[1].get('main_half',False):
-								returned_data[1]['main_half'] = []
+					if 'main' in blockname and blockorder_main:
+						for blockdata in blockorder_main:
+							if blockdata['type'] not in assigned_to_blocks:
+								if not returned_data[1].get('main_half',False):
+									returned_data[1]['main_half'] = []
 								
-							if blockname == 'main_half':
-								returned_data[1]['main_half'].append(blockdata)
-							else:
-								returned_data[1][blockname] = blockdata
-							assigned_to_blocks.append(blockdata['type'])
-					elif 'sidebar' in blockname and blockorder_sidebar_iter:
-						blockdata = next(blockorder_sidebar_iter,False)
-						if blockdata and blockdata['type'] not in assigned_to_blocks:
-							if not returned_data[1].get('sidebar',False):
-								returned_data[1]['sidebar'] = []
-							returned_data[1]['sidebar'].append(blockdata)
-							assigned_to_blocks.append(blockdata['type'])
+								if blockname == 'main_half':
+									returned_data[1]['main_half'].append(blockdata)
+								else:
+									returned_data[1][blockname] = blockdata
+								assigned_to_blocks.append(blockdata['type'])
+								break
+					
+					elif 'sidebar' in blockname and blockorder_sidebar:
+						for blockdata in blockorder_sidebar:
+							if blockdata['type'] not in assigned_to_blocks:
+								if not returned_data[1].get('sidebar',False):
+									returned_data[1]['sidebar'] = []
+								returned_data[1]['sidebar'].append(blockdata)
+								assigned_to_blocks.append(blockdata['type'])
+								break
 				
 				#	Quick bit of cleanup
 				for content_type in assigned_to_blocks:
@@ -178,12 +188,12 @@ class leaf_parent():
 				if blocks:
 					#	Seriously?  Ok then, we'll just go through whatever's left.
 					#	Sidebar takes priority.
-					for sidebar_data in blockorder_sidebar.values():
+					for sidebar_data in blockorder_sidebar:
 						if sidebar_data['type'] not in assigned_to_blocks:
 							returned_data[1]['sidebar'].append(sidebar_data)
 							assigned_to_blocks.append(sidebar_data['type'])
 					
-					for main_data in blockorder_main.values():
+					for main_data in blockorder_main:
 						if main_data['type'] not in assigned_to_blocks:
 							if not returned_data[1]['main_half']:
 								returned_data[1]['main_half'] = []
