@@ -8,6 +8,7 @@
 
 from django.views import generic
 from django.utils import timezone
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from collections import OrderedDict
 from itertools import cycle
@@ -22,6 +23,12 @@ class leaf_parent():
 	
 	def get_leaves(self, parent=False, parent_type=False):
 		leaf_filters = {}
+		blocks_map = settings.DEERTREES_BLOCKS
+		leaf_list = []
+		for type, settings_dict in blocks_map.iteritems():
+			if settings_dict.get('is_leaf',False):
+				leaf_list.append(type)
+				leaf_list.append('%s__cat' % type)
 		
 		leaf_ordering = ['-featured','-timestamp_post']
 		leaf_filters['timestamp_post__lte'] = timezone.now()
@@ -36,14 +43,14 @@ class leaf_parent():
 		elif parent_type == 'tag' and parent:
 			leaf_filters['tags'] = parent
 		
-		leaves = leaf.objects.filter(**leaf_filters).filter(access_query(self.request)).order_by(*leaf_ordering).select_related()
+		leaves = leaf.objects.select_related(*leaf_list).filter(**leaf_filters).filter(access_query(self.request)).order_by(*leaf_ordering)
 		
 		if leaves:
 			return leaves
 		else:
 			if parent_type == 'category' and parent:
 				descendants = parent.get_descendants()
-				leaves = leaf.objects.filter(featured=True, cat__in=descendants).filter(access_query(self.request)).order_by('-timestamp_post').select_related()
+				leaves = leaf.objects.select_related(*leaf_list).filter(featured=True, cat__in=descendants).filter(access_query(self.request)).order_by('-timestamp_post')
 				if leaves:
 					self.highlight_featured = False
 					return leaves
@@ -62,7 +69,6 @@ class leaf_parent():
 		#	sidebar		- List; do one, then go to a main_half block, and alternate as-needed.
 		#	main_half - List; there can be as many of these as needed.  Alternate as-needed with sidebar.
 		
-		from django.conf import settings
 		blocks_map = settings.DEERTREES_BLOCKS
 		blocks = {}
 		blocks_count = {}
@@ -101,8 +107,8 @@ class leaf_parent():
 			#	2.  For each leaf, loop blocks_map to find its type
 			#	3.  Once that check is successful, put it in the correct block dictionary
 			for leaf_item in leaves:
-				for type, settings in blocks_map.iteritems():
-					if settings['is_leaf']:
+				for type, blocksettings in blocks_map.iteritems():
+					if blocksettings['is_leaf']:
 						if blocks_count[type] <= 12:
 							leaf_content = getattr(leaf_item,type,None)
 							if leaf_content:

@@ -84,7 +84,7 @@ STATIC_S3_PATH = 'awi-hagata'
 from django_processinfo import app_settings as PROCESSINFO
 PROCESSINFO.ADD_INFO = True
 PROCESSINFO.INFO_SEARCH_STRING = '<span id="processinfo"></span>'
-PROCESSINFO.INFO_FORMATTER = '<span id="processinfo">Render time:  %(total).1f ms &bull; Processinfo Module:  %(own).1f ms, %(perc).1f%% of total</span>'
+PROCESSINFO.INFO_FORMATTER = '<span id="processinfo">Render time:  %(total).1f ms</span>'
 
 
 

@@ -6,8 +6,6 @@
 #	Template Tags
 #	bg_filename:	Returns a url to a background image fitting the given tags
 #	bg_info:		Returns text giving a title and info link for the current background
-#	
-#	TODO:	Session storage, to reduce data transfer
 #	=================
 
 from django import template
