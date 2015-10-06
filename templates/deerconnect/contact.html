@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{block.super}} - Contact Information{% endblock %}
+{% block bg_image %}{% include 'awi_bg/bg_image.html' with tag='personal' %}{% endblock %}
+{% load honeypot %}
+{% load errors %}
+
+{% block content_left %}
+	{% if error != 'mailform_toosoon' %}
+		<div class="transbox left_sidebar">
+			<h2>Contact Form</h2>
+			<p>Use this form to send an email.  Your information will only be used to communicate with the webmaster, and will not be shared with any third-parties, or used to send you unsolicited email.  All fields are required.</p>
+
+			{% if error %}
+				<br /><hr /><br />
+				{% error_display error %}
+			{% endif %}
+			<br /><hr /><br />
+			<form action="" method="post">{% csrf_token %}
+				<table class="contactform">
+					{{form.as_table}}
+					<tr class="submitbutton"><th>{% render_honeypot_field %}</th><td><input type="submit" value="Send Message" id="submit" /></td></tr>
+				</table>
+			</form>
+		</div>
+	{% else %}
+		<div class="transbox left_sidebar">
+			{% error_display error %}
+		</div>
+	{% endif %}
+{% endblock %}
+
+{% block content_right %}
+	{% if links_im %}
+		<div class="right_sidebar">
+			<div class="transbox right_sidebar_section">
+				<h4>Messaging Services</h4>
+				{% include 'deerconnect/leaf_contact_link.html' with leaves=links_im blockname="sidebar" highlight_featured=True only %}
+			</div>
+		</div>
+	{% endif %}
+	
+	{% if links %}
+		<div class="right_sidebar">
+			<div class="transbox right_sidebar_section">
+				<h4>Other Links</h4>
+				{% include 'deerconnect/leaf_contact_link.html' with leaves=links blockname="sidebar" highlight_featured=True only %}
+			</div>
+		</div>
+	{% endif %}
+{% endblock %}

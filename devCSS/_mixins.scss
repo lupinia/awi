@@ -3,13 +3,13 @@
 //	By Natasha L.
 //	www.lupinia.net | github.com/lupinia
 
-@mixin error($bgimg,$bgcolor,$color,$border) {
+@mixin error($border,$bgcolor,$color,$bgimg) {
 	margin:3px;
 	padding:5px;
-	padding-left:42px;
+	padding-left:50px;
 	border: 1px solid;
 	border-radius:5px;
-	background-position:5px 10px;
+	background-position:10px 10px;
 	background-repeat:no-repeat;
 	background-image: $bgimg;
 	background-color: $bgcolor;

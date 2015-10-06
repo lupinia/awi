@@ -49,7 +49,8 @@ INSTALLED_APPS = (
 	'django_processinfo',
 	'debug_toolbar',
 	'static_precompiler',
-	'cookielaw',
+	'cookielaw', 
+	'honeypot', 
 	
 	#	My Apps - System/Core
 	'deerfind',		# 404 Map
