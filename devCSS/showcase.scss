@@ -407,9 +407,8 @@ footer {
 		text-align:right;
 	}
 
-	.lower {
-		font-size:x-small;
-	}
+	.lower { font-size:x-small; }
+	#processinfo { color: $color_border; }
 }
 /*	=====	*/
 
@@ -508,4 +507,7 @@ a {
 	width:130px;
 	line-height:28px;
 }
+
+.thumb_right { float:right; margin:10px; text-align:center; }
+.thumb_left { float:left; margin:10px; text-alight:center; }
 /*	=====	*/

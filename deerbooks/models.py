@@ -19,7 +19,7 @@ class export_file(models.Model):
 	timestamp_mod=models.DateTimeField(auto_now=True)
 	
 	def __unicode__(self):
-		return self.docfile
+		return self.docfile.name
 	
 	def get_url(self):
 		return "%s/%s" % (settings.MEDIA_URL,self.docfile.name)

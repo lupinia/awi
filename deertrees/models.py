@@ -54,6 +54,9 @@ class tag(models.Model):
 			return self.title
 		else:
 			return self.slug
+	
+	class Meta:
+		ordering = ['slug',]
 
 #	This model has been modified for the Awi website, and requires the Awi Access app
 #	This is a single categorized node; everything else that belongs to a category should extend this class
