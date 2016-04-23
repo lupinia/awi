@@ -24,7 +24,7 @@ def g2_finder(request):
 	else:
 		search_slug = basename
 	
-	if '.g2' in basename or 'g2_itemId' in request.META.get('QUERY_STRING',''):
+	if '.g2' in basename or request.GET.get('g2_itemId',''):
 		if '.g2' in basename:
 			gallery_id = search_slug
 		else:

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}{{block.super}}{% if page.title %} - {{page.title}}{% endif %}{% endblock %}
+{% block desc %}{% if page.title %}{{page.body_summary}}{% else %}{{block.super}}{% endif %}{% endblock %}
 {% block bg_image %} {% if page.cat.background %}{% include 'awi_bg/bg_image.html' with tag=page.cat.background.tag %}{% else %}{{block.super}}{% endif %} {% endblock %}
 
 {% block content_left %}

@@ -1,6 +1,7 @@
-Sender IP:  {{IP}}
-Sender:  {{name}} ({{email}})
-Domain:  {{domain}}
-Subject:  {{subject}}
-===================================
-{{message}}
+Sender IP:  {{IP}}  
+Sender:  {{name}} ({{email}})  
+Domain:  {{domain}}  
+Subject:  {{subject}}  
+
+===================================  
+{{message}}  

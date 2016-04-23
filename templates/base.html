@@ -9,7 +9,7 @@
 	<meta charset="UTF-8">
 	<meta name="author" content="{% include 'authorname.txt' %}" />
 	<meta name="designer" content="Lupinia Studios - www.lupinia.net" />
-	<meta name="description" content="Lupinia Studios is {% include 'authorname.txt' %}'s personal portfolio, featuring her written works, digital photography, and digital graphics" />
+	<meta name="description" content="{% block desc %}Lupinia Studios is {% include 'authorname.txt' %}'s personal portfolio, featuring her written works, digital photography, and digital graphics.{% endblock %}" />
 	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{% now 'Y' as curyear %} by {% include 'authorname.txt' %}" />
 
 	<title>{% block title %}Lupinia Studios{% endblock %}</title>

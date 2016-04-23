@@ -37,7 +37,7 @@ class tag_admin(SummernoteModelAdmin):
 		(None,{'fields':(('title','slug'),'desc'),},),
 		("Options",{'fields':(('content_priority','sitemap_include'),),},),
 	]
-
+	
 	list_display=('title','slug')
 	prepopulated_fields={'slug':('title',)}
 	search_fields = ('title','slug')
@@ -57,6 +57,18 @@ class leaf_admin(access_admin):
 	readonly_fields = ['timestamp_mod',]
 	search_fields = ['cat__title','cat__slug','tags__title','tags__slug']
 	filter_horizontal = ['tags',]
+	actions = ['recycle',] + access_admin.actions
+	
+	def recycle(self, request, queryset):
+		rows_updated = queryset.update(published=False,cat_id=75)
+		if rows_updated == 1:
+			message_bit = "1 item was"
+		else:
+			message_bit = "%s items were" % rows_updated
+		self.message_user(request, "%s successfully recycled." % message_bit)
+	
+	recycle.short_description = "Recycle selected items"
+
 
 class special_feature_admin(leaf_admin):
 	search_fields = ['url','title','desc'] + leaf_admin.search_fields

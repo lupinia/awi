@@ -50,7 +50,7 @@ INSTALLED_APPS = (
 	'debug_toolbar',
 	'static_precompiler',
 	'cookielaw', 
-	'honeypot', 
+	'honeypot',
 	
 	#	My Apps - System/Core
 	'deerfind',		# 404 Map
