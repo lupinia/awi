@@ -36,10 +36,14 @@ class single_page(generic.DetailView):
 				raise Http404
 		else:
 			if context['page'].book_title:
-				context['toc'] = context['page'].book_title.page_set.all().order_by('book_order')
+				context['toc'] = context['page'].book_title.page_set.all().select_related('cat').order_by('book_order')
 			
+			context['alt_version_exclude'] = []
 			if context['page'].docfiles:
-				context['docfiles'] = context['page'].docfiles.all().order_by('filetype')
+				files_list = context['page'].docfiles.all().order_by('filetype')
+				context['docfiles'] = files_list
+				for item in files_list:
+					context['alt_version_exclude'].append(item.filetype)
 			
 			ancestors = context['object'].cat.get_ancestors(include_self=True)
 			if not context.get('breadcrumbs',False):

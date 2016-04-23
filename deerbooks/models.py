@@ -22,7 +22,7 @@ class export_file(models.Model):
 		return self.docfile.name
 	
 	def get_url(self):
-		return "%s/%s" % (settings.MEDIA_URL,self.docfile.name)
+		return "%s%s" % (settings.MEDIA_URL,self.docfile.name)
 
 #	Table of Contents
 class toc(models.Model):
