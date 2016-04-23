@@ -48,7 +48,7 @@ class single_page(generic.DetailView):
 			for crumb in ancestors:
 				context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
 			
-			context['breadcrumbs'].append({'url':reverse('page_htm',kwargs={'cached_url':crumb.cached_url,'slug':context['page'].slug}), 'title':context['page'].title})
+			context['breadcrumbs'].append({'url':reverse('page_htm',kwargs={'cached_url':crumb.cached_url,'slug':context['page'].slug}), 'title':context['page'].get_title()})
 			
 		return context
 

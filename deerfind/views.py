@@ -4,7 +4,8 @@
 #	
 #	=================
 #	Views
-#	not_found:	Tries to find a redirect before giving up and showing a 404 error.
+#	not_found:	Tries to find a redirect before giving up and showing a 404 error.  Uses a list of standard finder functions (settings.DEERFIND_FINDERS), one per content type.
+#	g2_finder:	Finder for Gallery2 legacy support.  It's in this file because that's handled by this app.
 #	=================
 
 from django.http import HttpResponsePermanentRedirect, HttpResponseNotFound

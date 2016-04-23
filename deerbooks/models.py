@@ -42,8 +42,14 @@ class page(leaf):
 	book_title = models.ForeignKey(toc,null=True,blank=True)
 	book_order = models.IntegerField(default=0,blank=True)
 	
+	def get_title(self,raw=False):
+		if self.book_title and not raw:
+			return "%s:  %s" % (self.book_title.title, self.title)
+		else:
+			return self.title
+	
 	def __unicode__(self):
-		return self.title
+		return self.get_title()
 	
 	def body_summary(self,length=300):
 		if self.summary:

@@ -5,12 +5,13 @@
 {% load awibg %}
 {% load cookielaw_tags %}
 {% get_static_prefix as STATIC_PREFIX %}
+{% now "Y" as curyear %}
 <head>
 	<meta charset="UTF-8">
 	<meta name="author" content="{% include 'authorname.txt' %}" />
 	<meta name="designer" content="Lupinia Studios - www.lupinia.net" />
 	<meta name="description" content="{% block desc %}Lupinia Studios is {% include 'authorname.txt' %}'s personal portfolio, featuring her written works, digital photography, and digital graphics.{% endblock %}" />
-	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{% now 'Y' as curyear %} by {% include 'authorname.txt' %}" />
+	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{{curyear}} by {% include 'authorname.txt' %}" />
 
 	<title>{% block title %}Lupinia Studios{% endblock %}</title>
 	<link href="http://beta.lupinia.net/devCSS/css/showcase.css" type="text/css" rel="stylesheet" id="main_css" /><!-- Temporary -->

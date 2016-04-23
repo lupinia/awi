@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{block.super}}{% if page.title %} - {{page.title}}{% endif %}{% endblock %}
+{% block title %}{{block.super}}{% if page.title %} - {{page.get_title}}{% endif %}{% endblock %}
 {% block desc %}{% if page.title %}{{page.body_summary}}{% else %}{{block.super}}{% endif %}{% endblock %}
 {% block bg_image %} {% if page.cat.background %}{% include 'awi_bg/bg_image.html' with tag=page.cat.background.tag %}{% else %}{{block.super}}{% endif %} {% endblock %}
 
@@ -22,7 +22,7 @@
 					</div>
 				{% endif %}
 
-				<div id="fulltext_page_title_main"><h2>{{page.title}}</h2>
+				<div id="fulltext_page_title_main"><h2>{{page.get_title}}</h2>
 				<div id="byline">{{page.display_times.0.label}}:  {{page.display_times.0.timestamp|date:'F j, Y  G:i:s'}} &bull; {{page.body|wordcount}} words</div>
 				</div>
 			</div>
