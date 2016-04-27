@@ -89,6 +89,18 @@
 					<a class="red" href="https://getpocket.com/save?url={{request.build_absolute_uri}}&title=Lupinia - {{page.title}}"><img src="{{ STATIC_PREFIX }}images/icons/service-pocket.png" alt="Pocket" title="Pocket (External service)" /></a>
 				</div>
 			</div>
+			
+			{% comment %}<!-- Tags -->{% endcomment %}
+			{% if tags %}
+			<div class="transbox right_sidebar_section">
+				<h3>Tags</h3>
+				<div class="tag_list_item">
+					{% for tag in tags %}
+						<a class="sidebar_link" href="{% url 'tag' tag.slug %}">{{tag.title}}</a>
+					{% endfor %}
+				</div>
+			</div>
+			{% endif %}
 		</div>
 	{% endif %}
 {% endblock %}

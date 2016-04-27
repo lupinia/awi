@@ -35,6 +35,7 @@ class single_page(generic.DetailView):
 				self.request.session['deerfind_norecover'] = True
 				raise Http404
 		else:
+			context['tags'] = context['page'].tags.all()
 			if context['page'].book_title:
 				context['toc'] = context['page'].book_title.page_set.all().select_related('cat').order_by('book_order')
 			

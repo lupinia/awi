@@ -282,6 +282,12 @@ class tag_list(leaf_parent, generic.DetailView):
 		else:
 			context['error'] = 'tag_empty'
 		
+		if not context.get('breadcrumbs',False):
+			context['breadcrumbs'] = []
+		
+		context['breadcrumbs'].append({'url':reverse('all_tags'), 'title':'Tags'})
+		context['breadcrumbs'].append({'url':reverse('tag',kwargs={'slug':context['object'].slug,}), 'title':context['object'].title})
+		
 		return context
 
 class all_tags(generic.TemplateView):
@@ -295,6 +301,11 @@ class all_tags(generic.TemplateView):
 			context['tags'] = tag_list
 		else:
 			context['error'] = 'no_tags'
+		
+		if not context.get('breadcrumbs',False):
+			context['breadcrumbs'] = []
+		
+		context['breadcrumbs'].append({'url':reverse('all_tags'), 'title':'Tags'})
 		
 		return context
 
