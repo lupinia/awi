@@ -10,7 +10,6 @@ from django.db import models
 
 from deerbooks.models import page
 
-# Create your models here.
 class menu_section(models.Model):
 	name=models.CharField(max_length=150)
 	slug=models.SlugField()
@@ -18,12 +17,13 @@ class menu_section(models.Model):
 		return self.name
 
 class menu_flag(models.Model):
-	key=models.CharField(max_length=250)
+	name=models.CharField(max_length=250)
+	slug=models.SlugField()
 	img_width=models.IntegerField(null=True,blank=True)
 	img_height=models.IntegerField(null=True,blank=True)
 	icon=models.ImageField(upload_to='menu_icons',height_field='img_height',width_field='img_width')
 	def __unicode__(self):
-		return self.key
+		return self.name
 
 class menu_item(models.Model):
 	name=models.CharField(max_length=150)
