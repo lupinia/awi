@@ -24,12 +24,7 @@
 <div id="mainwrap">
 	<header>
 		<nav class="hoverlinks transbox">
-			<a id="header_nav_first" href="/photo/" style="background-image:url({{ STATIC_PREFIX }}images/nav/photo-off.png)" title="Photography"><img src="{{ STATIC_PREFIX }}images/nav/photo-on.png" alt="Photography" /></a>
-			
-			<a href="/code/" style="background-image:url({{ STATIC_PREFIX }}images/nav/websites-off.png)" title="Websites"><img src="{{ STATIC_PREFIX }}images/nav/websites-on.png" alt="Websites" /></a>
-			<a href="/writing/" style="background-image:url({{ STATIC_PREFIX }}images/nav/writing-off.png)" title="Writing"><img src="{{ STATIC_PREFIX }}images/nav/writing-on.png" alt="Writing" /></a>
-			<a href="/contact/" style="background-image:url({{ STATIC_PREFIX }}images/nav/contact-off.png)" title="Contact"><img src="{{ STATIC_PREFIX }}images/nav/contact-on.png" alt="Contact" /></a>
-			<a href="/personal/" style="background-image:url({{ STATIC_PREFIX }}images/nav/personal-off.png)" title="Personal"><img src="{{ STATIC_PREFIX }}images/nav/personal-on.png" alt="Personal" /></a>
+			{% include 'nav.html' with img=True %}
 		</nav>
 
 		<div id="header_logo" class="transbox">
@@ -74,15 +69,8 @@
 		</div>
 		
 		<nav>
-			<a href="/">Home</a> &bull; 
-			<a href="/about/">About</a> &bull; 
-			<a href="/photo/">Photography</a> &bull; 
-			<a href="/code/">Websites</a> &bull; 
-			<a href="/writing/">Writing</a> &bull; 
-			<a href="/cherokee/">Cherokee Language &amp; Culture</a> &bull; 
-			<a href="/personal/">Personal</a> &bull; 
-			<a href="/contact/">Contact</a><br />
-		
+			{% include 'nav.html' %}
+			
 			<span class="lower">
 			{% block userinfo %}
 				{% if user.is_authenticated %}
