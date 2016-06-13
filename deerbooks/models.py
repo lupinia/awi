@@ -12,7 +12,17 @@ from django.conf import settings
 from deertrees.models import leaf
 
 class export_file(models.Model):
-	FILETYPE_OPTIONS=(('tex','TeX'),('pdf','PDF'),('dvi','DVI'),('ps','PostScript'),('epub','ePub'),)
+	FILETYPE_OPTIONS=(
+		('tex','TeX'),
+		('pdf','PDF'),
+		('dvi','DVI'),
+		('ps','PostScript'),
+		('epub','ePub'),
+		('txt','Plain Text'),
+		('md','Markdown'),
+		('rtf','Rich Text (RTF)'),
+		('docx','Word Document (DocX)'),
+	)
 	
 	filetype=models.CharField(max_length=10,choices=FILETYPE_OPTIONS)
 	docfile=models.FileField(upload_to='writing')
