@@ -22,8 +22,8 @@ Full feature list for these in-progress.
 	- **DeerFind**:  Intelligent 404 handler.
 - **Main Content**
 	- **DeerTrees**:  Multi-level object-agnostic category system.
-	- **DeerBooks**:  Enhanced text/writing management.
-	- **DeerConnect**:  Link directory and contact information manager.
+	- **DeerBooks**:  Enhanced text/writing management, with multi-format display (HTML, Markdown, Plain Text, LaTeX), and automatic generation of PDF, DVI, and PostScript files from dynamically-generated LaTeX source.
+	- **DeerConnect**:  Link directory and contact information manager, with email form.
 - **Other**
 	- **DeerHealth**:  Prescription medication tracker.
 	- **DeerFood**:  Restaurant-style menu system.
