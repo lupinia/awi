@@ -49,6 +49,7 @@ class page(leaf):
 	
 	auto_export = models.BooleanField(default=True,help_text="Uncheck this to disable automatic generation of document files.  Markdown and Plain Text will still be available.")
 	docfiles = models.ManyToManyField(export_file,blank=True)
+	latex_fail = models.BooleanField(default=False)
 	
 	book_title = models.ForeignKey(toc,null=True,blank=True)
 	book_order = models.IntegerField(default=0,blank=True)
@@ -75,3 +76,11 @@ class page(leaf):
 				return body_stripped
 			else:
 				return body_stripped[:length].rsplit(' ',1)[0]+'...'
+
+class export_log(models.Model):
+	CMD_OPTIONS = (('compile_latex','compile_latex'),('compile_epub','compile_epub'),)
+	
+	command = models.CharField(max_length=20, choices=CMD_OPTIONS)
+	page = models.ForeignKey(page,blank=True,null=True)
+	timestamp = models.DateTimeField(auto_now_add=True)
+	message = models.TextField()

@@ -50,6 +50,11 @@ DEERFIND_FINDERS = (
 )
 
 
+#	deerbooks
+#	Specify location of a working directory for compiling LaTeX source files.
+DEERBOOKS_CACHE_DIR = os.path.abspath(os.path.join(BASE_DIR,'deerbooks/export_cache/'))
+
+
 #	CUSTOM APPS
 #	==============
 #	static_precompiler
