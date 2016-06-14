@@ -7,8 +7,8 @@ Built by Natasha L. (@lupinia)
 Domains
 -------
 
-- **[seneca.lupinia.net](http://seneca.lupinia.net/)** *(v5.1)* - Production server.  It runs the current stable version of this codebase at all times.
-- **www.lupinia.net** *(v3.2)* - Deprecated production server; currently runs a legacy PHP version, and is a separate physical server from the other two.  For certain requests/URLs for features that are complete in 5.1, this server acts as a reverse proxy and passes requests to seneca.lupinia.net.
+- **[seneca.lupinia.net](http://www.lupinia.net/)** *(v5.1)* - Production server.  It runs the current stable version of this codebase at all times.  All domains are primarily pointed at this server.
+- **[allegheny.lupinia.net](http://seneca.lupinia.net/)** *(v3.2)* - Deprecated former production server; currently runs a legacy PHP version, and is a separate physical server from the others.  For certain requests/URLs for features that are complete in 5.1, seneca.lupinia.net acts as a reverse proxy and passes the request to allegheny.lupinia.net.
 
 Apps/Modules Included
 ---------------------
@@ -27,6 +27,7 @@ Full feature list for these in-progress.
 - **Other**
 	- **DeerHealth**:  Prescription medication tracker.
 	- **DeerFood**:  Restaurant-style menu system.
+	- **DeerCoins**:  Coin collection (numismatic) database and tools.
 	- **secondlife**:  Legacy support for security/authentication scripts in Second Life.  Pending a rebuild, but unlike the others to be rebuilt, this one needs to stay running until it's replaced.
 
 Third-Party Apps/Modules Used
