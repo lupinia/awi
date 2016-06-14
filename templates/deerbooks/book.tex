@@ -28,7 +28,7 @@
 
 {% for page in pages %}
 \chapter{% templatetag openbrace %}{% if page.title %}{{page.title|safe}}{% else %}Untitled{% endif %}{% templatetag closebrace %}
-{% html_tex page.body promote=False %}
+{% html_tex page.body %}
 {% endfor %}
 
 \end{% templatetag openbrace %}document{% templatetag closebrace %}

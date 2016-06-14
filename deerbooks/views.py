@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from django.utils import timezone
 from django.views import generic
 
+from awi_access.models import access_query
 from deerbooks.models import page, toc, export_file
 
 class single_page(generic.DetailView):
@@ -33,7 +34,7 @@ class single_page(generic.DetailView):
 		else:
 			context['tags'] = context['page'].tags.all()
 			if context['page'].book_title:
-				context['toc'] = context['page'].book_title.page_set.all().select_related('cat').order_by('book_order')
+				context['toc'] = context['page'].book_title.page_set.filter(access_query(self.request)).select_related('cat').order_by('book_order')
 			
 			context['alt_version_exclude'] = []
 			if context['page'].docfiles:
@@ -84,7 +85,7 @@ class book(generic.DetailView):
 		else:
 			site_domain = self.request.site.domain
 		
-		for page in context['toc'].page_set.all().order_by('book_order'):
+		for page in context['toc'].page_set.filter(access_query()).order_by('book_order'):
 			canview = page.can_view(self.request)
 			if not canview[0]:
 				continue

@@ -18,7 +18,6 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 
-from awi_access.models import access_query
 from deerbooks.models import export_file, page, export_log
 
 class Command(BaseCommand):
@@ -44,7 +43,7 @@ class Command(BaseCommand):
 			# Not yay!  :(
 			if self.cur_page:
 				msg['subject'] = 'LaTeX Compilation Failed on Page %d (%s)' % (self.cur_page.pk, self.cur_page.slug)
-				msg['message'] = 'LaTeX compilation failed on page %d ("%s", slug: %s) succeeded.' % (self.cur_page.pk, self.cur_page.get_title(), self.cur_page.slug)
+				msg['message'] = 'LaTeX compilation failed on page %d ("%s", slug: %s).' % (self.cur_page.pk, self.cur_page.get_title(), self.cur_page.slug)
 			else:
 				msg['subject'] = 'LaTeX Compilation Failed:  Unknown Page'
 				msg['message'] = 'LaTeX compilation failed on an unknown page.'
@@ -76,6 +75,7 @@ class Command(BaseCommand):
 		try:
 			# Figure out the next one that needs to be compiled
 			texfile = False
+			tex_custom = False
 			old_docfiles = []
 			
 			pages = page.objects.filter(Q(auto_export=True) & Q(latex_fail=False)).exclude(cat_id=75).order_by('timestamp_mod')
@@ -102,6 +102,7 @@ class Command(BaseCommand):
 								self.cur_page = page_obj
 								self.log('LaTeX will be compiled for page %d (%s)' % (self.cur_page.pk, self.cur_page.slug))
 								self.log('Using LaTeX source from attached docfiles')
+								tex_custom = doc
 								break
 				
 				else:
@@ -146,7 +147,7 @@ class Command(BaseCommand):
 			
 			# We should now have a LaTeX file.
 			# Let's compile it.
-			latex_command = ['rubber','--ps','--pdf','--inplace',texfile]
+			latex_command = ['/usr/local/bin/rubber','--ps','--pdf','--inplace',texfile]
 			self.log("Beginning compilation with command:  \n%s" % ' '.join(latex_command))
 			compile_status = subprocess.check_output(latex_command,stderr=subprocess.STDOUT)
 			self.log("Compilation complete!  Command output:  \n%s" % compile_status)
@@ -176,8 +177,14 @@ class Command(BaseCommand):
 			if new_docfiles:
 				self.cur_page.docfiles.add(*new_docfiles)
 				self.log("Successfully attached new docfiles to page %d (%s)." % (self.cur_page.pk, self.cur_page.slug))
-				if self.cur_page.book_title:
+				if tex_custom:
+					related_pages = tex_custom.page_set.all()
+				elif self.cur_page.book_title:
 					related_pages = self.cur_page.book_title.page_set.all()
+				else:
+					related_pages = False
+				
+				if related_pages:
 					for other_page in related_pages:
 						if other_page is not self.cur_page:
 							other_page.docfiles.add(*new_docfiles)

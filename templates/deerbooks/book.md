@@ -8,7 +8,7 @@ By {% include 'authorname.txt' %} - [{% if 'www' not in site.domain %}www.{% end
 {% for page in pages %}
 ## {% if page.title %}{{page.title|safe}}{% else %}Untitled{% endif %}
 
-{% load deertransform %}{% html_md page.body promote=False %}
+{% load deertransform %}{% html_md page.body %}
 {% endfor %}
 
 --
