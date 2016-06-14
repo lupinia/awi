@@ -6,8 +6,9 @@
 #	Views
 #	=================
 
-from django.views import generic
 from django.core.urlresolvers import reverse
+from django.utils import timezone
+from django.views import generic
 
 from deerbooks.models import page, toc, export_file
 
@@ -29,11 +30,6 @@ class single_page(generic.DetailView):
 			else:
 				context['page'] = ''
 				context['error'] = canview[1]
-		elif context['page'].scheduled():
-			if not self.request.user.is_authenticated() or (not self.request.user.is_staff and context['page'].owner != self.request.user):
-				from django.http import Http404
-				self.request.session['deerfind_norecover'] = True
-				raise Http404
 		else:
 			context['tags'] = context['page'].tags.all()
 			if context['page'].book_title:
@@ -67,10 +63,62 @@ class single_page_txt(single_page):
 class single_page_md(single_page):
 	template_name='deerbooks/page.md'
 	content_type = 'text/markdown; charset=utf-8'
-	
+
 class single_page_tex(single_page):
 	template_name='deerbooks/page.tex'
 	content_type = 'application/x-tex'
+
+
+class book(generic.DetailView):
+	model=toc
+	
+	def get_context_data(self, **kwargs):
+		context=super(book,self).get_context_data(**kwargs)
+		context['pages'] = []
+		context['timestamp'] = False
+		context['source_url'] = False
+		
+		# Prepping for the source_url
+		if 'www' not in self.request.site.domain:
+			site_domain = 'www.%s' % self.request.site.domain
+		else:
+			site_domain = self.request.site.domain
+		
+		for page in context['toc'].page_set.all().order_by('book_order'):
+			canview = page.can_view(self.request)
+			if not canview[0]:
+				continue
+			else:
+				context['pages'].append(page)
+				
+				# source_url should be the url for the first visible page
+				if not context['source_url']:
+					context['source_url'] = 'http://%s%s' % (site_domain, reverse('page_htm', kwargs={'cached_url':page.cat.cached_url,'slug':page.slug,}))
+				
+				# timestamp should be the displayed timestamp of whichever page is newest
+				cur_page_timestamp = page.display_times()
+				if context['timestamp']:
+					if context['timestamp'] < cur_page_timestamp[0]['timestamp']:
+						context['timestamp'] = cur_page_timestamp[0]['timestamp']
+				else:
+					context['timestamp'] = cur_page_timestamp[0]['timestamp']
+		
+		if not context['pages']:
+			raise Http404
+		
+		return context
+
+class book_tex(book):
+	template_name='deerbooks/book.tex'
+	content_type = 'application/x-tex'
+
+class book_txt(book):
+	template_name='deerbooks/book.txt'
+	content_type = 'text/plain; charset=utf-8'
+
+class book_md(book):
+	template_name='deerbooks/book.md'
+	content_type = 'text/markdown; charset=utf-8'
 
 
 def finder(request):

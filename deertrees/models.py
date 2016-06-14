@@ -79,6 +79,18 @@ class leaf(access_control):
 		else:
 			return False
 	
+	def can_view(self, request=False):
+		canview = super(leaf, self).can_view(request)
+		
+		if canview[0]:
+			if self.scheduled():
+				if not request:
+					canview = (False,'')
+				if not request.user.is_authenticated() or (not request.user.is_staff and self.owner != request.user):
+					canview = (False,'access_404')
+		
+		return canview
+	
 	def display_times(self):
 		return_times=[{},{}]
 		if self.timedisp=='post':

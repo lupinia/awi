@@ -45,10 +45,15 @@ urlpatterns = [
 	url(r'^tags/$',deertrees_views.all_tags.as_view(),name='all_tags'),
 	url(r'^tags/(?P<slug>.*)/$',deertrees_views.tag_list.as_view(),name='tag'),
 	
+	url(r'^(?P<cached_url>[\w\d_/-]+)/book\.(?P<slug>.*)\.tex',deerbooks_views.book_tex.as_view(),name='book_tex'),
+	url(r'^(?P<cached_url>[\w\d_/-]+)/book\.(?P<slug>.*)\.md',deerbooks_views.book_md.as_view(),name='book_md'),
+	url(r'^(?P<cached_url>[\w\d_/-]+)/book\.(?P<slug>.*)\.txt',deerbooks_views.book_txt.as_view(),name='book_txt'),
+	
 	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.htm',deerbooks_views.single_page_htm.as_view(),name='page_htm'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.txt',deerbooks_views.single_page_txt.as_view(),name='page_txt'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.md',deerbooks_views.single_page_md.as_view(),name='page_md'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.tex',deerbooks_views.single_page_tex.as_view(),name='page_tex'),
+	
 	url(r'^(?P<cached_url>[\w\d_/-]+)/$',deertrees_views.category_list.as_view(),name='category'),
 ]
 

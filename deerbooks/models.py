@@ -37,6 +37,7 @@ class export_file(models.Model):
 #	Table of Contents
 class toc(models.Model):
 	title=models.CharField(max_length=60)
+	slug = models.SlugField()
 	def __unicode__(self):
 		return self.title
 

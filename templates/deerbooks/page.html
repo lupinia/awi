@@ -69,9 +69,9 @@
 			<div class="transbox right_sidebar_section">
 				<h3>Download/Print</h3>
 				<div class="page_icons hovericons32">
-					{% if 'txt' not in alt_version_exclude %}<a href="{% url 'page_txt' page.cat.cached_url page.slug %}"><img src="{{ STATIC_PREFIX }}images/icons/page-txt.png" alt="Plain Text" title="Plain Text" /></a>{% endif %}
-					{% if 'md' not in alt_version_exclude %}<a href="{% url 'page_md' page.cat.cached_url page.slug %}"><img src="{{ STATIC_PREFIX }}images/icons/page-md.png" alt="Markdown" title="Markdown" /></a>{% endif %}
-					{% if page.auto_export and 'tex' not in alt_version_exclude %}<a href="{% url 'page_tex' page.cat.cached_url page.slug %}"><img src="{{ STATIC_PREFIX }}images/icons/page-tex.png" alt="LaTeX Source (.tex)" title="LaTeX Source (.tex)" /></a>{% endif %}
+					{% if 'txt' not in alt_version_exclude %}<a href="{% if toc %}{% url 'book_txt' page.cat.cached_url page.book_title.slug %}{% else %}{% url 'page_txt' page.cat.cached_url page.slug %}{% endif %}"><img src="{{ STATIC_PREFIX }}images/icons/page-txt.png" alt="Plain Text" title="Plain Text" /></a>{% endif %}
+					{% if 'md' not in alt_version_exclude %}<a href="{% if toc %}{% url 'book_md' page.cat.cached_url page.book_title.slug %}{% else %}{% url 'page_md' page.cat.cached_url page.slug %}{% endif %}"><img src="{{ STATIC_PREFIX }}images/icons/page-md.png" alt="Markdown" title="Markdown" /></a>{% endif %}
+					{% if page.auto_export and 'tex' not in alt_version_exclude %}<a href="{% if toc %}{% url 'book_tex' page.cat.cached_url page.book_title.slug %}{% else %}{% url 'page_tex' page.cat.cached_url page.slug %}{% endif %}"><img src="{{ STATIC_PREFIX }}images/icons/page-tex.png" alt="LaTeX Source (.tex)" title="LaTeX Source (.tex)" /></a>{% endif %}
 					{% if docfiles %}
 						{% for file in docfiles %}
 							<a href="{{file.get_url}}"><img src="{{ STATIC_PREFIX }}images/icons/page-{{file.filetype}}.png" alt="{{file.get_filetype_display}}" title="{{file.get_filetype_display}}" /></a>
