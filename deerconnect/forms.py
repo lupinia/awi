@@ -33,7 +33,7 @@ class contact_form(forms.Form):
 		from django.template import Context
 		
 		msg = {}
-		msg['subject'] = '[Awi] %s' % bleach.clean(self.cleaned_data['subject'], tags=[], strip=True)
+		msg['subject'] = '%s%s' % (settings.EMAIL_SUBJECT_PREFIX, bleach.clean(self.cleaned_data['subject'], tags=[], strip=True))
 		msg['from_email'] = bleach.clean(self.cleaned_data['email'], tags=[], strip=True)
 		
 		message_template = get_template('deerconnect/email.txt')
