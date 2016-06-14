@@ -13,7 +13,7 @@ import urllib
 
 from django.conf import settings
 from django.core.files import File
-from django.core.mail import send_mail
+from django.core.mail import mail_admins
 from django.core.management.base import BaseCommand, CommandError
 from django.core.urlresolvers import reverse
 from django.db.models import Q
@@ -35,28 +35,25 @@ class Command(BaseCommand):
 	
 	def notify(self, status='unknown'):
 		msg = {}
-		msg['recipient_list'] = settings.ADMINS
-		msg['from_email'] = settings.SERVER_EMAIL
 		
 		if status is 'success':
 			# Yay!  :D
-			subject = 'LaTeX Compilation Succeeded on Page %d (%s)' % (self.cur_page.pk, self.cur_page.slug)
+			msg['subject'] = 'LaTeX Compilation Succeeded on Page %d (%s)' % (self.cur_page.pk, self.cur_page.slug)
 			msg['message'] = 'LaTeX compilation on page %d ("%s", slug: %s) succeeded.' % (self.cur_page.pk, self.cur_page.get_title(), self.cur_page.slug)
 		elif status is 'failure':
 			# Not yay!  :(
 			if self.cur_page:
-				subject = 'LaTeX Compilation Failed on Page %d (%s)' % (self.cur_page.pk, self.cur_page.slug)
+				msg['subject'] = 'LaTeX Compilation Failed on Page %d (%s)' % (self.cur_page.pk, self.cur_page.slug)
 				msg['message'] = 'LaTeX compilation failed on page %d ("%s", slug: %s) succeeded.' % (self.cur_page.pk, self.cur_page.get_title(), self.cur_page.slug)
 			else:
-				subject = 'LaTeX Compilation Failed:  Unknown Page'
+				msg['subject'] = 'LaTeX Compilation Failed:  Unknown Page'
 				msg['message'] = 'LaTeX compilation failed on an unknown page.'
 		else:
 			# WTF?
-			subject = 'LaTeX Compilation Error'
+			msg['subject'] = 'LaTeX Compilation Error'
 			msg['message'] = 'LaTeX compilation encountered an unknown error.'
 		
-		msg['subject'] = '%s%s' % (settings.EMAIL_SUBJECT_PREFIX, subject)
-		success = send_mail(**msg)
+		success = mail_admins(**msg)
 		if success:
 			return True
 		else:
