@@ -14,7 +14,7 @@
 \parskip 3pt
 
 \begin{% templatetag openbrace %}document{% templatetag closebrace %}
-\title{% templatetag openbrace %}\Huge {% if page.title %}{{page.get_title|safe}}{% else %}Untitled{% endif %}{% templatetag closebrace %}
+\title{% templatetag openbrace %}\Huge {% if page.title %}{% field_tex page.get_title|safe %}{% else %}Untitled{% endif %}{% templatetag closebrace %}
 \author{% templatetag openbrace %}By {% include 'authorname.txt' %} - \url{% templatetag openbrace %}{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}{% templatetag closebrace %}{% templatetag closebrace %}
 \date{% templatetag openbrace %}{{page.display_times.0.label}}:  {{page.display_times.0.timestamp|date:'F j, Y'}}{% templatetag closebrace %}
 \maketitle

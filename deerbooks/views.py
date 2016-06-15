@@ -7,6 +7,7 @@
 #	=================
 
 from django.core.urlresolvers import reverse
+from django.http import Http404
 from django.utils import timezone
 from django.views import generic
 
@@ -22,7 +23,6 @@ class single_page(generic.DetailView):
 		canview = context['page'].can_view(self.request)
 		if not canview[0]:
 			if canview[1] == 'access_404':
-				from django.http import Http404
 				self.request.session['deerfind_norecover'] = True
 				raise Http404
 			elif canview[1] == 'access_perms':

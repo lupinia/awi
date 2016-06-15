@@ -52,7 +52,19 @@ def html_tex(input_string, promote=True):
 	tex = mdparse.convert(md)
 	tex = tex.replace('<root>','')
 	tex = tex.replace('</root>','')
+	tex = tex.replace('\\(','(')
+	tex = tex.replace('\\)',')')
+	tex = tex.replace('_','\\_')
+	tex = tex.replace('&','\\&')
 	tex = re.sub(r'([0-9]+)\\\.',r'\1.',tex)
+	
+	return tex
+
+def field_tex(input_string):
+	tex = input_string.replace('_','\\_')
+	tex = tex.replace('#','\\#')
+	tex = tex.replace('$','\\$')
+	tex = tex.replace('&','\\&')
 	
 	return tex
 
