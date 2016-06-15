@@ -3,8 +3,8 @@
 #	www.lupinia.net | github.com/lupinia
 #	
 #	=================
-#	Management Command:  compile_latex
-#	Assembles PDF, DVI, and PS files from LaTeX source.
+#	Management Command:  no_export_deleted
+#	Turns off auto_export for any pages that are recycled (published=False and category=Trash)
 #	=================
 
 from django.core.management.base import BaseCommand, CommandError
