@@ -17,6 +17,7 @@ class link_base(models.Model):
 	url=models.CharField(max_length=250)
 	desc=models.TextField(null=True,blank=True)
 	icon=models.ImageField(upload_to='linkicons',null=True,blank=True)
+	healthy = models.BooleanField(default=True)
 	
 	class Meta:
 		abstract = True
