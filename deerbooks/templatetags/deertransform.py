@@ -52,9 +52,6 @@ def html_tex(input_string, promote=True):
 	tex = mdparse.convert(md)
 	tex = tex.replace('<root>','')
 	tex = tex.replace('</root>','')
-	tex = tex.replace(r'$',r'{\$}')
-	tex = tex.replace(r'_',r'{\_}')
-	tex = tex.replace(r'&',r'{\&}')
 	tex = re.sub(r'([0-9]+)\\\.',r'\1.',tex)
 	
 	return tex
