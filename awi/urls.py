@@ -6,10 +6,12 @@
 #	URL map for entire site
 #	=================
 
-from django.conf.urls import include, url
-from django.contrib.auth.decorators import login_required
-from django.contrib import admin
 from django.conf import settings
+from django.conf.urls import include, url
+from django.contrib import admin
+from django.contrib.auth.decorators import login_required
+from django.contrib.sitemaps.views import sitemap
+
 from honeypot.decorators import check_honeypot
 
 from awi_error.views import system_error, denied_error
@@ -18,10 +20,23 @@ from deerconnect.views import contact_page
 from deertrees import views as deertrees_views
 from deerbooks import views as deerbooks_views
 
+from deerbooks.sitemaps import page_map
+from deertrees.sitemaps import *
+from deerfood.sitemaps import menu_cat_map
+
 admin.autodiscover()
 handler404 = not_found
 handler500 = system_error
 handler403 = denied_error
+
+sitemaps = {
+	'writing':page_map,
+	'directories':cat_map,
+	'extras':special_map,
+	'foodmenu':menu_cat_map,
+	'tags':tag_map,
+	'static':static_map,
+}
 
 urlpatterns = [
 	#	System/Core
@@ -29,6 +44,7 @@ urlpatterns = [
 	url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 	url(r'^accounts/login/','django.contrib.auth.views.login'),
 	url(r'^accounts/logout/','django.contrib.auth.views.logout',{'template_name':'registration/login.html'}),
+	url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 	
 	#	Contributed
 	url(r'^admin_tools/', include('admin_tools.urls')),

@@ -42,6 +42,7 @@ INSTALLED_APPS = (
 	'django.contrib.staticfiles',
 	'django.contrib.admin', 'django.contrib.admindocs',
 	'django.contrib.humanize',
+	'django.contrib.sitemaps',
 	
 	#	Third-party apps
 	'mptt', 'django_mptt_admin',

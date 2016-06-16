@@ -8,6 +8,7 @@
 
 from django.db import models
 from django.conf import settings
+from django.core.urlresolvers import reverse
 
 from deertrees.models import leaf
 
@@ -62,6 +63,9 @@ class page(leaf):
 	
 	def __unicode__(self):
 		return self.get_title()
+	
+	def get_absolute_url(self):
+		return reverse('page_htm', kwargs={'cached_url':self.cat.cached_url, 'slug':self.slug})
 	
 	def body_summary(self,length=300):
 		if self.summary:

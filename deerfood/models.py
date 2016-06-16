@@ -6,15 +6,22 @@
 #	Models
 #	=================
 
+from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils import timezone
 
 from deerbooks.models import page
 
 class menu_section(models.Model):
 	name=models.CharField(max_length=150)
 	slug=models.SlugField()
+	timestamp_mod=models.DateTimeField(auto_now=True)
+	timestamp_post=models.DateTimeField(default=timezone.now)
 	def __unicode__(self):
 		return self.name
+	
+	def get_absolute_url(self):
+		return reverse('deerfood:menu_section', kwargs={'slug':self.slug,})
 
 class menu_flag(models.Model):
 	name=models.CharField(max_length=250)
@@ -31,5 +38,7 @@ class menu_item(models.Model):
 	section=models.ForeignKey(menu_section)
 	flags=models.ManyToManyField(menu_flag,null=True,blank=True)
 	recipe_internal=models.ForeignKey(page,null=True,blank=True)
+	timestamp_mod=models.DateTimeField(auto_now=True)
+	timestamp_post=models.DateTimeField(default=timezone.now)
 	def __unicode__(self):
 		return self.name

@@ -6,6 +6,7 @@
 #	Models
 #	=================
 
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 
@@ -25,10 +26,15 @@ class category(MPTTModel, access_control):
 	background=models.ForeignKey('awi_bg.background_tag',null=True,blank=True)
 	content_priority=models.CharField(choices=PRIORITY_OPTIONS,max_length=10,null=True,blank=True,help_text="Manually specify a content type to prioritize during display.")		#	An option to override the content given top priority
 	sitemap_include=models.BooleanField(default=True)
+	timestamp_mod=models.DateTimeField(auto_now=True)
+	timestamp_post=models.DateTimeField(default=timezone.now)
 	
 	def __unicode__(self):
 		return self.title
-		
+	
+	def get_absolute_url(self):
+		return reverse('category', kwargs={'cached_url':self.cached_url,})
+	
 	def save(self, *args, **kwargs):
 		if self.parent:
 			self.cached_url = '%s/%s' % (self.parent.cached_url, self.slug)
@@ -48,12 +54,17 @@ class tag(models.Model):
 	
 	content_priority=models.CharField(choices=PRIORITY_OPTIONS,max_length=10,null=True,blank=True)		#	An option to override the content given top priority
 	sitemap_include=models.BooleanField(default=True)
+	timestamp_mod=models.DateTimeField(auto_now=True)
+	timestamp_post=models.DateTimeField(default=timezone.now)
 	
 	def __unicode__(self):
 		if self.title:
 			return self.title
 		else:
 			return self.slug
+	
+	def get_absolute_url(self):
+		return reverse('tag', kwargs={'slug':self.slug,})
 	
 	class Meta:
 		ordering = ['slug',]
@@ -114,6 +125,9 @@ class special_feature(leaf):
 	url=models.CharField(max_length=60,unique=True)
 	title=models.CharField(max_length=60)
 	desc=models.CharField(max_length=255,null=True,blank=True)
+	
+	def get_absolute_url(self):
+		return '%s%s' % (reverse('category', kwargs={'cached_url':self.cat.cached_url,}), self.url)
 	
 	def __unicode__(self):
 		return self.title
