@@ -9,6 +9,7 @@
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
 
 from mptt.models import MPTTModel, TreeForeignKey
 from awi_access.models import access_control
@@ -101,6 +102,37 @@ class leaf(access_control):
 					canview = (False,'access_404')
 		
 		return canview
+	
+	def tag_item(self, taglist):
+		return_data = {'skipped':[], 'added':[], 'created':[]}
+		if ',' in taglist:
+			new_tags = taglist.split(',')
+		else:
+			new_tags = [taglist,]
+		
+		old_tags = {}
+		cur_tags = self.tags.all()
+		if cur_tags:
+			for old_tag in cur_tags:
+				old_tags[old_tag.slug] = old_tag
+		
+		new_tag_objs = []
+		for new_tag in new_tags:
+			if old_tags.get(new_tag, False):
+				return_data['skipped'].append(new_tag)
+			else:
+				new_tag = slugify(new_tag)
+				new_tag_obj = tag.objects.get_or_create(slug=new_tag)
+				new_tag_objs.append(new_tag_obj[0])
+				if new_tag_obj[1]:
+					return_data['created'].append(new_tag)
+				else:
+					return_data['added'].append(new_tag)
+		
+		if new_tag_objs:
+			self.tags.add(*new_tag_objs)
+		
+		return return_data
 	
 	def display_times(self):
 		return_times=[{},{}]
