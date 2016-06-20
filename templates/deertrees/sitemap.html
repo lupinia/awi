@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{block.super}} - Site Map{% endblock %}
+{% load mptt_tags %}
+
+{% block content_left %}
+	<div class="transbox left_sidebar"><h2>Site Map</h2></div>
+	{% if error %}
+		{% load errors %}
+		<div class="transbox left_sidebar">{% error_display error %}</div>
+	{% endif %}
+	
+	<div class="transbox fulltext_page">
+		<ul class="tree">
+			<li><a href="/robots.txt">/robots.txt</a> <em>(Robots.txt file)</em></li>
+			<li><a href="/sitemap.xml">/sitemap.xml</a> <em>(XML site map)</em></li>
+			{% if user.is_superuser %}<li><a href="/admin/">/admin/*</a> <em>(Administration)</em></li>{% endif %}
+			<li><a href="/accounts/login/">/accounts/login/</a> <em>(User login)</em></li>
+			<li><a href="/accounts/logout/">/accounts/logout/</a> <em>(User logout)</em></li>
+			<li><a href="/contact/">/contact/</a> <em>(Contact information)</em></li>
+			{% recursetree cats %}
+				<li><a href="{% url 'category' node.cached_url %}">{% url 'category' node.cached_url %}</a> <em>(Category:  {{node.title}})  {% if node.num_leaves %}({{node.num_leaves}} content item{{node.num_leaves|pluralize}}){% endif %}</em>
+					{% if not node.is_leaf_node %}
+						<ul>
+							{{children}}
+						</ul>
+					{% endif %}
+				</li>
+			{% endrecursetree  %}
+			<li><a href="{% url 'all_tags' %}">/tags/</a> <em>(Tag list)</em>
+				<ul>
+					{% for tag in tags %}
+						{% if tag.num_leaves %}<li><a href="{% url 'tag' tag.slug %}">{% url 'tag' tag.slug %}</a> <em>(Tag:  {{tag}})  ({{tag.num_leaves}} content items)</em></li>{% endif %}
+					{% endfor %}
+				</ul>
+			</li>
+		</ul>
+	</div>
+{% endblock %}

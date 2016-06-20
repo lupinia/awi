@@ -11,6 +11,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.contrib.sitemaps.views import sitemap
+from django.views.decorators.cache import cache_control
 
 from honeypot.decorators import check_honeypot
 
@@ -20,16 +21,12 @@ from deerconnect.views import contact_page
 from deertrees import views as deertrees_views
 from deerbooks import views as deerbooks_views
 
+#	For django.contrib.sitemaps
 from deerbooks.sitemaps import page_map
 from deertrees.sitemaps import *
 from deerfood.sitemaps import menu_cat_map
 
-admin.autodiscover()
-handler404 = not_found
-handler500 = system_error
-handler403 = denied_error
-
-sitemaps = {
+SITEMAP_OBJECTS = {
 	'writing':page_map,
 	'directories':cat_map,
 	'extras':special_map,
@@ -38,13 +35,18 @@ sitemaps = {
 	'static':static_map,
 }
 
+admin.autodiscover()
+handler404 = not_found
+handler500 = system_error
+handler403 = denied_error
+
 urlpatterns = [
 	#	System/Core
 	url(r'^admin/', include(admin.site.urls)),
 	url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 	url(r'^accounts/login/','django.contrib.auth.views.login'),
 	url(r'^accounts/logout/','django.contrib.auth.views.logout',{'template_name':'registration/login.html'}),
-	url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+	url(r'^sitemap\.xml$', sitemap, {'sitemaps': SITEMAP_OBJECTS}, name='django.contrib.sitemaps.views.sitemap'),
 	
 	#	Contributed
 	url(r'^admin_tools/', include('admin_tools.urls')),
@@ -60,6 +62,7 @@ urlpatterns = [
 	url(r'^$',deertrees_views.homepage.as_view(),name='home'),
 	url(r'^tags/$',deertrees_views.all_tags.as_view(),name='all_tags'),
 	url(r'^tags/(?P<slug>.*)/$',deertrees_views.tag_list.as_view(),name='tag'),
+	url(r'^about/sitemap\.htm$',cache_control(max_age=60*60*48)(deertrees_views.sitemap.as_view()),name='sitemap_htm'),
 	
 	url(r'^(?P<cached_url>[\w\d_/-]+)/book\.(?P<slug>.*)\.tex',deerbooks_views.book_tex.as_view(),name='book_tex'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/book\.(?P<slug>.*)\.md',deerbooks_views.book_md.as_view(),name='book_md'),

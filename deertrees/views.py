@@ -6,16 +6,18 @@
 #	Views
 #	=================
 
-from django.views import generic
-from django.utils import timezone
-from django.conf import settings
-from django.core.urlresolvers import reverse
 from collections import OrderedDict
 from itertools import cycle
 
-from deertrees.models import category, tag, leaf
+from django.conf import settings
+from django.core.urlresolvers import reverse
+from django.db.models import Count
+from django.utils import timezone
+from django.views import generic
+
 from awi_access.models import access_query
 from deerconnect.models import contact_link
+from deertrees.models import category, tag, leaf
 
 class leaf_parent():
 	template_name = 'deertrees/leaves.html'
@@ -91,7 +93,7 @@ class leaf_parent():
 		#	Content time!
 		#	First, check for subcategories and contact links
 		if parent_type == 'category' and parent:
-			child_cats = parent.children.all().filter(access_query(self.request)).order_by('title')
+			child_cats = parent.children.filter(access_query(self.request)).order_by('title')
 			if child_cats:
 				blocks['category'] = child_cats
 			
@@ -218,6 +220,18 @@ class homepage(leaf_parent, generic.TemplateView):
 			context.update(blocks[1])
 		
 		return context
+
+class sitemap(generic.TemplateView):
+	template_name = 'deertrees/sitemap.html'
+	
+	def get_context_data(self, **kwargs):
+		context = super(sitemap,self).get_context_data(**kwargs)
+		
+		context['tags'] = tag.objects.all().annotate(num_leaves=Count('leaf'))
+		context['cats'] = category.objects.filter(access_query(self.request)).annotate(num_leaves=Count('leaf'))
+		
+		return context
+
 
 class main_rssfeed(leaf_parent, generic.TemplateView):
 	template_name='deertrees/rss.xml'
