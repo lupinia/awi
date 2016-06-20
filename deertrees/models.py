@@ -105,7 +105,9 @@ class leaf(access_control):
 	
 	def tag_item(self, taglist):
 		return_data = {'skipped':[], 'added':[], 'created':[]}
-		if ',' in taglist:
+		if ', ' in taglist:
+			new_tags = taglist.split(', ')
+		elif ',' in taglist:
 			new_tags = taglist.split(',')
 		else:
 			new_tags = [taglist,]

@@ -92,7 +92,6 @@ PROCESSINFO.INFO_SEARCH_STRING = '<span id="processinfo"></span>'
 PROCESSINFO.INFO_FORMATTER = '<span id="processinfo">Render time:  %(total).1f ms</span>'
 
 
-
 #	django_summernote
 def attachment_path(instance, filename):
 	from os.path import join
@@ -135,5 +134,3 @@ SUMMERNOTE_CONFIG = {
 		'//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js',
 	),
 }
-
-
