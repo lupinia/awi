@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 
 class prescription(models.Model):
 	name=models.CharField(max_length=150)
+	fullname=models.CharField(max_length=150, blank=True, null=True)
 	slug=models.SlugField()
 	quantity=models.IntegerField(help_text="The amount that you have right now, minus today's dose")
 	per_day=models.IntegerField(help_text="The total number of these you take per day")
