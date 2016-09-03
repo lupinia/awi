@@ -36,7 +36,7 @@ class menu_item(models.Model):
 	name=models.CharField(max_length=150)
 	desc=models.TextField()
 	section=models.ForeignKey(menu_section)
-	flags=models.ManyToManyField(menu_flag,null=True,blank=True)
+	flags=models.ManyToManyField(menu_flag,blank=True)
 	recipe_internal=models.ForeignKey(page,null=True,blank=True)
 	timestamp_mod=models.DateTimeField(auto_now=True)
 	timestamp_post=models.DateTimeField(default=timezone.now)
