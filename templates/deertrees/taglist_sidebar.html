@@ -1,0 +1,21 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+{% if tags %}
+	<div class="transbox right_sidebar_section">
+		{% if return_to and can_edit_tags %}
+			<div class="admin_buttons">
+				<div class="hovericons16">
+					<a href="{% url 'all_tags' %}?return_to={{return_to}}?add_tag=" title="Add a Tag"><img src="{{STATIC_PREFIX}}images/icons/add.png" alt="Add a tag" title="Add a tag" /></a>
+				</div>
+			</div>
+		{% endif %}
+		<h3>Tags</h3>
+		<div class="tag_list_item">
+			{% for tag in tags %}
+				<div class="hovericons16"><a href="?remove_tag={{tag.pk}}" title="Remove Tag ({{tag}})"><img src="{{STATIC_PREFIX}}images/icons/delete.png" alt="Remove" title="Remove Tag ({{tag}})" /></a></div>
+				<a class="sidebar_link" href="{% url 'tag' tag.slug %}">{{tag}}</a>
+			{% endfor %}
+		</div>
+	</div>
+{% endif %}

@@ -10,8 +10,11 @@ from collections import OrderedDict
 from itertools import cycle
 
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db.models import Count
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views import generic
 
@@ -79,7 +82,7 @@ class leaf_parent():
 		
 		#	Build the list of blocks to assign
 		if parent_type == 'homepage':
-			blocks_to_assign = ['main_half','sidebar','sidebar','main_half']
+			blocks_to_assign = ['main_half','sidebar','main_half','sidebar']
 		else:
 			blocks_to_assign = ['sidebar','sidebar','main_full_2']
 			if parent and parent.content_priority != 'desc':
@@ -111,7 +114,7 @@ class leaf_parent():
 			for leaf_item in leaves:
 				for type, blocksettings in blocks_map.iteritems():
 					if blocksettings['is_leaf']:
-						if blocks_count[type] <= 12:
+						if blocks_count[type] <= 50:
 							leaf_content = getattr(leaf_item,type,None)
 							if leaf_content:
 								blocks[type].append(leaf_content)
@@ -321,6 +324,58 @@ class all_tags(generic.TemplateView):
 		
 		context['breadcrumbs'].append({'url':reverse('all_tags'), 'title':'Tags'})
 		
+		if self.request.GET.get('return_to') and self.request.user.has_perm('deertrees.change_leaf'):
+			context['return_to'] = self.request.GET.get('return_to')
+		
+		return context
+
+class leaf_view(generic.DetailView):
+	def get_context_data(self, **kwargs):
+		context=super(leaf_view,self).get_context_data(**kwargs)
+		
+		# Permissions check
+		canview = context['object'].can_view(self.request)
+		if not canview[0]:
+			if canview[1] == 'access_404':
+				self.request.session['deerfind_norecover'] = True
+				raise Http404
+			elif canview[1] == 'access_perms':
+				from django.core.exceptions import PermissionDenied
+				raise PermissionDenied
+			else:
+				context['object'] = ''
+				context['error'] = canview[1]
+		else:
+			# Tags
+			context['tags'] = context['object'].tags.all()
+			
+			# Adding/Removing Tags
+			if self.request.user.has_perm('deertrees.change_leaf'):
+				context['can_edit_tags'] = True
+				context['return_to'] = context['object'].get_absolute_url()
+				
+				if self.request.GET.get('add_tag'):
+					new_tag = get_object_or_404(tag, pk=self.request.GET.get('add_tag'))
+					context['object'].tags.add(new_tag)
+					context['object'].save()
+				elif self.request.GET.get('remove_tag'):
+					old_tag = get_object_or_404(tag, pk=self.request.GET.get('remove_tag'))
+					context['object'].tags.remove(old_tag)
+					context['object'].save()
+			else:
+				context['can_edit_tags'] = False
+				context['return_to'] = ''
+			
+			# Breadcrumbs
+			ancestors = context['object'].cat.get_ancestors(include_self=True)
+			if not context.get('breadcrumbs',False):
+				context['breadcrumbs'] = []
+			
+			for crumb in ancestors:
+				context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
+			
+			context['breadcrumbs'].append({'url':context['object'].get_absolute_url(), 'title':str(context['object'])})
+			
 		return context
 
 def finder(request):

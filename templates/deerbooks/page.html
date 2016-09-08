@@ -92,14 +92,7 @@
 			
 			{% comment %}<!-- Tags -->{% endcomment %}
 			{% if tags %}
-			<div class="transbox right_sidebar_section">
-				<h3>Tags</h3>
-				<div class="tag_list_item">
-					{% for tag in tags %}
-						<a class="sidebar_link" href="{% url 'tag' tag.slug %}">{{tag}}</a>
-					{% endfor %}
-				</div>
-			</div>
+				{% include 'deertrees/taglist_sidebar.html' %}
 			{% endif %}
 		</div>
 	{% endif %}

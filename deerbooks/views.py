@@ -8,31 +8,19 @@
 
 from django.core.urlresolvers import reverse
 from django.http import Http404
-from django.utils import timezone
 from django.views import generic
 
 from awi_access.models import access_query
 from deerbooks.models import page, toc, export_file
+from deertrees.views import leaf_view
 
-class single_page(generic.DetailView):
+class single_page(leaf_view):
 	model=page
 	
 	def get_context_data(self, **kwargs):
 		context=super(single_page,self).get_context_data(**kwargs)
 		
-		canview = context['page'].can_view(self.request)
-		if not canview[0]:
-			if canview[1] == 'access_404':
-				self.request.session['deerfind_norecover'] = True
-				raise Http404
-			elif canview[1] == 'access_perms':
-				from django.core.exceptions import PermissionDenied
-				raise PermissionDenied
-			else:
-				context['page'] = ''
-				context['error'] = canview[1]
-		else:
-			context['tags'] = context['page'].tags.all()
+		if context['object']:
 			if context['page'].book_title:
 				context['toc'] = context['page'].book_title.page_set.filter(access_query(self.request)).select_related('cat').order_by('book_order')
 			
@@ -42,16 +30,7 @@ class single_page(generic.DetailView):
 				context['docfiles'] = files_list
 				for item in files_list:
 					context['alt_version_exclude'].append(item.filetype)
-			
-			ancestors = context['object'].cat.get_ancestors(include_self=True)
-			if not context.get('breadcrumbs',False):
-				context['breadcrumbs'] = []
-			
-			for crumb in ancestors:
-				context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
-			
-			context['breadcrumbs'].append({'url':reverse('page_htm',kwargs={'cached_url':crumb.cached_url,'slug':context['page'].slug}), 'title':context['page'].get_title()})
-			
+		
 		return context
 
 class single_page_htm(single_page):
@@ -130,7 +109,7 @@ def finder(request):
 	if '.' in basename:
 		search_slug_list = basename.split('.')
 		search_slug = search_slug_list[0]
-		search_type = search_slug_list[1]
+		search_type = search_slug_list[-1]
 		
 		page_check = page.objects.filter(slug=search_slug)
 		if page_check.exists():

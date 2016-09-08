@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %}{{block.super}} - All Tags{% endblock %}
+{% block title %}{{block.super}} - {% if return_to %}Select a Tag{% else %}All Tags{% endif %}{% endblock %}
 
 {% block content_left %}
 	<div class="transbox left_sidebar">
-		<h2>All Tags</h2>
-		<div><p>This is a list of all tags defined in the system.</p></div>
+		<h2>{% if return_to %}Select a Tag{% else %}All Tags{% endif %}</h2>
+		<div><p>This is a list of all tags defined in the system.{% if return_to %}  Click a tag to select it.{% endif %}</p></div>
 		{% if error %}
 			{% load errors %}
 			<br /><hr /><br />
@@ -18,8 +18,9 @@
 			<div class="leaf_links_wrapper">
 			{% for tag in tags %}
 				<div class="leaf_link midheight">
-					<a href="{% url 'tag' tag.slug %}" title="{{tag.title}}">
-						<span class="item_summary_head"><span class="item_summary_title">{{tag.title}}</span></span>
+					<a href="{% if return_to %}{{return_to}}{{tag.pk}}{% else %}{% url 'tag' tag.slug %}{% endif %}" title="{{tag}}">
+						<span class="item_summary_head"><span class="item_summary_title">{{tag}}</span></span><br />
+						<span class="item_summary_body">{% if tag.desc %}{{tag.desc|striptags}}{% endif %}</span>
 					</a>
 				</div>
 			{% endfor %}
