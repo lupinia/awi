@@ -38,13 +38,13 @@ class export_file(models.Model):
 #	Table of Contents
 class toc(models.Model):
 	title=models.CharField(max_length=60)
-	slug = models.SlugField()
+	slug = models.SlugField(unique=True)
 	def __unicode__(self):
 		return self.title
 
 class page(leaf):
-	slug = models.SlugField()
-	title = models.CharField(max_length=60)
+	slug = models.SlugField(unique=True)
+	title = models.CharField(max_length=100)
 	body = models.TextField()
 	summary = models.CharField(max_length=255,null=True,blank=True)
 	
@@ -55,7 +55,7 @@ class page(leaf):
 	book_title = models.ForeignKey(toc,null=True,blank=True)
 	book_order = models.IntegerField(default=0,blank=True)
 	
-	def get_title(self,raw=False):
+	def get_title(self, raw=False):
 		if self.book_title and not raw:
 			return "%s:  %s" % (self.book_title.title, self.title)
 		else:

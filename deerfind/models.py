@@ -19,7 +19,7 @@ class category(models.Model):
 		return self.title
 	
 class pointer(models.Model):
-	old_url = models.CharField(max_length = 200)
+	old_url = models.CharField(max_length = 200, unique=True)
 	new_url = models.CharField(max_length = 200)
 	category = models.ForeignKey(category)
 	

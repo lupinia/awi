@@ -14,7 +14,7 @@ from deerbooks.models import page
 
 class menu_section(models.Model):
 	name=models.CharField(max_length=150)
-	slug=models.SlugField()
+	slug=models.SlugField(unique=True)
 	timestamp_mod=models.DateTimeField(auto_now=True)
 	timestamp_post=models.DateTimeField(default=timezone.now)
 	def __unicode__(self):
@@ -25,7 +25,7 @@ class menu_section(models.Model):
 
 class menu_flag(models.Model):
 	name=models.CharField(max_length=250)
-	slug=models.SlugField()
+	slug=models.SlugField(unique=True)
 	img_width=models.IntegerField(null=True,blank=True)
 	img_height=models.IntegerField(null=True,blank=True)
 	icon=models.ImageField(upload_to='menu_icons',height_field='img_height',width_field='img_width')

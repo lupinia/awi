@@ -11,7 +11,7 @@ from django.db import models
 from django.conf import settings
 
 class currency(models.Model):
-	code = models.SlugField(max_length=1)
+	code = models.SlugField(max_length=1, unique=True)
 	name = models.CharField(max_length=100)
 	active_use = models.BooleanField()
 	
@@ -19,7 +19,7 @@ class currency(models.Model):
 		return self.name
 
 class country(models.Model):
-	code = models.SlugField(max_length=2)
+	code = models.SlugField(max_length=2, unique=True)
 	name = models.CharField(max_length=255)
 	flag = models.ImageField(upload_to='flags',null=True,blank=True)
 	
@@ -27,7 +27,7 @@ class country(models.Model):
 		return self.name
 
 class coin(models.Model):
-	code = models.SlugField()
+	code = models.SlugField(unique=True)
 	country = models.ForeignKey(country)
 	country_as_written = models.CharField(max_length=255,blank=True,null=True)
 	value = models.DecimalField(max_digits=12, decimal_places=5,)
@@ -56,7 +56,7 @@ class coin(models.Model):
 
 #	In case a sort code for a coin changes, the old one will still work.
 class code_alias(models.Model):
-	code = models.SlugField()
+	code = models.SlugField(unique=True)
 	coin = models.ForeignKey(coin)
 	
 	def __unicode__(self):

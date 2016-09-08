@@ -22,7 +22,7 @@ class category(MPTTModel, access_control):
 	summary=models.CharField(max_length=255)
 	desc=models.TextField(null=True,blank=True)
 	parent=TreeForeignKey('self',null=True,blank=True,related_name='children')
-	cached_url=models.CharField(max_length=255,null=True,blank=True)
+	cached_url=models.CharField(max_length=255,null=True,blank=True,unique=True)
 	
 	background=models.ForeignKey('awi_bg.background_tag',null=True,blank=True)
 	content_priority=models.CharField(choices=PRIORITY_OPTIONS,max_length=10,null=True,blank=True,help_text="Manually specify a content type to prioritize during display.")		#	An option to override the content given top priority
@@ -50,7 +50,7 @@ class tag(models.Model):
 	PRIORITY_OPTIONS = (('photo','Photos'),('page','Writing'),('desc','Category Description'),)
 	
 	title=models.CharField(max_length=200,null=True,blank=True)
-	slug=models.SlugField(max_length=200)
+	slug=models.SlugField(max_length=200,unique=True)
 	desc=models.TextField(null=True,blank=True)
 	
 	content_priority=models.CharField(choices=PRIORITY_OPTIONS,max_length=10,null=True,blank=True)		#	An option to override the content given top priority

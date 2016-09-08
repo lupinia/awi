@@ -12,7 +12,7 @@ class security_control(models.Model):
 	GRID_OPTIONS=(('sl','Second Life'),('opensim_lup','OpenSim (Lupinia)'))
 	
 	name=models.CharField(max_length=150)
-	key=models.CharField(max_length=255)
+	key=models.CharField(max_length=255,unique=True)
 	auth=models.BooleanField()
 	grid=models.CharField(max_length=20,choices=GRID_OPTIONS,default='sl')
 	def __unicode__(self):
