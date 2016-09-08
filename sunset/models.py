@@ -533,7 +533,7 @@ class batch_import(access_control):
 				else:
 					new_img = image(
 						cat=self.cat,
-						timedisp='mod',
+						timedisp='post',
 						published=False,
 						featured=False,
 						mature=self.mature,
