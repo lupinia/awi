@@ -20,6 +20,7 @@ from deerfind.views import not_found
 from deerconnect.views import contact_page
 from deertrees import views as deertrees_views
 from deerbooks import views as deerbooks_views
+from sunset import views as sunset_views
 
 #	For django.contrib.sitemaps
 from deerbooks.sitemaps import page_map
@@ -72,6 +73,8 @@ urlpatterns = [
 	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.txt',deerbooks_views.single_page_txt.as_view(),name='page_txt'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.md',deerbooks_views.single_page_md.as_view(),name='page_md'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.tex',deerbooks_views.single_page_tex.as_view(),name='page_tex'),
+	
+	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.img',sunset_views.single_image.as_view(),name='image_single'),
 	
 	url(r'^(?P<cached_url>[\w\d_/-]+)/$',deertrees_views.category_list.as_view(),name='category'),
 ]

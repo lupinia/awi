@@ -1,0 +1,46 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+{% if 'sidebar' in blockname %}
+	{% for page in leaves %}
+	<a href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}} - {{page.body_summary}}" class="sidebar_link {% if page.featured and highlight_featured %}featured{% elif page.mature %}mature{% endif %}">
+		<span class="sidebar_link_title">{{page.get_title}}</span>
+		{% if page.featured and highlight_featured %}
+			<br />
+			<span class="sidebar_link_subtext">Featured</span>
+		{% elif page.mature %}
+			<br />
+			<span class="sidebar_link_subtext">Mature Content</span>
+		{% endif %}
+	</a>
+	{% empty %}
+		<div><sub><em>No Articles</em></sub></div>
+	{% endfor %}
+	
+{% elif 'main' in blockname %}
+<link rel="stylesheet" href="{{STATIC_PREFIX}}css/justifiedGallery.min.css" />
+
+<div id="sunset_thumb_array">
+	{% for image in leaves %}
+		{% if blockname == 'main_half' and forloop.counter > 6 %}
+			{% comment %}<!-- Do nothing.  -->{% endcomment %}
+		{% else %}
+			{% for asset in image.assets.all %}
+				{% if asset.type == 'icon' %}
+					<a href="{% url 'image_single' image.cat.cached_url image.slug %}" title="{{image}}" {% if image.featured and highlight_featured %}class="featured"{% elif image.mature %}class="mature"{% endif %}>
+						<img src="{{asset.get_url}}" alt="{{image}}" title="{{image}}" />
+					</a>
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+	{% empty %}
+		<div><sub><em>No Images</em></sub></div>
+	{% endfor %}
+</div>
+
+<script src="{{STATIC_PREFIX}}js/jquery.js"></script>
+<script src="{{STATIC_PREFIX}}js/jquery.justifiedGallery.min.js"></script>
+<script>
+$("#sunset_thumb_array").justifiedGallery({rowHeight:180, maxRowHeight:200, margins:5});
+</script>
+{% endif %}

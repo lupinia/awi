@@ -65,6 +65,7 @@ INSTALLED_APPS = (
 	'deertrees',	# Categories
 	'deerbooks',	# Text-based content
 	'deerconnect',	# Link directory and contact form/links
+	'sunset',		# Photo/image gallery
 	
 	#	My Apps - Other
 	'deerhealth',	# Prescription Tracker

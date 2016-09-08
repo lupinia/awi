@@ -64,7 +64,7 @@
 
 	<footer class="transbox">
 		<div id="footer-right">
-			{% bg_info %}<br />
+			{% if photo_bg %}&nbsp;{% else %}{% bg_info %}{% endif %}<br />
 			<span class="lower">&copy;2000-{{curyear}} {% include 'authorname.txt' %} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a></span>
 		</div>
 		

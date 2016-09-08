@@ -16,6 +16,7 @@ from admin_tools.menu import items, Menu
 itemlist_content = (
 	'deerbooks.*',
 	'deertrees.*',
+	'sunset.*',
 	'deerconnect.models.link',
 	'django_summernote.*',
 )
@@ -41,6 +42,7 @@ itemlist_misc_exclude = (
 	'deerbooks.*',
 	'deertrees.*',
 	'deerconnect.*',
+	'sunset.*',
 )
 
 class CustomMenu(Menu):

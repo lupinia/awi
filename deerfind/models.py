@@ -48,9 +48,9 @@ class hitlog(models.Model):
 		return '%s - %s' % (self.pointer.old_url,hit_date)
 
 class g2map(models.Model):
-	g2id = models.IntegerField()
-	category = models.ForeignKey('deertrees.category',null=True,blank=True)
-	#	Once the Sunset photo gallery is up and running, there will be a separate foreign key to an image object.
+	g2id = models.IntegerField(unique=True)
+	category = models.ForeignKey('deertrees.category', null=True, blank=True)
+	image = models.ForeignKey('sunset.image', null=True, blank=True)
 	
 	def __unicode__(self):
 		return str(self.g2id)

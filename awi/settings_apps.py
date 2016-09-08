@@ -25,15 +25,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #				main: Hierarchy for main content area,
 #				is_leaf: Boolean; if False, this entry is data for a block that isn't a leaf, }
 DEERTREES_BLOCKS = {
-	'page': {'title':'Writing', 'template':'deerbooks/leaf_page.html', 'sidebar':4, 'main':1, 'is_leaf':True},
-	'link': {'title':'Links', 'template':'deerconnect/leaf_link.html', 'sidebar':5, 'main':3, 'is_leaf':True},
+	'image' : {'title':'Photography/Artwork', 'template':'sunset/leaf_image.html', 'main':1, 'is_leaf':True},
+	'page': {'title':'Writing', 'template':'deerbooks/leaf_page.html', 'sidebar':4, 'main':2, 'is_leaf':True},
+	'link': {'title':'Links', 'template':'deerconnect/leaf_link.html', 'sidebar':5, 'main':4, 'is_leaf':True},
 	'special_feature': {'title':'Special Features', 'template':'deertrees/leaf_feature.html', 'sidebar':3, 'is_leaf':True},
 	
 	'contact_link': {'title':'Contact Natasha', 'template':'deerconnect/leaf_contact_link.html', 'sidebar':2, 'is_leaf':False},
-	'category': {'title':'Subcategories', 'template':'deertrees/leaf_subcat.html', 'sidebar':1, 'main':2, 'is_leaf':False},
-	
-	# Planned but not yet implemented
-	#	'photo' : {'template':'sunset/catlistphoto_%(type).html', 'main':1, 'is_leaf':True},
+	'category': {'title':'Subcategories', 'template':'deertrees/leaf_subcat.html', 'sidebar':1, 'main':3, 'is_leaf':False},
 }
 
 
@@ -47,15 +45,32 @@ DEERFIND_FINDERS = (
 	'deerfind.views.g2_finder',
 	'deerbooks.views.finder',
 	'deertrees.views.finder',
+	'sunset.views.finder',
 )
 
 
 #	deerbooks
 #	Specify location of a working directory for compiling LaTeX source files.
-DEERBOOKS_CACHE_DIR = os.path.abspath(os.path.join(BASE_DIR,'deerbooks/export_cache/'))
+DEERBOOKS_CACHE_DIR = os.path.abspath(os.path.join(BASE_DIR,'working_dirs/deerbooks/'))
 
 
-#	CUSTOM APPS
+#	sunset
+#	Specify the maximum sizes, and other processing settings, for various image_asset types.
+#	Size format is (width,height)
+#	watermark=True means that assets of this type will be watermarked.
+#	exact=True means that assets of this type will be fitted to these exact dimensions.
+SUNSET_IMAGE_ASSET_SIZES = {
+	'icon':{'size':(1500,250),'watermark':False,'exact':False,},
+	'display':{'size':(1280,960),'watermark':True,'exact':False,},
+	'full':{'size':(1920,1300),'watermark':True,'exact':False,},
+	'bg':{'size':(1700,1000),'watermark':False,'exact':True,},
+}
+SUNSET_IMPORT_DIR = '/srv/awi_import/sunset'
+SUNSET_CACHE_DIR = os.path.abspath(os.path.join(BASE_DIR,'working_dirs/sunset/'))
+SUNSET_WATERMARK_IMAGE = os.path.abspath(os.path.join(BASE_DIR,'sunset/watermarks/lupinia.png'))
+
+
+#	THIRD-PARTY APPS
 #	==============
 #	static_precompiler
 STATIC_PRECOMPILER_DISABLE_AUTO_COMPILE = True
