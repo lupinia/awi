@@ -36,15 +36,10 @@ class image(leaf):
 		'Composite:DateTimeCreated':'timestamp_post', 
 		'Composite:GPSLatitude':'geo_lat', 
 		'Composite:GPSLongitude':'geo_long', 
-		'EXIF:CreateDate':'timestamp_post', 
-		'EXIF:DateTimeOriginal':'timestamp_post', 
-		'EXIF:GPSLatitude':'geo_lat', 
-		'EXIF:GPSLongitude':'geo_long', 
 		'EXIF:ImageDescription':'body', 
 		'IPTC:Caption-Abstract':'body', 
 		'IPTC:Keywords':'tags', 
 		'IPTC:ObjectName':'title', 
-		'XMP:CreateDate':'timestamp_post', 
 		'XMP:Description':'body', 
 		'XMP:Subject':'tags', 
 		'XMP:Title':'title', 
@@ -152,7 +147,7 @@ class image(leaf):
 					if not cur_key.ignore:
 						# Check whether this is a special key.
 						if self.auto_fields and self.META_MAP.get(key,False):
-							new_self_attrs[self.META_MAP[key]] = value
+							new_self_attrs[self.META_MAP[key]] = meta_keys[key].format(value)
 						
 						# Check whether we already have this meta value in the database for this image.
 						meta_check = self.meta.filter(key=cur_key)
@@ -357,7 +352,15 @@ class image_meta_key(models.Model):
 		return '%dmm' % int(data)
 	
 	def format_datetime(self, data):
-		date_obj = datetime.strptime(data, '%Y:%m:%d %H:%M:%S')
+		# Trying to parse datetimes from ExifTool is a horrendous mess, because the format could be almost anything.
+		if '-' in data:
+			timestamp, tzstamp = data.split('-')
+		elif '+' in data:
+			timestamp, tzstamp = data.split('+')
+		else:
+			timestamp = data
+			tzstamp = ''
+		date_obj = datetime.strptime(timestamp, '%Y:%m:%d %H:%M:%S')
 		return datetime.strftime(date_obj, '%b %d, %Y %H:%M')
 	
 	def format_fraction(self, data):
