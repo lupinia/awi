@@ -15,6 +15,7 @@ from django.conf import settings
 from django.core.files import File
 from django.core.urlresolvers import reverse
 from django.utils import timezone
+from django.utils.html import strip_tags
 from django.utils.text import slugify
 
 from datetime import datetime
@@ -28,6 +29,12 @@ from sunset.utils import *
 def image_asset_uploadto(instance, filename):
 	original = filename.split('.')
 	return 'gallery/%s_%s.%s' % (instance.parent.slug, instance.type, original[-1])
+
+class background_tag(models.Model):
+	tag = models.CharField(max_length=50)
+	default = models.BooleanField(default=False, blank=True)
+	def __unicode__(self):
+		return self.tag
 
 class image(leaf):
 	# Map EXIF/IPTC keys to attributes on this model.
@@ -56,6 +63,9 @@ class image(leaf):
 	geo_lat = models.DecimalField(decimal_places = 15, max_digits = 20, blank=True, null=True)
 	geo_long = models.DecimalField(decimal_places = 15, max_digits = 20, blank=True, null=True)
 	
+	# Page backgrounds
+	bg_tags=models.ManyToManyField(background_tag, blank=True)
+	
 	# Attributes used only on this classes's methods.
 	PIL_obj = False
 	orig_path = False
@@ -66,6 +76,16 @@ class image(leaf):
 			return self.title
 		else:
 			return self.slug
+	
+	def save(self, *args, **kwargs):
+		if self.body and not self.summary:
+			body_text = strip_tags(self.body)
+			if len(body_text) < 255:
+				self.summary = body_text
+				self.body = None
+			else:
+				self.summary = body_text[:250].rsplit(' ',1)[0]+'...'
+		super(image, self).save(*args, **kwargs)
 	
 	def get_absolute_url(self):
 		return reverse('image_single', kwargs={'cached_url':self.cat.cached_url, 'slug':self.slug})
@@ -147,7 +167,7 @@ class image(leaf):
 					if not cur_key.ignore:
 						# Check whether this is a special key.
 						if self.auto_fields and self.META_MAP.get(key,False):
-							new_self_attrs[self.META_MAP[key]] = meta_keys[key].format(value)
+							new_self_attrs[self.META_MAP[key]] = value
 						
 						# Check whether we already have this meta value in the database for this image.
 						meta_check = self.meta.filter(key=cur_key)
@@ -172,8 +192,16 @@ class image(leaf):
 						else:
 							if attr == 'timestamp_post':
 								# Special case:  Timestamp
-								value = datetime.strptime(value,'%Y:%m:%d %H:%M:%S')
-								value = timezone.make_aware(value)
+								# Trying to parse datetimes from ExifTool is a horrendous mess, because the format could be almost anything.
+								if '-' in value:
+									timestamp, tzstamp = value.split('-')
+								elif '+' in value:
+									timestamp, tzstamp = value.split('+')
+								else:
+									timestamp = value
+									tzstamp = ''
+								date_obj = datetime.strptime(timestamp, '%Y:%m:%d %H:%M:%S')
+								value = timezone.make_aware(date_obj)
 							setattr(self, attr, value)
 					self.save()
 					import_log.objects.create(command='image.build_meta', message='Successfully set %d new meta entries' % len(new_self_attrs), image=self)
@@ -512,6 +540,9 @@ class batch_import(access_control):
 			self_tags = self.tags.all()
 			self_meta = self.meta.all()
 			for img_filename in file_list:
+				if os.path.isdir('%s/%s' % (self.folder, img_filename)):
+					continue
+				
 				img_PIL_obj = Image.open('%s/%s' % (self.folder, img_filename))
 				img_filename_raw = img_filename.split('.')
 				img_filename_type = img_filename_raw.pop()
@@ -562,6 +593,10 @@ class batch_import(access_control):
 						new_img.slug = cur_slug
 					else:
 						new_img.slug = slugify(img_file_slug)
+					
+					exist_check = image.objects.filter(slug=new_img.slug)
+					if exist_check.exists():
+						new_img.slug = '%s-%d' % (new_img.slug, self.next_sequence_number)
 					
 					if self.desc:
 						new_img.body = self.desc

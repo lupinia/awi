@@ -41,6 +41,10 @@
 <script src="{{STATIC_PREFIX}}js/jquery.js"></script>
 <script src="{{STATIC_PREFIX}}js/jquery.justifiedGallery.min.js"></script>
 <script>
-$("#sunset_thumb_array").justifiedGallery({rowHeight:180, maxRowHeight:200, margins:7});
+{% if homepage %}
+	$("#sunset_thumb_array").justifiedGallery({rowHeight:100, maxRowHeight:120, margins:2});
+{% else %}
+	$("#sunset_thumb_array").justifiedGallery({rowHeight:180, maxRowHeight:200, margins:7});
+{% endif %}
 </script>
 {% endif %}

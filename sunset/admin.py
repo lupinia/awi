@@ -44,11 +44,12 @@ class image_admin(SummernoteModelAdmin, leaf_admin):
 	list_select_related = True
 	search_fields = ['body','summary','title','slug'] + leaf_admin.search_fields
 	fieldsets = [
-		(None,{'fields':(('title','slug'),('summary','auto_fields','rebuild_assets'),'body'),},),
+		(None,{'fields':(('title','slug'),('summary','auto_fields','rebuild_assets'),'body','bg_tags'),},),
 	] + leaf_admin.fieldsets
 	prepopulated_fields={'slug':('title',)}
 	list_display = ('title','auto_fields','rebuild_assets',) + leaf_admin.list_display
 	inlines = [g2_inline, asset_inline_admin, meta_inline_admin]
+	list_filter = ['bg_tags',] + leaf_admin.list_filter
 	
 	#def view_on_site(self, obj):
 	#	return reverse('page_htm',kwargs={'cached_url':obj.cat.cached_url, 'slug':obj.slug,})
@@ -117,3 +118,4 @@ class batch_import_admin(access_admin):
 admin.site.register(image,image_admin)
 admin.site.register(image_meta_key,image_meta_key_admin)
 admin.site.register(batch_import,batch_import_admin)
+admin.site.register(background_tag)

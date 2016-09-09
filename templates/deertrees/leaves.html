@@ -11,8 +11,36 @@
 	{% elif object.desc %}
 		{% if object.content_priority == "desc" %}
 			<div class="transbox fulltext_page">
-				<div id="fulltext_page_title"><div id="fulltext_page_title_main"><h2>{{object.title}}</h2></div></div>
+				<div id="fulltext_page_title">
+					{% if perms.deertrees.change_leaf and not homepage %}
+						<div id="fulltext_page_title_extra" class="admin_options">
+							<div class="hovericons16">
+								<a href="{% url 'admin:deertrees_category_change' object.pk %}" title="Edit This Category"><img src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit" title="Edit This Category" /></a>
+								<a href="{% url 'admin:deertrees_category_add' %}?parent={{object.pk}}" title="Add New Subcategory"><img src="{{ STATIC_PREFIX }}images/icons/add-folder.png" alt="Add Subcategory" title="Add New Subcategory" /></a>
+								<a href="{% url 'admin:deerbooks_page_add' %}?cat={{object.pk}}" title="Add New Writing"><img src="{{ STATIC_PREFIX }}images/icons/add-page.png" alt="Add Page" title="Add New Writing" /></a>
+								<a href="{% url 'admin:sunset_image_add' %}?cat={{object.pk}}" title="Add New Single Image"><img src="{{ STATIC_PREFIX }}images/icons/add-image.png" alt="Add Image" title="Add New Single Image" /></a>
+								<a href="{% url 'admin:sunset_batch_import_add' %}?cat={{object.pk}}" title="Add New Image Batch Import Job"><img src="{{ STATIC_PREFIX }}images/icons/add-list.png" alt="Add Image Batch" title="Add New Image Batch Import Job" /></a>
+								<a href="{% url 'admin:deerconnect_link_add' %}?cat={{object.pk}}" title="Add New Link"><img src="{{ STATIC_PREFIX }}images/icons/add-link.png" alt="Add Link" title="Add New Link" /></a>
+								<a href="{% url 'admin:deerconnect_contact_link_add' %}?cat={{object.pk}}" title="Add New Contact Link"><img src="{{ STATIC_PREFIX }}images/icons/add-user.png" alt="Add Contact Link" title="Add New Contact Link" /></a>
+							</div>
+						</div>
+					{% endif %}
+					<div id="fulltext_page_title_main"><h2>{{object.title}}</h2></div>
+				</div>
 		{% else %}
+			{% if perms.deertrees.change_leaf and not homepage %}
+				<div class="transbox left_sidebar admin_options">
+					<div class="hovericons16">
+						<a href="{% url 'admin:deertrees_category_change' object.pk %}" title="Edit This Category"><img src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit" title="Edit This Category" /></a>
+						<a href="{% url 'admin:deertrees_category_add' %}?parent={{object.pk}}" title="Add New Subcategory"><img src="{{ STATIC_PREFIX }}images/icons/add-folder.png" alt="Add Subcategory" title="Add New Subcategory" /></a>
+						<a href="{% url 'admin:deerbooks_page_add' %}?cat={{object.pk}}" title="Add New Writing"><img src="{{ STATIC_PREFIX }}images/icons/add-page.png" alt="Add Page" title="Add New Writing" /></a>
+						<a href="{% url 'admin:sunset_image_add' %}?cat={{object.pk}}" title="Add New Single Image"><img src="{{ STATIC_PREFIX }}images/icons/add-image.png" alt="Add Image" title="Add New Single Image" /></a>
+						<a href="{% url 'admin:sunset_batch_import_add' %}?cat={{object.pk}}" title="Add New Image Batch Import Job"><img src="{{ STATIC_PREFIX }}images/icons/add-list.png" alt="Add Image Batch" title="Add New Image Batch Import Job" /></a>
+						<a href="{% url 'admin:deerconnect_link_add' %}?cat={{object.pk}}" title="Add New Link"><img src="{{ STATIC_PREFIX }}images/icons/add-link.png" alt="Add Link" title="Add New Link" /></a>
+						<a href="{% url 'admin:deerconnect_contact_link_add' %}?cat={{object.pk}}" title="Add New Contact Link"><img src="{{ STATIC_PREFIX }}images/icons/add-user.png" alt="Add Contact Link" title="Add New Contact Link" /></a>
+					</div>
+				</div>
+			{% endif %}
 			<div class="transbox left_sidebar">
 				<h2>{{object.title}}</h2>
 			</div>
@@ -35,6 +63,19 @@
 			</div>
 		</div>
 	{% else %}
+		{% if perms.deertrees.change_leaf and not homepage %}
+			<div class="transbox left_sidebar admin_options">
+				<div class="hovericons16">
+					<a href="{% url 'admin:deertrees_category_change' object.pk %}" title="Edit This Category"><img src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit" title="Edit This Category" /></a>
+					<a href="{% url 'admin:deertrees_category_add' %}?parent={{object.pk}}" title="Add New Subcategory"><img src="{{ STATIC_PREFIX }}images/icons/add-folder.png" alt="Add Subcategory" title="Add New Subcategory" /></a>
+					<a href="{% url 'admin:deerbooks_page_add' %}?cat={{object.pk}}" title="Add New Writing"><img src="{{ STATIC_PREFIX }}images/icons/add-page.png" alt="Add Page" title="Add New Writing" /></a>
+					<a href="{% url 'admin:sunset_image_add' %}?cat={{object.pk}}" title="Add New Single Image"><img src="{{ STATIC_PREFIX }}images/icons/add-image.png" alt="Add Image" title="Add New Single Image" /></a>
+					<a href="{% url 'admin:sunset_batch_import_add' %}?cat={{object.pk}}" title="Add New Image Batch Import Job"><img src="{{ STATIC_PREFIX }}images/icons/add-list.png" alt="Add Image Batch" title="Add New Image Batch Import Job" /></a>
+					<a href="{% url 'admin:deerconnect_link_add' %}?cat={{object.pk}}" title="Add New Link"><img src="{{ STATIC_PREFIX }}images/icons/add-link.png" alt="Add Link" title="Add New Link" /></a>
+					<a href="{% url 'admin:deerconnect_contact_link_add' %}?cat={{object.pk}}" title="Add New Contact Link"><img src="{{ STATIC_PREFIX }}images/icons/add-user.png" alt="Add Contact Link" title="Add New Contact Link" /></a>
+				</div>
+			</div>
+		{% endif %}
 		<div class="transbox left_sidebar">
 			<h2>{{object.title}}</h2>
 			{% if object.summary %}
@@ -53,14 +94,14 @@
 		{% if main_full_1 %}
 			<div class="transbox fulltext_page">
 				<h3>{{main_full_1.title}}</h3>
-				{% include main_full_1.template with leaves=main_full_1.data blockname="main_full_1" highlight_featured=highlight_featured only %}
+				{% include main_full_1.template with leaves=main_full_1.data blockname="main_full_1" highlight_featured=highlight_featured homepage=homepage only %}
 			</div>
 		{% endif %}
 
 		{% if main_full_2 %}
 			<div class="transbox fulltext_page">
 				<h3>{{main_full_2.title}}</h3>
-				{% include main_full_2.template with leaves=main_full_2.data blockname="main_full_2" highlight_featured=highlight_featured only %}
+				{% include main_full_2.template with leaves=main_full_2.data blockname="main_full_2" highlight_featured=highlight_featured homepage=homepage only %}
 			</div>
 		{% endif %}
 
@@ -68,7 +109,7 @@
 			{% for main_block in main_half %}
 				<div class="transbox left_sidebar">
 					<h4>{{main_block.title}}</h4>
-					{% include main_block.template with leaves=main_block.data blockname="main_half" highlight_featured=highlight_featured only %}
+					{% include main_block.template with leaves=main_block.data blockname="main_half" highlight_featured=highlight_featured homepage=homepage only %}
 				</div>
 			{% endfor %}
 		{% endif %}
@@ -81,7 +122,7 @@
 		{% for sidebar_block in sidebar %}
 			<div class="transbox right_sidebar_section">
 			<h4>{{sidebar_block.title}}</h4>
-			{% include sidebar_block.template with leaves=sidebar_block.data blockname="sidebar" highlight_featured=highlight_featured only %}
+			{% include sidebar_block.template with leaves=sidebar_block.data blockname="sidebar" highlight_featured=highlight_featured homepage=homepage only %}
 			</div>
 		{% endfor %}
 		</div>

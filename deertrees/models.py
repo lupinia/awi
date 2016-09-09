@@ -15,7 +15,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 from awi_access.models import access_control
 
 class category(MPTTModel, access_control):
-	PRIORITY_OPTIONS = (('photo','Photos'),('page','Writing'),('desc','Category Description'),)
+	PRIORITY_OPTIONS = (('image','Photos'),('page','Writing'),('desc','Category Description'),)
 	
 	title=models.CharField(max_length=60)
 	slug=models.SlugField()
@@ -24,7 +24,7 @@ class category(MPTTModel, access_control):
 	parent=TreeForeignKey('self',null=True,blank=True,related_name='children')
 	cached_url=models.CharField(max_length=255,null=True,blank=True,unique=True)
 	
-	background=models.ForeignKey('awi_bg.background_tag',null=True,blank=True)
+	background_tag=models.ForeignKey('sunset.background_tag',null=True,blank=True)
 	content_priority=models.CharField(choices=PRIORITY_OPTIONS,max_length=10,null=True,blank=True,help_text="Manually specify a content type to prioritize during display.")		#	An option to override the content given top priority
 	sitemap_include=models.BooleanField(default=True)
 	timestamp_mod=models.DateTimeField(auto_now=True)
