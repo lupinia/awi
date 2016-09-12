@@ -22,9 +22,8 @@ class single_image(leaf_view):
 			context['photo_page'] = True
 			context['meta'] = context['object'].meta.filter(key__public=True).order_by('key__display_name')
 			context['assets'] = {}
-			
-			assets = context['object'].assets.all()
-			for asset in assets:
+			asset_list = context['object'].assets.all()
+			for asset in asset_list:
 				context['assets'][asset.type] = asset
 		
 		return context

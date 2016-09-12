@@ -4,10 +4,10 @@
 
 {% block content_left %}
 	{% if image %}
-		<div class="transbox photo_page"{% if assets.full and assets.display %} style="max-width:{{assets.display.img_width}}px;"{% endif %}>
+		<div class="transbox photo_page"{% if assets.display %} style="max-width:{{assets.display.img_width}}px;"{% endif %}>
 			{% if image.body %}
 				<div id="photo_page_title">
-					{% if user.is_superuser %}
+					{% if can_edit %}
 						<div id="photo_page_title_extra">
 							<div class="hovericons16">
 								<img src="{{ STATIC_PREFIX }}images/icons/{{image.featured|yesno:',un'}}featured16.png" alt="{{image.featured|yesno:',Not '}}Featured" title="{{image.featured|yesno:',Not '}}Featured" /> 
@@ -28,9 +28,9 @@
 				</div>
 			{% endif %}
 			
-			{% if assets.full and assets.display %}
+			{% if assets.display %}
 			<div class="photo_page_image">
-				<a href="{{assets.full.get_url}}" title="Full-Size View"><img src="{{assets.display.get_url}}" alt="{{image}}" title="{{image}}" /></a>
+				{% if assets.full %}<a href="{{assets.full.get_url}}" title="Full-Size View">{% endif %}<img src="{{assets.display.get_url}}" alt="{{image}}" title="{{image}}" />{% if assets.full %}</a>{% endif %}
 			</div>
 			{% endif %}
 			
@@ -83,7 +83,7 @@
 					<h3>{{image}}</h3>
 					<div class="photo_sidebar_byline">
 						<div id="byline">{{image.display_times.0.label}}:  {{image.display_times.0.timestamp|date:'F j, Y  G:i:s'}}</div>
-						{% if user.is_superuser %}
+						{% if can_edit %}
 							<div id="photo_page_title_extra">
 								<div class="hovericons16">
 									<img src="{{ STATIC_PREFIX }}images/icons/{{image.featured|yesno:',un'}}featured16.png" alt="{{image.featured|yesno:',Not '}}Featured" title="{{image.featured|yesno:',Not '}}Featured" /> 

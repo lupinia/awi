@@ -105,19 +105,16 @@ class image(leaf):
 			else:
 				return self.orig_path
 		else:
-			img_asset_query = self.assets.all()
-			img_assets = {}
-			for asset in img_asset_query:
-				img_assets[asset.type] = asset
-			
-			if img_assets and img_assets.get('original',False):
+			orig_asset_check = self.assets.filter(type='original')
+			if orig_asset_check:
+				orig_asset = orig_asset_check.first()
 				# Parse the original's name to get the actual filename, and the filetype extension.
-				dest_name = img_assets['original'].image_file.name.split('/')
-				img_filetype_raw = img_assets['original'].image_file.name.split('.')
+				dest_name = orig_asset.image_file.name.split('/')
+				img_filetype_raw = orig_asset.image_file.name.split('.')
 				self.orig_type = img_filetype_raw[-1]
 				
 				# Download original to working directory
-				asset_dl = urllib.urlretrieve(img_assets['original'].get_url(), '%s/%s' % (settings.SUNSET_CACHE_DIR, dest_name[-1]))
+				asset_dl = urllib.urlretrieve(orig_asset.get_url(), '%s/%s' % (settings.SUNSET_CACHE_DIR, dest_name[-1]))
 				imgfile_check = open(asset_dl[0])
 				imgfile_check.close()
 				import_log.objects.create(command='image.get_working_original', message='Successfully downloaded original', image=self)
@@ -243,10 +240,10 @@ class image(leaf):
 			# Save new image to database
 			img_obj = File(open('%s/%s_%s.%s' % (settings.SUNSET_CACHE_DIR, self.slug, type, self.orig_type),'rb'))
 			
-			asset_check = image_asset.objects.filter(type=type, parent=self)
+			asset_check = self.assets.filter(type=type)
 			if asset_check.exists():
-				# If we already have an asset, replace its image file with this one.
 				asset = asset_check.first()
+				# If we already have an asset, replace its image file with this one.
 				asset.image_file.delete()
 				asset.image_file.save('%s_%s.%s' % (self.slug, type, self.orig_type), img_obj)
 				asset.save()
@@ -377,7 +374,7 @@ class image_meta_key(models.Model):
 		return ('f%f' % float(data)).rstrip('0').rstrip('.')
 	
 	def format_focallength(self, data):
-		return '%dmm' % int(data)
+		return '%dmm' % float(data)
 	
 	def format_datetime(self, data):
 		# Trying to parse datetimes from ExifTool is a horrendous mess, because the format could be almost anything.
@@ -555,8 +552,8 @@ class batch_import(access_control):
 				if existing.get(img_filename,False):
 					cur_img = existing.get(img_filename,False)
 					cur_img_orig_check = cur_img.img_obj.assets.filter(type='original')
-					if cur_img_orig_check.exists():
-						asset = cur_img_orig_check.first()
+					if cur_img_orig_check:
+						asset = cur_img_orig_check
 						if asset.hash != img_hash:
 							asset.image_file.delete()
 							asset.image_file.save('%s_original.%s' % (cur_img.img_obj.slug, img_filename_type), img_file_obj)

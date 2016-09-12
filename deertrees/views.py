@@ -350,20 +350,35 @@ class leaf_view(generic.DetailView):
 			context['tags'] = context['object'].tags.all()
 			
 			# Adding/Removing Tags
-			if self.request.user.has_perm('deertrees.change_leaf'):
-				context['can_edit_tags'] = True
+			if context['object'].can_edit(self.request):
 				context['return_to'] = context['object'].get_absolute_url()
+				context['can_edit'] = True
 				
-				if self.request.GET.get('add_tag'):
+				if self.request.GET.get('add_tag', False):
 					new_tag = get_object_or_404(tag, pk=self.request.GET.get('add_tag'))
 					context['object'].tags.add(new_tag)
 					context['object'].save()
-				elif self.request.GET.get('remove_tag'):
+				elif self.request.GET.get('remove_tag', False):
 					old_tag = get_object_or_404(tag, pk=self.request.GET.get('remove_tag'))
 					context['object'].tags.remove(old_tag)
 					context['object'].save()
+				elif self.request.GET.get('feature', False) and not context['object'].featured:
+					context['object'].featured = True
+					context['object'].save()
+				elif self.request.GET.get('unfeature', False) and context['object'].featured:
+					context['object'].featured = False
+					context['object'].save()
+				elif self.request.GET.get('publish', False) and not context['object'].published:
+					context['object'].published = True
+					context['object'].save()
+				elif self.request.GET.get('unpublish', False) and context['object'].published:
+					context['object'].published = False
+					context['object'].save()
+				elif self.request.GET.get('change_cat', False):
+					new_cat = get_object_or_404(category, pk=self.request.GET.get('change_cat'))
+					context['object'].cat = new_cat
+					context['object'].save()
 			else:
-				context['can_edit_tags'] = False
 				context['return_to'] = ''
 			
 			# Breadcrumbs

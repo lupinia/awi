@@ -92,16 +92,37 @@ class leaf(access_control):
 			return False
 	
 	def can_view(self, request=False):
-		canview = super(leaf, self).can_view(request)
+		if not request:
+			return (False,'access_norequest')
 		
-		if canview[0]:
-			if self.scheduled():
-				if not request:
-					canview = (False,'')
-				if not request.user.is_authenticated() or (not request.user.is_staff and self.owner != request.user):
-					canview = (False,'access_404')
+		public_check = self.is_public()
+		if public_check[0]:
+			return (True, '')
+		else:
+			canview = super(leaf, self).can_view(request)
+			if canview[0] and self.scheduled() and (self.owner != request.user or not request.user.has_perm('deertrees.change_leaf')):
+				canview = (False,'access_404')		# If it's scheduled, and we don't have elevated privileges, it doesn't exist.
+			
+			return canview
+	
+	def can_edit(self, request=False):
+		if not request:
+			return (False,'access_norequest')
+		else:
+			canview = self.can_view(request)
+			if not canview[0]:
+				return canview
+			else:
+				return super(leaf, self).can_edit(request, perm_check='deertrees.change_leaf')
+		return canedit
+	
+	def is_public(self):
+		ispublic = super(leaf, self).is_public()
+		if self.scheduled():
+			ispublic[0] = False
+			ispublic[1].append('Scheduled future postdate')
 		
-		return canview
+		return ispublic
 	
 	def tag_item(self, taglist):
 		return_data = {'skipped':[], 'added':[], 'created':[]}

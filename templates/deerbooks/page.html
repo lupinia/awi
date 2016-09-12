@@ -7,14 +7,14 @@
 	{% if page %}
 		<div class="transbox fulltext_page">
 			<div id="fulltext_page_title">
-				{% if user.is_superuser %}
+				{% if can_edit %}
 					<div id="fulltext_page_title_extra">
 						<div class="hovericons16">
-							<img src="{{ STATIC_PREFIX }}images/icons/{{page.featured|yesno:',un'}}featured16.png" alt="{{page.featured|yesno:',Not '}}Featured" title="{{page.featured|yesno:',Not '}}Featured" /> 
+							<a href="?{{page.featured|yesno:'unfeature,feature'}}=1" title="{{page.featured|yesno:'Unfeature,Feature'}} this item"><img src="{{ STATIC_PREFIX }}images/icons/{{page.featured|yesno:',un'}}featured16.png" alt="{{page.featured|yesno:',Not '}}Featured" title="{{page.featured|yesno:',Not '}}Featured" /></a> 
 							{% if page.scheduled %}
-								<img src="{{ STATIC_PREFIX }}images/icons/publish-scheduled.png" alt="Scheduled - Will be published on {{page.timestamp_post|date:'F j, Y  G:i:s'}}" title="Scheduled - Will be published on {{page.timestamp_post|date:'F j, Y  G:i:s'}}" /> 
+								<a href="?unpublish=1" title="Unpublish this item"><img src="{{ STATIC_PREFIX }}images/icons/publish-scheduled.png" alt="Scheduled - Will be published on {{page.timestamp_post|date:'F j, Y  G:i:s'}}" title="Scheduled - Will be published on {{page.timestamp_post|date:'F j, Y  G:i:s'}}" /></a> 
 							{% else %}
-								<img src="{{ STATIC_PREFIX }}images/icons/publish-{{page.published|yesno:'on,off'}}.png" alt="{{page.published|yesno:',Not '}}Published" title="{{page.published|yesno:',Not '}}Published" /> 
+								<a href="?{{page.published|yesno:'unpublish,publish'}}=1" title="{{page.published|yesno:'Unpublish,Publish'}} this item"><img src="{{ STATIC_PREFIX }}images/icons/publish-{{page.published|yesno:'on,off'}}.png" alt="{{page.published|yesno:',Not '}}Published" title="{{page.published|yesno:',Not '}}Published" /></a> 
 							{% endif %}
 							<a href="{% url 'admin:deerbooks_page_change' page.pk %}"><img src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit" title="Edit" /></a>
 						</div>

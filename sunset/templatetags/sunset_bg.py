@@ -46,10 +46,14 @@ def bg_filename(context, input_string=''):
 	
 	if not bg_selected:
 		bg_selected = random.choice(bg_array)
+	
 	cur_background = bg_selected
 	cur_bg_asset = bg_selected.assets.get(type='bg')
 	
-	return cur_bg_asset.get_url()
+	if cur_bg_asset:
+		return cur_bg_asset.get_url()
+	else:
+		return ''
 
 @register.simple_tag
 def bg_info(input_string=''):
