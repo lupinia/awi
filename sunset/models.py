@@ -552,8 +552,8 @@ class batch_import(access_control):
 				if existing.get(img_filename,False):
 					cur_img = existing.get(img_filename,False)
 					cur_img_orig_check = cur_img.img_obj.assets.filter(type='original')
-					if cur_img_orig_check:
-						asset = cur_img_orig_check
+					if cur_img_orig_check.exists:
+						asset = cur_img_orig_check.first()
 						if asset.hash != img_hash:
 							asset.image_file.delete()
 							asset.image_file.save('%s_original.%s' % (cur_img.img_obj.slug, img_filename_type), img_file_obj)
