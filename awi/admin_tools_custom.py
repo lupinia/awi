@@ -24,7 +24,6 @@ itemlist_content = (
 itemlist_system = (
 	'django.contrib.*',
 	'awi_error.*',
-	'awi_bg.models.background',
 	'awi_access.*',
 	'deerfind.models.pointer',
 	'deerfind.models.g2map',
@@ -36,7 +35,6 @@ itemlist_misc_exclude = (
 	'django_processinfo.*',
 	'django_summernote.*',
 	'awi_error.*',
-	'awi_bg.*',
 	'awi_access.*',
 	'deerfind.*',
 	'deerbooks.*',

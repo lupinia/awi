@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{block.super}}{% if page.title %} - {{page.get_title}}{% endif %}{% endblock %}
 {% block desc %}{% if page.title %}{{page.body_summary}}{% else %}{{block.super}}{% endif %}{% endblock %}
-{% block bg_image %} {% if page.cat.background %}{% include 'awi_bg/bg_image.html' with tag=page.cat.background.tag %}{% else %}{{block.super}}{% endif %} {% endblock %}
+{% block bg_image %} {% if page.cat.background %}{% include 'sunset/bg_image.html' with bg_tag='cat:'|add:page.cat.pk %}{% else %}{{block.super}}{% endif %} {% endblock %}
 
 {% block content_left %}
 	{% if page %}

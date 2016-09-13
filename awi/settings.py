@@ -53,12 +53,12 @@ INSTALLED_APPS = (
 	'static_precompiler',
 	'cookielaw', 
 	'honeypot',
+	'pingback',
 	
 	#	My Apps - System/Core
 	'deerfind',		# 404 Map
 	'awi_error',	# Error Handling
 	'awi_access',	# Access Control
-	'awi_bg',		# Backgrounds
 	'secondlife',
 	
 	#	My Apps - Primary Content Objects

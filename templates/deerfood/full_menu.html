@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load humanize %}
 {% block title %}{{block.super}} - Natasha's Kitchen - Menu{% if cur_filter %} - {{cur_filter.name}}{% endif %}{% endblock %}
-{% block bg_image %}{% include 'awi_bg/bg_image.html' with tag='personal' %}{% endblock %}
+{% block bg_image %}{% include 'sunset/bg_image.html' with bg_tag='personal' %}{% endblock %}
 
 {% block content_left %}
 	<div class="transbox fulltext_page">

@@ -30,9 +30,16 @@ def bg_filename(context, input_string=''):
 		# First check:  If bg_type is current_image, just set the current image as the background.
 		bg_selected = context.get('image', False)
 		bg_array = []
-	elif context.get('category', False):
-		# Second check:  If bg_type is current_cat, try to pick something from the current category.
-		bg_array = image.objects.filter(Q(cat=context.get('category', False)) | Q(bg_tags__category=context.get('category', False))).filter(featured=True, assets__type='bg')
+	elif context.get('category', False) or 'cat' in input_string:
+		# Second check:  Try to pick something from the current category, or a specified one.
+		if context.get('category', False):
+			cur_cat_id = context['category'].pk
+		elif 'cat' in input_string:
+			_, cur_cat_id = input_string.split(':')
+		
+		bg_array = image.objects.filter(cat_id=cur_cat_id).filter(featured=True, assets__type='bg')
+		if not bg_array.exists():
+			bg_array = image.objects.filter(bg_tags__category__id=cur_cat_id).filter(assets__type='bg')
 	elif context.get('tag', False):
 		# Third check:  If bg_type is current_tag, try to pick something from the current tag.
 		bg_array = image.objects.filter(tags=context.get('tag', False), featured=True, assets__type='bg')
