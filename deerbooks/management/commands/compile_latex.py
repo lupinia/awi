@@ -164,7 +164,7 @@ class Command(BaseCommand):
 				if old_docfiles:
 					for update_file in old_docfiles:
 						cur_file_obj = File(open('%s/%s.%s' % (settings.DEERBOOKS_CACHE_DIR,filename,update_file.filetype),'rb'))
-						undate_file.docfile.delete()
+						update_file.docfile.delete()
 						update_file.docfile.save('%s.%s' % (filename,update_file.filetype),cur_file_obj)
 						update_file.save()
 						cur_file_obj.close()
