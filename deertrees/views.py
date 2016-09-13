@@ -348,6 +348,7 @@ class leaf_view(generic.DetailView):
 		else:
 			# Tags
 			context['tags'] = context['object'].tags.all()
+			context['category'] = context['object'].cat
 			
 			# Adding/Removing Tags
 			if context['object'].can_edit(self.request):

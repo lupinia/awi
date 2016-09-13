@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}{{block.super}} - {% if homepage %}Photography, Writing, and Creative Works by {% include 'authorname.txt' %}{% else %}{{object.title}}{% endif %}{% endblock %}
-{% block bg_image %}{% if homepage or not object.background %}{{block.super}}{% else %}{% include 'sunset/bg_image.html' %}{% endif %}{% endblock %}
+{% block bg_image %}{% if homepage %}{{block.super}}{% else %}{% include 'sunset/bg_image.html' %}{% endif %}{% endblock %}
 
 {% block content_left %}
 	{% if homepage %}
