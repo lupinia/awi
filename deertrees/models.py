@@ -114,7 +114,7 @@ class leaf(access_control):
 				return canview
 			else:
 				return super(leaf, self).can_edit(request, perm_check='deertrees.change_leaf')
-		return canedit
+		return (False,'')
 	
 	def is_public(self):
 		ispublic = super(leaf, self).is_public()

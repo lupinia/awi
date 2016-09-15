@@ -3,9 +3,6 @@
 
 {% if 'sidebar' in blockname %}
 	{% for link in leaves %}
-	{% if link.can_edit %}
-		<div class="hovericons16"><a href="{% url 'admin:deerconnect_link_change' link.pk %}" title="Edit Link ({{link.label}})"><img src="{{STATIC_PREFIX}}images/icons/edit.png" alt="Edit" title="Edit Link ({{link.label}})" /></a></div>
-	{% endif %}
 	<a href="{{link.url}}" target="_BLANK" title="{{link.label}} - {{link.desc}}" class="sidebar_link {% if link.featured and highlight_featured %}featured{% elif link.mature %}mature{% elif not link.is_public.0 %}notpublic{% endif %}">
 		<span class="sidebar_link_title">{{link.label}}</span>
 		{% if link.involved %}
