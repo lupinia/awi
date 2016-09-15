@@ -59,7 +59,7 @@ class access_control(models.Model):
 	def can_edit(self, request=False, perm_check=''):
 #		Return a tuple; first value is boolean, can edit or not.  Second value is an error message if False, empty if True
 		if not request:
-			return (False,'')				#	Fail if we can't check anything
+			return (False,'access_norequest')				#	Fail if we can't check anything
 		else:
 			access_check = self.can_view(request)
 			if request.user.is_superuser:
