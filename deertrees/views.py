@@ -351,7 +351,7 @@ class leaf_view(generic.DetailView):
 			context['category'] = context['object'].cat
 			
 			# Adding/Removing Tags
-			if context['object'].can_edit(self.request):
+			if context['object'].can_edit(self.request)[0]:
 				context['return_to'] = context['object'].get_absolute_url()
 				context['can_edit'] = True
 				
