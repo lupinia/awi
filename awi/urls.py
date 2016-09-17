@@ -26,8 +26,10 @@ from sunset import views as sunset_views
 from deerbooks.sitemaps import page_map
 from deertrees.sitemaps import *
 from deerfood.sitemaps import menu_cat_map
+from sunset.sitemaps import image_map
 
 SITEMAP_OBJECTS = {
+	'images':image_map,
 	'writing':page_map,
 	'directories':cat_map,
 	'extras':special_map,
