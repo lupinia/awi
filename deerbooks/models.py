@@ -34,6 +34,9 @@ class export_file(models.Model):
 	
 	def get_url(self):
 		return "%s%s" % (settings.MEDIA_URL,self.docfile.name)
+	
+	class Meta:
+		ordering = ['docfile','filetype']
 
 #	Table of Contents
 class toc(models.Model):

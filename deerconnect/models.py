@@ -35,7 +35,7 @@ class contact_link(link_base, access_control):
 	name=models.CharField(max_length=140)
 	im=models.BooleanField()
 	
-	cat=models.ForeignKey(category,null=True,blank=True)
+	cat=models.ForeignKey(category,null=True,blank=True,related_name='contact_links')
 	timestamp_mod=models.DateTimeField(auto_now=True)
 	timestamp_post=models.DateTimeField(default=timezone.now)
 	

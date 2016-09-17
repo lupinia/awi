@@ -23,10 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #				template: Path to importable template,
 #				sidebar: Hierarchy for sidebar,
 #				main: Hierarchy for main content area,
-#				is_leaf: Boolean; if False, this entry is data for a block that isn't a leaf, }
+#				is_leaf: Boolean; if False, this entry is data for a block that isn't a leaf, 
+#				prefetch: List; if present, this adds fields to prefetch_related,
+#				related: List; if present, this adds fields to select_related, }
 DEERTREES_BLOCKS = {
-	'image' : {'title':'Photography/Artwork', 'template':'sunset/leaf_image.html', 'main':1, 'is_leaf':True},
-	'page': {'title':'Writing', 'template':'deerbooks/leaf_page.html', 'sidebar':4, 'main':2, 'is_leaf':True},
+	'image' : {'title':'Photography/Artwork', 'template':'sunset/leaf_image.html', 'main':1, 'is_leaf':True, 'prefetch':['assets',]},
+	'page': {'title':'Writing', 'template':'deerbooks/leaf_page.html', 'sidebar':4, 'main':2, 'is_leaf':True, 'related':['book_title',]},
 	'link': {'title':'Links', 'template':'deerconnect/leaf_link.html', 'sidebar':5, 'main':4, 'is_leaf':True},
 	'special_feature': {'title':'Special Features', 'template':'deertrees/leaf_feature.html', 'sidebar':3, 'is_leaf':True},
 	

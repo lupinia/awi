@@ -84,9 +84,6 @@ class access_control(models.Model):
 		if self.security:
 			public = False
 			restrictions.append('Permissions set to %s' % self.get_security_display())
-		if not self.sites.filter(pk=settings.SITE_ID).exists():
-			public = False
-			restrictions.append('Not part of current site (ID %d)' % settings.SITE_ID)
 		if self.mature:
 			public = False
 			restrictions.append('Mature content')

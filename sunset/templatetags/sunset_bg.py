@@ -36,22 +36,22 @@ def bg_filename(context, input_string=''):
 		display_footer_info = True
 		cur_cat_id = context['category'].pk
 		
-		bg_array = image.objects.filter(cat_id=cur_cat_id).filter(featured=True, assets__type='bg')
+		bg_array = image.objects.filter(cat_id=cur_cat_id).filter(featured=True, assets__type='bg').select_related('cat')
 		if not bg_array.exists():
-			bg_array = image.objects.filter(bg_tags__category__id=cur_cat_id).filter(assets__type='bg')
+			bg_array = image.objects.filter(bg_tags__category__id=cur_cat_id).filter(assets__type='bg').select_related('cat')
 	elif context.get('tag', False):
 		# Third check:  If bg_type is current_tag, try to pick something from the current tag.
 		display_footer_info = True
-		bg_array = image.objects.filter(tags=context.get('tag', False), featured=True, assets__type='bg')
+		bg_array = image.objects.filter(tags=context.get('tag', False), featured=True, assets__type='bg').select_related('cat')
 	elif input_string:
 		# Last check:  If we have a background_tag, use it.
 		display_footer_info = True
-		bg_array = image.objects.filter(bg_tags__tag=input_string, assets__type='bg')
+		bg_array = image.objects.filter(bg_tags__tag=input_string, assets__type='bg').select_related('cat')
 	
 	if not bg_array and not bg_selected:
 		# If nothing is set yet, use a default image.
 		display_footer_info = True
-		bg_array = image.objects.filter(bg_tags__default=True).filter(assets__type='bg')
+		bg_array = image.objects.filter(bg_tags__default=True).filter(assets__type='bg').select_related('cat')
 	
 	if not bg_selected:
 		bg_selected = random.choice(bg_array)

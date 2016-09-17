@@ -17,19 +17,22 @@ from deertrees.views import leaf_view
 class single_page(leaf_view):
 	model=page
 	
+	def get_queryset(self, *args, **kwargs):
+		return super(single_page, self).get_queryset(*args, **kwargs).select_related('book_title','cat').prefetch_related('tags','docfiles')
+	
 	def get_context_data(self, **kwargs):
 		context=super(single_page,self).get_context_data(**kwargs)
 		
 		if context['object']:
-			if context['page'].book_title:
-				context['toc'] = context['page'].book_title.page_set.filter(access_query(self.request)).select_related('cat').order_by('book_order')
+			if context['object'].book_title:
+				context['toc'] = context['object'].book_title.page_set.filter(access_query(self.request)).select_related('cat').order_by('book_order')
 			
 			context['alt_version_exclude'] = []
-			if context['page'].docfiles:
-				files_list = context['page'].docfiles.all().order_by('filetype')
-				context['docfiles'] = files_list
-				for item in files_list:
+			if context['object'].docfiles:
+				context['docfiles'] = []
+				for item in context['object'].docfiles.all():
 					context['alt_version_exclude'].append(item.filetype)
+					context['docfiles'].append(item)
 		
 		return context
 
@@ -51,6 +54,9 @@ class single_page_tex(single_page):
 
 class book(generic.DetailView):
 	model=toc
+	
+	def get_queryset(self, *args, **kwargs):
+		return super(book, self).get_queryset(*args, **kwargs).prefetch_related('page')
 	
 	def get_context_data(self, **kwargs):
 		context=super(book,self).get_context_data(**kwargs)

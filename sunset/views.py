@@ -15,12 +15,15 @@ class single_image(leaf_view):
 	model=image
 	template_name='sunset/image_single.html'
 	
+	def get_queryset(self, *args, **kwargs):
+		return super(single_image, self).get_queryset(*args, **kwargs).select_related('cat').prefetch_related('assets')
+	
 	def get_context_data(self, **kwargs):
 		context=super(single_image,self).get_context_data(**kwargs)
 		
 		if context['object']:
 			context['photo_page'] = True
-			context['meta'] = context['object'].meta.filter(key__public=True).order_by('key__display_name')
+			context['meta'] = context['object'].meta.filter(key__public=True).select_related('key')
 			context['assets'] = {}
 			asset_list = context['object'].assets.all()
 			for asset in asset_list:

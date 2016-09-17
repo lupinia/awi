@@ -30,10 +30,19 @@ class leaf_parent():
 		leaf_filters = {}
 		blocks_map = settings.DEERTREES_BLOCKS
 		leaf_list = []
+		prefetch_list = []
 		for type, settings_dict in blocks_map.iteritems():
 			if settings_dict.get('is_leaf',False):
 				leaf_list.append(type)
 				leaf_list.append('%s__cat' % type)
+				
+				if settings_dict.get('prefetch',False):
+					for pf_field in settings_dict['prefetch']:
+						prefetch_list.append('%s__%s' % (type, pf_field))
+				
+				if settings_dict.get('related',False):
+					for sr_field in settings_dict['related']:
+						leaf_list.append('%s__%s' % (type, sr_field))
 		
 		leaf_ordering = ['-featured','-timestamp_post']
 		leaf_filters['timestamp_post__lte'] = timezone.now()
@@ -48,14 +57,14 @@ class leaf_parent():
 		elif parent_type == 'tag' and parent:
 			leaf_filters['tags'] = parent
 		
-		leaves = leaf.objects.select_related(*leaf_list).filter(**leaf_filters).filter(access_query(self.request)).order_by(*leaf_ordering)
+		leaves = leaf.objects.select_related(*leaf_list).prefetch_related(*prefetch_list).filter(**leaf_filters).filter(access_query(self.request)).order_by(*leaf_ordering)
 		
 		if leaves:
 			return leaves
 		else:
 			if parent_type == 'category' and parent:
 				descendants = parent.get_descendants()
-				leaves = leaf.objects.select_related(*leaf_list).filter(featured=True, cat__in=descendants).filter(access_query(self.request)).order_by('-timestamp_post')
+				leaves = leaf.objects.select_related(*leaf_list).prefetch_related(*prefetch_list).filter(featured=True, cat__in=descendants).filter(access_query(self.request)).order_by('-timestamp_post')
 				if leaves:
 					self.highlight_featured = False
 					return leaves
@@ -265,6 +274,9 @@ class category_list(leaf_parent, generic.DetailView):
 			raise Http404
 		else:
 			return super(category_list,self).dispatch(*args, **kwargs)
+	
+	def get_queryset(self, *args, **kwargs):
+		return super(category_list, self).get_queryset(*args, **kwargs).select_related('background_tag')
 	
 	def get_context_data(self, **kwargs):
 		context = super(category_list,self).get_context_data(**kwargs)
