@@ -1,0 +1,18 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+{% if can_edit %}
+	<div class="hovericons16">
+		{% if edit_mode == 'cat' %}
+			<a href="{% url 'admin:deertrees_category_change' object.pk %}" title="Edit This Category"><img src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit" title="Edit This Category" /></a>
+			<a href="{% url 'admin:deertrees_category_add' %}?parent={{object.pk}}" title="Add New Subcategory"><img src="{{ STATIC_PREFIX }}images/icons/add-folder.png" alt="Add Subcategory" title="Add New Subcategory" /></a>
+		{% elif edit_mode == 'tags' %}
+			<a href="{% url 'admin:deertrees_tag_change' object.pk %}" title="Edit This Tag"><img src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit" title="Edit This Tag" /></a>
+		{% endif %}
+		<a href="{% url 'admin:deerbooks_page_add' %}?{{edit_mode}}={{object.pk}}" title="Add New Writing"><img src="{{ STATIC_PREFIX }}images/icons/add-page.png" alt="Add Page" title="Add New Writing" /></a>
+		<a href="{% url 'admin:sunset_image_add' %}?{{edit_mode}}={{object.pk}}" title="Add New Single Image"><img src="{{ STATIC_PREFIX }}images/icons/add-image.png" alt="Add Image" title="Add New Single Image" /></a>
+		<a href="{% url 'admin:sunset_batch_import_add' %}?{{edit_mode}}={{object.pk}}" title="Add New Image Batch Import Job"><img src="{{ STATIC_PREFIX }}images/icons/add-list.png" alt="Add Image Batch" title="Add New Image Batch Import Job" /></a>
+		<a href="{% url 'admin:deerconnect_link_add' %}?{{edit_mode}}={{object.pk}}" title="Add New Link"><img src="{{ STATIC_PREFIX }}images/icons/add-link.png" alt="Add Link" title="Add New Link" /></a>
+		{% if edit_mode == 'cat' %}<a href="{% url 'admin:deerconnect_contact_link_add' %}?{{edit_mode}}={{object.pk}}" title="Add New Contact Link"><img src="{{ STATIC_PREFIX }}images/icons/add-user.png" alt="Add Contact Link" title="Add New Contact Link" /></a>{% endif %}
+	</div>
+{% endif %}

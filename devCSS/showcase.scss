@@ -153,6 +153,10 @@ body {
 	&.admin_options {
 		width:190px;
 	}
+	
+	.admin_options {
+		float:right;
+	}
 }
 
 .fulltext_page {
@@ -316,6 +320,12 @@ body {
 		&.midheight {
 			height:60px;
 			min-width:300px;
+		}
+		
+		&.short {
+			height:30px;
+			min-width:180px;
+			width:29%;
 		}
 		
 		.item {

@@ -43,6 +43,17 @@ class category(MPTTModel, access_control):
 			self.cached_url = self.slug
 		super(category, self).save(*args, **kwargs)
 	
+	def can_edit(self, request=False):
+		if not request:
+			return (False,'access_norequest')
+		else:
+			canview = self.can_view(request)
+			if not canview[0]:
+				return canview
+			else:
+				return super(category, self).can_edit(request, perm_check='deertrees.change_category')
+		return (False,'')
+	
 	class MPTTMeta:
 		order_insertion_by = ['title']
 
@@ -66,6 +77,13 @@ class tag(models.Model):
 	
 	def get_absolute_url(self):
 		return reverse('tag', kwargs={'slug':self.slug,})
+	
+	def can_edit(self, request=False):
+		if not request:
+			return (False,'access_norequest')
+		else:
+			return (request.user.has_perm('deertrees.change_tag'), 'access_perms')
+		return (False,'')
 	
 	class Meta:
 		ordering = ['slug',]

@@ -257,8 +257,7 @@ class category_list(leaf_parent, generic.DetailView):
 	slug_url_kwarg='cached_url'
 	
 	def dispatch(self, *args, **kwargs):
-		#	This is where our handler for special-case G2 compatibility will go
-		#	This handles the edge case of a multiroot URL that's not rewritten
+		#	This handles the edge case of a multiroot G2 URL that's not rewritten
 		#	For example, /photo/?g2_itemId=2289
 		#	All other contingencies (full ".php?g2_itemId=" URL, shortened .g2 URL) are handled elsewhere.
 		if 'g2_itemId' in self.request.META.get('QUERY_STRING',''):
@@ -270,20 +269,56 @@ class category_list(leaf_parent, generic.DetailView):
 	def get_context_data(self, **kwargs):
 		context = super(category_list,self).get_context_data(**kwargs)
 		
-		blocks = self.assemble_blocks(context['object'],'category')
-		if blocks[0]:
-			context.update(blocks[1])
+		canview = context['object'].can_view(self.request)
+		if not canview[0]:
+			if canview[1] == 'access_404':
+				self.request.session['deerfind_norecover'] = True
+				raise Http404
+			elif canview[1] == 'access_perms':
+				from django.core.exceptions import PermissionDenied
+				raise PermissionDenied
+			else:
+				context['object'] = ''
+				context['error'] = canview[1]
 		else:
-			context['error'] = 'cat_empty'
-		
-		ancestors = context['object'].get_ancestors(include_self=True)
-		if not context.get('breadcrumbs',False):
-			context['breadcrumbs'] = []
-		
-		for crumb in ancestors:
-			context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
-		
-		context['highlight_featured'] = self.highlight_featured
+			if context['object'].can_edit(self.request)[0]:
+				context['return_to'] = context['object'].get_absolute_url()
+				context['can_edit'] = True
+				context['edit_mode'] = 'cat'
+				
+				if self.request.GET.get('feature', False) and not context['object'].featured:
+					context['object'].featured = True
+					context['object'].save()
+				elif self.request.GET.get('unfeature', False) and context['object'].featured:
+					context['object'].featured = False
+					context['object'].save()
+				elif self.request.GET.get('publish', False) and not context['object'].published:
+					context['object'].published = True
+					context['object'].save()
+				elif self.request.GET.get('unpublish', False) and context['object'].published:
+					context['object'].published = False
+					context['object'].save()
+				elif self.request.GET.get('change_cat', False):
+					new_cat = get_object_or_404(category, pk=self.request.GET.get('change_cat'))
+					context['object'].parent = new_cat
+					context['object'].save()
+			else:
+				context['can_edit'] = False
+			
+			blocks = self.assemble_blocks(context['object'],'category')
+			if blocks[0]:
+				context.update(blocks[1])
+			else:
+				context['error'] = 'cat_empty'
+			
+			ancestors = context['object'].get_ancestors(include_self=True)
+			if not context.get('breadcrumbs',False):
+				context['breadcrumbs'] = []
+			
+			for crumb in ancestors:
+				context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
+			
+			context['highlight_featured'] = self.highlight_featured
 		return context
 
 class tag_list(leaf_parent, generic.DetailView):
@@ -292,6 +327,10 @@ class tag_list(leaf_parent, generic.DetailView):
 	def get_context_data(self, **kwargs):
 		context = super(tag_list,self).get_context_data(**kwargs)
 		context['highlight_featured'] = self.highlight_featured
+		if context['object'].can_edit(self.request)[0]:
+			context['return_to'] = context['object'].get_absolute_url()
+			context['can_edit'] = True
+			context['edit_mode'] = 'tags'
 		
 		blocks = self.assemble_blocks(context['object'],'tag')
 		if blocks[0]:
@@ -381,6 +420,7 @@ class leaf_view(generic.DetailView):
 					context['object'].save()
 			else:
 				context['return_to'] = ''
+				context['can_edit'] = False
 			
 			# Breadcrumbs
 			ancestors = context['object'].cat.get_ancestors(include_self=True)

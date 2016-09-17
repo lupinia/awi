@@ -32,7 +32,7 @@ class Command(BaseCommand):
 			# Priority 1:  Process assets for a new image.
 			# Priority 2:  Process assets for an existing image.
 			# Priority 3:  Process the oldest folder that hasn't sync'ed in the last X hours (set on next line)
-			folder_resync_time = timedelta(hours=6)
+			folder_resync_time = timedelta(hours=24)
 			
 			# Let's begin!
 			# Priority 1:  Process assets for a new image.

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{block.super}} - {% if homepage %}Photography, Writing, and Creative Works by {% include 'authorname.txt' %}{% else %}{{object.title}}{% endif %}{% endblock %}
+{% block title %}{{block.super}} - {% if homepage %}Photography, Writing, and Creative Works by {% include 'authorname.txt' %}{% else %}{{object}}{% endif %}{% endblock %}
 {% block bg_image %}{% if homepage %}{{block.super}}{% else %}{% include 'sunset/bg_image.html' %}{% endif %}{% endblock %}
 
 {% block content_left %}
@@ -12,37 +12,21 @@
 		{% if object.content_priority == "desc" %}
 			<div class="transbox fulltext_page">
 				<div id="fulltext_page_title">
-					{% if perms.deertrees.change_leaf and not homepage %}
+					{% if can_edit and not homepage %}
 						<div id="fulltext_page_title_extra" class="admin_options">
-							<div class="hovericons16">
-								<a href="{% url 'admin:deertrees_category_change' object.pk %}" title="Edit This Category"><img src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit" title="Edit This Category" /></a>
-								<a href="{% url 'admin:deertrees_category_add' %}?parent={{object.pk}}" title="Add New Subcategory"><img src="{{ STATIC_PREFIX }}images/icons/add-folder.png" alt="Add Subcategory" title="Add New Subcategory" /></a>
-								<a href="{% url 'admin:deerbooks_page_add' %}?cat={{object.pk}}" title="Add New Writing"><img src="{{ STATIC_PREFIX }}images/icons/add-page.png" alt="Add Page" title="Add New Writing" /></a>
-								<a href="{% url 'admin:sunset_image_add' %}?cat={{object.pk}}" title="Add New Single Image"><img src="{{ STATIC_PREFIX }}images/icons/add-image.png" alt="Add Image" title="Add New Single Image" /></a>
-								<a href="{% url 'admin:sunset_batch_import_add' %}?cat={{object.pk}}" title="Add New Image Batch Import Job"><img src="{{ STATIC_PREFIX }}images/icons/add-list.png" alt="Add Image Batch" title="Add New Image Batch Import Job" /></a>
-								<a href="{% url 'admin:deerconnect_link_add' %}?cat={{object.pk}}" title="Add New Link"><img src="{{ STATIC_PREFIX }}images/icons/add-link.png" alt="Add Link" title="Add New Link" /></a>
-								<a href="{% url 'admin:deerconnect_contact_link_add' %}?cat={{object.pk}}" title="Add New Contact Link"><img src="{{ STATIC_PREFIX }}images/icons/add-user.png" alt="Add Contact Link" title="Add New Contact Link" /></a>
-							</div>
+							{% include 'deertrees/adminlinks.html' %}
 						</div>
 					{% endif %}
-					<div id="fulltext_page_title_main"><h2>{{object.title}}</h2></div>
+					<div id="fulltext_page_title_main"><h2>{{object}}</h2></div>
 				</div>
 		{% else %}
-			{% if perms.deertrees.change_leaf and not homepage %}
+			{% if can_edit and not homepage %}
 				<div class="transbox left_sidebar admin_options">
-					<div class="hovericons16">
-						<a href="{% url 'admin:deertrees_category_change' object.pk %}" title="Edit This Category"><img src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit" title="Edit This Category" /></a>
-						<a href="{% url 'admin:deertrees_category_add' %}?parent={{object.pk}}" title="Add New Subcategory"><img src="{{ STATIC_PREFIX }}images/icons/add-folder.png" alt="Add Subcategory" title="Add New Subcategory" /></a>
-						<a href="{% url 'admin:deerbooks_page_add' %}?cat={{object.pk}}" title="Add New Writing"><img src="{{ STATIC_PREFIX }}images/icons/add-page.png" alt="Add Page" title="Add New Writing" /></a>
-						<a href="{% url 'admin:sunset_image_add' %}?cat={{object.pk}}" title="Add New Single Image"><img src="{{ STATIC_PREFIX }}images/icons/add-image.png" alt="Add Image" title="Add New Single Image" /></a>
-						<a href="{% url 'admin:sunset_batch_import_add' %}?cat={{object.pk}}" title="Add New Image Batch Import Job"><img src="{{ STATIC_PREFIX }}images/icons/add-list.png" alt="Add Image Batch" title="Add New Image Batch Import Job" /></a>
-						<a href="{% url 'admin:deerconnect_link_add' %}?cat={{object.pk}}" title="Add New Link"><img src="{{ STATIC_PREFIX }}images/icons/add-link.png" alt="Add Link" title="Add New Link" /></a>
-						<a href="{% url 'admin:deerconnect_contact_link_add' %}?cat={{object.pk}}" title="Add New Contact Link"><img src="{{ STATIC_PREFIX }}images/icons/add-user.png" alt="Add Contact Link" title="Add New Contact Link" /></a>
-					</div>
+					{% include 'deertrees/adminlinks.html' %}
 				</div>
 			{% endif %}
 			<div class="transbox left_sidebar">
-				<h2>{{object.title}}</h2>
+				<h2>{{object}}</h2>
 			</div>
 			<div class="transbox fulltext_page">
 		{% endif %}
@@ -63,21 +47,13 @@
 			</div>
 		</div>
 	{% else %}
-		{% if perms.deertrees.change_leaf and not homepage %}
+		{% if can_edit and not homepage %}
 			<div class="transbox left_sidebar admin_options">
-				<div class="hovericons16">
-					<a href="{% url 'admin:deertrees_category_change' object.pk %}" title="Edit This Category"><img src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit" title="Edit This Category" /></a>
-					<a href="{% url 'admin:deertrees_category_add' %}?parent={{object.pk}}" title="Add New Subcategory"><img src="{{ STATIC_PREFIX }}images/icons/add-folder.png" alt="Add Subcategory" title="Add New Subcategory" /></a>
-					<a href="{% url 'admin:deerbooks_page_add' %}?cat={{object.pk}}" title="Add New Writing"><img src="{{ STATIC_PREFIX }}images/icons/add-page.png" alt="Add Page" title="Add New Writing" /></a>
-					<a href="{% url 'admin:sunset_image_add' %}?cat={{object.pk}}" title="Add New Single Image"><img src="{{ STATIC_PREFIX }}images/icons/add-image.png" alt="Add Image" title="Add New Single Image" /></a>
-					<a href="{% url 'admin:sunset_batch_import_add' %}?cat={{object.pk}}" title="Add New Image Batch Import Job"><img src="{{ STATIC_PREFIX }}images/icons/add-list.png" alt="Add Image Batch" title="Add New Image Batch Import Job" /></a>
-					<a href="{% url 'admin:deerconnect_link_add' %}?cat={{object.pk}}" title="Add New Link"><img src="{{ STATIC_PREFIX }}images/icons/add-link.png" alt="Add Link" title="Add New Link" /></a>
-					<a href="{% url 'admin:deerconnect_contact_link_add' %}?cat={{object.pk}}" title="Add New Contact Link"><img src="{{ STATIC_PREFIX }}images/icons/add-user.png" alt="Add Contact Link" title="Add New Contact Link" /></a>
-				</div>
+				{% include 'deertrees/adminlinks.html' %}
 			</div>
 		{% endif %}
 		<div class="transbox left_sidebar">
-			<h2>{{object.title}}</h2>
+			<h2>{{object}}</h2>
 			{% if object.summary %}
 				<div>{{object.summary}}</div>
 			{% endif %}
