@@ -25,7 +25,7 @@ class single_page(leaf_view):
 		
 		if context['object']:
 			if context['object'].book_title:
-				context['toc'] = context['object'].book_title.page_set.filter(access_query(self.request)).select_related('cat').order_by('book_order')
+				context['toc'] = context['object'].book_title.pages.filter(access_query(self.request)).select_related('cat').order_by('book_order')
 			
 			context['alt_version_exclude'] = []
 			if context['object'].docfiles:
