@@ -9,8 +9,6 @@
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 
-from django_summernote.admin import SummernoteModelAdmin
-
 from awi_access.admin import access_admin
 from deerfind.admin import g2_inline
 from deertrees.admin import leaf_admin
@@ -40,7 +38,7 @@ class batch_image_inline_admin(admin.TabularInline):
 	readonly_fields = ['img_filename','img_obj','timestamp_mod','status',]
 
 # End inlines, begin regular admin objects
-class image_admin(SummernoteModelAdmin, leaf_admin):
+class image_admin(leaf_admin):
 	list_select_related = True
 	search_fields = ['body','summary','title','slug'] + leaf_admin.search_fields
 	fieldsets = [

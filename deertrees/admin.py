@@ -10,13 +10,12 @@ from django.contrib import admin
 from django.core.urlresolvers import reverse
 
 from django_mptt_admin.admin import DjangoMpttAdmin
-from django_summernote.admin import SummernoteModelAdmin
 from awi_access.admin import access_admin
 from deerfind.admin import g2_inline
 
 from deertrees.models import *
 
-class cat_admin(DjangoMpttAdmin,SummernoteModelAdmin,access_admin):
+class cat_admin(DjangoMpttAdmin,access_admin):
 	list_select_related = True
 	fieldsets = [
 		(None,{'fields':(('title','slug'),'summary','desc'),},),
@@ -32,7 +31,7 @@ class cat_admin(DjangoMpttAdmin,SummernoteModelAdmin,access_admin):
 	def view_on_site(self, obj):
 		return reverse('category',kwargs={'cached_url':obj.cached_url,})
 
-class tag_admin(SummernoteModelAdmin):
+class tag_admin(admin.ModelAdmin):
 	fieldsets = [
 		(None,{'fields':(('title','slug'),'desc'),},),
 		("Options",{'fields':(('content_priority','sitemap_include'),),},),

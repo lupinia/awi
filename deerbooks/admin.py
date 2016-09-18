@@ -9,12 +9,11 @@
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 
-from django_summernote.admin import SummernoteModelAdmin
 from deertrees.admin import leaf_admin
 
 from deerbooks.models import *
 
-class page_admin(SummernoteModelAdmin,leaf_admin):
+class page_admin(leaf_admin):
 	list_select_related = True
 	search_fields = ['body','summary','title','slug'] + leaf_admin.search_fields
 	fieldsets = [
