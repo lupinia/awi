@@ -4,11 +4,11 @@ Full website for Lupinia Studios, built with Django.  It's currently a work in p
 
 Built by Natasha L. (@lupinia)
 
-Domains
+Servers
 -------
 
 - **[seneca.lupinia.net](http://www.lupinia.net/)** *(v5.1)* - Production server.  It runs the current stable version of this codebase at all times.  All domains are primarily pointed at this server.
-- **[allegheny.lupinia.net](http://seneca.lupinia.net/)** *(v3.2)* - Deprecated former production server; currently runs a legacy PHP version, and is a separate physical server from the others.  For certain requests/URLs for features that are complete in 5.1, seneca.lupinia.net acts as a reverse proxy and passes the request to allegheny.lupinia.net.
+- **[allegheny.lupinia.net](http://allegheny.lupinia.net/)** *(v3.2)* - Deprecated former production server; currently runs the legacy PHP version of the Awi codebase, and it no longer handles production traffic, but some of its data has not yet been transferred to Seneca.
 
 Apps/Modules Included
 ---------------------
