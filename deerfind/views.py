@@ -15,11 +15,10 @@ from deerfind.models import pointer,hitlog
 def g2_finder(request):
 	import os
 	from deerfind.models import g2map
-	from django.core.urlresolvers import reverse
 	return_data = (False,'')
 	
 	basename=os.path.basename(request.path)
-	if '.' in basename:
+	if '.g2' in basename:
 		search_slug_list = basename.split('.')
 		search_slug = search_slug_list[0]
 	else:
@@ -31,17 +30,17 @@ def g2_finder(request):
 		else:
 			gallery_id = request.GET.get('g2_itemId','')
 		
-		if gallery_id and isinstance(gallery_id, (int,long)):
+		if gallery_id and gallery_id.isdigit():
 			gallery_check=g2map.objects.select_related('category', 'image').filter(g2id=gallery_id)
 			if gallery_check.exists():
 				if gallery_check[0].category:
 					access_check = gallery_check[0].category.can_view(request)
 					if access_check[0]:
-						return_data = (True,reverse('category',kwargs={'cached_url':gallery_check[0].category.cached_url,}))
+						return_data = (True,gallery_check[0].category.get_absolute_url())
 				elif gallery_check[0].image:
 					access_check = gallery_check[0].image.can_view(request)
 					if access_check[0]:
-						return_data = (True,reverse('image_single',kwargs={'cached_url':gallery_check[0].image.cat.cached_url,'slug':gallery_check[0].image.slug}))
+						return_data = (True,gallery_check[0].image.get_absolute_url())
 	
 	return return_data
 
