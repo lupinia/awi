@@ -114,7 +114,7 @@ class Command(BaseCommand):
 				else:
 					# This is the one we're going to work with, it's all shiny and new and stuff.
 					self.cur_page = page_obj
-					self.log('LaTeX will be compiled for page %d (%s)' % (self.cur_page.pk, self.cur_page.slug))
+					self.log('LaTeX will be compiled for new page %d (%s)' % (self.cur_page.pk, self.cur_page.slug))
 					break
 				
 				if self.cur_page:
@@ -170,32 +170,32 @@ class Command(BaseCommand):
 						cur_file_obj.close()
 						completed_types.append(update_file.filetype)
 						self.log("Successfully updated existing %s file." % update_file.filetype)
-				
-				for new_type in new_types:
-					cur_file_obj = File(open('%s/%s.%s' % (settings.DEERBOOKS_CACHE_DIR,filename,new_type),'rb'))
-					new_doc = export_file(filetype=new_type)
-					new_doc.docfile.save('%s.%s' % (filename,new_type),cur_file_obj)
-					new_doc.save()
-					cur_file_obj.close()
-					completed_types.append(new_type)
-					new_docfiles.append(new_doc)
-					self.log("Successfully created new %s file." % new_doc.filetype)
-				
-				if new_docfiles:
-					self.cur_page.docfiles.add(*new_docfiles)
-					self.log("Successfully attached new docfiles to page %d (%s)." % (self.cur_page.pk, self.cur_page.slug))
-					if tex_custom:
-						related_pages = tex_custom.page_set.all()
-					elif self.cur_page.book_title:
-						related_pages = self.cur_page.book_title.page_set.all()
-					else:
-						related_pages = False
+				else:
+					for new_type in new_types:
+						cur_file_obj = File(open('%s/%s.%s' % (settings.DEERBOOKS_CACHE_DIR,filename,new_type),'rb'))
+						new_doc = export_file(filetype=new_type)
+						new_doc.docfile.save('%s.%s' % (filename,new_type),cur_file_obj)
+						new_doc.save()
+						cur_file_obj.close()
+						completed_types.append(new_type)
+						new_docfiles.append(new_doc)
+						self.log("Successfully created new %s file." % new_doc.filetype)
 					
-					if related_pages:
-						for other_page in related_pages:
-							if other_page is not self.cur_page:
-								other_page.docfiles.add(*new_docfiles)
-								self.log("Successfully attached new docfiles to page %d (%s)." % (other_page.pk, other_page.slug), other_page)
+					if new_docfiles:
+						self.cur_page.docfiles.add(*new_docfiles)
+						self.log("Successfully attached new docfiles to page %d (%s)." % (self.cur_page.pk, self.cur_page.slug))
+						if tex_custom:
+							related_pages = tex_custom.page_set.all()
+						elif self.cur_page.book_title:
+							related_pages = self.cur_page.book_title.page_set.all()
+						else:
+							related_pages = False
+						
+						if related_pages:
+							for other_page in related_pages:
+								if other_page is not self.cur_page:
+									other_page.docfiles.add(*new_docfiles)
+									self.log("Successfully attached new docfiles to page %d (%s)." % (other_page.pk, other_page.slug), other_page)
 				
 				self.log("Compile operation complete!")
 				self.stdout.write('Operation Complete on %d (%s)' % (self.cur_page.pk, self.cur_page.slug))
