@@ -55,7 +55,7 @@ class page(leaf):
 	docfiles = models.ManyToManyField(export_file,blank=True)
 	latex_fail = models.BooleanField(default=False)
 	
-	book_title = models.ForeignKey(toc,null=True,blank=True)
+	book_title = models.ForeignKey(toc,null=True,blank=True,related_name='pages')
 	book_order = models.IntegerField(default=0,blank=True)
 	
 	def get_title(self, raw=False):

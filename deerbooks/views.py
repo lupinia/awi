@@ -56,7 +56,7 @@ class book(generic.DetailView):
 	model=toc
 	
 	def get_queryset(self, *args, **kwargs):
-		return super(book, self).get_queryset(*args, **kwargs).prefetch_related('page')
+		return super(book, self).get_queryset(*args, **kwargs).prefetch_related('pages')
 	
 	def get_context_data(self, **kwargs):
 		context=super(book,self).get_context_data(**kwargs)
@@ -70,7 +70,7 @@ class book(generic.DetailView):
 		else:
 			site_domain = self.request.site.domain
 		
-		for page in context['toc'].page_set.filter(access_query()).order_by('book_order'):
+		for page in context['toc'].pages.filter(access_query()).order_by('book_order'):
 			canview = page.can_view(self.request)
 			if not canview[0]:
 				continue
