@@ -627,6 +627,7 @@ class batch_import(access_control):
 			self.save()
 			return success_count
 		else:
+			self.timestamp_sync = timezone.now()
 			self.sync_success=True
 			self.save()
 			import_log.objects.create(command='batch_import.process_folder', message='batch_import.check_folder() returned False; nothing to do.', batch=self)
