@@ -13,8 +13,6 @@ Servers
 Apps/Modules Included
 ---------------------
 
-Full feature list for these in-progress.
-
 - **System/Structure**
 	- **Awi Access**:  Unified access control, permissions, and ownership settings for any object.
 	- **Awi Background**:  Dynamic background images for page body site-wide, with a tagging system to include/exclude certain images from certain categories and content items.
@@ -22,7 +20,7 @@ Full feature list for these in-progress.
 	- **DeerFind**:  Intelligent 404 handler.
 - **Main Content**
 	- **DeerTrees**:  Multi-level object-agnostic category system.
-	- **DeerBooks**:  Enhanced text/writing management, with multi-format display (HTML, Markdown, Plain Text, LaTeX), and automatic generation of PDF, DVI, and PostScript files from dynamically-generated LaTeX source.
+	- **[DeerBooks](http://www.lupinia.net/code/projects/django/deerbooks.htm)**:  Enhanced text/writing management, with multi-format display (HTML, Markdown, Plain Text, LaTeX), and automatic generation of PDF, DVI, and PostScript files from dynamically-generated LaTeX source.
 	- **DeerConnect**:  Link directory and contact information manager, with email form.
 	- **Sunset**:  Advanced image gallery, with built-in watermarking, metadata parsing, hash-based de-duplication, and batch imports from server-side directories.
 - **Other**
