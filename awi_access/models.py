@@ -4,7 +4,8 @@
 #	
 #	=================
 #	Models
-#	This is just a meta class to be extended by other models in other apps.
+#	def access_query:  Returns Q objects corresponding to the access level of the current request.  Example usage:  access_control.objects.filter({main condition}).filter(access_query(request))
+#	class access_control:  This is just a meta class to be extended by other models in other apps.
 #	=================
 
 from django.db import models
