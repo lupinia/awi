@@ -10,7 +10,7 @@
 	<li class="menu_header_wide"><a href="/code/" style="background-image:url({{ STATIC_PREFIX }}images/nav/pro-off.png)" title="Professional Work"><img src="{{ STATIC_PREFIX }}images/nav/pro-on.png" alt="Professional Work" /></a>
 		<ul>
 			<li><a href="/code/" style="background-image:url({{ STATIC_PREFIX }}images/nav/software-off.png)" title="Software/Websites/Code"><img src="{{ STATIC_PREFIX }}images/nav/software-on.png" alt="Software/Websites/Code" /></a></li>
-			<!--<li><a href="/code/resume.htm" style="background-image:url({{ STATIC_PREFIX }}images/nav/resume-off.png)" title="Natasha's Résumé"><img src="{{ STATIC_PREFIX }}images/nav/resume-on.png" alt="Natasha's Résumé" /></a></li>-->
+			{% if site.name != 'Furry' %}<li><a href="/code/resume.htm" style="background-image:url({{ STATIC_PREFIX }}images/nav/resume-off.png)" title="Natasha's Résumé"><img src="{{ STATIC_PREFIX }}images/nav/resume-on.png" alt="Natasha's Résumé" /></a></li>{% endif %}
 		</ul>
 	</li>
 	<li><a href="/personal/" style="background-image:url({{ STATIC_PREFIX }}images/nav/personal-off.png)" title="Personal "><img src="{{ STATIC_PREFIX }}images/nav/personal-on.png" alt="Professional Work" /></a>
