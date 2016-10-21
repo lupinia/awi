@@ -64,14 +64,14 @@ class Command(BaseCommand):
 				self.log("Checking for batch folders to sync.")
 				import_list = batch_import.objects.filter(Q(timestamp_sync__lt=timezone.now()-folder_resync_time) | Q(timestamp_sync=None)).filter(active=True).order_by('-timestamp_mod','timestamp_sync').prefetch_related('meta', 'images')
 				if import_list.exists():
-					to_import = import_list.first()
-					self.log("Synchronizing folder %s." % to_import, batch=to_import)
-					import_status = to_import.process_folder()
-					if import_status:
-						self.log("Successfully imported %d images." % import_status, batch=to_import)
-					else:
-						self.log("No new images in %s." % to_import, batch=to_import)
-					
+					for to_import in import_list:
+						self.log("Checking folder %s." % to_import, batch=to_import)
+						import_status = to_import.process_folder()
+						if import_status:
+							self.log("Successfully imported %d images." % import_status, batch=to_import)
+							break
+						else:
+							self.log("No new images in %s." % to_import, batch=to_import)
 					complete = True
 				else:
 					self.log("No batch folders need to be synchronized.")

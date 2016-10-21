@@ -73,9 +73,9 @@ class image(leaf):
 	
 	def __unicode__(self):
 		if self.title:
-			return self.title
+			return unicode(self.title)
 		else:
-			return self.slug
+			return unicode(self.slug)
 	
 	def save(self, *args, **kwargs):
 		if self.body and not self.summary:
