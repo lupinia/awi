@@ -198,6 +198,10 @@ body {
 		margin-top:10px;
 		margin-bottom:0px;
 		
+		ul li {
+			margin-bottom:10px;
+		}
+		
 		/* Custom CSS for resume */
 		.resume {
 			padding-top:10px;
@@ -817,6 +821,10 @@ a {
 		padding:0px;
 		padding-left:10px;
 		margin-top:5px;
+		
+		li {
+			margin-bottom:0px !important;
+		}
 	}
 	
 	hr { margin:10px; }
