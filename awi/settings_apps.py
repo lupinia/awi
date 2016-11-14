@@ -70,6 +70,7 @@ SUNSET_IMAGE_ASSET_SIZES = {
 SUNSET_IMPORT_DIR = '/srv/awi_import/sunset'
 SUNSET_CACHE_DIR = os.path.abspath(os.path.join(BASE_DIR,'working_dirs/sunset/'))
 SUNSET_WATERMARK_IMAGE = os.path.abspath(os.path.join(BASE_DIR,'sunset/watermarks/lupinia.png'))
+SUNSET_BG_NOTIFY_FAIL = True	# Send a notification if sunset_bg is used but a background image cannot be found.
 
 
 #	THIRD-PARTY APPS

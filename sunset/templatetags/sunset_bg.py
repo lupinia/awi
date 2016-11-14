@@ -11,8 +11,10 @@
 import random
 
 from django import template
+from django.conf import settings
 from django.db.models import Q
 
+from awi.utils import notify
 from sunset.models import image, background_tag
 
 register = template.Library()
@@ -52,6 +54,13 @@ def bg_filename(context, input_string=''):
 		# If nothing is set yet, use a default image.
 		display_footer_info = True
 		bg_array = image.objects.filter(bg_tags__default=True).filter(assets__type='bg').select_related('cat')
+		if not bg_array.exists():
+			# Despite our best efforts, there is no suitable background image.  So we'll use a static default.
+			display_footer_info = False
+			cur_background = False
+			if settings.SUNSET_BG_NOTIFY_FAIL:
+				notify(subject='Sunset Background Failure', msg="A background image object could not be found.")
+			return '%ssunset/blank.png' % settings.STATIC_URL
 	
 	if not bg_selected:
 		bg_selected = random.choice(bg_array)
