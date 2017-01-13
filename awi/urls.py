@@ -58,8 +58,8 @@ urlpatterns = [
 	#	Custom Apps
 	url(r'^gamescripts/', include('secondlife.urls')),
 	url(r'^personal/cooking/menu/', include('deerfood.urls',namespace='deerfood')),
+	url(r'^furry/cons/', include('deerattend.urls',namespace='deerattend')),
 	url(r'^contact/$',check_honeypot(contact_page.as_view()),name='contact'),
-	url(r'^contact.php',check_honeypot(contact_page.as_view()),name='contact_old'),		# Temporary legacy support for partial roll-out
 	
 	#	DeerTrees and DeerBooks are special cases for this site.
 	url(r'^$',deertrees_views.homepage.as_view(),name='home'),

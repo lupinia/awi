@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}{{block.super}} - Events Attended By Natasha{% if cur_filter %} - {{cur_filter.name}}{% endif %}{% endblock %}
+{% block bg_image %}{% include 'sunset/bg_image.html' with bg_tag='furry' %}{% endblock %}
+
+{% block content_left %}
+	<div class="transbox fulltext_page">
+		<div id="fulltext_page_title">
+			{% if can_edit %}
+				<div id="fulltext_page_title_extra">
+					<div class="hovericons16">
+						<a href="{% url 'admin:deerattend_event_instance_add' %}"><img src="{{ STATIC_PREFIX }}images/icons/add.png" alt="Add New Event Instance" title="Add New Event Instance" /></a>
+					</div>
+				</div>
+			{% endif %}
+			<div id="fulltext_page_title_main">
+				<h2>Events Attended By Natasha{% if cur_filter %} - {{cur_filter.name}}{% endif %}</h2>
+				{% if update_time %}<div id="byline">Last updated:  {{update_time|date:'F j, Y  G:i:s'}}</div>{% endif %}
+				<br />
+			</div>
+		</div>
+		
+		{% if event_instances %}
+			<table class="events_table">
+				<tr>
+					<th>Type</th>
+					<th class="col_main">Event</th>
+					<th>Location</th>
+					<th>Dates</th>
+				</tr>
+				{% for content_item in event_instances %}
+					<tr class="{% if content_item.event.mature %}event_mature {% endif %}{% if content_item.is_tentative %}event_tentative {% elif content_item.is_upcoming %}event_upcoming {% endif %} event_instance">
+						<td>
+							<div>{{content_item.event.type}}</div>
+							<div class="hovericons16 item_flags">
+								{% for flag in content_item.flags.all %}
+									<a href="{% url 'deerattend:filter_flag' flag.slug %}" title="Filter:  {{flag.name}}"><img src="{{MEDIA_URL}}{{flag.icon}}" alt="{{flag.name}}" title="{{flag.name}}" height="16" /></a>&nbsp;
+								{% endfor %}
+							</div>
+						</td>
+						<td class="col_main">
+							<div class="related_content hovericons16">
+								{% if content_item.report %}
+									<a href="{{content_item.report.get_absolute_url}}" title="Event Report:  {{content_item.report.get_title}}"><img src="{{STATIC_URL}}images/icons/book.png" alt="Event Report" title="Event Report:  {{content_item.report.get_title}}" height="16" /></a>&nbsp;
+								{% endif %}
+								
+								{% if content_item.photos %}
+									<a href="{{content_item.photos.get_absolute_url}}" title="Event Photos:  {{content_item.photos.title}}"><img src="{{STATIC_URL}}images/icons/camera.png" alt="Event Photos" title="Event Photos:  {{content_item.photos.title}}" height="16" /></a>&nbsp;
+								{% endif %}
+								
+								{% if can_edit %}
+									<a href="{% url 'admin:deerattend_event_instance_change' content_item.pk %}"><img src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit" title="Edit" /></a>
+								{% endif %}
+							</div>
+							<div>
+								{% if content_item.is_tentative %}
+									<div class="event_highlight">Tentative</div>
+								{% elif content_item.is_upcoming %}
+									<div class="event_highlight">Upcoming (Confirmed Appearance)</div>
+								{% elif content_item.event.mature %}
+									<div class="event_highlight">Mature Event (18+)</div>
+								{% endif %}
+								
+								<div>{{content_item}}</div>
+								{% if content_item.notes %}
+									<div class="notes">{{content_item.notes}}</div>
+								{% endif %}
+							</div>
+						</td>
+						<td>{{content_item.venue.get_city}}</td>
+						<td>{{content_item.date_start|date:'M j, Y'}} - {{content_item.date_end|date:'M j, Y'}}</td>
+					</tr>
+				{% endfor %}
+			</table>
+		{% endif %}
+	</div>
+{% endblock %}
+
+{% block content_right %}
+	<div class="right_sidebar">
+		<div class="transbox right_sidebar_section">
+			<h3>Event Types</h3>
+			{% for filter in filters.types %}
+				{% if filter != cur_filter %}
+					<a href="{% url 'deerattend:filter_type' filter.slug %}" class="sidebar_link" title="{{filter.name}}">
+						<span class="sidebar_link_title">{{filter.name}}</span>
+						<div class="sidebar_link_subtext">{{filter.num_items}} Item{{filter.num_items|pluralize}}</div>
+					</a>
+				{% endif %}
+			{% endfor %}
+			{% if cur_filter and cur_filter_type == 'type' %}
+				<a class="sidebar_link" href="{% url 'deerattend:full_list' %}" title="Clear Filters"><em>Clear Filters</em></a>
+			{% endif %}
+		</div>
+		
+		<div class="transbox right_sidebar_section">
+			<h3>Attendance Flags</h3>
+			{% for filter in filters.flags %}
+				{% if filter != cur_filter %}
+					<a href="{% url 'deerattend:filter_flag' filter.slug %}" class="sidebar_link" title="{{filter.name}}">
+						<img src="{{MEDIA_URL}}{{filter.icon}}" alt="{{filter.name}}" title="{{filter.name}}" class="sidebar_link_img" />
+						<span class="sidebar_link_title">{{filter.name}}</span>
+						<div class="sidebar_link_subtext">{{filter.num_items}} Item{{filter.num_items|pluralize}}</div>
+					</a>
+				{% endif %}
+			{% endfor %}
+			{% if cur_filter and cur_filter_type == 'flag' %}
+				<a class="sidebar_link" href="{% url 'deerattend:full_list' %}" title="Clear Filters"><em>Clear Filters</em></a>
+			{% endif %}
+		</div>
+		
+		<div class="transbox right_sidebar_section">
+			<h3>Filters</h3>
+			{% for filter in filters.special %}
+				{% if filter != cur_filter %}
+					<a href="{% url 'deerattend:filter_special' filter.slug %}" class="sidebar_link{% if filter.is_mature %} mature{% endif %}" title="{{filter.name}}">
+						<span class="sidebar_link_title">{{filter.name}}</span>
+					</a>
+				{% endif %}
+			{% endfor %}
+			{% if cur_filter and cur_filter_type == 'special' %}
+				<a class="sidebar_link" href="{% url 'deerattend:full_list' %}" title="Clear Filters"><em>Clear Filters</em></a>
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}

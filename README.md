@@ -24,6 +24,7 @@ Apps/Modules Included
 	- **DeerConnect**:  Link directory and contact information manager, with email form.
 	- **[Sunset](http://www.lupinia.net/code/projects/django/sunset.htm)**:  Advanced image gallery, with built-in watermarking, metadata parsing, hash-based de-duplication, and batch imports from server-side directories.
 - **Other**
+	- **DeerAttend**:  Event attendance history tracker/display.
 	- **DeerHealth**:  Prescription medication tracker.
 	- **DeerFood**:  Restaurant-style menu system.
 	- **DeerCoins**:  Coin collection (numismatic) database and tools.
