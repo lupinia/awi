@@ -24,7 +24,7 @@
 			{% comment %}<!-- Do nothing.  -->{% endcomment %}
 		{% else %}
 			<div class="leaf_link tall">
-				<a href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}}" {% if page.featured and highlight_featured %}class="featured"{% elif page.mature %}class="mature"{% elif not page.is_public.0 %}class="notpublic"{% endif %}>
+				<a class="leaf_a" href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}}" {% if page.featured and highlight_featured %}class="featured"{% elif page.mature %}class="mature"{% elif not page.is_public.0 %}class="notpublic"{% endif %}>
 					{% if page.featured and highlight_featured %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
 					{% elif page.mature %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
 					

@@ -415,11 +415,14 @@ body {
 			
 			.item_flags {
 				position:absolute;
-				bottom:5px;
+				bottom:3px;
+				right:5px;
+				
+				&.hovericons16 a { margin:0px !important; padding:2px !important; }
 			}
 		}
 		
-		a {
+		a.leaf_a {
 			@extend .item;
 			@include leaf_links;
 			position:static;

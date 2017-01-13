@@ -25,7 +25,7 @@
 			<div class="leaf_links_wrapper">
 			{% for tag in tags %}
 				<div class="leaf_link short">
-					<a href="{% if return_to %}{{return_to}}{{tag.pk}}{% else %}{% url 'tag' tag.slug %}{% endif %}" title="{{tag}}">
+					<a class="leaf_a" href="{% if return_to %}{{return_to}}{{tag.pk}}{% else %}{% url 'tag' tag.slug %}{% endif %}" title="{{tag}}">
 						<span class="item_summary_head"><span class="item_summary_title">{{tag}}</span></span>
 					</a>
 				</div>
