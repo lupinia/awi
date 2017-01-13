@@ -533,7 +533,7 @@ body {
 		background-color:$color_bg_leaf_mature_hover; 
 		.event_highlight { color:$color_text_err_crit; }
 	}
-	tr.event_tentative td { font-style:italic; }
+	tr.event_tentative td { font-style:italic; background-color:$color_bg_leaf_hover; }
 	tr.event_upcoming td { background-color:$color_bg_leaf_featured_hover !important; font-weight:bold; }
 }
 
