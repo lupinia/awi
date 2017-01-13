@@ -24,7 +24,7 @@ from PIL import Image, ImageOps
 
 from awi_access.models import access_control
 from deertrees.models import leaf, category, tag
-from sunset.utils import *
+from sunset.utils import watermark, hash_file
 
 def image_asset_uploadto(instance, filename):
 	original = filename.split('.')
@@ -86,6 +86,14 @@ class image(leaf):
 			else:
 				self.summary = body_text[:250].rsplit(' ',1)[0]+'...'
 		super(image, self).save(*args, **kwargs)
+	
+	def is_public(self):
+		ispublic = super(image, self).is_public()
+		if self.is_new:
+			ispublic[0] = False
+			ispublic[1].append('Assets not yet built')
+		
+		return ispublic
 	
 	def get_absolute_url(self):
 		return reverse('image_single', kwargs={'cached_url':self.cat.cached_url, 'slug':self.slug})
