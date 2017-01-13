@@ -59,7 +59,7 @@ INSTALLED_APPS = (
 	'deerfind',		# 404 Map
 	'awi_error',	# Error Handling
 	'awi_access',	# Access Control
-	'secondlife',
+	'secondlife',	# Access control data for objects/scripts in Second Life
 	
 	#	My Apps - Primary Content Objects
 	'deertrees',	# Categories
