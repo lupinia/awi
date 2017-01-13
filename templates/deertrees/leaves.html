@@ -38,10 +38,10 @@
 				<br /><hr /><br />
 			{% endif %}
 			{% autoescape off %}
-			{% if "<p>" in object.desc or "<br" in object.desc %}
-				{{object.desc}}
+			{% if "<p>" in body_text or "<br" in body_text %}
+				{{body_text}}
 			{% else %}
-				{{object.desc|linebreaks}}
+				{{body_text|linebreaks}}
 			{% endif %}
 			{% endautoescape %}
 			</div>

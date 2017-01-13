@@ -23,16 +23,16 @@
 				{% endif %}
 
 				<div id="fulltext_page_title_main"><h2>{{page.get_title}}</h2>
-				<div id="byline">{{page.display_times.0.label}}:  {{page.display_times.0.timestamp|date:'F j, Y  G:i:s'}} &bull; {{page.body|wordcount}} words</div>
+				<div id="byline">{{page.display_times.0.label}}:  {{page.display_times.0.timestamp|date:'F j, Y  G:i:s'}} &bull; {{body_text|wordcount}} words</div>
 				</div>
 			</div>
 			
 			<div class="fulltext_page_body">
 				{% autoescape off %}
-					{% if "<p>" in page.body or "<br />" in page.body %}
-						{{page.body}}
+					{% if "<p>" in body_text or "<br />" in body_text %}
+						{{body_text}}
 					{% else %}
-						{{page.body|linebreaks}}
+						{{body_text|linebreaks}}
 					{% endif %}
 				{% endautoescape %}
 			</div>

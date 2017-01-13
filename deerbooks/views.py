@@ -13,6 +13,7 @@ from django.views import generic
 from awi_access.models import access_query
 from deerbooks.models import page, toc, export_file
 from deertrees.views import leaf_view
+from sunset.utils import sunset_embed
 
 class single_page(leaf_view):
 	model=page
@@ -33,6 +34,8 @@ class single_page(leaf_view):
 				for item in context['object'].docfiles.all():
 					context['alt_version_exclude'].append(item.filetype)
 					context['docfiles'].append(item)
+			
+			context['body_text'] = sunset_embed(context['object'].body, self.request)
 		
 		return context
 
@@ -75,6 +78,7 @@ class book(generic.DetailView):
 			if not canview[0]:
 				continue
 			else:
+				page.body = sunset_embed(page.body, self.request)
 				context['pages'].append(page)
 				
 				# source_url should be the url for the first visible page

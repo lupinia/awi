@@ -21,6 +21,7 @@ from django.views import generic
 from awi_access.models import access_query
 from deerconnect.models import contact_link
 from deertrees.models import category, tag, leaf
+from sunset.utils import sunset_embed
 
 class leaf_parent():
 	template_name = 'deertrees/leaves.html'
@@ -331,6 +332,10 @@ class category_list(leaf_parent, generic.DetailView):
 				context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
 			
 			context['highlight_featured'] = self.highlight_featured
+			
+			if context['object'].desc:
+				context['body_text'] = sunset_embed(context['object'].desc, self.request)
+			
 		return context
 
 class tag_list(leaf_parent, generic.DetailView):

@@ -804,8 +804,18 @@ a {
 	line-height:28px;
 }
 
-.thumb_right { float:right; margin:10px; text-align:center; }
-.thumb_left { float:left; margin:10px; text-align:center; }
+.thumb_right, .thumb_right_wide { float:right; margin:10px; text-align:center; }
+.thumb_left, .thumb_left_wide { float:left; margin:10px; text-align:center; }
+
+.sunset_embed {
+	.thumb_right & img {
+		max-width:200px;
+	}
+	
+	.thumb_left & img {
+		max-width:150px;
+	}
+}
 
 .infobox_right, .infobox_left { 
 	margin:10px; 

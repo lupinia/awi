@@ -120,6 +120,18 @@
 			{% if tags %}
 				{% include 'deertrees/taglist_sidebar.html' %}
 			{% endif %}
+			
+			{% comment %}<!-- Embed Codes -->{% endcomment %}
+			{% if can_edit %}
+				<div class="transbox right_sidebar_section copypaste_boxes">
+					<h3>Embed This Image</h3>
+						<label for="embed_internal_icon">Thumbnail (Internal)</label>
+						<input type="text" name="embed_internal_icon" id="embed_internal_icon" readonly="readonly" value="&lt;sunset id=&quot;{{image.pk}}&quot; type=&quot;icon&quot; /&gt;" />
+						
+						<label for="embed_internal_display">Display (Internal)</label>
+						<input type="text" name="embed_internal_display" id="embed_internal_display" readonly="readonly" value="&lt;sunset id=&quot;{{image.pk}}&quot; type=&quot;display&quot; /&gt;" />
+				</div>
+			{% endif %}
 		</div>
 	{% endif %}
 {% endblock %}

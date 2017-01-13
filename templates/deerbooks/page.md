@@ -5,7 +5,7 @@ By {% include 'authorname.txt' %} - [{% if 'www' not in site.domain %}www.{% end
 
 ---
 
-{% load deertransform %}{% html_md page.body %}
+{% load deertransform %}{% html_md body_text %}
 
 --
 

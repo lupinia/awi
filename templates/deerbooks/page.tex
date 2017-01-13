@@ -18,7 +18,7 @@
 \author{% templatetag openbrace %}By {% include 'authorname.txt' %} - \url{% templatetag openbrace %}{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}{% templatetag closebrace %}{% templatetag closebrace %}
 \date{% templatetag openbrace %}{{page.display_times.0.label}}:  {{page.display_times.0.timestamp|date:'F j, Y'}}{% templatetag closebrace %}
 \maketitle
-{% html_tex page.body %}
+{% html_tex body_text %}
 \begin{% templatetag openbrace %}center{% templatetag closebrace %}
 \line(1,0){% templatetag openbrace %}250{% templatetag closebrace %}
 \end{% templatetag openbrace %}center{% templatetag closebrace %}

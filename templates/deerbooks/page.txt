@@ -3,7 +3,7 @@ By {% include 'authorname.txt' %} - http://{% if 'www' not in site.domain %}www.
 {{page.display_times.0.label}}:  {{page.display_times.0.timestamp|date:'F j, Y  G:i:s'}} | {{page.body|wordcount}} words
 ========================
 
-{% load deertransform %}{% html_txt page.body %}
+{% load deertransform %}{% html_txt body_text %}
 
 ========================
 (c) {{page.display_times.0.timestamp|date:'Y'}} {% include 'authorname.txt' %}
