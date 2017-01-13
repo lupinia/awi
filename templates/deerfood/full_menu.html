@@ -5,7 +5,18 @@
 
 {% block content_left %}
 	<div class="transbox fulltext_page">
-		<h2>Natasha's Kitchen - Menu{% if cur_filter %} - {{cur_filter.name}}{% endif %}</h2>
+		<div id="fulltext_page_title">
+			{% if can_edit %}
+				<div id="fulltext_page_title_extra">
+					<div class="hovericons16">
+						<a href="{% url 'admin:deerfood_menu_item_add' %}"><img src="{{ STATIC_PREFIX }}images/icons/add.png" alt="Add New Menu Item" title="Add New Menu Item" /></a>
+					</div>
+				</div>
+			{% endif %}
+			<div id="fulltext_page_title_main">
+				<h2>Natasha's Kitchen - Menu{% if cur_filter %} - {{cur_filter.name}}{% endif %}</h2>
+			</div>
+		</div>
 		<p>I love to cook, and I love to cook for other people, but sometimes it can be difficult to list and describe everything I can make.  So, this is the list of everything I currently know how to cook, from the simple to the complex (excluding things that require no effort at all, like hot dogs).  This will continually expand as I learn new recipes!  I'm happy to make things outside this list too, that's how I learn, this is simply the list of everything I've tried and already know how to do well, including some recipes of my own design.</p>
 	</div>
 
@@ -19,10 +30,13 @@
 						{{content_item.section.name}}
 					</span>
 					<span class="item_summary_body">{{content_item.desc}}</span>
-					<div class="item_flags">
+					<div class="item_flags hovericons16">
 						{% for flag in content_item.flags.all %}
-							<img src="{{MEDIA_URL}}{{flag.icon}}" alt="{{flag.name}}" title="{{flag.name}}" height="16" />&nbsp;
+							<a href="{% url 'deerfood:menu_flag' flag.slug %}"><img src="{{MEDIA_URL}}{{flag.icon}}" alt="{{flag.name}}" title="{{flag.name}}" height="16" /></a>
 						{% endfor %}
+						{% if can_edit %}
+							<a href="{% url 'admin:deerfood_menu_item_change' content_item.pk %}"><img src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit" title="Edit" /></a>
+						{% endif %}
 					</div>
 				</div></div>
 				{% endfor %}
@@ -35,24 +49,48 @@
 {% block content_right %}
 	<div class="right_sidebar">
 		<div class="transbox right_sidebar_section">
+			{% if can_edit %}
+				<div class="admin_buttons">
+					<div class="hovericons16">
+						<a href="{% url 'admin:deerfood_menu_section_add' %}" title="Add a Menu Section"><img src="{{STATIC_PREFIX}}images/icons/add.png" alt="Add a Menu Section" title="Add a Menu Section" /></a>
+					</div>
+				</div>
+			{% endif %}
 			<h3>Menu Sections</h3>
 			{% for filter in filters.sections %}
-				<a href="{% url 'deerfood:menu_section' filter.slug %}" class="sidebar_link" title="{{filter.name}}">
-					<span class="sidebar_link_title">{{filter.name}}</span>
-					<div class="sidebar_link_subtext">{{filter.num_items}} Item{{filter.num_items|pluralize}}</div>
-				</a>
+				{% if filter != cur_filter %}
+					<a href="{% url 'deerfood:menu_section' filter.slug %}" class="sidebar_link" title="{{filter.name}}">
+						<span class="sidebar_link_title">{{filter.name}}</span>
+						<div class="sidebar_link_subtext">{{filter.num_items}} Item{{filter.num_items|pluralize}}</div>
+					</a>
+				{% endif %}
 			{% endfor %}
+			{% if cur_filter and cur_filter_type == 'section' %}
+				<a class="sidebar_link" href="{% url 'deerfood:full_menu' %}" title="Clear Filters"><em>Clear Filters</em></a>
+			{% endif %}
 		</div>
 		
 		<div class="transbox right_sidebar_section">
+			{% if can_edit %}
+				<div class="admin_buttons">
+					<div class="hovericons16">
+						<a href="{% url 'admin:deerfood_menu_flag_add' %}" title="Add a Menu Flag"><img src="{{STATIC_PREFIX}}images/icons/add.png" alt="Add a Menu Flag" title="Add a Menu Flag" /></a>
+					</div>
+				</div>
+			{% endif %}
 			<h3>Menu Flags</h3>
 			{% for filter in filters.flags %}
-				<a href="{% url 'deerfood:menu_flag' filter.slug %}" class="sidebar_link" title="{{filter.name}}">
-					<img src="{{MEDIA_URL}}{{filter.icon}}" alt="{{filter.name}}" title="{{filter.name}}" class="sidebar_link_img" />
-					<span class="sidebar_link_title">{{filter.name}}</span>
-					<div class="sidebar_link_subtext">{{filter.num_items}} Item{{filter.num_items|pluralize}}</div>
-				</a>
+				{% if filter != cur_filter %}
+					<a href="{% url 'deerfood:menu_flag' filter.slug %}" class="sidebar_link" title="{{filter.name}}">
+						<img src="{{MEDIA_URL}}{{filter.icon}}" alt="{{filter.name}}" title="{{filter.name}}" class="sidebar_link_img" />
+						<span class="sidebar_link_title">{{filter.name}}</span>
+						<div class="sidebar_link_subtext">{{filter.num_items}} Item{{filter.num_items|pluralize}}</div>
+					</a>
+				{% endif %}
 			{% endfor %}
+			{% if cur_filter and cur_filter_type == 'flag' %}
+				<a class="sidebar_link" href="{% url 'deerfood:full_menu' %}" title="Clear Filters"><em>Clear Filters</em></a>
+			{% endif %}
 		</div>
 	</div>
 {% endblock %}

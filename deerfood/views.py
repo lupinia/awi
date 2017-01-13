@@ -33,6 +33,15 @@ class menu_item_list():
 		
 		return breadcrumbs
 	
+	def can_edit(self):
+		if self.request.user.is_authenticated():
+			if self.request.user.has_perm('deerfood.change_menu_item'):
+				return True
+			else:
+				return False
+		else:
+			return False
+	
 	def get_filters(self):
 		filters = {}
 		filters['sections'] = menu_section.objects.all().order_by('name').annotate(num_items=Count('menu_item'))
@@ -48,6 +57,7 @@ class full_menu(menu_item_list, generic.ListView):
 		context=super(full_menu,self).get_context_data(**kwargs)
 		context['breadcrumbs'] = self.build_breadcrumbs()
 		context['filters'] = self.get_filters()
+		context['can_edit'] = self.can_edit()
 		return context
 
 
@@ -58,8 +68,10 @@ class menu_by_section(menu_item_list, generic.ListView):
 	def get_context_data(self, **kwargs):
 		context=super(menu_by_section,self).get_context_data(**kwargs)
 		context['cur_filter'] = menu_section.objects.get(slug=self.kwargs['slug'])
+		context['cur_filter_type'] = 'section'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'section')
 		context['filters'] = self.get_filters()
+		context['can_edit'] = self.can_edit()
 		return context
 
 
@@ -70,7 +82,9 @@ class menu_by_flag(menu_item_list, generic.ListView):
 	def get_context_data(self, **kwargs):
 		context=super(menu_by_flag,self).get_context_data(**kwargs)
 		context['cur_filter'] = menu_flag.objects.get(slug=self.kwargs['slug'])
+		context['cur_filter_type'] = 'flag'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'flag')
 		context['filters'] = self.get_filters()
+		context['can_edit'] = self.can_edit()
 		return context
 
