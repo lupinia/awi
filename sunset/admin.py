@@ -49,8 +49,8 @@ class image_admin(leaf_admin):
 	inlines = [g2_inline, asset_inline_admin, meta_inline_admin]
 	list_filter = ['bg_tags',] + leaf_admin.list_filter
 	
-	#def view_on_site(self, obj):
-	#	return reverse('page_htm',kwargs={'cached_url':obj.cat.cached_url, 'slug':obj.slug,})
+	def view_on_site(self, obj):
+		return reverse('image_single',kwargs={'cached_url':obj.cat.cached_url, 'slug':obj.slug,})
 
 class image_meta_key_admin(admin.ModelAdmin):
 	list_select_related = True
