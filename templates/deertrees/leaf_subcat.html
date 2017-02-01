@@ -19,7 +19,7 @@
 	{% for subcat in leaves %}
 		<div class="leaf_link midheight">
 			<a class="leaf_a" href="{% url 'category' subcat.cached_url %}" title="{{subcat.title}}">
-				{% if link.mature %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
+				{% if subcat.mature %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
 				<span class="item_summary_head"><span class="item_summary_title">{{subcat.title}}</span></span><br />
 				<span class="item_summary_body">{{subcat.summary}}</span>
 			</a>
