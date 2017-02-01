@@ -156,3 +156,24 @@ class events_by_special(event_list, generic.ListView):
 		context['filters'] = self.get_filters()
 		context['can_edit'] = self.can_edit()
 		return context
+
+
+def widget(parent=False, parent_type=False, request=False):
+	if request:
+		queryset = event_instance.objects.filter(date_start__gte=timezone.now())
+		if request.user.is_authenticated():
+			if not request.user.is_superuser or not request.user.is_staff:
+				# Regular User
+				queryset = queryset.filter(event__mature=False)
+		else:
+			# Anonymous User
+			queryset = queryset.filter(Q(event__mature=False))
+		
+		events_list = queryset.order_by('date_start').prefetch_related('flags').select_related('event','event__type','venue','photos','report')[:10]
+		
+		if events_list:
+			return events_list
+		else:
+			return False
+	else:
+		return False

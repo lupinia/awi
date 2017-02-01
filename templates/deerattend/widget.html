@@ -1,0 +1,20 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+{% get_media_prefix as MEDIA_PREFIX %}
+
+{% if 'sidebar' in blockname %}
+	{% for event in leaves %}
+	<a href="{% url 'deerattend:full_list' %}" class="sidebar_link {% if event.event_upcoming %}featured{% elif event.event.mature %}mature{% elif event.is_tentative %}notpublic{% endif %}">
+		<span class="sidebar_link_title">{{event}}</span>
+		<div class="sidebar_link_subtext">{{event.venue.get_city}}</div>
+		<div class="sidebar_link_subtext">{{event.date_start|date:'M j, Y'}} - {{event.date_end|date:'M j, Y'}}</div>
+		{% if event.event_upcoming %}
+			<div class="sidebar_link_subtext">Confirmed Appearance</div>
+		{% elif event.event.mature %}
+			<div class="sidebar_link_subtext">Mature Event (18+)</div>
+		{% endif %}
+	</a>
+	{% empty %}
+		<div><sub><em>No Upcoming Events</em></sub></div>
+	{% endfor %}
+{% endif %}
