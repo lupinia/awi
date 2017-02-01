@@ -35,9 +35,9 @@ class menu_flag(models.Model):
 class menu_item(models.Model):
 	name=models.CharField(max_length=150)
 	desc=models.TextField()
-	section=models.ForeignKey(menu_section)
+	section=models.ForeignKey(menu_section, on_delete=models.PROTECT)
 	flags=models.ManyToManyField(menu_flag,blank=True)
-	recipe_internal=models.ForeignKey(page,null=True,blank=True)
+	recipe_internal=models.ForeignKey(page,null=True,blank=True, on_delete=models.SET_NULL)
 	timestamp_mod=models.DateTimeField(auto_now=True)
 	timestamp_post=models.DateTimeField(default=timezone.now)
 	def __unicode__(self):

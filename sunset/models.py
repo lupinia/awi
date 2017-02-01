@@ -307,7 +307,7 @@ class image_asset(models.Model):
 	)
 	
 	type=models.CharField(max_length=16,choices=TYPE_OPTIONS,default='unknown')
-	parent=models.ForeignKey(image, related_name='assets')
+	parent=models.ForeignKey(image, related_name='assets', on_delete=models.CASCADE)
 	img_width=models.IntegerField(null=True,blank=True)
 	img_height=models.IntegerField(null=True,blank=True)
 	timestamp_post=models.DateTimeField(auto_now_add=True)
@@ -479,8 +479,8 @@ class image_meta_key(models.Model):
 		ordering = ['display_name']
 
 class image_meta(models.Model):
-	key = models.ForeignKey(image_meta_key)
-	image = models.ForeignKey(image, related_name='meta')
+	key = models.ForeignKey(image_meta_key, on_delete=models.PROTECT)
+	image = models.ForeignKey(image, related_name='meta', on_delete=models.CASCADE)
 	data = models.TextField(blank=True)
 	manual_entry = models.BooleanField(default=False, help_text="Check this box to prevent this meta tag from being overwritten by data embedded in the image file.")
 	
@@ -492,7 +492,7 @@ class image_meta(models.Model):
 
 class batch_import(access_control):
 	folder = models.FilePathField(path=settings.SUNSET_IMPORT_DIR, recursive=True, allow_files=False, allow_folders=True)
-	cat = models.ForeignKey(category, help_text="This must be set manually.")
+	cat = models.ForeignKey(category, help_text="This must be set manually.", on_delete=models.PROTECT)
 	next_sequence_number = models.IntegerField(blank=True, default=1)
 	timestamp_mod=models.DateTimeField(auto_now=True)
 	timestamp_post=models.DateTimeField(default=timezone.now)
@@ -642,17 +642,17 @@ class batch_import(access_control):
 			return False
 
 class batch_meta(models.Model):
-	key=models.ForeignKey(image_meta_key)
-	parent=models.ForeignKey(batch_import, related_name='meta')
+	key=models.ForeignKey(image_meta_key, on_delete=models.PROTECT)
+	parent=models.ForeignKey(batch_import, related_name='meta', on_delete=models.CASCADE)
 	data=models.TextField(blank=True, help_text="Added to file meta; overrides data already in file, in the event of a conflict.")
 	
 	def __unicode__(self):
 		return '%s - %s: %s' % (self.parent, self.key, unicode(self.data))
 
 class batch_image(models.Model):
-	parent = models.ForeignKey(batch_import, related_name='images')
+	parent = models.ForeignKey(batch_import, related_name='images', on_delete=models.CASCADE)
 	img_filename = models.CharField(max_length=255)
-	img_obj = models.ForeignKey(image, null=True, blank=True)
+	img_obj = models.ForeignKey(image, null=True, blank=True, on_delete=models.CASCADE)
 	timestamp_mod = models.DateTimeField(auto_now=True)
 	status = models.CharField(max_length=255, null=True, blank=True)
 	hash = models.CharField(max_length=255, null=True, blank=True)
@@ -674,5 +674,5 @@ class import_log(models.Model):
 	command = models.CharField(max_length=50, choices=CMD_OPTIONS)
 	timestamp = models.DateTimeField(auto_now_add=True)
 	message = models.TextField()
-	image = models.ForeignKey(image,blank=True,null=True)
-	batch = models.ForeignKey(batch_import,blank=True,null=True)
+	image = models.ForeignKey(image,blank=True,null=True, on_delete=models.SET_NULL)
+	batch = models.ForeignKey(batch_import,blank=True,null=True, on_delete=models.SET_NULL)

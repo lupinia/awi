@@ -34,7 +34,7 @@ class access_control(models.Model):
 	featured=models.BooleanField()
 	mature=models.BooleanField()
 	security=models.IntegerField(choices=SECURITY_OPTIONS,default=0,blank=True)
-	owner=models.ForeignKey(User)
+	owner=models.ForeignKey(User, on_delete=models.PROTECT)
 	sites=models.ManyToManyField(Site)
 	
 	def can_view(self,request=False):

@@ -55,7 +55,7 @@ class page(leaf):
 	docfiles = models.ManyToManyField(export_file,blank=True)
 	latex_fail = models.BooleanField(default=False)
 	
-	book_title = models.ForeignKey(toc,null=True,blank=True,related_name='pages')
+	book_title = models.ForeignKey(toc,null=True,blank=True,related_name='pages', on_delete=models.SET_NULL)
 	book_order = models.IntegerField(default=0,blank=True)
 	
 	def get_title(self, raw=False):
@@ -88,6 +88,6 @@ class export_log(models.Model):
 	CMD_OPTIONS = (('compile_latex','compile_latex'),('compile_epub','compile_epub'),)
 	
 	command = models.CharField(max_length=20, choices=CMD_OPTIONS)
-	page = models.ForeignKey(page,blank=True,null=True)
+	page = models.ForeignKey(page,blank=True,null=True, on_delete=models.CASCADE)
 	timestamp = models.DateTimeField(auto_now_add=True)
 	message = models.TextField()

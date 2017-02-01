@@ -59,7 +59,7 @@ class event(models.Model):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
 	notes = models.TextField(null=True, blank=True)
-	type = models.ForeignKey(event_type)
+	type = models.ForeignKey(event_type, on_delete=models.PROTECT)
 	timestamp_mod = models.DateTimeField(auto_now=True)
 	timestamp_post = models.DateTimeField(default=timezone.now)
 	mature = models.BooleanField()
@@ -68,7 +68,7 @@ class event(models.Model):
 		return self.name
 
 class event_instance(models.Model):
-	event = models.ForeignKey(event)
+	event = models.ForeignKey(event, on_delete=models.PROTECT)
 	instance = models.CharField(max_length=15, help_text="Label for the specific instance of an event.  Ideally a year, but not necessarily.  For example, 'Jan 2012', or '3'.")
 	name = models.CharField(max_length=100, null=True, blank=True, help_text="Override the standard format of 'event_instance.event.name event_instance.instance'")
 	slug = models.SlugField(unique=True)
@@ -80,13 +80,13 @@ class event_instance(models.Model):
 	confirmed = models.BooleanField(default=True)
 	flags = models.ManyToManyField(attendance_flag,blank=True)
 	notes = models.TextField(null=True, blank=True)
-	photos = models.ForeignKey(category, null=True, blank=True)
-	report = models.ForeignKey(page, null=True, blank=True)
+	photos = models.ForeignKey(category, null=True, blank=True, on_delete=models.SET_NULL)
+	report = models.ForeignKey(page, null=True, blank=True, on_delete=models.SET_NULL)
 	
 	# Time and Place
 	date_start = models.DateField(null=True, blank=True)
 	date_end = models.DateField(null=True, blank=True)
-	venue = models.ForeignKey(venue)
+	venue = models.ForeignKey(venue, on_delete=models.PROTECT)
 	
 	def get_name(self):
 		if self.name:

@@ -21,7 +21,7 @@ class category(models.Model):
 class pointer(models.Model):
 	old_url = models.CharField(max_length = 200, unique=True)
 	new_url = models.CharField(max_length = 200)
-	category = models.ForeignKey(category)
+	category = models.ForeignKey(category, on_delete=models.PROTECT)
 	
 	def __unicode__(self):
 		return '%s -> %s' % (self.old_url,self.new_url)
@@ -30,7 +30,7 @@ class pointer(models.Model):
 		return self.hitlog_set.count()
 
 class hitlog(models.Model):
-	pointer = models.ForeignKey(pointer)
+	pointer = models.ForeignKey(pointer, on_delete=models.CASCADE)
 	time=models.DateTimeField(auto_now=True)
 
 	user_agent = models.TextField(null = True,blank = True)
