@@ -51,3 +51,15 @@ class contact_page(FormView):
 					context['links'].append(link)
 		
 		return context
+
+
+def contact_widget(parent=False, parent_type=False, request=False):
+	if parent_type == 'category' and parent:
+		ancestors = parent.get_ancestors(include_self=True)
+		contact_links = contact_link.objects.filter(cat__in=ancestors).filter(access_query(request)).order_by('-timestamp_mod')
+		if contact_links:
+			return contact_links
+		else:
+			return False
+	else:
+		return False
