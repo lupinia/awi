@@ -27,8 +27,10 @@
 	<script>
 	{% if homepage %}
 		$("#sunset_thumb_array").justifiedGallery({rowHeight:100, maxRowHeight:120, margins:2});
+	{% elif 'left' in blockname or 'right' in blockname %}
+		$("#sunset_thumb_array").justifiedGallery({rowHeight:140, maxRowHeight:160, margins:4});
 	{% else %}
-		$("#sunset_thumb_array").justifiedGallery({rowHeight:180, maxRowHeight:200, margins:7});
+		$("#sunset_thumb_array").justifiedGallery({rowHeight:200, maxRowHeight:220, margins:7});
 	{% endif %}
 	</script>
 {% endif %}
