@@ -111,6 +111,20 @@ class book_md(book):
 	content_type = 'text/markdown; charset=utf-8'
 
 
+def recent_widget(parent=False, parent_type=False, request=False):
+	return_data = {'recent': [], 'featured': []}
+	if parent_type == 'category' and parent:
+		return_data['recent'] = page.objects.filter(cat__in=parent.get_descendants(include_self=True), published=True).filter(access_query(request)).exclude(featured=True).order_by('-timestamp_post').select_related('book_title','cat')[:4]
+		return_data['featured'] = page.objects.filter(cat__in=parent.get_descendants(include_self=True), published=True, featured=True).filter(access_query(request)).order_by('-timestamp_post').select_related('book_title','cat')[:2]
+		return return_data
+	elif parent_type == 'tag' and parent:
+		return_data['recent'] = page.objects.filter(tags=parent, published=True).filter(access_query(request)).exclude(featured=True).order_by('-timestamp_post').select_related('book_title','cat')[:4]
+		return_data['featured'] = page.objects.filter(tags=parent, published=True, featured=True).filter(access_query(request)).order_by('-timestamp_post').select_related('book_title','cat')[:2]
+		return return_data
+	else:
+		return False
+
+
 def finder(request):
 	import os
 	return_data = (False,'')

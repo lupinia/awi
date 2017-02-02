@@ -1,0 +1,88 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+{% if 'sidebar' in blockname %}
+	<h4>Featured Writing</h4>
+	{% for page in leaves.featured %}
+	<a href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}} - {{page.body_summary}}" class="sidebar_link {% if page.featured and highlight_featured %}featured{% elif page.mature %}mature{% elif not page.is_public.0 %}notpublic{% endif %}">
+		<span class="sidebar_link_title">{{page.get_title}}</span>
+		{% if page.featured and highlight_featured %}
+			<br />
+			<span class="sidebar_link_subtext">Featured</span>
+		{% elif page.mature %}
+			<br />
+			<span class="sidebar_link_subtext">Mature Content</span>
+		{% endif %}
+	</a>
+	{% empty %}
+		<div><sub><em>No Articles</em></sub></div>
+	{% endfor %}
+	
+	{% comment %}<!-- This is kind of a workaround for my own system, to inject a second sidebar block after the one we're supposed to be filling.  It was the most efficient way to do this. -->{% endcomment %}
+	</div><div class="transbox right_sidebar_section">
+	<h4>Recent Writing</h4>
+	{% for page in leaves.recent %}
+	<a href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}} - {{page.body_summary}}" class="sidebar_link {% if page.featured and highlight_featured %}featured{% elif page.mature %}mature{% elif not page.is_public.0 %}notpublic{% endif %}">
+		<span class="sidebar_link_title">{{page.get_title}}</span>
+		{% if page.featured and highlight_featured %}
+			<br />
+			<span class="sidebar_link_subtext">Featured</span>
+		{% elif page.mature %}
+			<br />
+			<span class="sidebar_link_subtext">Mature Content</span>
+		{% endif %}
+	</a>
+	{% empty %}
+		<div><sub><em>No Articles</em></sub></div>
+	{% endfor %}
+
+{% elif 'main' in blockname %}
+<h3>Featured Writing</h3>
+<div class="leaf_links_wrapper">
+	{% for page in leaves.featured %}
+		{% if blockname == 'main_half' and forloop.counter > 4 %}
+			{% comment %}<!-- Do nothing.  -->{% endcomment %}
+		{% else %}
+			<div class="leaf_link tall">
+				<a class="leaf_a {% if page.featured and highlight_featured %}featured{% elif page.mature %}mature{% elif not page.is_public.0 %}notpublic{% endif %}" href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}}">
+					{% if page.featured and highlight_featured %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
+					{% elif page.mature %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
+					
+					<span class="item_summary_head"><span class="item_summary_title">{{page.get_title}}</span><br /> 
+						{{page.display_times.0.label}}: {{page.display_times.0.timestamp}}
+					</span>
+					<span class="item_summary_body">{{page.body_summary}}</span>
+				</a>
+			</div>
+		{% endif %}
+	{% empty %}
+		<div><sub><em>No Articles</em></sub></div>
+	{% endfor %}
+<br style="clear:left;" />
+</div>
+<br /><hr /><br />
+<h3>Recent Writing</h3>
+<div class="leaf_links_wrapper">
+	{% for page in leaves.recent %}
+		{% if blockname == 'main_half' and forloop.counter > 4 %}
+			{% comment %}<!-- Do nothing.  -->{% endcomment %}
+		{% else %}
+			<div class="leaf_link tall">
+				<a class="leaf_a {% if page.featured and highlight_featured %}featured{% elif page.mature %}mature{% elif not page.is_public.0 %}notpublic{% endif %}" href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}}">
+					{% if page.featured and highlight_featured %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
+					{% elif page.mature %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
+					
+					<span class="item_summary_head"><span class="item_summary_title">{{page.get_title}}</span><br /> 
+						{{page.display_times.0.label}}: {{page.display_times.0.timestamp}}
+					</span>
+					<span class="item_summary_body">{{page.body_summary}}</span>
+				</a>
+			</div>
+		{% endif %}
+	{% empty %}
+		<div><sub><em>No Articles</em></sub></div>
+	{% endfor %}
+<br style="clear:left;" />
+</div>
+
+{% endif %}
