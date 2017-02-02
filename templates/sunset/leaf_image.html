@@ -11,7 +11,7 @@
 			{% else %}
 				{% for asset in image.assets.all %}
 					{% if asset.type == 'icon' %}
-						<a href="{% url 'image_single' image.cat.cached_url image.slug %}" title="{{image}}" {% if image.featured and highlight_featured %}class="featured"{% elif image.mature %}class="mature"{% endif %}>
+						<a href="{% url 'image_single' image.cat.cached_url image.slug %}" title="{{image}}" {% if image.featured and highlight_featured %}class="featured"{% elif image.mature %}class="mature"{% elif not image.is_public.0 %}class="notpublic"{% endif %}>
 							<img src="{{asset.get_url}}" alt="{{image}}" title="{{image}}" />
 						</a>
 					{% endif %}

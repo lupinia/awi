@@ -1,6 +1,6 @@
 {% if 'sidebar' in blockname %}
 	{% for link in leaves %}
-		<a href="/{{link.cat.cached_url}}/{{link.url}}" title="{{link.title}} - {{link.desc}}" class="sidebar_link">
+		<a href="/{{link.cat.cached_url}}/{{link.url}}" title="{{link.title}} - {{link.desc}}" class="sidebar_link {% if link.featured and highlight_featured %}featured{% elif link.mature %}mature{% elif not link.is_public.0 %}notpublic{% endif %}">
 			<span class="sidebar_link_title">{{link.title}}</span>
 		{% if link.featured and highlight_featured %}
 			<br />
