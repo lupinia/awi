@@ -93,7 +93,7 @@ class tag(models.Model):
 class leaf(access_control):
 	TIMEDISP_OPTIONS=(('post','Posted'),('mod','Modified'))
 	
-	cat=models.ForeignKey(category,null=True,blank=True)
+	cat=models.ForeignKey(category,null=True,blank=True, on_delete=models.PROTECT)
 	tags=models.ManyToManyField(tag,blank=True)
 	
 	timestamp_mod=models.DateTimeField(auto_now=True)

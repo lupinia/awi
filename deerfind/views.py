@@ -8,9 +8,14 @@
 #	g2_finder:	Finder for Gallery2 legacy support.  It's in this file because that's handled by this app.
 #	=================
 
+from django.conf import settings
 from django.http import HttpResponsePermanentRedirect, HttpResponseNotFound
+from django.shortcuts import render
+from django.template import Context, loader
+from django.utils.module_loading import import_string
 
 from deerfind.models import pointer,hitlog
+
 
 def g2_finder(request):
 	import os
@@ -77,9 +82,6 @@ def not_found(request):
 			#	Finder functions should receive request as a parameter, and return a tuple;
 			#		first value boolean (match found)
 			#		second value a string (empty if no match, root-relative URL if match)
-			from django.conf import settings
-			from django.utils.module_loading import import_string
-			
 			finder_list = settings.DEERFIND_FINDERS
 			
 			for finder in finder_list:
@@ -94,8 +96,6 @@ def not_found(request):
 		return HttpResponsePermanentRedirect(return_url)
 	else:
 		#	If all else fails, display the 404 page
-		from django.shortcuts import render
-		from django.template import Context, loader
 		template=loader.get_template('deerfind/404.html')
 		
 		#	Get the attempted URL to display to the user
