@@ -7,6 +7,8 @@
 #	Models
 #	=================
 
+import decimal
+
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
@@ -30,7 +32,7 @@ class country(models.Model):
 
 class gifter(models.Model):
 	name = models.CharField(max_length=255)
-	code = models.SlugField(unique=True)
+	slug = models.SlugField(unique=True)
 	homepage = models.URLField(max_length=255, blank=True,null=True)
 	
 	def __unicode__(self):
@@ -82,12 +84,12 @@ class coin(models.Model):
 	
 	def create_denomination_code(self):
 		if self.value:
-			if self.value < 0.01:
-				return '%dM' % self.value * 1000
-			elif self.value < 1:
-				return '%dC' % self.value * 100
+			if self.value < decimal.Decimal(0.01):
+				return '%dM' % int(self.value * decimal.Decimal(1000))
+			elif self.value < decimal.Decimal(1):
+				return '%dC' % int(self.value * decimal.Decimal(100))
 			else:
-				return '%d' % self.value
+				return '%d' % int(self.value)
 		
 		else:
 			return '0'
