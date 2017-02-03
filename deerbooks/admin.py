@@ -30,6 +30,15 @@ class page_admin(leaf_admin):
 	def view_on_site(self, obj):
 		return reverse('page_htm',kwargs={'cached_url':obj.cat.cached_url, 'slug':obj.slug,})
 
+
+class attachment_admin(admin.ModelAdmin):
+	search_fields = ['name','file']
+	list_display = ('name','file','timestamp_post','timestamp_mod',)
+	list_filter = ['timestamp_post','timestamp_mod',]
+	fields = ('name','file','timestamp_post',)
+
+
 admin.site.register(page,page_admin)
 admin.site.register(toc)
 admin.site.register(export_file)
+admin.site.register(attachment, attachment_admin)

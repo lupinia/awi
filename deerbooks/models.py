@@ -6,11 +6,21 @@
 #	Models
 #	=================
 
+from os.path import join
+
 from django.db import models
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.utils import timezone
+from django.utils.text import slugify
 
 from deertrees.models import leaf
+
+def attachment_path(instance, filename):
+	name_pieces = filename.split('.')
+	filename = "%s.%s" % (slugify(name_pieces[0]),name_pieces[1])
+	return join('misc', filename)
+
 
 class export_file(models.Model):
 	FILETYPE_OPTIONS=(
@@ -38,12 +48,14 @@ class export_file(models.Model):
 	class Meta:
 		ordering = ['docfile','filetype']
 
+
 #	Table of Contents
 class toc(models.Model):
 	title=models.CharField(max_length=60)
 	slug = models.SlugField(unique=True)
 	def __unicode__(self):
 		return self.title
+
 
 class page(leaf):
 	slug = models.SlugField(unique=True)
@@ -84,10 +96,32 @@ class page(leaf):
 			else:
 				return body_stripped[:length].rsplit(' ',1)[0]+'...'
 
+
 class export_log(models.Model):
-	CMD_OPTIONS = (('compile_latex','compile_latex'),('compile_epub','compile_epub'),)
+	CMD_OPTIONS = (
+		('compile_latex','compile_latex'),
+		('compile_epub','compile_epub'),
+		('no_export_deleted','no_export_deleted'),
+	)
 	
 	command = models.CharField(max_length=20, choices=CMD_OPTIONS)
 	page = models.ForeignKey(page,blank=True,null=True, on_delete=models.CASCADE)
 	timestamp = models.DateTimeField(auto_now_add=True)
 	message = models.TextField()
+	
+	def __unicode__(self):
+		return '%s (%d): %s' % (self.page.slug, self.page.pk, self.command)
+
+
+class attachment(models.Model):
+	name = models.CharField(max_length=100)
+	file = models.FileField(upload_to=attachment_path)
+	timestamp_mod=models.DateTimeField(auto_now=True)
+	timestamp_post=models.DateTimeField(default=timezone.now)
+	
+	def __unicode__(self):
+		return self.name
+	
+	def get_url(self):
+		return "%s%s" % (settings.MEDIA_URL,self.file.name)
+

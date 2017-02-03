@@ -47,7 +47,6 @@ INSTALLED_APPS = (
 	#	Third-party apps
 	'mptt', 'django_mptt_admin',
 	's3_folder_storage',
-	'django_summernote',
 	'django_processinfo',
 	'debug_toolbar',
 	'static_precompiler',
