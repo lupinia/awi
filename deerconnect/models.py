@@ -40,4 +40,4 @@ class contact_link(link_base, access_control):
 	timestamp_post=models.DateTimeField(default=timezone.now)
 	
 	def __unicode__(self):
-		return self.label+' - '+self.name
+		return '%s - %s' % (self.label, self.name)

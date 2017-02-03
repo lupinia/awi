@@ -21,10 +21,14 @@ class link_admin(leaf_admin):
 		(None,{'fields':(('label','involved'),'url','desc','icon'),},),
 	] + leaf_admin.fieldsets
 	list_filter = leaf_admin.list_filter + ['involved']
-	list_display = ('label','url','involved',) + leaf_admin.list_display
+	list_display = ('label','url','involved','healthy',) + leaf_admin.list_display
 	
 	def view_on_site(self, obj):
 		return obj.url
+	
+	def save_model(self, request, obj, form, change):
+		obj.healthy = True
+		obj.save()
 
 class contact_admin(access_admin):
 	list_select_related = True
@@ -39,6 +43,10 @@ class contact_admin(access_admin):
 	
 	def view_on_site(self, obj):
 		return obj.url
+	
+	def save_model(self, request, obj, form, change):
+		obj.healthy = True
+		obj.save()
 
 admin.site.register(link,link_admin)
 admin.site.register(contact_link,contact_admin)
