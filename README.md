@@ -1,6 +1,6 @@
 # Lupinia Website (Awi)
 
-Full website for Lupinia Studios, built with Django.  It's currently a work in progress.
+Full website for Lupinia Studios, built with Django.
 
 Built by Natasha L. (@lupinia)
 
@@ -19,7 +19,7 @@ Apps/Modules Included
 	- **Awi Error**:  Unified error text handling/template tags.
 	- **DeerFind**:  Intelligent 404 handler.
 - **Main Content**
-	- **DeerTrees**:  Multi-level object-agnostic category system.
+	- **[DeerTrees](http://www.lupinia.net/code/projects/django/deertrees.htm)**:  Multi-level object-agnostic category system.
 	- **[DeerBooks](http://www.lupinia.net/code/projects/django/deerbooks.htm)**:  Enhanced text/writing management, with multi-format display (HTML, Markdown, Plain Text, LaTeX), and automatic generation of PDF, DVI, and PostScript files from dynamically-generated LaTeX source.
 	- **DeerConnect**:  Link directory and contact information manager, with email form.
 	- **[Sunset](http://www.lupinia.net/code/projects/django/sunset.htm)**:  Advanced image gallery, with built-in watermarking, metadata parsing, hash-based de-duplication, and batch imports from server-side directories.
