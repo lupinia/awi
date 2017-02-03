@@ -1,0 +1,48 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+{% if 'main' in blockname %}
+	<link rel="stylesheet" href="{{STATIC_PREFIX}}css/justifiedGallery.min.css" />
+	
+	<h3>Featured Images</h3>
+	<div id="sunset_thumb_array_featured">
+		{% for image in leaves.featured %}
+			{% for asset in image.assets.all %}
+				{% if asset.type == 'icon' %}
+					<a href="{% url 'image_single' image.cat.cached_url image.slug %}" title="{{image}}" {% if image.featured and highlight_featured %}class="featured"{% elif image.mature %}class="mature"{% elif not image.is_public.0 %}class="notpublic"{% endif %}>
+						<img src="{{asset.get_url}}" alt="{{image}}" title="{{image}}" />
+					</a>
+				{% endif %}
+			{% endfor %}
+		{% empty %}
+			<div><sub><em>No Images</em></sub></div>
+		{% endfor %}
+	</div>
+	<br /><hr />
+	<h3>Recent Images</h3>
+	<div id="sunset_thumb_array">
+		{% for image in leaves.recent %}
+			{% for asset in image.assets.all %}
+				{% if asset.type == 'icon' %}
+					<a href="{% url 'image_single' image.cat.cached_url image.slug %}" title="{{image}}" {% if image.featured and highlight_featured %}class="featured"{% elif image.mature %}class="mature"{% elif not image.is_public.0 %}class="notpublic"{% endif %}>
+						<img src="{{asset.get_url}}" alt="{{image}}" title="{{image}}" />
+					</a>
+				{% endif %}
+			{% endfor %}
+		{% empty %}
+			<div><sub><em>No Images</em></sub></div>
+		{% endfor %}
+	</div>
+
+	<script src="{{STATIC_PREFIX}}js/jquery.js"></script>
+	<script src="{{STATIC_PREFIX}}js/jquery.justifiedGallery.min.js"></script>
+	<script>
+	{% if 'left' in blockname or 'right' in blockname %}
+		$("#sunset_thumb_array").justifiedGallery({rowHeight:110, maxRowHeight:130, margins:7, lastRow:'justify'});
+		$("#sunset_thumb_array_featured").justifiedGallery({rowHeight:110, maxRowHeight:130, margins:7, randomize:true, lastRow:'justify'});
+	{% else %}
+		$("#sunset_thumb_array").justifiedGallery({rowHeight:160, maxRowHeight:200, margins:7});
+		$("#sunset_thumb_array_featured").justifiedGallery({rowHeight:160, maxRowHeight:200, margins:7, randomize:true});
+	{% endif %}
+	</script>
+{% endif %}

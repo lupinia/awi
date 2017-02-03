@@ -8,6 +8,7 @@
 
 from django.core.urlresolvers import reverse
 
+from awi_access.models import access_query
 from deertrees.views import leaf_view
 from sunset.models import *
 
@@ -30,6 +31,21 @@ class single_image(leaf_view):
 				context['assets'][asset.type] = asset
 		
 		return context
+
+
+def recent_widget(parent=False, parent_type=False, request=False):
+	return_data = {'recent': [], 'featured': []}
+	if parent_type == 'category' and parent:
+		return_data['recent'] = image.objects.filter(cat__in=parent.get_descendants(include_self=True), published=True).filter(access_query(request)).exclude(rebuild_assets=True, is_new=True, featured=True).order_by('-timestamp_post').select_related('cat').prefetch_related('assets')[:12]
+		return_data['featured'] = image.objects.filter(cat__in=parent.get_descendants(include_self=True), published=True, featured=True).filter(access_query(request)).exclude(rebuild_assets=True, is_new=True).order_by('-timestamp_post').select_related('cat').prefetch_related('assets')[:6]
+		return return_data
+	elif parent_type == 'tag' and parent:
+		return_data['recent'] = image.objects.filter(tags=parent, published=True).filter(access_query(request)).exclude(rebuild_assets=True, is_new=True, featured=True).order_by('-timestamp_post').select_related('cat').prefetch_related('assets')[:12]
+		return_data['featured'] = image.objects.filter(tags=parent, published=True, featured=True).filter(access_query(request)).exclude(rebuild_assets=True, is_new=True).order_by('-timestamp_post').select_related('cat').prefetch_related('assets')[:6]
+		return return_data
+	else:
+		return False
+
 
 def finder(request):
 	import os
