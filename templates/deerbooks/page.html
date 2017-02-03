@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}{{block.super}}{% if page.title %} - {{page.get_title}}{% endif %}{% endblock %}
-{% block desc %}{% if page.title %}{{page.body_summary}}{% else %}{{block.super}}{% endif %}{% endblock %}
+{% block desc %}{% if page %}{{page.body_summary}}{% else %}{{block.super}}{% endif %}{% endblock %}
 {% block bg_image %}{% include 'sunset/bg_image.html' %}{% endblock %}
 
 {% block content_left %}
