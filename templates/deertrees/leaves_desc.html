@@ -1,0 +1,14 @@
+{% if error %}
+	{% load errors %}
+	{% error_display error %}
+	<br /><hr /><br />
+{% endif %}
+{% if body_text %}
+	{% autoescape off %}
+	{% if "<p>" in body_text or "<br" in body_text %}
+		{{body_text}}
+	{% else %}
+		{{body_text|linebreaks}}
+	{% endif %}
+	{% endautoescape %}
+{% endif %}

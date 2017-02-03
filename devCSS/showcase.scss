@@ -161,6 +161,59 @@ body {
 	}
 }
 
+.full_page_split {
+	@extend %left_main;
+	width:60%;
+	min-width:400px;
+	
+	@media #{$scr_midwidth} {
+		width:70% !important;
+	}
+	
+	.left_column, .right_column {
+		float:left;
+		padding:4px;
+		margin:2px;
+		
+		.fulltext_page_body  {
+			padding:2px;
+			padding-left:10px;
+			padding-right:10px;
+			border-radius:5px;
+			background:$color_bgdark;
+			margin-top:10px;
+			margin-bottom:0px;
+			
+			ul li, ol li {
+				margin-bottom:10px;
+			}
+		}
+		
+		.leaf_links_wrapper {
+			margin-right:0px;
+			
+			.leaf_link { 
+				width:95% !important; 
+				min-width:100px !important; 
+			}
+		}
+	}
+	
+	.left_column {
+		padding-right:6px;
+		margin-right:0px;
+		border-right:1px solid $color_border;
+		width:55%;
+	}
+	
+	.right_column {
+		padding-left:6px;
+		margin-left:-1px;
+		border-left:1px solid $color_border;
+		width: 40%;
+	}
+}
+
 .fulltext_page {
 	@extend %left_main;
 	width:60%;
@@ -189,7 +242,7 @@ body {
 		}
 	}
 	
-	.fulltext_page_body {
+	.fulltext_page_body  {
 		padding:2px;
 		padding-left:10px;
 		padding-right:10px;
@@ -387,7 +440,7 @@ body {
 		}
 		
 		&.midheight {
-			height:60px;
+			height:70px;
 			min-width:300px;
 		}
 		
@@ -465,6 +518,31 @@ body {
 				height:24px;
 			}
 		}
+	}
+}
+
+#sunset_thumb_subcats.leaf_thumbs_wrapper a {
+	.caption {
+		opacity:1 !important; 
+		font-weight:bold !important; 
+		background:$color_bgtrans_leaf;
+		color:$color_maintext;
+		font-size: medium;
+		
+		.full_page_split & { font-size:small; }
+	}
+	
+	
+	&:hover .caption, &:active .caption, &:focus .caption { background-color:$color_bg_leaf_hover; color:$color_subtext; }
+	
+	&.featured {
+		&:link .caption, &:visited .caption { background-color:$color_bgtrans_leaf_featured; color:$color_maintext; }
+		&:hover .caption, &:active .caption, &:focus .caption { background-color:$color_bg_leaf_featured_hover; color:$color_subtext; }
+	}
+	
+	&.mature {
+		&:link .caption, &:visited .caption { background-color:$color_bgtrans_leaf_mature; color:$color_maintext; }
+		&:hover .caption, &:active .caption, &:focus .caption { background-color:$color_bg_leaf_mature_hover; color:$color_subtext; }
 	}
 }
 

@@ -6,6 +6,7 @@
 #	Models
 #	=================
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
@@ -14,9 +15,15 @@ from django.utils.text import slugify
 from mptt.models import MPTTModel, TreeForeignKey
 from awi_access.models import access_control
 
+def viewtype_options():
+	blocks_map = settings.DEERTREES_BLOCK_MAP
+	viewtypes = []
+	for map_name, map in blocks_map.iteritems():
+		if map.get('meta',{}).get('option_name',False) and map.get('meta',{}).get('selectable',True):
+			viewtypes.append((map_name, map.get('meta',{}).get('option_name',map_name),))
+	return viewtypes
+
 class category(MPTTModel, access_control):
-	PRIORITY_OPTIONS = (('image','Photos'),('page','Writing'),('desc','Category Description'),)
-	
 	title=models.CharField(max_length=60)
 	slug=models.SlugField()
 	summary=models.CharField(max_length=255)
@@ -24,8 +31,10 @@ class category(MPTTModel, access_control):
 	parent=TreeForeignKey('self',null=True,blank=True,related_name='children')
 	cached_url=models.CharField(max_length=255,null=True,blank=True,unique=True)
 	
-	background_tag=models.ForeignKey('sunset.background_tag',null=True,blank=True)
-	content_priority=models.CharField(choices=PRIORITY_OPTIONS,max_length=10,null=True,blank=True,help_text="Manually specify a content type to prioritize during display.")		#	An option to override the content given top priority
+	background_tag=models.ForeignKey('sunset.background_tag',null=True,blank=True, on_delete=models.SET_NULL)
+	icon=models.ForeignKey('sunset.image_asset',null=True,blank=True, on_delete=models.SET_NULL)
+	icon_manual=models.BooleanField(default=False)
+	view_type = models.CharField(choices=viewtype_options(), max_length=15, default='default')
 	sitemap_include=models.BooleanField(default=True)
 	timestamp_mod=models.DateTimeField(auto_now=True)
 	timestamp_post=models.DateTimeField(default=timezone.now)
@@ -58,13 +67,11 @@ class category(MPTTModel, access_control):
 		order_insertion_by = ['title']
 
 class tag(models.Model):
-	PRIORITY_OPTIONS = (('photo','Photos'),('page','Writing'),('desc','Category Description'),)
-	
 	title=models.CharField(max_length=200,null=True,blank=True)
 	slug=models.SlugField(max_length=200,unique=True)
 	desc=models.TextField(null=True,blank=True)
 	
-	content_priority=models.CharField(choices=PRIORITY_OPTIONS,max_length=10,null=True,blank=True)		#	An option to override the content given top priority
+	view_type = models.CharField(choices=viewtype_options(), max_length=15, default='default')
 	sitemap_include=models.BooleanField(default=True)
 	timestamp_mod=models.DateTimeField(auto_now=True)
 	timestamp_post=models.DateTimeField(default=timezone.now)
@@ -99,9 +106,16 @@ class leaf(access_control):
 	timestamp_mod=models.DateTimeField(auto_now=True)
 	timestamp_post=models.DateTimeField(default=timezone.now)
 	timedisp=models.CharField(max_length=10,choices=TIMEDISP_OPTIONS,default='post')
+	type=models.CharField(max_length=20, default='unknown')
+	
 	
 	def __unicode__(self):
 		return str(self.id)
+	
+	def save(self, *args, **kwargs):
+		if not self.pk:
+			self.type=self.__class__.__name__
+		super(leaf, self).save(*args, **kwargs)
 	
 	def scheduled(self):
 		if self.published and self.timestamp_post > timezone.now():

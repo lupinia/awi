@@ -19,11 +19,11 @@ class cat_admin(DjangoMpttAdmin,access_admin):
 	list_select_related = True
 	fieldsets = [
 		(None,{'fields':(('title','slug'),'summary','desc'),},),
-		("Options",{'fields':(('parent','background_tag','sitemap_include','content_priority',),),},),
+		("Options",{'fields':(('parent','background_tag','sitemap_include','view_type',),),},),
 	] + access_admin.fieldsets
-	list_filter = access_admin.list_filter + ['background_tag','content_priority','sitemap_include']
+	list_filter = access_admin.list_filter + ['background_tag','view_type','sitemap_include']
 	
-	list_display = ('title','slug','parent','cached_url','sitemap_include','content_priority','background_tag') + access_admin.list_display
+	list_display = ('title','slug','parent','cached_url','sitemap_include','view_type','background_tag') + access_admin.list_display
 	prepopulated_fields={'slug':('title',)}
 	search_fields = ('title','slug','parent','cached_url','desc')
 	inlines=[g2_inline,]
@@ -34,7 +34,7 @@ class cat_admin(DjangoMpttAdmin,access_admin):
 class tag_admin(admin.ModelAdmin):
 	fieldsets = [
 		(None,{'fields':(('title','slug'),'desc'),},),
-		("Options",{'fields':(('content_priority','sitemap_include'),),},),
+		("Options",{'fields':(('view_type','sitemap_include'),),},),
 	]
 	
 	list_display=('title','slug')

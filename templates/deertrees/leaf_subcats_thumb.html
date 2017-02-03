@@ -1,0 +1,46 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+{% if 'sidebar' in blockname %}
+	{% for subcat in leaves %}
+	<a href="{% url 'category' subcat.cached_url %}" title="{{subcat}} - {{subcat.summary}}" class="sidebar_link {% if subcat.featured and highlight_featured %}featured{% elif subcat.mature %}mature{% elif not subcat.is_public.0 %}notpublic{% endif %}">
+		<span class="sidebar_link_title">{{subcat}}</span>
+		{% if subcat.featured and highlight_featured %}
+			<br />
+			<span class="sidebar_link_subtext">Featured</span>
+		{% elif subcat.mature %}
+			<br />
+			<span class="sidebar_link_subtext">Mature Content</span>
+		{% endif %}
+	</a>
+	{% empty %}
+		<div><sub><em>No Subcategories</em></sub></div>
+	{% endfor %}
+	
+{% elif 'main' in blockname %}
+	<link rel="stylesheet" href="{{STATIC_PREFIX}}css/justifiedGallery.min.css" />
+	
+	<div id="sunset_thumb_subcats" class="leaf_thumbs_wrapper">
+	{% for subcat in leaves %}
+		<a href="{% url 'category' subcat.cached_url %}" title="{{subcat}}" {% if subcat.featured and highlight_featured %}class="featured"{% elif subcat.mature %}class="mature"{% elif not subcat.is_public.0 %}class="notpublic"{% endif %}>
+			{% if subcat.icon %}
+				<img src="{{subcat.icon.get_url}}" alt="{{subcat}}" title="{{subcat}}" />
+			{% else %}
+				<img src="{{STATIC_PREFIX}}deertrees/no_thumb.jpg" alt="{{subcat}}" title="{{subcat}}" />
+			{% endif %}
+		</a>
+	{% empty %}
+		<div><sub><em>No Subcategories</em></sub></div>
+	{% endfor %}
+	</div>
+
+	<script src="{{STATIC_PREFIX}}js/jquery.js"></script>
+	<script src="{{STATIC_PREFIX}}js/jquery.justifiedGallery.min.js"></script>
+	<script>
+	{% if 'left' in blockname or 'right' in blockname %}
+		$("#sunset_thumb_subcats").justifiedGallery({rowHeight:140, maxRowHeight:200, margins:7, lastRow:'justify'});
+	{% else %}
+		$("#sunset_thumb_subcats").justifiedGallery({rowHeight:200, maxRowHeight:220, margins:7});
+	{% endif %}
+	</script>
+{% endif %}

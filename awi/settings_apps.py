@@ -19,21 +19,126 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #	deertrees
 #	This stores a list of known models that can be attached to a category, their hierarchy when displayed, and a template file's path
 #	Model Name { 
-#				title: Displayable title, OR an image URL relative to {{static}},
+#				title: Displayable title, OR an image URL relative to {{STATIC_PREFIX}}, OR False,
 #				template: Path to importable template,
-#				sidebar: Hierarchy for sidebar,
-#				main: Hierarchy for main content area,
-#				is_leaf: Boolean; if False, this entry is data for a block that isn't a leaf, 
+#				is_leaf: Boolean; if False, this entry is data for a block that isn't a leaf, but still has a foreign key to categories or tags, 
+#				custom_obj: String; import path for a function that will be used for this block.  Use this for more complex queries, or content that doesn't have a foreign key to a category or tag, 
+#				count: Integer; number of leaves per page to display for this leaf type.  Zero == unlimited
 #				prefetch: List; if present, this adds fields to prefetch_related,
 #				related: List; if present, this adds fields to select_related, }
 DEERTREES_BLOCKS = {
-	'image' : {'title':'Photography/Artwork', 'template':'sunset/leaf_image.html', 'main':1, 'is_leaf':True, 'prefetch':['assets',]},
-	'page': {'title':'Writing', 'template':'deerbooks/leaf_page.html', 'sidebar':4, 'main':2, 'is_leaf':True, 'related':['book_title',]},
-	'link': {'title':'Links', 'template':'deerconnect/leaf_link.html', 'sidebar':5, 'main':4, 'is_leaf':True},
-	'special_feature': {'title':'Special Features', 'template':'deertrees/leaf_feature.html', 'sidebar':3, 'is_leaf':True},
+	'image' : {'title':'Photography/Artwork', 'template':'sunset/leaf_image.html', 'is_leaf':True, 'count':50, 'prefetch':['assets',]},
+	'page': {'title':'Writing', 'template':'deerbooks/leaf_page.html', 'is_leaf':True, 'count':50, 'related':['book_title',]},
+	'link': {'title':'Links', 'template':'deerconnect/leaf_link.html', 'is_leaf':True, 'count':0,},
+	'special_feature': {'title':'Special Features', 'template':'deertrees/leaf_feature.html', 'is_leaf':True, 'count':0,},
+}
+
+DEERTREES_BLOCKS_SPECIAL = {
+	'category': {'title':'Subcategories', 'template':'deertrees/leaf_subcat.html', 'is_leaf':False, 'custom_obj':'deertrees.views.subcats', },
+	'contact_link': {'title':'Contact Natasha', 'template':'deerconnect/leaf_contact_link.html', 'is_leaf':False, 'custom_obj':'deerconnect.views.contact_widget', },
+	'category_thumb': {'title':'Subcategories', 'template':'deertrees/leaf_subcats_thumb.html', 'is_leaf':False, 'custom_obj':'deertrees.views.subcats', },
+	'upcoming_events': {'title':'Upcoming Events', 'template':'deerattend/widget.html', 'is_leaf':False, 'custom_obj':'deerattend.views.widget', },
+	'image_widget' : {'template':'sunset/image_widget.html', 'is_leaf':True, 'custom_obj':'sunset.views.recent_widget', },
+	'page_widget' : {'template':'deerbooks/page_widget.html', 'is_leaf':True, 'custom_obj':'deerbooks.views.recent_widget', },
+}
+
+DEERTREES_BLOCK_MAP = {
+	'default' : {
+		'main_left' : ['image', 'page', 'category', 'link', ],
+		'main_right' : ['page', 'category', 'link', 'image', ],
+		'sidebar' : ['contact_link', 'special_feature', 'category', 'page', 'link', ],
+		'meta' : {'option_name': 'Default'},
+	},
 	
-	'contact_link': {'title':'Contact Natasha', 'template':'deerconnect/leaf_contact_link.html', 'sidebar':2, 'is_leaf':False},
-	'category': {'title':'Subcategories', 'template':'deertrees/leaf_subcat.html', 'sidebar':1, 'main':3, 'is_leaf':False},
+	'image' : {
+		'main' : ['image', 'category', 'page', 'link', ],
+		'sidebar' : ['contact_link', 'special_feature', 'category', 'page', 'link', ],
+		'meta' : {'option_name': 'Photos/Other Images'},
+	},
+	
+	'image_split' : {
+		'main_left' : ['image', ],
+		'main_right' : ['category_thumb', ],
+		'sidebar' : ['contact_link', 'special_feature', 'page', 'link', ],
+		'meta' : {'option_name': 'Images with Image Subcategories (Split)'},
+	},
+	
+	'page' : {
+		'main' : ['page', 'category', 'link', ],
+		'main_2' : ['image', ],
+		'sidebar' : ['contact_link', 'page', 'special_feature', 'category', 'link', ],
+		'meta' : {'option_name': 'Writing'},
+	},
+	
+	'desc_split' : {
+		'main_left' : 'desc',
+		'main_right' : ['image', 'page', 'category', 'link', ],
+		'sidebar' : ['contact_link', 'special_feature', 'category', 'link', ],
+		'meta' : {'option_name': 'Description-Priority (Split)'},
+	},
+	
+	'desc' : {
+		'main' : 'desc',
+		'main_2' : ['image', 'page', 'category', 'link', ],
+		'sidebar' : ['contact_link', 'special_feature', 'category', 'link', ],
+		'meta' : {'option_name': 'Description-Priority'},
+	},
+	
+	'home' : {
+		'main' : ['image', ],
+		'main_2' : ['page', ],
+		'sidebar' : ['special_feature', 'link', 'upcoming_events', ],
+		'meta' : {'option_name': 'Homepage', 'selectable':False, },
+	},
+	
+	'photo_root' : {
+		'main_left' : ['category_thumb', ],
+		'main_right' : ['image_widget', ],
+		'sidebar' : ['contact_link', 'special_feature', 'page', 'link', ],
+		'meta' : {'option_name': 'Photography (Root)'},
+	},
+	
+	'page_root' : {
+		'main_left' : ['page', 'page_widget', ],
+		'main_right' : ['category', ],
+		'sidebar' : ['contact_link', 'special_feature', 'link', ],
+		'meta' : {'option_name': 'Writing (Root)'},
+	},
+	
+	'code_root' : {
+		'main_left' : ['page_widget', ],
+		'main_right' : ['category', ],
+		'sidebar' : ['contact_link', 'special_feature', 'page', 'link', ],
+		'meta' : {'option_name': 'Code/Professional (Root)'},
+	},
+	
+	'personal_root' : {
+		'main_left' : 'desc',
+		'main_right' : ['page', 'image', ],
+		'sidebar' : ['category', 'contact_link', 'special_feature', 'link', 'upcoming_events', ],
+		'meta' : {'option_name': 'Personal (Root)'},
+	},
+	
+	'art_root' : {
+		'main_left' : ['category_thumb', 'image', ],
+		'main_right' : ['page', ],
+		'sidebar' : ['contact_link', 'upcoming_events', 'special_feature', 'link', ],
+		'meta' : {'option_name': 'Artwork (Root)'},
+	},
+	
+	'char' : {
+		'main' : 'desc',
+		'main_2' : ['image', ],
+		'sidebar' : ['contact_link', 'page', 'category', 'special_feature', 'link', ],
+		'meta' : {'option_name': 'Character'},
+	},
+	
+	'char_split' : {
+		'main_left' : 'desc',
+		'main_right' : ['image', ],
+		'sidebar' : ['contact_link', 'page', 'category', 'special_feature', 'link', ],
+		'meta' : {'option_name': 'Character (Split View)'},
+	},
 }
 
 

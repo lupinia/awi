@@ -6,9 +6,6 @@
 #	Views
 #	=================
 
-from collections import OrderedDict
-from itertools import cycle
-
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
@@ -16,6 +13,7 @@ from django.db.models import Count
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.utils.module_loading import import_string
 from django.views import generic
 
 from awi_access.models import access_query
@@ -27,27 +25,31 @@ class leaf_parent():
 	template_name = 'deertrees/leaves.html'
 	highlight_featured = True
 	
+	
 	def get_leaves(self, parent=False, parent_type=False):
+		blocks_main = settings.DEERTREES_BLOCKS
 		leaf_filters = {}
-		blocks_map = settings.DEERTREES_BLOCKS
-		leaf_list = []
+		related_list = []
 		prefetch_list = []
-		for type, settings_dict in blocks_map.iteritems():
+		
+		for type, settings_dict in blocks_main.iteritems():
 			if settings_dict.get('is_leaf',False):
-				leaf_list.append(type)
-				leaf_list.append('%s__cat' % type)
+				related_list.append(type)
+				related_list.append('%s__cat' % type)
 				
-				if settings_dict.get('prefetch',False):
-					for pf_field in settings_dict['prefetch']:
-						prefetch_list.append('%s__%s' % (type, pf_field))
-				
-				if settings_dict.get('related',False):
-					for sr_field in settings_dict['related']:
-						leaf_list.append('%s__%s' % (type, sr_field))
+			if settings_dict.get('prefetch',False):
+				for pf_field in settings_dict['prefetch']:
+					prefetch_list.append('%s__%s' % (type, pf_field))
+			
+			if settings_dict.get('related',False):
+				for sr_field in settings_dict['related']:
+					related_list.append('%s__%s' % (type, sr_field))
 		
 		leaf_ordering = ['-featured','-timestamp_post']
 		leaf_filters['timestamp_post__lte'] = timezone.now()
 		
+		# Special cases
+		# Site home
 		if parent_type == 'homepage':
 			leaf_ordering = ['-timestamp_post',]
 			leaf_filters['featured'] = True
@@ -57,165 +59,108 @@ class leaf_parent():
 			leaf_filters['cat'] = parent
 		elif parent_type == 'tag' and parent:
 			leaf_filters['tags'] = parent
+		elif parent_type == 'root' and parent:
+			descendants = parent.get_descendants()
+			self.highlight_featured = False
+			leaf_ordering = ['-timestamp_post',]
+			leaf_filters['featured'] = True
+			leaf_filters['cat__in'] = descendants
 		
-		leaves = leaf.objects.select_related(*leaf_list).prefetch_related(*prefetch_list).filter(**leaf_filters).filter(access_query(self.request)).order_by(*leaf_ordering)
+		leaves = leaf.objects.select_related(*related_list).prefetch_related(*prefetch_list).filter(**leaf_filters).filter(access_query(self.request)).order_by(*leaf_ordering)
 		
 		if leaves:
 			return leaves
 		else:
-			if parent_type == 'category' and parent:
-				descendants = parent.get_descendants()
-				leaves = leaf.objects.select_related(*leaf_list).prefetch_related(*prefetch_list).filter(featured=True, cat__in=descendants).filter(access_query(self.request)).order_by('-timestamp_post')
-				if leaves:
-					self.highlight_featured = False
-					return leaves
-				else:
-					return False
-			else:
-				return False
+			return False
 	
-	def assemble_blocks(self, parent=False, parent_type=False):
-		#	BLOCK STRUCTURE
-		#	In order of assignment
-		#	
-		#	main_full_1	- Primary content area, full-width.  Omitted if content_priority is desc
-		#	sidebar		- List; add two, then go to main_full_2 if needed.
-		#	main_full_2	- Secondary content area, full_width.
-		#	sidebar		- List; do one, then go to a main_half block, and alternate as-needed.
-		#	main_half - List; there can be as many of these as needed.  Alternate as-needed with sidebar.
+	def assemble_blocks(self, parent=False, parent_type=False, view_type='default'):
+		# BLOCK OPTIONS (in order of assignment)
+		# main:  Main content area.  There's only one of these.
+		# main_left:  Left side of a vertically split main block.
+		# main_right:  Right side of a vertically split main block.
+		# sidebar:  Narrow column along the right side of the page.  Can contain infinite blocks.
+		# main_2:  A second main content area.  Rarely used, but it's an option.
 		
-		blocks_map = settings.DEERTREES_BLOCKS
-		blocks = {}
-		blocks_count = {}
+		blocks_main = settings.DEERTREES_BLOCKS
+		blocks_special = settings.DEERTREES_BLOCKS_SPECIAL
+		blocks_map = settings.DEERTREES_BLOCK_MAP
+		
+		leaf_content = {}
+		leaf_count = {}
 		assigned_to_blocks = []
 		returned_data = [False,{}]
 		
-		#	Build the list of blocks to assign
-		if parent_type == 'homepage':
-			blocks_to_assign = ['main_half','sidebar','main_half','sidebar']
-		else:
-			blocks_to_assign = ['sidebar','sidebar','main_full_2']
-			if parent and parent.content_priority != 'desc':
-				blocks_to_assign.insert(0,'main_full_1')
+		map = blocks_map.get(view_type, False)
+		if not map:
+			view_type='default'
+			map = blocks_map['default']
 		
-		#	Loop the known-existing content types, to get a list.  We'll deal with priority later.
-		for type, settings_dict in blocks_map.iteritems():
-			blocks[type] = []
-			blocks_count[type] = 0
+		# These have to be in a specific order, so map.keys() doesn't work reliably.
+		blocks_to_assign_raw = ['main','main_left','main_right','sidebar','main_2']
+		blocks_to_assign = []
+		for blockname in blocks_to_assign_raw:
+			if map.get(blockname,False) and map.get(blockname,False) != 'meta':
+				blocks_to_assign.append(blockname)
 		
-		#	Content time!
-		#	First, check for subcategories and contact links
-		if parent_type == 'category' and parent:
-			child_cats = parent.children.filter(access_query(self.request)).order_by('title')
-			if child_cats:
-				blocks['category'] = child_cats
-			
-			ancestors = parent.get_ancestors(include_self=True)
-			contact_links = contact_link.objects.filter(cat__in=ancestors).filter(access_query(self.request)).order_by('-timestamp_mod')
-			if contact_links:
-				blocks['contact_link'] = contact_links
-		
-		#	Now get items in this category
 		leaves = self.get_leaves(parent,parent_type)
 		if leaves:
-			#	1.  Loop all of our leaves
-			#	2.  For each leaf, loop blocks_map to find its type
-			#	3.  Once that check is successful, put it in the correct block dictionary
+			#	Loop all of our leaves, and store them in the correct dictionary elements
 			for leaf_item in leaves:
-				for type, blocksettings in blocks_map.iteritems():
-					if blocksettings['is_leaf']:
-						if blocks_count[type] <= 50:
-							leaf_content = getattr(leaf_item,type,None)
-							if leaf_content:
-								blocks[type].append(leaf_content)
-								blocks_count[type] += 1
+				type = leaf_item.type
+				if not leaf_content.get(type,False):
+					leaf_content[type] = []
+					leaf_count[type] = 0
+				
+				# Pagination counter check should go here.
+				if not blocks_main.get(type,{}).get('count',0) or leaf_count.get(type,0) <= blocks_main.get(type,{}).get('count',50):
+					leaf_data = getattr(leaf_item,type,None)
+					if leaf_data:
+						leaf_content[type].append(leaf_data)
+						leaf_count[type] = leaf_count[type] + 1
 		
-		#	Clean up empty elements
-		empty_keys = [k for k,v in blocks.iteritems() if not v]
-		for k in empty_keys:
-			del blocks[k]
-		
-		#	Moment of truth!  Did we actually get anything out of this category?
-		if blocks:
-			returned_data[0] = True
-			
-			#	Ok, we how have all of our leaves neatly arranged by type and ready to display.
-			#	Now it's time to assign blocks for display
-			#	Assignment time!
-			#	Start with the special case
-			if blocks_to_assign[0] == 'main_full_1' and blocks.get(parent.content_priority,False):
-				returned_data[1]['main_full_1'] = {'type':parent.content_priority,'title':blocks_map[parent.content_priority]['title'],'data':blocks[parent.content_priority],'template':blocks_map[parent.content_priority]['template']}
-				blocks_to_assign.pop(0)
-				blocks.pop(parent.content_priority)
-			
-			#	Make sure we didn't just pop off the last/only one.
-			if blocks:
-				order_main = {}
-				order_sidebar = {}
-				blockorder_main = False
-				blockorder_sidebar = False
+		for block in blocks_to_assign:
+			if map.get(block,False) == 'desc':
+				returned_data[1][block] = ['desc',]
+				returned_data[1]['desc_in_block'] = True
+			else:
+				# If we're here, we need to put some content in this block.
+				# Check the special cases first, then check the leaves.
+				block_is_complete = False
+				returned_data[1][block] = []
 				
-				#	Now, let's build a priority list per region
-				for type, content in blocks.iteritems():
-					if blocks_map[type].get('main',False):
-						order_main[str(blocks_map[type]['main'])] = {'type':type,'title':blocks_map[type]['title'],'data':content,'template':blocks_map[type]['template']}
-					if blocks_map[type].get('sidebar',False):
-						order_sidebar[str(blocks_map[type]['sidebar'])] = {'type':type,'title':blocks_map[type]['title'],'data':content,'template':blocks_map[type]['template']}
-				
-				#	And now put them in order
-				if order_main:
-					blockorder_main = []
-					for key,value in sorted(order_main.iteritems()):
-						blockorder_main.append(value)
-					
-				if order_sidebar:
-					blockorder_sidebar = []
-					for key,value in sorted(order_sidebar.iteritems()):
-						blockorder_sidebar.append(value)
-				
-				#	Assign the main blocks first 
-				for blockname in blocks_to_assign:
-					if 'main' in blockname and blockorder_main:
-						for blockdata in blockorder_main:
-							if blockdata['type'] not in assigned_to_blocks:
-								if not returned_data[1].get('main_half',False):
-									returned_data[1]['main_half'] = []
-								
-								if blockname == 'main_half':
-									returned_data[1]['main_half'].append(blockdata)
-								else:
-									returned_data[1][blockname] = blockdata
-								assigned_to_blocks.append(blockdata['type'])
-								break
-					
-					elif 'sidebar' in blockname and blockorder_sidebar:
-						for blockdata in blockorder_sidebar:
-							if blockdata['type'] not in assigned_to_blocks:
-								if not returned_data[1].get('sidebar',False):
-									returned_data[1]['sidebar'] = []
-								returned_data[1]['sidebar'].append(blockdata)
-								assigned_to_blocks.append(blockdata['type'])
-								break
-				
-				#	Quick bit of cleanup
-				for content_type in assigned_to_blocks:
-					blocks.pop(content_type,None)
-				
-				#	Is there anything left?
-				if blocks:
-					#	Seriously?  Ok then, we'll just go through whatever's left.
-					#	Sidebar takes priority.
-					for sidebar_data in blockorder_sidebar:
-						if sidebar_data['type'] not in assigned_to_blocks:
-							returned_data[1]['sidebar'].append(sidebar_data)
-							assigned_to_blocks.append(sidebar_data['type'])
-					
-					for main_data in blockorder_main:
-						if main_data['type'] not in assigned_to_blocks:
-							if not returned_data[1]['main_half']:
-								returned_data[1]['main_half'] = []
-							returned_data[1]['main_half'].append(main_data)
-							assigned_to_blocks.append(main_data['type'])
+				for type in map.get(block,False):
+					block_contents = False
+					if type not in assigned_to_blocks and not block_is_complete:
+						if blocks_special.get(type,False):
+							# This is a special block; import its function from somewhere else and run it.
+							special_function_name = blocks_special.get(type,{}).get('custom_obj', False)
+							if special_function_name:
+								special_function = import_string(special_function_name)
+								block_contents = {
+									'type':type, 
+									'title':blocks_special.get(type,{}).get('title',False),
+									'data':special_function(parent, parent_type, self.request), 
+									'template':blocks_special.get(type,{}).get('template',False),
+								}
+						
+						elif leaf_content.get(type,False):
+							# This is a leaf, and we have data for it.
+							block_contents = leaf_content.get(type,False)
+							block_contents = {
+								'type':type, 
+								'title':blocks_main.get(type,{}).get('title',False),
+								'data':leaf_content.get(type,False), 
+								'template':blocks_main.get(type,{}).get('template',False),
+							}
+						
+						if block_contents and block_contents.get('data',False):
+							returned_data[1][block].append(block_contents)
+							returned_data[0] = True
+							assigned_to_blocks.append(type)
+							
+							# Sidebar is a special case where we're not limited to just one block.
+							if block != 'sidebar':
+								block_is_complete = True
 		
 		return returned_data
 
@@ -228,20 +173,9 @@ class homepage(leaf_parent, generic.TemplateView):
 		context['highlight_featured'] = self.highlight_featured
 		context['homepage'] = True
 		
-		blocks = self.assemble_blocks(parent_type = 'homepage')
+		blocks = self.assemble_blocks(parent_type = 'homepage', view_type='home')
 		if blocks[0]:
 			context.update(blocks[1])
-		
-		return context
-
-class sitemap(generic.TemplateView):
-	template_name = 'deertrees/sitemap.html'
-	
-	def get_context_data(self, **kwargs):
-		context = super(sitemap,self).get_context_data(**kwargs)
-		
-		context['tags'] = tag.objects.all().annotate(num_leaves=Count('leaf'))
-		context['cats'] = category.objects.filter(access_query(self.request)).annotate(num_leaves=Count('leaf'))
 		
 		return context
 
@@ -261,6 +195,7 @@ class main_rssfeed(leaf_parent, generic.TemplateView):
 		
 		return context
 
+
 class category_list(leaf_parent, generic.DetailView):
 	model=category
 	slug_field='cached_url'
@@ -271,7 +206,6 @@ class category_list(leaf_parent, generic.DetailView):
 		#	For example, /photo/?g2_itemId=2289
 		#	All other contingencies (full ".php?g2_itemId=" URL, shortened .g2 URL) are handled elsewhere.
 		if 'g2_itemId' in self.request.META.get('QUERY_STRING',''):
-			from django.http import Http404
 			raise Http404
 		else:
 			return super(category_list,self).dispatch(*args, **kwargs)
@@ -288,7 +222,6 @@ class category_list(leaf_parent, generic.DetailView):
 				self.request.session['deerfind_norecover'] = True
 				raise Http404
 			elif canview[1] == 'access_perms':
-				from django.core.exceptions import PermissionDenied
 				raise PermissionDenied
 			else:
 				context['object'] = ''
@@ -318,7 +251,7 @@ class category_list(leaf_parent, generic.DetailView):
 			else:
 				context['can_edit'] = False
 			
-			blocks = self.assemble_blocks(context['object'],'category')
+			blocks = self.assemble_blocks(context['object'],'category',context['object'].view_type)
 			if blocks[0]:
 				context.update(blocks[1])
 			else:
@@ -335,8 +268,11 @@ class category_list(leaf_parent, generic.DetailView):
 			
 			if context['object'].desc:
 				context['body_text'] = sunset_embed(context['object'].desc, self.request)
-			
+			else:
+				context['body_text'] = context['object'].summary
+		
 		return context
+
 
 class tag_list(leaf_parent, generic.DetailView):
 	model=tag
@@ -349,7 +285,7 @@ class tag_list(leaf_parent, generic.DetailView):
 			context['can_edit'] = True
 			context['edit_mode'] = 'tags'
 		
-		blocks = self.assemble_blocks(context['object'],'tag')
+		blocks = self.assemble_blocks(context['object'],'tag',context['object'].view_type)
 		if blocks[0]:
 			context.update(blocks[1])
 		else:
@@ -361,7 +297,11 @@ class tag_list(leaf_parent, generic.DetailView):
 		context['breadcrumbs'].append({'url':reverse('all_tags'), 'title':'Tags'})
 		context['breadcrumbs'].append({'url':reverse('tag',kwargs={'slug':context['object'].slug,}), 'title':context['object'].title})
 		
+		if context['object'].desc:
+			context['body_text'] = context['object'].desc
+		
 		return context
+
 
 class all_tags(generic.TemplateView):
 	template_name='deertrees/taglist.html'
@@ -384,6 +324,56 @@ class all_tags(generic.TemplateView):
 			context['return_to'] = self.request.GET.get('return_to')
 		
 		return context
+
+
+#	Views that don't use the leaf system.
+class sitemap(generic.TemplateView):
+	template_name = 'deertrees/sitemap.html'
+	
+	def get_context_data(self, **kwargs):
+		context = super(sitemap,self).get_context_data(**kwargs)
+		
+		context['tags'] = tag.objects.all().annotate(num_leaves=Count('leaf'))
+		context['cats'] = category.objects.filter(access_query(self.request)).annotate(num_leaves=Count('leaf'))
+		
+		return context
+
+
+
+#	Helper functions imported by other views
+def finder(request):
+	import os
+	return_data = (False,'')
+	
+	#	Fix the trailing slash
+	if request.path.endswith('/'):
+		basename=os.path.basename(request.path[:-1])
+	else:
+		basename=os.path.basename(request.path)
+	
+	if '.' in basename:
+		#	Categories don't have dots in the slug
+		return return_data
+	else:
+		cat_check = category.objects.filter(slug=basename)
+		if cat_check.exists():
+			access_check = cat_check[0].can_view(request)
+			if access_check[0]:
+				return_data = (True,reverse('category',kwargs={'cached_url':cat_check[0].cached_url,}))
+	
+	return return_data
+
+
+def subcats(parent=False, parent_type=False, request=False):
+	if parent_type == 'category' and parent:
+		child_cats = parent.children.filter(access_query(request)).order_by('title').select_related('icon')
+		if child_cats:
+			return child_cats
+		else:
+			return False
+	else:
+		return False
+
 
 class leaf_view(generic.DetailView):
 	def get_context_data(self, **kwargs):
@@ -450,25 +440,3 @@ class leaf_view(generic.DetailView):
 			context['breadcrumbs'].append({'url':context['object'].get_absolute_url(), 'title':str(context['object'])})
 			
 		return context
-
-def finder(request):
-	import os
-	return_data = (False,'')
-	
-	#	Fix the trailing slash
-	if request.path.endswith('/'):
-		basename=os.path.basename(request.path[:-1])
-	else:
-		basename=os.path.basename(request.path)
-	
-	if '.' in basename:
-		#	Categories don't have dots in the slug
-		return return_data
-	else:
-		cat_check = category.objects.filter(slug=basename)
-		if cat_check.exists():
-			access_check = cat_check[0].can_view(request)
-			if access_check[0]:
-				return_data = (True,reverse('category',kwargs={'cached_url':cat_check[0].cached_url,}))
-	
-	return return_data

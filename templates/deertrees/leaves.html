@@ -8,85 +8,142 @@
 			{% load errors %}
 			<div class="transbox left_sidebar">{% error_display error %}</div>
 		{% endif %}
-	{% elif object.desc %}
-		{% if object.content_priority == "desc" %}
-			<div class="transbox fulltext_page">
-				<div id="fulltext_page_title">
-					{% if can_edit and not homepage %}
-						<div id="fulltext_page_title_extra" class="admin_options">
-							{% include 'deertrees/adminlinks.html' %}
-						</div>
-					{% endif %}
-					<div id="fulltext_page_title_main"><h2>{{object}}</h2></div>
-				</div>
-		{% else %}
-			{% if can_edit and not homepage %}
-				<div class="transbox left_sidebar admin_options">
-					{% include 'deertrees/adminlinks.html' %}
-				</div>
-			{% endif %}
-			<div class="transbox left_sidebar">
-				<h2>{{object}}</h2>
-			</div>
-			<div class="transbox fulltext_page">
-		{% endif %}
-		
-			<div {% if object.content_priority == "desc" %}class="fulltext_page_body"{% endif %}>
-			{% if error %}
-				{% load errors %}
-				{% error_display error %}
-				<br /><hr /><br />
-			{% endif %}
-			{% autoescape off %}
-			{% if "<p>" in body_text or "<br" in body_text %}
-				{{body_text}}
-			{% else %}
-				{{body_text|linebreaks}}
-			{% endif %}
-			{% endautoescape %}
-			</div>
-		</div>
 	{% else %}
 		{% if can_edit and not homepage %}
 			<div class="transbox left_sidebar admin_options">
 				{% include 'deertrees/adminlinks.html' %}
 			</div>
 		{% endif %}
-		<div class="transbox left_sidebar">
+		<div class="transbox {% if body_text and object.desc and not desc_in_block %}fulltext_page{% else %}left_sidebar{% endif %}">
 			<h2>{{object}}</h2>
-			{% if object.summary %}
-				<div>{{object.summary}}</div>
-			{% endif %}
-
-			{% if error %}
-				{% load errors %}
-				<br /><hr /><br />
-				{% error_display error %}
+			{% if body_text and not desc_in_block %}
+				<div>
+					{% include 'deertrees/leaves_desc.html' %}
+				</div>
 			{% endif %}
 		</div>
 	{% endif %}
 
 	{% if error != "cat_empty" %}
-		{% if main_full_1 %}
-			<div class="transbox fulltext_page">
-				<h3>{{main_full_1.title}}</h3>
-				{% include main_full_1.template with leaves=main_full_1.data blockname="main_full_1" highlight_featured=highlight_featured homepage=homepage only %}
-			</div>
-		{% endif %}
-
-		{% if main_full_2 %}
-			<div class="transbox fulltext_page">
-				<h3>{{main_full_2.title}}</h3>
-				{% include main_full_2.template with leaves=main_full_2.data blockname="main_full_2" highlight_featured=highlight_featured homepage=homepage only %}
-			</div>
-		{% endif %}
-
-		{% if main_half %}
-			{% for main_block in main_half %}
-				<div class="transbox left_sidebar">
-					<h4>{{main_block.title}}</h4>
-					{% include main_block.template with leaves=main_block.data blockname="main_half" highlight_featured=highlight_featured homepage=homepage only %}
+		{% if main_left or main_right %}
+			{% if main_left and not main_right %}
+				{% for main_block in main_left %}
+					{% if homepage %}
+						<div class="transbox left_sidebar">
+							{% if main_block.title %}<h4>{{main_block.title}}</h4>{% endif %}
+							{% include main_block.template with leaves=main_block.data blockname="main_half" highlight_featured=highlight_featured homepage=homepage only %}
+						</div>
+					{% else %}
+						<div class="transbox fulltext_page">
+							{% if main_block == 'desc' %}
+								<div class="fulltext_page_body">
+									{% include 'deertrees/leaves_desc.html' %}
+								</div>
+							{% else %}
+								{% if main_block.title %}<h3>{{main_block.title}}</h3>{% endif %}
+								{% include main_block.template with leaves=main_block.data blockname="main" highlight_featured=highlight_featured homepage=homepage only %}
+							{% endif %}
+						</div>
+					{% endif %}
+				{% endfor %}
+			{% elif main_right and not main_left %}
+				{% for main_block in main_right %}
+					{% if homepage %}
+						<div class="transbox left_sidebar">
+							{% if main_block.title %}<h4>{{main_block.title}}</h4>{% endif %}
+							{% include main_block.template with leaves=main_block.data blockname="main_half" highlight_featured=highlight_featured homepage=homepage only %}
+						</div>
+					{% else %}
+						<div class="transbox fulltext_page">
+							{% if main_block == 'desc' %}
+								<div class="fulltext_page_body">
+									{% include 'deertrees/leaves_desc.html' %}
+								</div>
+							{% else %}
+								{% if main_block.title %}<h3>{{main_block.title}}</h3>{% endif %}
+								{% include main_block.template with leaves=main_block.data blockname="main" highlight_featured=highlight_featured homepage=homepage only %}
+							{% endif %}
+						</div>
+					{% endif %}
+				{% endfor %}
+			{% else %}
+				<div class="transbox full_page_split">
+					<div class="left_column">
+						{% if main_left %}
+							{% for main_block in main_left %}
+								<div>
+									{% if main_block == 'desc' %}
+										<div class="fulltext_page_body">
+											{% include 'deertrees/leaves_desc.html' %}
+										</div>
+									{% else %}
+										{% if main_block.title %}<h3>{{main_block.title}}</h3>{% endif %}
+										{% include main_block.template with leaves=main_block.data blockname="main_left" highlight_featured=highlight_featured homepage=homepage only %}
+									{% endif %}
+								</div>
+							{% endfor %}
+						{% else %}
+							<br />
+						{% endif %}
+					</div>
+					<div class="right_column">
+						{% if main_right %}
+							{% for main_block in main_right %}
+								<div>
+									{% if main_block == 'desc' %}
+										<div class="fulltext_page_body">
+											{% include 'deertrees/leaves_desc.html' %}
+										</div>
+									{% else %}
+										{% if main_block.title %}<h3>{{main_block.title}}</h3>{% endif %}
+										{% include main_block.template with leaves=main_block.data blockname="main_right" highlight_featured=highlight_featured homepage=homepage only %}
+									{% endif %}
+								</div>
+							{% endfor %}
+						{% else %}
+							<br />
+						{% endif %}
+					</div>
+					<br style="clear:left;" />
 				</div>
+			{% endif %}
+		{% endif %}
+		
+		{% if main %}
+			{% for main_block in main %}
+				{% if homepage %}
+					<div class="transbox left_sidebar">
+						{% if main_block.title %}<h4>{{main_block.title}}</h4>{% endif %}
+						{% include main_block.template with leaves=main_block.data blockname="main_half" highlight_featured=highlight_featured homepage=homepage only %}
+					</div>
+				{% else %}
+					<div class="transbox fulltext_page">
+						{% if main_block == 'desc' %}
+							<div class="fulltext_page_body">
+								{% include 'deertrees/leaves_desc.html' %}
+							</div>
+						{% else %}
+							{% if main_block.title %}<h3>{{main_block.title}}</h3>{% endif %}
+							{% include main_block.template with leaves=main_block.data blockname="main" highlight_featured=highlight_featured homepage=homepage only %}
+						{% endif %}
+					</div>
+				{% endif %}
+			{% endfor %}
+		{% endif %}
+		
+		{% if main_2 %}
+			{% for main_block in main_2 %}
+				{% if homepage %}
+					<div class="transbox left_sidebar">
+						{% if main_block.title %}<h4>{{main_block.title}}</h4>{% endif %}
+						{% include main_block.template with leaves=main_block.data blockname="main_half" highlight_featured=highlight_featured homepage=homepage only %}
+					</div>
+				{% else %}
+					<div class="transbox fulltext_page">
+						{% if main_block.title %}<h3>{{main_block.title}}</h3>{% endif %}
+						{% include main_block.template with leaves=main_block.data blockname="main" highlight_featured=highlight_featured homepage=homepage only %}
+					</div>
+				{% endif %}
 			{% endfor %}
 		{% endif %}
 	{% endif %}
@@ -97,7 +154,7 @@
 		<div class="right_sidebar">
 		{% for sidebar_block in sidebar %}
 			<div class="transbox right_sidebar_section">
-			<h4>{{sidebar_block.title}}</h4>
+			{% if sidebar_block.title %}<h4>{{sidebar_block.title}}</h4>{% endif %}
 			{% include sidebar_block.template with leaves=sidebar_block.data blockname="sidebar" highlight_featured=highlight_featured homepage=homepage only %}
 			</div>
 		{% endfor %}
