@@ -9,7 +9,7 @@
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.sitemaps.views import sitemap
 from django.views.decorators.cache import cache_control
 
@@ -53,19 +53,20 @@ urlpatterns = [
 	
 	#	Contributed
 	url(r'^admin_tools/', include('admin_tools.urls')),
-	url(r'^summernote/', include('django_summernote.urls')),
 	
 	#	Custom Apps
 	url(r'^gamescripts/', include('secondlife.urls')),
-	url(r'^personal/cooking/menu/', include('deerfood.urls',namespace='deerfood')),
-	url(r'^furry/cons/', include('deerattend.urls',namespace='deerattend')),
+	url(r'^personal/cooking/menu/', include('deerfood.urls',namespace='deerfood'), kwargs={'special_feature_slug':'menu'}),
+	url(r'^furry/cons/', include('deerattend.urls',namespace='deerattend'), kwargs={'special_feature_slug':'cons'}),
 	url(r'^contact/$',check_honeypot(contact_page.as_view()),name='contact'),
 	
 	#	DeerTrees and DeerBooks are special cases for this site.
 	url(r'^$',deertrees_views.homepage.as_view(),name='home'),
 	url(r'^tags/$',deertrees_views.all_tags.as_view(),name='all_tags'),
 	url(r'^tags/(?P<slug>.*)/$',deertrees_views.tag_list.as_view(),name='tag'),
-	url(r'^about/sitemap\.htm$',cache_control(max_age=60*60*48)(deertrees_views.sitemap.as_view()),name='sitemap_htm'),
+	
+	url(r'^about/sitemap\.htm$',cache_control(max_age=60*60*48)(deertrees_views.sitemap.as_view()),name='sitemap_htm', kwargs={'special_feature_slug':'sitemap.htm'}),
+	url(r'^tools/category_list/$',permission_required('deertrees.change_leaf')(deertrees_views.all_cats.as_view()),name='all_cats'),
 	
 	url(r'^(?P<cached_url>[\w\d_/-]+)/book\.(?P<slug>.*)\.tex',deerbooks_views.book_tex.as_view(),name='book_tex'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/book\.(?P<slug>.*)\.md',deerbooks_views.book_md.as_view(),name='book_md'),

@@ -1,0 +1,19 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+{% if can_edit %}
+	<div class="hovericons16">
+		<a href="?{{object.featured|yesno:'unfeature,feature'}}=1" title="{{object.featured|yesno:'Unfeature,Feature'}} this item"><img src="{{ STATIC_PREFIX }}images/icons/{{object.featured|yesno:',un'}}featured16.png" alt="{{object.featured|yesno:',Not '}}Featured" title="{{object.featured|yesno:',Not '}}Featured" /></a> 
+		{% if object.scheduled %}
+			<a href="?unpublish=1" title="Unpublish this item"><img src="{{ STATIC_PREFIX }}images/icons/publish-scheduled.png" alt="Scheduled - Will be published on {{object.timestamp_post|date:'F j, Y  G:i:s'}}" title="Scheduled - Will be published on {{object.timestamp_post|date:'F j, Y  G:i:s'}}" /></a> 
+		{% else %}
+			<a href="?{{object.published|yesno:'unpublish,publish'}}=1" title="{{object.published|yesno:'Unpublish,Publish'}} this item"><img src="{{ STATIC_PREFIX }}images/icons/publish-{{object.published|yesno:'on,off'}}.png" alt="{{object.published|yesno:',Not '}}Published" title="{{object.published|yesno:',Not '}}Published" /></a> 
+		{% endif %}
+		{% if return_to %}
+			<a href="{% url 'all_cats' %}?return_to={{return_to}}?change_cat="><img src="{{ STATIC_PREFIX }}images/icons/change-folder.png" alt="Move" title="Change Category/Directory" /></a>
+		{% endif %}
+		{% if edit_url %}
+			<a href="{% url edit_url object.pk %}"><img src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit" title="Edit" /></a>
+		{% endif %}
+	</div>
+{% endif %}

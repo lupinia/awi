@@ -11,27 +11,22 @@ from django.core.urlresolvers import reverse
 from django.db.models import Count
 
 from deerfood.models import menu_item, menu_section, menu_flag
-from deertrees.models import special_feature
+from deertrees.views import special_feature_view
 
-class menu_item_list():
+class menu_item_list(special_feature_view):
 	model=menu_item
 	context_object_name='menu_items'
 	template_name='deerfood/full_menu.html'
 	
 	def build_breadcrumbs(self, cur=False, cur_type=''):
-		breadcrumbs = []
-		menu_leaf = special_feature.objects.get(url='menu')
-		ancestors = menu_leaf.cat.get_ancestors(include_self=True)
-		
-		for crumb in ancestors:
-			breadcrumbs.append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
-		
-		breadcrumbs.append({'url':reverse('deerfood:full_menu'), 'title':menu_leaf.title})
-		
-		if cur and cur_type:
-			breadcrumbs.append({'url':reverse('deerfood:menu_'+cur_type, kwargs={'slug':cur.slug}), 'title':cur.name})
-		
-		return breadcrumbs
+		breadcrumbs = self.breadcrumbs()
+		if breadcrumbs:
+			if cur and cur_type:
+				breadcrumbs.append({'url':reverse('deerfood:menu_'+cur_type, kwargs={'slug':cur.slug}), 'title':cur.name})
+			
+			return breadcrumbs
+		else:
+			return False
 	
 	def can_edit(self):
 		if self.request.user.is_authenticated():

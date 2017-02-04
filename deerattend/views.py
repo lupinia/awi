@@ -12,9 +12,9 @@ from django.utils import timezone
 from django.views import generic
 
 from deerattend.models import *
-from deertrees.models import special_feature
+from deertrees.views import special_feature_view
 
-class event_list():
+class event_list(special_feature_view):
 	model=event_instance
 	context_object_name='event_instances'
 	template_name='deerattend/event_list.html'
@@ -43,22 +43,17 @@ class event_list():
 		return queryset.order_by('-date_start').prefetch_related('flags').select_related('event','event__type','venue','photos','report')
 	
 	def build_breadcrumbs(self, cur=False, cur_type=''):
-		breadcrumbs = []
-		cons_leaf = special_feature.objects.get(url='cons')
-		ancestors = cons_leaf.cat.get_ancestors(include_self=True)
-		
-		for crumb in ancestors:
-			breadcrumbs.append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
-		
-		breadcrumbs.append({'url':reverse('deerattend:full_list'), 'title':cons_leaf.title})
-		
-		if cur and cur_type:
-			if cur_type == 'special':
-				breadcrumbs.append({'url':reverse('deerattend:filter_'+cur_type, kwargs={'slug':cur['slug']}), 'title':cur['name']})
-			else:
-				breadcrumbs.append({'url':reverse('deerattend:filter_'+cur_type, kwargs={'slug':cur.slug}), 'title':cur.name})
-		
-		return breadcrumbs
+		breadcrumbs = self.breadcrumbs()
+		if breadcrumbs:
+			if cur and cur_type:
+				if cur_type == 'special':
+					breadcrumbs.append({'url':reverse('deerattend:filter_'+cur_type, kwargs={'slug':cur['slug']}), 'title':cur['name']})
+				else:
+					breadcrumbs.append({'url':reverse('deerattend:filter_'+cur_type, kwargs={'slug':cur.slug}), 'title':cur.name})
+			
+			return breadcrumbs
+		else:
+			return False
 	
 	def can_edit(self):
 		if self.request.user.is_authenticated():

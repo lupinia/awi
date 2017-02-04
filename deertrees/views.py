@@ -18,7 +18,7 @@ from django.views import generic
 
 from awi_access.models import access_query
 from deerconnect.models import contact_link
-from deertrees.models import category, tag, leaf
+from deertrees.models import category, tag, leaf, special_feature
 from sunset.utils import sunset_embed
 
 class leaf_parent():
@@ -326,20 +326,6 @@ class all_tags(generic.TemplateView):
 		return context
 
 
-#	Views that don't use the leaf system.
-class sitemap(generic.TemplateView):
-	template_name = 'deertrees/sitemap.html'
-	
-	def get_context_data(self, **kwargs):
-		context = super(sitemap,self).get_context_data(**kwargs)
-		
-		context['tags'] = tag.objects.all().annotate(num_leaves=Count('leaf'))
-		context['cats'] = category.objects.filter(access_query(self.request)).annotate(num_leaves=Count('leaf'))
-		
-		return context
-
-
-
 #	Helper functions imported by other views
 def finder(request):
 	import os
@@ -439,4 +425,59 @@ class leaf_view(generic.DetailView):
 			
 			context['breadcrumbs'].append({'url':context['object'].get_absolute_url(), 'title':str(context['object'])})
 			
+		return context
+
+
+class special_feature_view():
+	leaf = None
+	
+	def get_leaf(self, **kwargs):
+		if self.kwargs.get('special_feature_slug', False):
+			self.leaf = get_object_or_404(special_feature.objects.select_related(), url=self.kwargs.get('special_feature_slug', False))
+			return True
+		else:
+			return False
+	
+	def breadcrumbs(self, **kwargs):
+		breadcrumbs = []
+		if not self.leaf:
+			self.get_leaf()
+		
+		if self.leaf:
+			ancestors = self.leaf.cat.get_ancestors(include_self=True)
+			
+			for crumb in ancestors:
+				breadcrumbs.append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
+			
+			breadcrumbs.append({'url':u'%s%s/' % (reverse('category',kwargs={'cached_url':self.leaf.cat.cached_url,}),self.leaf.url), 'title':self.leaf.title})
+			
+			return breadcrumbs
+		
+		else:
+			return False
+
+
+#	Views that don't use the leaf system.
+class all_cats(generic.TemplateView, special_feature_view):
+	template_name = 'deertrees/sitemap.html'
+	
+	def get_context_data(self, **kwargs):
+		context = super(all_cats,self).get_context_data(**kwargs)
+		context['view'] = 'catlist'
+		context['cats'] = category.objects.filter(access_query(self.request)).annotate(num_leaves=Count('leaf'))
+		context['breadcrumbs'] = self.breadcrumbs()
+		
+		if self.request.GET.get('return_to') and self.request.user.has_perm('deertrees.change_leaf'):
+			context['return_to'] = self.request.GET.get('return_to')
+		
+		return context
+
+
+class sitemap(all_cats):
+	template_name = 'deertrees/sitemap.html'
+	
+	def get_context_data(self, **kwargs):
+		context = super(sitemap,self).get_context_data(**kwargs)
+		context['view'] = 'sitemap'
+		context['tags'] = tag.objects.all().annotate(num_leaves=Count('leaf'))
 		return context
