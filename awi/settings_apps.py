@@ -8,10 +8,14 @@
 #	=================
 import os
 
-#	Not an external setting, but it's used in this file, so it needs to be here.
+# Not external settings, but they're used in this file, so they need to be here.
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+STATICFILES_DIRS = (os.path.abspath(os.path.join(BASE_DIR,'static/')),)
 DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
 STATICFILES_STORAGE = 's3_folder_storage.s3.StaticStorage'
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Used as a "scratchpad" for operations that require local file storage.
+WORKING_DIR = os.path.abspath(os.path.join(BASE_DIR,'working_dirs/'))
 
 
 #	CUSTOM APPS
@@ -173,7 +177,7 @@ SUNSET_IMAGE_ASSET_SIZES = {
 	'bg':{'size':(1700,1000),'watermark':False,'exact':True,},
 }
 SUNSET_IMPORT_DIR = '/srv/awi_import/sunset'
-SUNSET_CACHE_DIR = os.path.abspath(os.path.join(BASE_DIR,'working_dirs/sunset/'))
+SUNSET_CACHE_DIR = os.path.abspath(os.path.join(WORKING_DIR,'sunset/'))
 SUNSET_WATERMARK_IMAGE = os.path.abspath(os.path.join(BASE_DIR,'sunset/watermarks/lupinia.png'))
 SUNSET_BG_NOTIFY_FAIL = True	# Send a notification if sunset_bg is used but a background image cannot be found.
 
@@ -182,9 +186,15 @@ SUNSET_BG_NOTIFY_FAIL = True	# Send a notification if sunset_bg is used but a ba
 #	==============
 #	static_precompiler
 STATIC_PRECOMPILER_DISABLE_AUTO_COMPILE = True
-STATIC_PRECOMPILER_COMPILERS = ( ('static_precompiler.compilers.SCSS', {"executable": "/usr/local/bin/sassc", "compass_enabled": False}), )
-STATIC_PRECOMPILER_ROOT = os.path.abspath(os.path.join(BASE_DIR,'devCSS/'))
-STATIC_PRECOMPILER_OUTPUT_DIR = 'css'
+STATIC_PRECOMPILER_ROOT = os.path.abspath(os.path.join(STATICFILES_DIRS[0],'css/'))
+STATIC_PRECOMPILER_OUTPUT_DIR = STATICFILES_DIRS[0]
+STATIC_PRECOMPILER_COMPILERS = ( 
+#	('static_precompiler.compilers.SCSS', {"executable": "/usr/local/bin/sassc", "compass_enabled": False}),
+	('static_precompiler.compilers.libsass.SCSS', {
+		"sourcemap_enabled": False,
+		"precision": 8,
+	}),
+)
 
 
 #	debug_toolbar
