@@ -23,6 +23,7 @@ from deerbooks.models import export_file, page, export_log
 class Command(BaseCommand):
 	help = "Assembles PDF, DVI, and PS files from LaTeX source."
 	cur_page = False
+	types = ['ps','pdf','dvi']
 	
 	def log(self, msg, page_override=False):
 		if page_override:
@@ -81,31 +82,18 @@ class Command(BaseCommand):
 			pages = page.objects.filter(Q(auto_export=True) & Q(latex_fail=False) & Q(published=True)).exclude(cat_id=75).order_by('timestamp_mod')
 			for page_obj in pages:
 				old_docfiles = []
-				page_docs = page_obj.docfiles.all().order_by('filetype')
-				if page_docs.exists():
+				page_docs = page_obj.docfiles.filter(filetype__in=self.types).order_by('filetype')
+				if page_docs:
 					# Things might get weird here.  We have docfiles already.
 					for doc in page_docs:
-						if doc.filetype in ['ps','pdf','dvi']:
-							if doc.timestamp_mod > page_obj.timestamp_mod:
-								# If we're here, it means that the current page has docfiles newer than its last mod date
-								# Which means we're not going to compile it.
-								break
-							else:
-								old_docfiles.append(doc)
-						elif doc.filetype == 'tex':
-							# We have our LaTeX file!
-							dest_name = doc.docfile.name.split('/')
-							dest_name.reverse()
-							filename = dest_name[0].replace('.tex','')
-							texfile = self.get_tex(doc.docfile.url, '%s.tex' % filename)
-							if texfile:
-								self.cur_page = page_obj
-								self.log('LaTeX will be compiled for page %d (%s)' % (self.cur_page.pk, self.cur_page.slug))
-								self.log('Using LaTeX source from attached docfiles')
-								tex_custom = doc
-								break
+						if doc.timestamp_mod > page_obj.timestamp_mod:
+							# If we're here, it means that the current page has docfiles newer than its last mod date
+							# Which means we're not going to compile it.
+							break
+						else:
+							old_docfiles.append(doc)
 					
-					if old_docfiles and not texfile:
+					if old_docfiles:
 						# If we're here, it means that the current page has stale doc files, and no custom tex file.
 						self.cur_page = page_obj
 						self.log('LaTeX will be compiled for page %d (%s)' % (self.cur_page.pk, self.cur_page.slug))
@@ -120,31 +108,15 @@ class Command(BaseCommand):
 				if self.cur_page:
 					break
 			
-			if self.cur_page and not texfile:
-				# Well, we don't have an uploaded LaTeX source file, so we'll have to download one.
-				# First step:  Figure out which domain to use.
-				# Prefer site 1; else, use site 2
-				self.log("Downloading views-based LaTeX source file")
-				page_sites = self.cur_page.sites.all()
-				dl_domain = False
-				for site in page_sites:
-					if site.pk == 1:
-						dl_domain = 'seneca.lupinia.net'
-					elif not dl_domain:
-						dl_domain = 'beta.softpaw.eu'
+			if self.cur_page:
+				filename = self.cur_page.get_export_filename()
+				tex_url = self.cur_page.get_latex_url()
 				
-				#if not 'www' in dl_domain:
-					#dl_domain = 'www.%s' % dl_domain
-				
-				if self.cur_page.book_title:
-					dl_path = reverse('book_tex',kwargs={'cached_url':self.cur_page.cat.cached_url,'slug':self.cur_page.book_title.slug,})
-					filename = 'book.%s' % self.cur_page.book_title.slug
+				if tex_url:
+					self.log("Attempting to download %s" % tex_url)
+					texfile = self.get_tex(tex_url, '%s.tex' % filename)
 				else:
-					dl_path = reverse('page_tex',kwargs={'cached_url':self.cur_page.cat.cached_url,'slug':self.cur_page.slug,})
-					filename = self.cur_page.slug
-				
-				dl_url = 'http://%s%s' % (dl_domain, dl_path)
-				texfile = self.get_tex(dl_url, '%s.tex' % filename)
+					texfile = False
 			
 			if self.cur_page and not texfile:
 				raise CommandError()
@@ -159,7 +131,7 @@ class Command(BaseCommand):
 				self.log("Compilation complete!  Command output:  \n%s" % compile_status)
 				
 				new_docfiles = []
-				new_types = ['ps','pdf','dvi']
+				new_types = self.types
 				completed_types = []
 				if old_docfiles:
 					for update_file in old_docfiles:

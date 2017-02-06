@@ -30,6 +30,12 @@ class page_admin(leaf_admin):
 	def view_on_site(self, obj):
 		return reverse('page_htm',kwargs={'cached_url':obj.cat.cached_url, 'slug':obj.slug,})
 
+class page_inline(admin.TabularInline):
+	model = page
+	extra = 0
+	fields = ['title', 'cat', 'book_order', 'timestamp_post', 'timestamp_mod',]
+	readonly_fields = ['timestamp_mod',]
+
 
 class attachment_admin(admin.ModelAdmin):
 	search_fields = ['name','file']
@@ -38,7 +44,23 @@ class attachment_admin(admin.ModelAdmin):
 	fields = ('name','file','timestamp_post',)
 
 
-admin.site.register(page,page_admin)
-admin.site.register(toc)
-admin.site.register(export_file)
+class book_admin(admin.ModelAdmin):
+	inlines = [page_inline,]
+	fields = (('title', 'slug',),)
+	prepopulated_fields={'slug':('title',)}
+	search_fields = ['title', 'slug', 'pages__title', 'pages__slug',]
+	list_display = ('title', 'slug', 'page_count',)
+
+
+class docfile_admin(admin.ModelAdmin):
+	fields = ('filetype', 'docfile', ('timestamp_mod','page_count',),)
+	readonly_fields = ['timestamp_mod','page_count',]
+	search_fields = ['docfile', 'pages__title', 'pages__slug',]
+	list_display = ('filename', 'filetype', 'page_count', 'timestamp_mod',)
+	list_filter = ['filetype','timestamp_mod',]
+
+
+admin.site.register(page, page_admin)
+admin.site.register(toc, book_admin)
+admin.site.register(export_file, docfile_admin)
 admin.site.register(attachment, attachment_admin)
