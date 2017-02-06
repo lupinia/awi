@@ -27,15 +27,16 @@ def access_query(request=False):
 	
 	return returned_query
 
+
 class access_control(models.Model):
 	SECURITY_OPTIONS=((0,'Public'),(1,'Logged-In Users'),(2,'Staff'))
 	
-	published=models.BooleanField()
-	featured=models.BooleanField()
-	mature=models.BooleanField()
-	security=models.IntegerField(choices=SECURITY_OPTIONS,default=0,blank=True)
+	published=models.BooleanField(help_text='Unpublished items can only be viewed by the creator, or users with Staff privileges, regardless of Security setting.')
+	featured=models.BooleanField(help_text='Display this item on the homepage, and at the top of the list elsewhere.')
+	mature=models.BooleanField(help_text='Mature content can only be viewed by users who verify their age.')
+	security=models.IntegerField(choices=SECURITY_OPTIONS, default=0, blank=True)
 	owner=models.ForeignKey(User, on_delete=models.PROTECT)
-	sites=models.ManyToManyField(Site)
+	sites=models.ManyToManyField(Site, help_text='Sites/domains on which this item will appear.')
 	
 	def can_view(self,request=False):
 #		Return a tuple; first value is boolean, can view or not.  Second value is an error message if False, empty if True

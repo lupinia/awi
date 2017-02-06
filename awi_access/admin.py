@@ -13,7 +13,7 @@ from django.db.models import ManyToManyField
 from awi_access.models import access_control
 
 class access_admin(ModelAdmin):
-	fieldsets = [('Security Options',{'fields': (('published','featured','mature','sites','security'),),},),]
+	fieldsets = [('Security Options',{'fields': (('published','featured','mature','sites','security'),), 'classes':('security',),},),]
 	list_filter=['published','featured','mature','sites','security','owner']
 	list_display = ('published','featured','mature','security',)
 	actions = ['publish','unpublish','feature','unfeature',]
