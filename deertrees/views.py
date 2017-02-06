@@ -309,6 +309,7 @@ class all_tags(generic.TemplateView):
 	def get_context_data(self, **kwargs):
 		context = super(all_tags,self).get_context_data(**kwargs)
 		
+		# TODO:  Filter by sitemap_include and hide empty tags if not return_to
 		tag_list = tag.objects.all().order_by('title')
 		if tag_list:
 			context['tags'] = tag_list
@@ -479,5 +480,6 @@ class sitemap(all_cats):
 	def get_context_data(self, **kwargs):
 		context = super(sitemap,self).get_context_data(**kwargs)
 		context['view'] = 'sitemap'
-		context['tags'] = tag.objects.all().annotate(num_leaves=Count('leaf'))
+		context['cats'] = context['cats'].filter(sitemap_include=True)
+		context['tags'] = tag.objects.filter(sitemap_include=True).annotate(num_leaves=Count('leaf'))
 		return context
