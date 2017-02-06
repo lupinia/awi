@@ -24,20 +24,21 @@ def viewtype_options():
 	return viewtypes
 
 class category(MPTTModel, access_control):
-	title=models.CharField(max_length=60)
-	slug=models.SlugField()
-	summary=models.CharField(max_length=255)
-	desc=models.TextField(null=True,blank=True)
-	parent=TreeForeignKey('self',null=True,blank=True,related_name='children')
-	cached_url=models.CharField(max_length=255,null=True,blank=True,unique=True)
+	title = models.CharField(max_length=60)
+	slug = models.SlugField()
+	summary = models.CharField(max_length=255)
+	desc = models.TextField(null=True, blank=True, verbose_name='description body text')
+	parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+	cached_url = models.CharField(max_length=255, null=True, blank=True, unique=True, help_text='System field:  Full unique slug for this category, including all parents.')
 	
-	background_tag=models.ForeignKey('sunset.background_tag',null=True,blank=True, on_delete=models.SET_NULL)
-	icon=models.ForeignKey('sunset.image_asset',null=True,blank=True, on_delete=models.SET_NULL)
-	icon_manual=models.BooleanField(default=False)
-	view_type = models.CharField(choices=viewtype_options(), max_length=15, default='default')
-	sitemap_include=models.BooleanField(default=True)
-	timestamp_mod=models.DateTimeField(auto_now=True)
-	timestamp_post=models.DateTimeField(default=timezone.now)
+	background_tag = models.ForeignKey('sunset.background_tag', null=True, blank=True, on_delete=models.SET_NULL, help_text='Set this to indicate the preferred background image themes for this category.')
+	icon = models.ForeignKey('sunset.image_asset', null=True, blank=True, on_delete=models.SET_NULL, help_text='System field:  Image asset used as a thumbnail for this category.')
+	icon_manual = models.BooleanField(default=False, help_text='System field:  Indicates whether the Icon field was set manually; if so, it will not be replaced by the automatic thumbnail assignment script.')
+	
+	view_type = models.CharField(choices=viewtype_options(), max_length=15, default='default', help_text='Determines the placement of content when this category is displayed.')
+	sitemap_include = models.BooleanField(default=True, verbose_name='include in sitemap', help_text='Check this box to include this category in sitemap views.')
+	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
 	
 	def __unicode__(self):
 		return self.title
@@ -65,16 +66,19 @@ class category(MPTTModel, access_control):
 	
 	class MPTTMeta:
 		order_insertion_by = ['title']
+	
+	class Meta:
+		verbose_name_plural = 'categories'
 
 class tag(models.Model):
-	title=models.CharField(max_length=200,null=True,blank=True)
-	slug=models.SlugField(max_length=200,unique=True)
-	desc=models.TextField(null=True,blank=True)
+	title = models.CharField(max_length=200,null=True,blank=True)
+	slug = models.SlugField(max_length=200,unique=True)
+	desc = models.TextField(null=True,blank=True)
 	
-	view_type = models.CharField(choices=viewtype_options(), max_length=15, default='default')
-	sitemap_include=models.BooleanField(default=True)
-	timestamp_mod=models.DateTimeField(auto_now=True)
-	timestamp_post=models.DateTimeField(default=timezone.now)
+	view_type = models.CharField(choices=viewtype_options(), max_length=15, default='default', help_text='Determines the placement of content when this tag is displayed.')
+	sitemap_include = models.BooleanField(default=True, verbose_name='include in sitemap', help_text='Check this box to include this tag in sitemap views.')
+	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
 	
 	def __unicode__(self):
 		if self.title:
@@ -98,23 +102,23 @@ class tag(models.Model):
 #	This model has been modified for the Awi website, and requires the Awi Access app
 #	This is a single categorized node; everything else that belongs to a category should extend this class
 class leaf(access_control):
-	TIMEDISP_OPTIONS=(('post','Posted'),('mod','Modified'))
+	TIMEDISP_OPTIONS = (('post','Posted'),('mod','Modified'))
 	
-	cat=models.ForeignKey(category,null=True,blank=True, on_delete=models.PROTECT)
-	tags=models.ManyToManyField(tag,blank=True)
+	cat = models.ForeignKey(category, null=True, blank=True, on_delete=models.PROTECT, verbose_name='category')
+	tags = models.ManyToManyField(tag, blank=True)
 	
-	timestamp_mod=models.DateTimeField(auto_now=True)
-	timestamp_post=models.DateTimeField(default=timezone.now)
-	timedisp=models.CharField(max_length=10,choices=TIMEDISP_OPTIONS,default='post')
-	type=models.CharField(max_length=20, default='unknown')
+	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created', help_text='Set this to a future date to schedule it.')
+	timedisp = models.CharField(max_length=10, choices=TIMEDISP_OPTIONS, default='post', verbose_name='preferred timestamp', help_text='Determines which timestamp (modified, or created) will be publicly displayed.  The other option will only be visible to users who can edit this item.')
 	
+	type = models.CharField(max_length=20, default='unknown', help_text='System field:  Indicates which model this leaf is.')
 	
 	def __unicode__(self):
-		return str(self.id)
+		return '%s:  %d' % (self.type.capitalize(), self.pk)
 	
 	def save(self, *args, **kwargs):
 		if not self.pk:
-			self.type=self.__class__.__name__
+			self.type = self.__class__.__name__
 		super(leaf, self).save(*args, **kwargs)
 	
 	def scheduled(self):
@@ -190,31 +194,33 @@ class leaf(access_control):
 		return return_data
 	
 	def display_times(self):
-		return_times=[{},{}]
-		if self.timedisp=='post':
-			return_mod=1
-			return_post=0
+		return_times = [{},{}]
+		if self.timedisp == 'post':
+			return_mod = 1
+			return_post = 0
 		else:
-			return_mod=0
-			return_post=1
+			return_mod = 0
+			return_post = 1
 		
-		return_times[return_post]['timestamp']=self.timestamp_post
-		return_times[return_mod]['timestamp']=self.timestamp_mod
-		return_times[return_post]['label']='Posted'
-		return_times[return_mod]['label']='Updated'
+		return_times[return_post]['timestamp'] = self.timestamp_post
+		return_times[return_mod]['timestamp'] = self.timestamp_mod
+		return_times[return_post]['label'] = 'Posted'
+		return_times[return_mod]['label'] = 'Updated'
 		
 		return return_times
-		
 
 #	Create a leaf that links to something else that isn't part of this category system.
 #	Handy for things like third-party apps, or self-contained apps with their own organizational structure.
 class special_feature(leaf):
-	url=models.CharField(max_length=60,unique=True)
-	title=models.CharField(max_length=60)
-	desc=models.CharField(max_length=255,null=True,blank=True)
+	url = models.CharField(max_length=60, unique=True, verbose_name='URL', help_text='Similar to a Slug field, but can accept any character, to make it easier to link to non-DeerTrees URLs.')
+	title = models.CharField(max_length=60)
+	desc = models.CharField(max_length=255, null=True, blank=True, verbose_name='Description')
 	
 	def get_absolute_url(self):
 		return '%s%s' % (reverse('category', kwargs={'cached_url':self.cat.cached_url,}), self.url)
 	
 	def __unicode__(self):
 		return self.title
+	
+	class Meta:
+		verbose_name = 'special feature'
