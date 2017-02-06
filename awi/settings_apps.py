@@ -205,6 +205,7 @@ DEBUG_TOOLBAR_PATCH_SETTINGS = False
 ADMIN_TOOLS_INDEX_DASHBOARD = 'awi.admin_tools_custom.CustomIndexDashboard'
 ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'awi.admin_tools_custom.CustomAppIndexDashboard'
 ADMIN_TOOLS_MENU = 'awi.admin_tools_custom.CustomMenu'
+ADMIN_TOOLS_THEMING_CSS = 'css/admin_tools.css'
 
 
 #	s3_folder_storage

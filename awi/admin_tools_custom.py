@@ -157,10 +157,10 @@ class CustomAppIndexDashboard(AppIndexDashboard):
 
         # append a model list module and a recent actions module
         self.children += [
-            modules.ModelList(self.app_title, self.models),
+            modules.ModelList(self.app_title, self.get_app_model_classes()),
             modules.RecentActions(
                 _('Recent Actions (This App)'),
-                include_list=self.models,
+                include_list=self.get_app_content_types(),
                 limit=20
             )
         ]
