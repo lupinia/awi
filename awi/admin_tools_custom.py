@@ -15,33 +15,29 @@ from admin_tools.menu import items, Menu
 
 itemlist_content = (
 	'deerbooks.*',
-	'deertrees.*',
 	'sunset.*',
 	'deerconnect.models.link',
-	'django_summernote.*',
+	'deerattend.*',
+	'deercoins.*',
+	'deerfood.*',
+)
+
+itemlist_structure = (
+	'deertrees.*',
+	'sunset.models.background_tag',
+	'deerconnect.models.contact_link',
 )
 
 itemlist_system = (
 	'django.contrib.*',
-	'awi_error.*',
 	'awi_access.*',
-	'deerfind.models.pointer',
-	'deerfind.models.g2map',
-	'deerconnect.models.contact_link',
+	'awi_error.*',
+	'deerfind.*',
 )
 
 itemlist_misc_exclude = (
-	'django.contrib.*',
 	'django_processinfo.*',
-	'django_summernote.*',
-	'awi_error.*',
-	'awi_access.*',
-	'deerfind.*',
-	'deerbooks.*',
-	'deertrees.*',
-	'deerconnect.*',
-	'sunset.*',
-)
+) + itemlist_content + itemlist_structure + itemlist_system
 
 class CustomMenu(Menu):
     def __init__(self, **kwargs):
@@ -53,6 +49,10 @@ class CustomMenu(Menu):
             items.AppList(
                 _('Content'),
                 models=itemlist_content,
+            ),
+            items.AppList(
+                _('Structure'),
+                models=itemlist_structure,
             ),
             items.AppList(
                 _('System'),
@@ -76,6 +76,8 @@ class CustomIndexDashboard(Dashboard):
     """
     Custom index dashboard for awi-dev.
     """
+    columns=3
+    
     def init_with_context(self, context):
         site_name = get_admin_site_name(context)
         # append a link list module for "quick links"
@@ -93,26 +95,32 @@ class CustomIndexDashboard(Dashboard):
             ]
         ))
 
-        # append an app list module for "Applications"
+        # append an app list module for "Content"
         self.children.append(modules.AppList(
             _('Content'),
             models=itemlist_content,
         ))
 
-        # append an app list module for "Administration"
+        # append an app list module for "Miscellaneous"
         self.children.append(modules.AppList(
             _('Miscellaneous'),
             exclude=itemlist_misc_exclude,
         ))
 
-        # append an app list module for "Administration"
+        # append an app list module for "Structure"
+        self.children.append(modules.AppList(
+            _('Site Structure'),
+            models=itemlist_structure,
+        ))
+
+        # append an app list module for "System Management"
         self.children.append(modules.AppList(
             _('System Management'),
             models=itemlist_system,
         ))
 
         # append a recent actions module
-        self.children.append(modules.RecentActions(_('Recent Actions'), 5))
+        self.children.append(modules.RecentActions(_('Recent Actions'), 10))
 
         # append a feed module
         # self.children.append(modules.Feed(
