@@ -12,45 +12,81 @@
 
 from django.db import models
 
+from mptt.models import MPTTModel, TreeForeignKey
+
 class category(models.Model):
-	title = models.CharField(max_length = 200)
+	title = models.CharField(max_length=200)
 	
 	def __unicode__(self):
 		return self.title
 	
+	class Meta:
+		verbose_name = 'pointer type'
+		ordering = ['title',]
+
+
 class pointer(models.Model):
-	old_url = models.CharField(max_length = 200, unique=True)
-	new_url = models.CharField(max_length = 200)
-	category = models.ForeignKey(category, on_delete=models.PROTECT)
+	old_url = models.CharField(max_length=255, unique=True)
+	new_url = models.CharField(max_length=255)
+	category = models.ForeignKey(category, on_delete=models.PROTECT, verbose_name='type')
 	
 	def __unicode__(self):
-		return '%s -> %s' % (self.old_url,self.new_url)
+		return '%s -> %s' % (self.old_url, self.new_url)
 	
 	def hit_count(self):
 		return self.hitlog_set.count()
+	
+	class Meta:
+		verbose_name = 'URL redirect pointer'
+
 
 class hitlog(models.Model):
 	pointer = models.ForeignKey(pointer, on_delete=models.CASCADE)
-	time=models.DateTimeField(auto_now=True)
-
-	user_agent = models.TextField(null = True,blank = True)
-	accept = models.CharField(max_length = 250,null = True,blank = True)
-	accept_encoding = models.CharField(max_length = 250,null = True,blank = True)
-	accept_language = models.CharField(max_length = 250,null = True,blank = True)
-
-	host = models.CharField(max_length = 250,null = True,blank = True)
-	referer = models.CharField(max_length = 250,null = True,blank = True)
-	query_string = models.CharField(max_length = 250,null = True,blank = True)
-	remote_addr = models.CharField(max_length = 250,null = True,blank = True)
+	time = models.DateTimeField(auto_now=True)
+	
+	user_agent = models.TextField(null=True, blank=True)
+	accept = models.CharField(max_length=250, null=True, blank=True)
+	accept_encoding = models.CharField(max_length=250, null=True, blank=True)
+	accept_language = models.CharField(max_length=250, null=True, blank=True)
+	
+	host = models.CharField(max_length=250, null=True, blank=True)
+	referer = models.CharField(max_length=250,null=True, blank=True)
+	query_string = models.CharField(max_length=250, null=True, blank=True)
+	remote_addr = models.CharField(max_length=250, null=True, blank=True)
 	
 	def __unicode__(self):
 		hit_date = self.time.strftime('%b %-d, %Y %H:%M:%S')
-		return '%s - %s' % (self.pointer.old_url,hit_date)
+		return '%s - %s' % (self.pointer.old_url, hit_date)
+	
+	class Meta:
+		verbose_name = 'pointer hit log entry'
+		verbose_name_plural = 'pointer hit log entries'
+
 
 class g2map(models.Model):
-	g2id = models.IntegerField(unique=True)
-	category = models.ForeignKey('deertrees.category', null=True, blank=True)
-	image = models.ForeignKey('sunset.image', null=True, blank=True)
+	g2id = models.IntegerField(unique=True, verbose_name='G2 item ID')
+	category = models.ForeignKey('deertrees.category', null=True, blank=True, on_delete=models.SET_NULL)
+	image = models.ForeignKey('sunset.image', null=True, blank=True, on_delete=models.SET_NULL)
 	
 	def __unicode__(self):
 		return str(self.g2id)
+	
+	class Meta:
+		verbose_name = 'Gallery2 URL redirect pointer'
+
+
+class g2raw(MPTTModel):
+	g2id = models.IntegerField(unique=True, verbose_name='G2 item ID')
+	type = models.CharField(max_length=255, default='Unknown')
+	parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+	title = models.CharField(max_length=255, null=True, blank=True)
+	matched = models.BooleanField(default=False)
+	
+	def __unicode__(self):
+		return str(self.g2id)
+	
+	class MPTTMeta:
+		order_insertion_by = ['g2id']
+	
+	class Meta:
+		verbose_name = 'legacy Gallery2 item ID'

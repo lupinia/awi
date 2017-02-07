@@ -9,6 +9,9 @@
 #	=================
 
 from django.contrib import admin
+
+from django_mptt_admin.admin import DjangoMpttAdmin
+
 from deerfind.models import *
 
 class log_list(admin.TabularInline):
@@ -43,6 +46,11 @@ class g2_inline(admin.TabularInline):
 	model=g2map
 	extra=1
 
+class g2raw_admin(DjangoMpttAdmin):
+	list_select_related = True
+
+
 admin.site.register(category)
 admin.site.register(pointer,pointer_admin)
 admin.site.register(g2map,g2_admin)
+admin.site.register(g2raw,g2raw_admin)
