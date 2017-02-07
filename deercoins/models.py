@@ -14,58 +14,64 @@ from django.conf import settings
 from django.utils import timezone
 
 class currency(models.Model):
-	code = models.SlugField(max_length=1, unique=True)
+	code = models.SlugField(max_length=1, unique=True, verbose_name='filing code')
 	name = models.CharField(max_length=100)
-	symbol = models.CharField(max_length=6,null=True,blank=True)
+	symbol = models.CharField(max_length=6, null=True, blank=True, help_text='Enter the symbol (such as $) used to represent this currency in shorthand writing.')
 	
 	def __unicode__(self):
 		return self.name
+	
+	class Meta:
+		verbose_name_plural = 'currencies'
 
 class country(models.Model):
-	code = models.SlugField(max_length=2, unique=True)
+	code = models.SlugField(max_length=2, unique=True, verbose_name='filing code')
 	name = models.CharField(max_length=255)
-	flag = models.ImageField(upload_to='flags',null=True,blank=True)
-	flag_large = models.ImageField(upload_to='flags-large',null=True,blank=True)
+	flag = models.ImageField(upload_to='flags', null=True, blank=True, verbose_name='flag icon (24px)')
+	flag_large = models.ImageField(upload_to='flags-large', null=True, blank=True, verbose_name='flag icon (96px)')
 	
 	def __unicode__(self):
 		return self.name
+	
+	class Meta:
+		verbose_name_plural = 'countries'
 
 class gifter(models.Model):
 	name = models.CharField(max_length=255)
 	slug = models.SlugField(unique=True)
-	homepage = models.URLField(max_length=255, blank=True,null=True)
+	homepage = models.URLField(max_length=255, blank=True, null=True, verbose_name='personal URL', help_text="A link to this person's website or social media account.")
 	
 	def __unicode__(self):
 		return self.name
 
 class coin(models.Model):
-	code = models.SlugField(unique=True)
+	code = models.SlugField(unique=True, verbose_name='filing code')
 	country = models.ForeignKey(country, on_delete=models.PROTECT)
-	country_as_written = models.CharField(max_length=255,blank=True,null=True)
-	value = models.DecimalField(max_digits=12, decimal_places=5,blank=True,null=True)
+	country_as_written = models.CharField(max_length=255, blank=True, null=True, verbose_name='country as-written', help_text="Overrides the country name if it's written differently on the coin/note.")
+	value = models.DecimalField(max_digits=12, decimal_places=5, blank=True, null=True, help_text='Value of this coin/note relative to its currency.  For example, for 1 cent, enter 0.01.')
 	currency = models.ForeignKey(currency, on_delete=models.PROTECT)
-	denomination = models.CharField(max_length=60)
-	denomination_code = models.CharField(max_length=6, blank=True)
-	is_note = models.BooleanField()
-	is_special_issue = models.BooleanField()
-	year = models.IntegerField()
-	year_as_written = models.IntegerField(blank=True,null=True)
+	denomination = models.CharField(max_length=60, null=True, blank=True, help_text='Denomination as it appears on the coin/note, if different from the Value field.  For example, a USA $0.25 coin has a denomination of "Quarter Dollar".')
+	denomination_code = models.CharField(max_length=6, blank=True, verbose_name='denomination filing code', help_text='Used to generate the overall filing code.  Letting this auto-generate is recommended.')
+	is_note = models.BooleanField(verbose_name='note?', help_text='Check this box if this is a banknote/bill instead of a coin.')
+	is_special_issue = models.BooleanField(verbose_name='special issue?', help_text='Check this box if this coin/note is commemorative, or a short-term special-issue.')
+	year = models.IntegerField(help_text='Gregorian calendar year.')
+	year_as_written = models.CharField(max_length=50, blank=True, null=True, verbose_name='year as-written', help_text='If this coin/note represents its year differently from the Gregorian calendar, enter the year and calendar info here.  For example, an Egyptian coin with a year of 1942 would need "1342 (Islamic Calendar)" in this field.')
 	
-	coin_notes = models.TextField(blank=True,null=True)
-	condition_notes = models.TextField(blank=True,null=True)
+	coin_notes = models.TextField(blank=True, null=True, verbose_name='notes (coin details)', help_text='Details about this coin/note other than condition or how it was acquired.')
+	condition_notes = models.TextField(blank=True, null=True, verbose_name='notes (condition)', help_text='Details about the condition of this coin/note')
 	
-	acquired_from = models.ForeignKey(gifter,blank=True,null=True, on_delete=models.SET_NULL)
-	acquired_date = models.DateField(blank=True,null=True)
-	acquired_notes = models.TextField(blank=True,null=True)
+	acquired_from = models.ForeignKey(gifter, blank=True, null=True, on_delete=models.SET_NULL, help_text='If this coin/note was acquired from someone, select that person here.')
+	acquired_date = models.DateField(blank=True, null=True)
+	acquired_notes = models.TextField(blank=True, null=True, verbose_name='notes (acquisition)', help_text='Details about how and when this coin/note was acquired.')
 	
-	location_page = models.IntegerField(blank=True,null=True)
-	location_row = models.IntegerField(blank=True,null=True)
-	location_column = models.IntegerField(blank=True,null=True)
+	location_page = models.IntegerField(blank=True, null=True, verbose_name='binder page')
+	location_row = models.IntegerField(blank=True, null=True, verbose_name='binder page row')
+	location_column = models.IntegerField(blank=True, null=True, verbose_name='binder page column')
 	
-	detail_link = models.URLField(max_length=255, blank=True,null=True)
+	detail_link = models.URLField(max_length=255, blank=True, null=True, help_text='Link to an external site (like Numista.com) describing this coin/note in greater detail.')
 	
-	timestamp_mod=models.DateTimeField(auto_now=True)
-	timestamp_post=models.DateTimeField(default=timezone.now)
+	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
 	
 	def __unicode__(self):
 		return self.code
@@ -122,11 +128,15 @@ class coin(models.Model):
 
 #	In case a sort code for a coin changes, the old one will still work.
 class code_alias(models.Model):
-	code = models.SlugField(unique=True)
+	code = models.SlugField(unique=True, verbose_name='old filing code')
 	coin = models.ForeignKey(coin, on_delete=models.CASCADE)
 	
 	def __unicode__(self):
 		return self.code
+	
+	class Meta:
+		verbose_name = 'filing code alias'
+		verbose_name_plural = 'filing code aliases'
 
 #	This model is for a specific project:
 #	Trying to acquire Euro coins in every denomination from every country that issues them
