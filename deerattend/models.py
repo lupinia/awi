@@ -17,16 +17,16 @@ from deerbooks.models import page
 class venue(models.Model):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
-	timestamp_mod = models.DateTimeField(auto_now=True)
-	timestamp_post = models.DateTimeField(default=timezone.now)
+	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
 	
 	# Location
-	address = models.CharField(max_length=250)
+	address = models.CharField(max_length=250, verbose_name='street address')
 	city = models.CharField(max_length=250)
-	state = models.CharField(max_length=250, blank=True, null=True)
+	state = models.CharField(max_length=250, blank=True, null=True, verbose_name='state/province/territory')
 	country = models.CharField(max_length=250)
-	geo_lat = models.DecimalField(decimal_places = 15, max_digits = 20, blank=True, null=True)
-	geo_long = models.DecimalField(decimal_places = 15, max_digits = 20, blank=True, null=True)
+	geo_lat = models.DecimalField(decimal_places=15, max_digits=20, blank=True, null=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
+	geo_long = models.DecimalField(decimal_places=15, max_digits=20, blank=True, null=True, verbose_name='longitude', help_text='Positive numbers are eastern hemisphere, negative numbers are western.')
 	
 	def __unicode__(self):
 		return self.name
@@ -40,12 +40,15 @@ class venue(models.Model):
 class attendance_flag(models.Model):
 	name = models.CharField(max_length=250)
 	slug = models.SlugField(unique=True)
-	img_width = models.IntegerField(null=True,blank=True)
-	img_height = models.IntegerField(null=True,blank=True)
-	icon = models.ImageField(upload_to='attend_icons',height_field='img_height',width_field='img_width')
+	img_width = models.IntegerField(null=True, blank=True)
+	img_height = models.IntegerField(null=True, blank=True)
+	icon = models.ImageField(upload_to='attend_icons', height_field='img_height', width_field='img_width')
 	
 	def __unicode__(self):
 		return self.name
+	
+	class Meta:
+		verbose_name = 'flag'
 
 class event_type(models.Model):
 	name = models.CharField(max_length=100)
@@ -54,38 +57,41 @@ class event_type(models.Model):
 	
 	def __unicode__(self):
 		return self.name
+	
+	class Meta:
+		verbose_name = 'type'
 
 class event(models.Model):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
 	notes = models.TextField(null=True, blank=True)
 	type = models.ForeignKey(event_type, on_delete=models.PROTECT)
-	timestamp_mod = models.DateTimeField(auto_now=True)
-	timestamp_post = models.DateTimeField(default=timezone.now)
-	mature = models.BooleanField()
+	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
+	mature = models.BooleanField(help_text='Check this box to indicate a mature/18+ event.')
 	
 	def __unicode__(self):
 		return self.name
 
 class event_instance(models.Model):
 	event = models.ForeignKey(event, on_delete=models.PROTECT)
-	instance = models.CharField(max_length=15, help_text="Label for the specific instance of an event.  Ideally a year, but not necessarily.  For example, 'Jan 2012', or '3'.")
+	instance = models.CharField(max_length=15, verbose_name='instance label', help_text="Label for the specific instance of an event.  Ideally a year, but not necessarily.  For example, 'Jan 2012', or '3'.")
 	name = models.CharField(max_length=100, null=True, blank=True, help_text="Override the standard format of 'event_instance.event.name event_instance.instance'")
 	slug = models.SlugField(unique=True)
-	timestamp_mod = models.DateTimeField(auto_now=True)
-	timestamp_post = models.DateTimeField(default=timezone.now)
-	uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
+	uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name='UUID')
 	
 	# Attendance Details
-	confirmed = models.BooleanField(default=True)
+	confirmed = models.BooleanField(default=True, help_text='Check this box if attendance at this event has been confirmed (purchased registration, etc).')
 	flags = models.ManyToManyField(attendance_flag,blank=True)
 	notes = models.TextField(null=True, blank=True)
-	photos = models.ForeignKey(category, null=True, blank=True, on_delete=models.SET_NULL)
-	report = models.ForeignKey(page, null=True, blank=True, on_delete=models.SET_NULL)
+	photos = models.ForeignKey(category, null=True, blank=True, on_delete=models.SET_NULL, help_text='Select a Category that contains photos taken at this event.')
+	report = models.ForeignKey(page, null=True, blank=True, on_delete=models.SET_NULL, help_text='Select a Page describing/related to experiences at this event.')
 	
 	# Time and Place
-	date_start = models.DateField(null=True, blank=True)
-	date_end = models.DateField(null=True, blank=True)
+	date_start = models.DateField(null=True, blank=True, verbose_name='start date')
+	date_end = models.DateField(null=True, blank=True, verbose_name='end_date')
 	venue = models.ForeignKey(venue, on_delete=models.PROTECT)
 	
 	def get_name(self):
@@ -106,3 +112,6 @@ class event_instance(models.Model):
 	
 	def __unicode__(self):
 		return self.get_name()
+	
+	class Meta:
+		verbose_name = 'event instance'
