@@ -47,7 +47,7 @@ class static_map(Sitemap):
 	changefreq = 'yearly'
 	
 	def items(self):
-		return ['contact','all_tags','home']
+		return ['contact','all_tags','home','sitemap_htm']
 	
 	def location(self, item):
 		return reverse(item)

@@ -34,6 +34,7 @@ class menu_flag(models.Model):
 	img_width = models.IntegerField(null=True, blank=True, verbose_name='icon height')
 	img_height = models.IntegerField(null=True, blank=True, verbose_name='icon width')
 	icon = models.ImageField(upload_to='menu_icons',height_field='img_height',width_field='img_width')
+	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
 	
 	def __unicode__(self):
 		return self.name

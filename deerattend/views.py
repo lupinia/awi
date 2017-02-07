@@ -14,19 +14,21 @@ from django.views import generic
 from deerattend.models import *
 from deertrees.views import special_feature_view
 
+special_filter_list = {
+	'photos':{'name':'Events with Photos', 'slug':'photos', 'filter':Q(photos__isnull=False), 'is_mature':False, },
+	'reports':{'name':'Events with Reports', 'slug':'reports', 'filter':Q(report__isnull=False), 'is_mature':False, },
+	'upcoming':{'name':'Confirmed Upcoming Appearances', 'slug':'upcoming', 'filter':Q(confirmed=True) & Q(date_start__gte=timezone.now()), 'is_mature':False, },
+	'tentative':{'name':'Tentative Upcoming Appearances', 'slug':'tentative', 'filter':Q(confirmed=False) & Q(date_start__gte=timezone.now()), 'is_mature':False, },
+	'mature':{'name':'Mature (18+)', 'slug':'mature', 'filter':Q(event__mature=True), 'is_mature':True, },
+	'no-mature':{'name':'Hide Mature', 'slug':'no-mature', 'filter':Q(event__mature=False), 'is_mature':True, },
+}
+
 class event_list(special_feature_view):
 	model=event_instance
 	context_object_name='event_instances'
 	template_name='deerattend/event_list.html'
 	
-	special_filters = {
-		'photos':{'name':'Events with Photos', 'slug':'photos', 'filter':Q(photos__isnull=False), 'is_mature':False, },
-		'reports':{'name':'Events with Reports', 'slug':'reports', 'filter':Q(report__isnull=False), 'is_mature':False, },
-		'upcoming':{'name':'Confirmed Upcoming Appearances', 'slug':'upcoming', 'filter':Q(confirmed=True) & Q(date_start__gte=timezone.now()), 'is_mature':False, },
-		'tentative':{'name':'Tentative Upcoming Appearances', 'slug':'tentative', 'filter':Q(confirmed=False) & Q(date_start__gte=timezone.now()), 'is_mature':False, },
-		'mature':{'name':'Mature (18+)', 'slug':'mature', 'filter':Q(event__mature=True), 'is_mature':True, },
-		'no-mature':{'name':'Hide Mature', 'slug':'no-mature', 'filter':Q(event__mature=False), 'is_mature':True, },
-	}
+	special_filters = special_filter_list
 	
 	def filtered_queryset(self, *args, **kwargs):
 		if self.request.user.is_authenticated():

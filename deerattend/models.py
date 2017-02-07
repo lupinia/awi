@@ -8,6 +8,7 @@
 
 import uuid
 
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 
@@ -43,9 +44,13 @@ class attendance_flag(models.Model):
 	img_width = models.IntegerField(null=True, blank=True)
 	img_height = models.IntegerField(null=True, blank=True)
 	icon = models.ImageField(upload_to='attend_icons', height_field='img_height', width_field='img_width')
+	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
 	
 	def __unicode__(self):
 		return self.name
+	
+	def get_absolute_url(self):
+		return reverse('deerattend:filter_flag', kwargs={'slug':self.slug,})
 	
 	class Meta:
 		verbose_name = 'flag'
@@ -54,9 +59,13 @@ class event_type(models.Model):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
 	notes = models.TextField(null=True, blank=True)
+	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
 	
 	def __unicode__(self):
 		return self.name
+	
+	def get_absolute_url(self):
+		return reverse('deerattend:filter_type', kwargs={'slug':self.slug,})
 	
 	class Meta:
 		verbose_name = 'type'

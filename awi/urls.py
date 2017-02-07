@@ -15,28 +15,13 @@ from django.views.decorators.cache import cache_control
 
 from honeypot.decorators import check_honeypot
 
+from awi.sitemaps import SITEMAP_OBJECTS
 from awi_error.views import system_error, denied_error
 from deerfind.views import not_found
 from deerconnect.views import contact_page
 from deertrees import views as deertrees_views
 from deerbooks import views as deerbooks_views
 from sunset import views as sunset_views
-
-#	For django.contrib.sitemaps
-from deerbooks.sitemaps import page_map
-from deertrees.sitemaps import *
-from deerfood.sitemaps import menu_cat_map
-from sunset.sitemaps import image_map
-
-SITEMAP_OBJECTS = {
-	'images':image_map,
-	'writing':page_map,
-	'directories':cat_map,
-	'extras':special_map,
-	'foodmenu':menu_cat_map,
-	'tags':tag_map,
-	'static':static_map,
-}
 
 admin.autodiscover()
 handler404 = not_found
