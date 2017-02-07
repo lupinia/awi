@@ -32,9 +32,13 @@ def image_asset_uploadto(instance, filename):
 
 class background_tag(models.Model):
 	tag = models.CharField(max_length=50)
-	default = models.BooleanField(default=False, blank=True)
+	default = models.BooleanField(default=False, blank=True, help_text="Check this box if this tag should be considered a default option for pages/views that don't specify any other background info, such as the home/site root view.")
+	
 	def __unicode__(self):
 		return self.tag
+	
+	class Meta:
+		verbose_name = 'background tag'
 
 class image(leaf):
 	# Map EXIF/IPTC keys to attributes on this model.
@@ -52,19 +56,20 @@ class image(leaf):
 		'XMP:Title':'title', 
 	}
 	
-	slug=models.SlugField(unique=True)
-	title=models.CharField(max_length=100,null=True,blank=True)
-	body = models.TextField(null=True,blank=True)
-	summary = models.CharField(max_length=255,null=True,blank=True)
-	rebuild_assets = models.BooleanField(default=True)	# If true, asset files will be rebuilt on next run.
-	auto_fields = models.BooleanField(default=True)		# If true, fields listed in META_MAP will be overwritten from EXIF data.
-	is_new = models.BooleanField(default=True)			# If true, set published=True after first asset build.
+	slug = models.SlugField(unique=True)
+	title = models.CharField(max_length=100, null=True, blank=True)
+	body = models.TextField(null=True, blank=True, verbose_name='description')
+	summary = models.CharField(max_length=255, null=True, blank=True, help_text='Short summary used in the description meta tag, and in place of the Description field if Description is empty.')
 	
-	geo_lat = models.DecimalField(decimal_places = 15, max_digits = 20, blank=True, null=True)
-	geo_long = models.DecimalField(decimal_places = 15, max_digits = 20, blank=True, null=True)
+	rebuild_assets = models.BooleanField(default=True, help_text='If this is checked, the assets for this image will be rebuild on the next run of the process_images command.')
+	auto_fields = models.BooleanField(default=True, verbose_name='automatic fields from EXIF?', help_text='If this is checked, the Title, Summary/Description, and Latitude/Longitude will be rebuilt from the EXIF data of the original image file.  If you have manually edited any of these fields, uncheck this box.')
+	is_new = models.BooleanField(default=True, help_text='System field:  If True, this image will be published after its first asset build.')
+	
+	geo_lat = models.DecimalField(decimal_places=15, max_digits=20, blank=True, null=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
+	geo_long = models.DecimalField(decimal_places=15, max_digits=20, blank=True, null=True, verbose_name='longitude', help_text='Positive numbers are eastern hemisphere, negative numbers are western.')
 	
 	# Page backgrounds
-	bg_tags=models.ManyToManyField(background_tag, blank=True)
+	bg_tags = models.ManyToManyField(background_tag, blank=True, related_name='images', verbose_name='background tags', help_text='To use this image as a sitewide background, select the background tag(s) it should be associated with.')
 	
 	# Attributes used only on this classes's methods.
 	PIL_obj = False
@@ -306,14 +311,16 @@ class image_asset(models.Model):
 		('unknown','Unknown')
 	)
 	
-	type=models.CharField(max_length=16,choices=TYPE_OPTIONS,default='unknown')
-	parent=models.ForeignKey(image, related_name='assets', on_delete=models.CASCADE)
-	img_width=models.IntegerField(null=True,blank=True)
-	img_height=models.IntegerField(null=True,blank=True)
-	timestamp_post=models.DateTimeField(auto_now_add=True)
-	timestamp_mod=models.DateTimeField(auto_now=True)
-	image_file=models.ImageField(upload_to=image_asset_uploadto, height_field='img_height', width_field='img_width')
-	hash = models.CharField(max_length=255, null=True, blank=True)
+	type = models.CharField(max_length=16, choices=TYPE_OPTIONS, default='unknown')
+	parent = models.ForeignKey(image, related_name='assets', on_delete=models.CASCADE)
+	
+	img_width = models.IntegerField(null=True, blank=True, verbose_name='image width')
+	img_height = models.IntegerField(null=True, blank=True, verbose_name='image height')
+	image_file = models.ImageField(upload_to=image_asset_uploadto, height_field='img_height', width_field='img_width', verbose_name='file')
+	
+	timestamp_post = models.DateTimeField(auto_now_add=True, verbose_name='date/time created')
+	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	hash = models.CharField(max_length=255, null=True, blank=True, editable=False, help_text='SHA hash of the image file, to assist in detecting duplicates and changes.')
 	
 	def __unicode__(self):
 		return self.image_file.name
@@ -327,6 +334,9 @@ class image_asset(models.Model):
 			self.parent.rebuild_assets = True
 			self.parent.save()
 		super(image_asset, self).save(*args, **kwargs)
+	
+	class Meta:
+		verbose_name = 'image asset'
 
 class image_meta_key(models.Model):
 	FORMAT_OPTIONS = (
@@ -343,11 +353,11 @@ class image_meta_key(models.Model):
 		('automan','Auto/Manual Binary Choice'),
 	)
 	
-	key=models.CharField(max_length=100, unique=True)
-	display_name=models.CharField(max_length=100,blank=True,null=True)
-	format_type=models.CharField(max_length=40,choices=FORMAT_OPTIONS,default='text')
-	public=models.BooleanField(default=False)
-	ignore=models.BooleanField(default=False)
+	key = models.CharField(max_length=100, unique=True, help_text='Enter the metadata key exactly as it appears in the output of ExifTool.')
+	display_name = models.CharField(max_length=100, blank=True, null=True, help_text='Friendly label used when metadata with this key is displayed.')
+	format_type = models.CharField(max_length=40, choices=FORMAT_OPTIONS, default='text', verbose_name='format', help_text='Used to properly display metadata that uses this key.')
+	public = models.BooleanField(default=False, help_text='If this box is checked, metadata using this key will be collected and stored in the database, but not displayed publicly.')
+	ignore = models.BooleanField(default=False, help_text='If this box is checked, metadata using this key will not be collected or stored in the database, and existing metadata using this key may be deleted.')
 	
 	def __unicode__(self):
 		if self.display_name:
@@ -477,37 +487,48 @@ class image_meta_key(models.Model):
 	
 	class Meta:
 		ordering = ['display_name']
+		verbose_name = 'image metadata key/label'
+		verbose_name_plural = 'image metadata keys/labels'
+
 
 class image_meta(models.Model):
 	key = models.ForeignKey(image_meta_key, on_delete=models.PROTECT)
 	image = models.ForeignKey(image, related_name='meta', on_delete=models.CASCADE)
 	data = models.TextField(blank=True)
-	manual_entry = models.BooleanField(default=False, help_text="Check this box to prevent this meta tag from being overwritten by data embedded in the image file.")
+	manual_entry = models.BooleanField(default=False, help_text="Check this box to prevent this metadata item from being overwritten by data embedded in the image file.")
 	
 	def __unicode__(self):
 		return u'%s - %s: %s' % (self.image, self.key, unicode(self.data))
 	
 	def format_data(self):
 		return self.key.format(self.data)
+	
+	class Meta:
+		verbose_name = 'image metadata'
+		verbose_name_plural = 'image metadata'
+
 
 class batch_import(access_control):
 	folder = models.FilePathField(path=settings.SUNSET_IMPORT_DIR, recursive=True, allow_files=False, allow_folders=True)
-	cat = models.ForeignKey(category, help_text="This must be set manually.", on_delete=models.PROTECT)
+	cat = models.ForeignKey(category, verbose_name='category', help_text="This must be set manually.", on_delete=models.PROTECT)
+	
 	next_sequence_number = models.IntegerField(blank=True, default=1)
-	timestamp_mod=models.DateTimeField(auto_now=True)
-	timestamp_post=models.DateTimeField(default=timezone.now)
-	timestamp_sync=models.DateTimeField(blank=True,null=True)
 	active = models.BooleanField(default=True)
-	sync_success = models.BooleanField(default=False)
+	sync_success = models.BooleanField(default=False, help_text='System field:  Indicates whether the last sync attempt was successful.')
+	
+	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
+	timestamp_sync = models.DateTimeField(blank=True, null=True, verbose_name='date/time synchronized')
 	
 	# The following fields will auto-populate discovered images, in addition to standard data from parsing the original file, if set.
 	tags = models.ManyToManyField(tag, blank=True, help_text="Added to tags embedded in file, if set.")
 	title = models.CharField(max_length=60, null=True, blank=True, help_text="Overrides title embedded in file, if set.  Defaults to null if empty.  Use &lt;seq&gt; to insert a sequential number.")
-	slug = models.SlugField(null=True, blank=True, help_text="Overrides slug, if set.  Defaults to filename if empty.  Use &lt;seq&gt; to insert a sequential number.")
-	desc = models.TextField(null=True, blank=True, help_text="Overrides description embedded in file, if set.")
+	slug = models.CharField(max_length=50, null=True, blank=True, help_text="Overrides slug, if set.  Defaults to filename if empty.  Use &lt;seq&gt; to insert a sequential number.")
+	desc = models.TextField(null=True, blank=True, verbose_name='description', help_text="Overrides description/summary embedded in file, if set.")
 	
 	def folder_shortname(self):
 		return self.folder.replace(settings.SUNSET_IMPORT_DIR, '')
+	folder_shortname.short_description = 'filesystem folder'
 	
 	def __unicode__(self):
 		return self.folder_shortname()
@@ -640,25 +661,38 @@ class batch_import(access_control):
 			self.save()
 			import_log.objects.create(command='batch_import.process_folder', message='batch_import.check_folder() returned False; nothing to do.', batch=self)
 			return False
+	
+	class Meta:
+		verbose_name = 'batch import folder'
+
 
 class batch_meta(models.Model):
-	key=models.ForeignKey(image_meta_key, on_delete=models.PROTECT)
-	parent=models.ForeignKey(batch_import, related_name='meta', on_delete=models.CASCADE)
-	data=models.TextField(blank=True, help_text="Added to file meta; overrides data already in file, in the event of a conflict.")
+	key = models.ForeignKey(image_meta_key, on_delete=models.PROTECT)
+	parent = models.ForeignKey(batch_import, related_name='meta', on_delete=models.CASCADE)
+	data = models.TextField(blank=True, help_text="Added to file meta; overrides data already in file, in the event of a conflict.")
 	
 	def __unicode__(self):
 		return '%s - %s: %s' % (self.parent, self.key, unicode(self.data))
+	
+	class Meta:
+		verbose_name = 'batch import metadata'
+		verbose_name_plural = 'batch import metadata'
+
 
 class batch_image(models.Model):
 	parent = models.ForeignKey(batch_import, related_name='images', on_delete=models.CASCADE)
-	img_filename = models.CharField(max_length=255)
+	img_filename = models.CharField(max_length=255, verbose_name='source image filename')
 	img_obj = models.ForeignKey(image, null=True, blank=True, on_delete=models.CASCADE)
-	timestamp_mod = models.DateTimeField(auto_now=True)
+	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
 	status = models.CharField(max_length=255, null=True, blank=True)
-	hash = models.CharField(max_length=255, null=True, blank=True)
+	hash = models.CharField(max_length=255, null=True, blank=True, editable=False)
 	
 	def __unicode__(self):
 		return '%s - %s' % (unicode(self.parent), self.img_filename)
+	
+	class Meta:
+		verbose_name = 'batch import image'
+
 
 class import_log(models.Model):
 	CMD_OPTIONS = (
@@ -674,5 +708,9 @@ class import_log(models.Model):
 	command = models.CharField(max_length=50, choices=CMD_OPTIONS)
 	timestamp = models.DateTimeField(auto_now_add=True)
 	message = models.TextField()
-	image = models.ForeignKey(image,blank=True,null=True, on_delete=models.SET_NULL)
-	batch = models.ForeignKey(batch_import,blank=True,null=True, on_delete=models.SET_NULL)
+	image = models.ForeignKey(image,blank=True,null=True, on_delete=models.CASCADE)
+	batch = models.ForeignKey(batch_import,blank=True,null=True, on_delete=models.CASCADE)
+	
+	class Meta:
+		verbose_name = 'batch import log entry'
+		verbose_name_plural = 'batch import log entries'
