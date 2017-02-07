@@ -20,7 +20,7 @@ class link_admin(leaf_admin):
 	fieldsets = [
 		(None,{'fields':(('label','involved'),'url','desc','icon'),},),
 	] + leaf_admin.fieldsets
-	list_filter = leaf_admin.list_filter + ['involved']
+	list_filter = leaf_admin.list_filter + ['involved', 'healthy']
 	list_display = ('label','url','involved','healthy',) + leaf_admin.list_display
 	
 	def view_on_site(self, obj):

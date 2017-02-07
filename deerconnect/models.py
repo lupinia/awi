@@ -14,9 +14,9 @@ from awi_access.models import access_control
 
 class link_base(models.Model):
 	label=models.CharField(max_length=140)
-	url=models.CharField(max_length=250)
-	desc=models.TextField(null=True,blank=True)
-	icon=models.ImageField(upload_to='linkicons',null=True,blank=True)
+	url=models.CharField(max_length=250, verbose_name='URL')
+	desc=models.TextField(null=True, blank=True, verbose_name='description')
+	icon=models.ImageField(upload_to='linkicons', null=True, blank=True)
 	healthy = models.BooleanField(default=True)
 	
 	class Meta:
@@ -32,12 +32,15 @@ class link(link_base, leaf):
 #	Instead, these will be displayed on any descendant of a given category
 #	To do that, we're bypassing the leaf object, and making these have a unique relationship to their category
 class contact_link(link_base, access_control):
-	name=models.CharField(max_length=140)
-	im=models.BooleanField()
+	name=models.CharField(max_length=140, verbose_name='username')
+	im=models.BooleanField(verbose_name='messaging service?', help_text='Check this box if this link is for an instant-messaging service.')
 	
-	cat=models.ForeignKey(category,null=True,blank=True,related_name='contact_links', on_delete=models.SET_NULL)
-	timestamp_mod=models.DateTimeField(auto_now=True)
-	timestamp_post=models.DateTimeField(default=timezone.now)
+	cat=models.ForeignKey(category, null=True, blank=True, related_name='contact_links', on_delete=models.SET_NULL, verbose_name='category')
+	timestamp_mod=models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	timestamp_post=models.DateTimeField(default=timezone.now, verbose_name='date/time created')
 	
 	def __unicode__(self):
 		return '%s - %s' % (self.label, self.name)
+	
+	class Meta:
+		verbose_name = 'contact link'
