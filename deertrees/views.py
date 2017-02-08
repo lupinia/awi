@@ -7,10 +7,11 @@
 #	=================
 
 from django.conf import settings
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db.models import Count
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.module_loading import import_string
@@ -36,6 +37,7 @@ class leaf_parent():
 			if settings_dict.get('is_leaf',False):
 				related_list.append(type)
 				related_list.append('%s__cat' % type)
+				related_list.append('%s__access_code' % type)
 				
 			if settings_dict.get('prefetch',False):
 				for pf_field in settings_dict['prefetch']:
@@ -211,7 +213,7 @@ class category_list(leaf_parent, generic.DetailView):
 			return super(category_list,self).dispatch(*args, **kwargs)
 	
 	def get_queryset(self, *args, **kwargs):
-		return super(category_list, self).get_queryset(*args, **kwargs).select_related('background_tag')
+		return super(category_list, self).get_queryset(*args, **kwargs).select_related('background_tag', 'access_code')
 	
 	def get_context_data(self, **kwargs):
 		context = super(category_list,self).get_context_data(**kwargs)
@@ -223,6 +225,10 @@ class category_list(leaf_parent, generic.DetailView):
 				raise Http404
 			elif canview[1] == 'access_perms':
 				raise PermissionDenied
+			elif canview[1] == 'access_mature_prompt':
+				context['error'] = canview[1]
+				context['object'] = ''
+				context['embed_mature_form'] = True
 			else:
 				context['object'] = ''
 				context['error'] = canview[1]
@@ -385,6 +391,10 @@ class leaf_view(generic.DetailView):
 			elif canview[1] == 'access_perms':
 				from django.core.exceptions import PermissionDenied
 				raise PermissionDenied
+			elif canview[1] == 'access_mature_prompt':
+				context['error'] = canview[1]
+				context['object'] = ''
+				context['embed_mature_form'] = True
 			else:
 				context['object'] = ''
 				context['error'] = canview[1]
@@ -393,35 +403,79 @@ class leaf_view(generic.DetailView):
 			context['tags'] = context['object'].tags.all()
 			context['category'] = context['object'].cat
 			
-			# Adding/Removing Tags
+			# Editing Functions
 			if context['object'].can_edit(self.request)[0]:
 				context['return_to'] = context['object'].get_absolute_url()
 				context['can_edit'] = True
+				changed = False
 				
+				# DeerTrees Leaf commands
 				if self.request.GET.get('add_tag', False):
-					new_tag = get_object_or_404(tag, pk=self.request.GET.get('add_tag'))
-					context['object'].tags.add(new_tag)
-					context['object'].save()
+					if self.check_int(self.request.GET.get('add_tag', False)):
+						new_tag = get_object_or_404(tag, pk=self.request.GET.get('add_tag'))
+						context['object'].tags.add(new_tag)
+						context['object'].save()
+						changed = True
 				elif self.request.GET.get('remove_tag', False):
-					old_tag = get_object_or_404(tag, pk=self.request.GET.get('remove_tag'))
-					context['object'].tags.remove(old_tag)
-					context['object'].save()
+					if self.check_int(self.request.GET.get('remove_tag', False)):
+						old_tag = get_object_or_404(tag, pk=self.request.GET.get('remove_tag'))
+						context['object'].tags.remove(old_tag)
+						context['object'].save()
+						changed = True
+				elif self.request.GET.get('change_cat', False):
+					if self.check_int(self.request.GET.get('change_cat', False)):
+						new_cat = get_object_or_404(category, pk=self.request.GET.get('change_cat'))
+						context['object'].cat = new_cat
+						context['object'].save()
+						changed = True
+				
+				# Awi Access commands
 				elif self.request.GET.get('feature', False) and not context['object'].featured:
 					context['object'].featured = True
 					context['object'].save()
+					changed = True
 				elif self.request.GET.get('unfeature', False) and context['object'].featured:
 					context['object'].featured = False
 					context['object'].save()
+					changed = True
 				elif self.request.GET.get('publish', False) and not context['object'].published:
 					context['object'].published = True
 					context['object'].save()
+					changed = True
 				elif self.request.GET.get('unpublish', False) and context['object'].published:
 					context['object'].published = False
 					context['object'].save()
-				elif self.request.GET.get('change_cat', False):
-					new_cat = get_object_or_404(category, pk=self.request.GET.get('change_cat'))
-					context['object'].cat = new_cat
-					context['object'].save()
+					changed = True
+				
+				# Awi Access access code commands
+				elif self.request.GET.get('revoke_code', False) and context['object'].access_code:
+					if self.check_int(self.request.GET.get('revoke_code', False)) and int(self.request.GET.get('revoke_code', False)) == context['object'].access_code.pk:
+						context['object'].access_code.is_valid = False
+						context['object'].access_code.save()
+						changed = True
+				elif self.request.GET.get('new_access_code', False) and self.request.user == context['object'].owner:
+					if self.request.GET.get('new_access_code', False) == 'permanent':
+						new_age = None
+					else:
+						new_age = self.request.GET.get('new_access_code', False)
+					
+					if new_age is None or self.check_int(new_age):
+						if new_age is not None:
+							new_age = int(new_age)
+						
+						if context['object'].access_code and context['object'].access_code.valid() and self.check_int(self.request.GET.get('replace', False)) and int(self.request.GET.get('replace', False)) == context['object'].access_code.pk:
+							context['object'].access_code.is_valid = False
+							context['object'].access_code.save()
+							context['object'].create_code(age=new_age, request=self.request)
+							changed = True
+						elif not context['object'].access_code or not context['object'].access_code.valid():
+							context['object'].create_code(age=new_age, request=self.request)
+							changed = True
+				
+				if changed:
+					# I'm annoyed that there isn't an easier/more reliable way to do this.
+					cache.clear()
+			
 			else:
 				context['return_to'] = ''
 				context['can_edit'] = False
@@ -435,7 +489,7 @@ class leaf_view(generic.DetailView):
 				context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
 			
 			context['breadcrumbs'].append({'url':context['object'].get_absolute_url(), 'title':str(context['object'])})
-			
+		
 		return context
 
 

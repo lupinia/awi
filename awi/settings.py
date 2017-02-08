@@ -88,6 +88,8 @@ TEMPLATES = [{
 			'django.core.context_processors.request',
 			'awi.context_processors.site',
 			'awi.context_processors.debug_check',
+			'awi.context_processors.domain_name',
+			'awi_access.context_processors.mature_check',
 			'deerconnect.context_processors.social_icons',
 		],
 		'loaders' : [

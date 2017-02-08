@@ -1,0 +1,31 @@
+{% load humanize %}
+
+{% if can_edit and not object.is_public.0 %}
+	{% if object.access_code and object.access_code.valid %}
+		<div class="transbox right_sidebar_section copypaste_boxes">
+			<h3>Access Codes</h3>
+			<label for="access_code_field">{% if object.access_code.expiration_date %}Valid until {{object.access_code.expiration_date|date:'F j, Y  G:i:s'}}{% else %}Permanent code{% endif %} - {% if object.access_code.hits %}Used {{object.access_code.hits}} time{{object.access_code.hits|pluralize}}{% else %}Not yet used{% endif %}</label>
+			<input type="text" name="access_code_field" id="access_code_field" readonly="readonly" value="http://{{domain_name}}{{object.get_absolute_url}}?access_code={{object.access_code.code}}">
+			<a class="sidebar_link" href="?revoke_code={{object.access_code.pk}}">Revoke this code</a>
+		</div>
+	{% endif %}
+	<div class="transbox right_sidebar_section access_code_generators">
+		<h3>Create Access Code</h3>
+		<p>An access code in the URL for this item will bypass any access restrictions for it, for anyone who has the code.  Use with caution!
+		{% if object.access_code and object.access_code.valid %}
+			<br /><strong>Note:</strong>  This will invalidate any existing codes for this item.
+		{% endif %}
+		</p>
+		
+		<a class="sidebar_link" href="?new_access_code=1{% if object.access_code and object.access_code.valid %}&amp;replace={{object.access_code.pk}}{% endif %}">1 day</a>
+		<a class="sidebar_link" href="?new_access_code=2{% if object.access_code and object.access_code.valid %}&amp;replace={{object.access_code.pk}}{% endif %}">2 days</a>
+		<a class="sidebar_link" href="?new_access_code=5{% if object.access_code and object.access_code.valid %}&amp;replace={{object.access_code.pk}}{% endif %}">5 days</a>
+		<a class="sidebar_link" href="?new_access_code=7{% if object.access_code and object.access_code.valid %}&amp;replace={{object.access_code.pk}}{% endif %}">7 days (1 week)</a>
+		<a class="sidebar_link" href="?new_access_code=14{% if object.access_code and object.access_code.valid %}&amp;replace={{object.access_code.pk}}{% endif %}">14 days (2 weeks)</a>
+		<a class="sidebar_link" href="?new_access_code=30{% if object.access_code and object.access_code.valid %}&amp;replace={{object.access_code.pk}}{% endif %}">30 days (1 month)</a>
+		<a class="sidebar_link mature" href="?new_access_code=permanent{% if object.access_code and object.access_code.valid %}&amp;replace={{object.access_code.pk}}{% endif %}">Permanent
+			<br />
+			<span class="sidebar_link_subtext"><strong>Warning:</strong>  A permanent code will not expire, it must be manually revoked.</span>
+		</a>
+	</div>
+{% endif %}

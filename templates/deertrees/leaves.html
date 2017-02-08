@@ -151,7 +151,7 @@
 {% endblock %}
 
 {% block content_right %}
-	{% if sidebar %}
+	{% if sidebar or can_edit %}
 		<div class="right_sidebar">
 		{% for sidebar_block in sidebar %}
 			<div class="transbox right_sidebar_section">
@@ -159,6 +159,7 @@
 			{% include sidebar_block.template with leaves=sidebar_block.data blockname="sidebar" highlight_featured=highlight_featured homepage=homepage only %}
 			</div>
 		{% endfor %}
+		{% include 'awi_access/access_code_widget.html' %}
 		</div>
 	{% endif %}
 {% endblock %}

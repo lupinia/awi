@@ -16,6 +16,7 @@ from django.views.decorators.cache import cache_control
 from honeypot.decorators import check_honeypot
 
 from awi.sitemaps import SITEMAP_OBJECTS
+from awi_access import views as access_views
 from awi_error.views import system_error, denied_error
 from deerfind.views import not_found
 from deerconnect.views import contact_page
@@ -29,21 +30,23 @@ handler500 = system_error
 handler403 = denied_error
 
 urlpatterns = [
-	#	System/Core
 	url(r'^admin/', include(admin.site.urls)),
 	url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-	url(r'^accounts/login/','django.contrib.auth.views.login'),
-	url(r'^accounts/logout/','django.contrib.auth.views.logout',{'template_name':'registration/login.html'}),
-	url(r'^sitemap\.xml$', sitemap, {'sitemaps': SITEMAP_OBJECTS}, name='django.contrib.sitemaps.views.sitemap'),
-	
-	#	Contributed
 	url(r'^admin_tools/', include('admin_tools.urls')),
 	
-	#	Custom Apps
+	url(r'^accounts/login/','django.contrib.auth.views.login'),
+	url(r'^accounts/logout/','django.contrib.auth.views.logout',{'template_name':'registration/login.html'}),
+	url(r'^accounts/age_form/$',check_honeypot(field_name=settings.HONEYPOT_FIELD_NAME_AWIACCESS)(access_views.age_verify_full.as_view()),name='age_form'),
+	url(r'^accounts/age_form_embed/$',check_honeypot(field_name=settings.HONEYPOT_FIELD_NAME_AWIACCESS)(access_views.age_verify.as_view()),name='age_form_embed'),
+	
+	url(r'^settings/$',access_views.settings_page.as_view(),name='settings'),
+	
+	url(r'^contact/$',check_honeypot(contact_page.as_view()),name='contact'),
 	url(r'^gamescripts/', include('secondlife.urls')),
 	url(r'^personal/cooking/menu/', include('deerfood.urls',namespace='deerfood'), kwargs={'special_feature_slug':'menu'}),
 	url(r'^furry/cons/', include('deerattend.urls',namespace='deerattend'), kwargs={'special_feature_slug':'cons'}),
-	url(r'^contact/$',check_honeypot(contact_page.as_view()),name='contact'),
+	
+	url(r'^sitemap\.xml$', sitemap, {'sitemaps': SITEMAP_OBJECTS}, name='django.contrib.sitemaps.views.sitemap'),
 	
 	#	DeerTrees and DeerBooks are special cases for this site.
 	url(r'^$',deertrees_views.homepage.as_view(),name='home'),

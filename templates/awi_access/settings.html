@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{block.super}} - Settings{% endblock %}
+{% block bg_image %}{% include 'sunset/bg_image.html' with bg_tag='pro' %}{% endblock %}
+{% load honeypot %}
+{% load errors %}
+
+{% block content_left %}
+	<div class="transbox left_sidebar">
+		<h2>Settings</h2>
+	</div>
+	
+	<div class="transbox left_sidebar">
+		<h3>Mature Content</h3>
+		<ul>
+			<li>Mature content is currently <strong>{{mature.0|yesno:"visible,filtered"}}</strong>.</li>
+			
+			{% if user_meta and not mature.0 and mature.1 == 'access_mature_voluntary' %}
+				<li><a href="?mature=show">Click here to show mature content</a>.</li>
+			{% elif mature.0 %}
+				<li><a href="?mature=hide">Click here to filter mature content</a>.</li>
+			{% endif %}
+			{% if not mature.0 and mature.1 == 'access_mature_denied' %}
+				<li>Your provided age indicates that you're under 18.  <strong>Mature content cannot be enabled</strong>.</li>
+			{% elif not mature.0 and mature.1 == 'access_mature_prompt' %}
+				<li>To enable mature content, enter your birthdate in the form below.</li>
+			{% endif %}
+			
+			{% if age_verify_date %}
+				<li>You verified your age on {{age_verify_date|date:'F j, Y'}}</li>
+			{% elif age_verify_end_date %}
+				<li>You will be able to view mature content until {{age_verify_end_date|date:'F j, Y'}}, or until your session ends, whichever comes first.</li>
+			{% endif %}
+		</ul>
+		<div>
+			{% if not mature.0 and mature.1 == 'access_mature_prompt' %}
+				{% include 'awi_access/age_form_iframe.html' %}
+			{% endif %}
+		</div>
+	</div>
+{% endblock %}

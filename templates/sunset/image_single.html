@@ -1,50 +1,50 @@
 {% extends "base.html" %}
-{% block title %}{% if image %}{{block.super}} - {{image}}{% else %}{{block.super}}{% endif %}{% endblock %}
-{% block desc %}{% if image %}{{image.summary}}{% else %}{{block.super}}{% endif %}{% endblock %}
+{% block title %}{% if object %}{{block.super}} - {{object}}{% else %}{{block.super}}{% endif %}{% endblock %}
+{% block desc %}{% if object %}{{object.summary}}{% else %}{{block.super}}{% endif %}{% endblock %}
 
 {% block content_left %}
-	{% if image %}
+	{% if object %}
 		<div class="transbox photo_page"{% if assets.display %} style="max-width:{{assets.display.img_width}}px;"{% endif %}>
-			{% if image.body %}
+			{% if object.body %}
 				<div id="photo_page_title">
 					{% if can_edit %}
 						<div id="photo_page_title_extra">
 							{% include 'deertrees/leaf_adminlinks.html' with edit_url='admin:sunset_image_change' %}
-							<span class="secondary_time">{{image.display_times.1.label}}:  {{image.display_times.1.timestamp|date:'F j, Y  G:i:s'}}</span>
+							<span class="secondary_time">{{object.display_times.1.label}}:  {{object.display_times.1.timestamp|date:'F j, Y  G:i:s'}}</span>
 						</div>
 					{% endif %}
 
-					<div id="photo_page_title_main"><h2>{{image}}</h2>
-					<div id="byline">{{image.display_times.0.label}}:  {{image.display_times.0.timestamp|date:'F j, Y  G:i:s'}}</div>
+					<div id="photo_page_title_main"><h2>{{object}}</h2>
+					<div id="byline">{{object.display_times.0.label}}:  {{object.display_times.0.timestamp|date:'F j, Y  G:i:s'}}</div>
 					</div>
 				</div>
 			{% endif %}
 			
 			{% if assets.display %}
 			<div class="photo_page_image">
-				{% if assets.full %}<a href="{{assets.full.get_url}}" title="Full-Size View">{% endif %}<img src="{{assets.display.get_url}}" alt="{{image}}" title="{{image}}" />{% if assets.full %}</a>{% endif %}
+				{% if assets.full %}<a href="{{assets.full.get_url}}" title="Full-Size View">{% endif %}<img src="{{assets.display.get_url}}" alt="{{object}}" title="{{object}}" />{% if assets.full %}</a>{% endif %}
 			</div>
 			{% endif %}
 			
-			{% if image.body %}
+			{% if object.body %}
 				<div class="photo_page_body">
 					{% autoescape off %}
-						{% if "<p>" in image.body or "<br />" in image.body %}
-							{{image.body}}
+						{% if "<p>" in object.body or "<br />" in object.body %}
+							{{object.body}}
 						{% else %}
-							{{image.body|linebreaks}}
+							{{object.body|linebreaks}}
 						{% endif %}
 					{% endautoescape %}
 				</div>
 			{% endif %}
 			
-			{% if image.geo_lat and image.geo_long %}
+			{% if object.geo_lat and object.geo_long %}
 				<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
 				<div class="photo_page_map">
 					<div id="geotag_map" style="width: 100%; height: 250px;"></div>
 					<script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
 					<script>
-						var mymap = L.map('geotag_map').setView([{{image.geo_lat}}, {{image.geo_long}}], 14);
+						var mymap = L.map('geotag_map').setView([{{object.geo_lat}}, {{object.geo_long}}], 14);
 
 						L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/outdoors-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoibHVwaW5pYSIsImEiOiJjaXN1ejh4NDIwOXcxMnRvZGwwbWV6bnV1In0.TZWO35h5uvnlfnH9GtpJFQ', {
 							maxZoom: 18,
@@ -53,7 +53,7 @@
 								'Imagery © <a href="http://mapbox.com">Mapbox</a>',
 							id: 'mapbox.streets'
 						}).addTo(mymap);
-						L.marker([{{image.geo_lat}}, {{image.geo_long}}]).addTo(mymap)
+						L.marker([{{object.geo_lat}}, {{object.geo_long}}]).addTo(mymap)
 					</script>
 				</div>
 			{% endif %}
@@ -62,26 +62,29 @@
 		<div class="transbox left_sidebar">
 			{% load errors %}
 			{% error_display error %}
+			{% if embed_mature_form %}
+				{% include 'awi_access/age_form_iframe.html' %}
+			{% endif %}
 		</div>
 	{% endif %}
 {% endblock %}
 
 {% block content_right %}
-	{% if image %}
+	{% if object %}
 		<div class="right_sidebar">
 			{% comment %}<!-- Image Info -->{% endcomment %}
-			{% if not image.body %}
+			{% if not object.body %}
 				<div class="transbox right_sidebar_section photo_summary">
-					<h3>{{image}}</h3>
+					<h3>{{object}}</h3>
 					<div class="photo_sidebar_byline">
-						<div id="byline">{{image.display_times.0.label}}:  {{image.display_times.0.timestamp|date:'F j, Y  G:i:s'}}</div>
+						<div id="byline">{{object.display_times.0.label}}:  {{object.display_times.0.timestamp|date:'F j, Y  G:i:s'}}</div>
 						{% if can_edit %}
 							<div id="photo_page_title_extra">
 								{% include 'deertrees/leaf_adminlinks.html' with edit_url='admin:sunset_image_change' %}
 							</div>
 						{% endif %}
 					</div>
-					{% if image.summary %}<p>{{image.summary|safe}}</p>{% endif %}
+					{% if object.summary %}<p>{{object.summary|safe}}</p>{% endif %}
 				</div>
 			{% endif %}
 			
@@ -110,11 +113,16 @@
 				<div class="transbox right_sidebar_section copypaste_boxes">
 					<h3>Embed This Image</h3>
 						<label for="embed_internal_icon">Thumbnail (Internal)</label>
-						<input type="text" name="embed_internal_icon" id="embed_internal_icon" readonly="readonly" value="&lt;sunset id=&quot;{{image.pk}}&quot; type=&quot;icon&quot; /&gt;" />
+						<input type="text" name="embed_internal_icon" id="embed_internal_icon" readonly="readonly" value="&lt;sunset id=&quot;{{object.pk}}&quot; type=&quot;icon&quot; /&gt;" />
 						
 						<label for="embed_internal_display">Display (Internal)</label>
-						<input type="text" name="embed_internal_display" id="embed_internal_display" readonly="readonly" value="&lt;sunset id=&quot;{{image.pk}}&quot; type=&quot;display&quot; /&gt;" />
+						<input type="text" name="embed_internal_display" id="embed_internal_display" readonly="readonly" value="&lt;sunset id=&quot;{{object.pk}}&quot; type=&quot;display&quot; /&gt;" />
 				</div>
+			{% endif %}
+			
+			{% comment %}<!-- Access codes -->{% endcomment %}
+			{% if can_edit %}
+				{% include 'awi_access/access_code_widget.html' %}
 			{% endif %}
 		</div>
 	{% endif %}

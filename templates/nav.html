@@ -23,7 +23,7 @@
 	</li>
 	<li><a href="/contact/" style="background-image:url({{ STATIC_PREFIX }}images/nav/contact-off.png)" title="Contact"><img src="{{ STATIC_PREFIX }}images/nav/contact-on.png" alt="Contact" /></a></li>
 	<!--<li class="menu_header_icon"><a href="/search/" style="background-image:url({{ STATIC_PREFIX }}images/icons/search-off.png)" title="Search/Filter"><img src="{{ STATIC_PREFIX }}images/icons/search-on.png" alt="Search/Filter" /></a></li>-->
-	<!--<li class="menu_header_icon"><a href="/settings/" style="background-image:url({{ STATIC_PREFIX }}images/icons/settings-off.png)" title="Settings"><img src="{{ STATIC_PREFIX }}images/icons/settings-on.png" alt="Settings" /></a></li>-->
+	<li class="menu_header_icon"><a href="/settings/" style="background-image:url({{ STATIC_PREFIX }}images/icons/settings-off.png)" title="Settings"><img src="{{ STATIC_PREFIX }}images/icons/settings-on.png" alt="Settings" /></a></li>
 </ul>
 {% else %}
 <a href="/">Home</a> &bull; 
@@ -36,8 +36,8 @@
 <a href="/personal/">Personal</a> &bull; 
 {% if site.name == 'Furry' %}<a href="/furry/">Furry/MLP</a> &bull; {% endif %}
 <a href="/cars/">Cars</a> &bull; 
-<a href="/contact/">Contact</a>
+<a href="/contact/">Contact</a> &bull; 
 <!-- <a href="/search/">Search</a> &bull;  -->
-<!-- <a href="/settings/">Settings</a> -->
+<a href="/settings/">Settings</a>
 <br>
 {% endif %}
