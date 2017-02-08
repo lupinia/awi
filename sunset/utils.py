@@ -13,7 +13,7 @@ import hashlib
 
 from django.conf import settings
 
-from BeautifulSoup import BeautifulStoneSoup, BeautifulSoup, Tag
+from BeautifulSoup import BeautifulStoneSoup, BeautifulSoup, Tag, Comment
 from PIL import Image
 
 from awi_access.models import access_query
@@ -88,16 +88,16 @@ def sunset_embed(body, request=False):
 						err = False
 					
 					else:
-						err = 'Sunset image asset type specified in embed tag was not found.'
+						err = 'Sunset image asset type specified in embed tag was not found'
 				
 				else:
-					err = 'Sunset image specified in embed tag was not found.'
+					err = 'Sunset image specified in embed tag was not found'
 			
 			else:
 				err = 'Invalid or missing image ID in Sunset embed tag'
 			
 			if err:
-				imgtag.replaceWith('<!-- %s.  Original was:  %s -->' % (err, imgtag))
+				imgtag.replaceWith(Comment('%s.  Original was:  %s' % (err, imgtag)))
 			else:
 				imgtag.replaceWith(new_tag)
 		
