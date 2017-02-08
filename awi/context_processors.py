@@ -14,3 +14,6 @@ def site(request):
 
 def debug_check(request):
 	return {'debug_check':settings.DEBUG}
+
+def domain_name(request):
+	return {'domain_name':request.get_host()}
