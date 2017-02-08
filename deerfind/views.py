@@ -49,6 +49,7 @@ def g2_finder(request):
 	
 	return return_data
 
+
 def not_found(request):
 	return_url = False
 	

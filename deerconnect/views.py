@@ -6,10 +6,12 @@
 #	Views
 #	=================
 
-from django.views.generic.edit import FormView
-from django.utils import timezone
-from django.utils import dateparse
 import datetime
+
+from django.core.urlresolvers import reverse
+from django.utils import dateparse
+from django.utils import timezone
+from django.views.generic.edit import FormView
 
 from deerconnect.forms import contact_form
 from deerconnect.models import contact_link
@@ -29,6 +31,11 @@ class contact_page(FormView):
 	
 	def get_context_data(self, **kwargs):
 		context = super(contact_page, self).get_context_data(**kwargs)
+		
+		if not context.get('breadcrumbs',False):
+			context['breadcrumbs'] = []
+		
+		context['breadcrumbs'].append({'url':reverse('contact'), 'title':'Contact'})
 		
 		if self.request.session.get('deerconnect_mailsent',False):
 			last_message = dateparse.parse_datetime(self.request.session.get('deerconnect_mailsent',False))

@@ -9,6 +9,8 @@
 from django import forms
 from django.conf import settings
 from django.core.mail import send_mail
+from django.template.loader import get_template
+from django.template import Context
 from django.utils import timezone
 from django.utils import dateparse
 import bleach
@@ -28,9 +30,6 @@ class contact_form(forms.Form):
 			expiration = datetime.timedelta(days=1)
 			if last_message > timezone.now() - expiration:
 				return False
-		
-		from django.template.loader import get_template
-		from django.template import Context
 		
 		msg = {}
 		msg['subject'] = '%s%s' % (settings.EMAIL_SUBJECT_PREFIX, bleach.clean(self.cleaned_data['subject'], tags=[], strip=True))
