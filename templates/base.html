@@ -48,7 +48,7 @@
 		{% endif %}
 	{% endblock %}
 
-	<div id="content_area">
+	<div id="content_area" {% if breadcrumbs %}class="with_breadcrumbs"{% endif %}>
 		{% block content_right %}
 			{% comment %}<!-- This section is for float:right sidebar elements.  -->{% endcomment %}
 		{% endblock %}
