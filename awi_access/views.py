@@ -9,6 +9,7 @@
 import datetime
 
 from django.conf import settings
+from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.utils import dateparse
 from django.utils import timezone
@@ -42,6 +43,9 @@ class age_verify(generic.edit.FormView):
 				self.request.session['awi_mature_access'] = str(timezone.now() + datetime.timedelta(days=2))
 			else:
 				self.request.session['awi_mature_denied'] = True
+		
+		if dob_valid:
+			cache.clear()
 		
 		self.request.session['awi_age_form_complete'] = True
 		return super(age_verify, self).form_valid(form)
@@ -100,12 +104,15 @@ class settings_page(generic.TemplateView):
 			context['age_verify_end_date'] = dateparse.parse_datetime(self.request.session.get('awi_mature_access', False))
 		
 		if self.request.GET.get('mature', False) and not mature_check[1] == 'access_mature_denied':
+			changed = False
 			if self.request.GET.get('mature', False) == 'hide' and mature_check[0]:
 				if context.get('user_meta', False):
 					context['user_meta'].show_mature = False
 					context['user_meta'].save()
+					changed = True
 				else:
 					self.request.session['awi_mature_access'] = False
+					changed = True
 			
 			elif self.request.GET.get('mature', False) == 'show' and not mature_check[0]:
 				# Only logged-in users who've already passed the form get to toggle this bi-directionally.
@@ -113,6 +120,10 @@ class settings_page(generic.TemplateView):
 					if context['user_meta'].mature_available and context['user_meta'].age_check_date:
 						context['user_meta'].show_mature = True
 						context['user_meta'].save()
+						changed = True
+			
+			if changed:
+				cache.clear()
 		
 		return context
 
