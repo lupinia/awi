@@ -363,6 +363,16 @@ def subcats(parent=False, parent_type=False, request=False):
 
 
 class leaf_view(generic.DetailView):
+	def get_queryset(self, *args, **kwargs):
+		return super(leaf_view, self).get_queryset(*args, **kwargs).select_related('access_code','cat').prefetch_related('tags')
+	
+	def check_int(self, check):
+		try:
+			int_test = int(check)
+			return True
+		except ValueError:
+			return False
+	
 	def get_context_data(self, **kwargs):
 		context=super(leaf_view,self).get_context_data(**kwargs)
 		

@@ -19,7 +19,7 @@ class single_page(leaf_view):
 	model=page
 	
 	def get_queryset(self, *args, **kwargs):
-		return super(single_page, self).get_queryset(*args, **kwargs).select_related('book_title','cat').prefetch_related('tags','docfiles')
+		return super(single_page, self).get_queryset(*args, **kwargs).select_related('book_title').prefetch_related('docfiles')
 	
 	def get_context_data(self, **kwargs):
 		context=super(single_page,self).get_context_data(**kwargs)

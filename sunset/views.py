@@ -17,7 +17,7 @@ class single_image(leaf_view):
 	template_name='sunset/image_single.html'
 	
 	def get_queryset(self, *args, **kwargs):
-		return super(single_image, self).get_queryset(*args, **kwargs).select_related('cat').prefetch_related('assets')
+		return super(single_image, self).get_queryset(*args, **kwargs).prefetch_related('assets')
 	
 	def get_context_data(self, **kwargs):
 		context=super(single_image,self).get_context_data(**kwargs)
@@ -29,6 +29,8 @@ class single_image(leaf_view):
 			asset_list = context['object'].assets.all()
 			for asset in asset_list:
 				context['assets'][asset.type] = asset
+		else:
+			context['image'] = ''
 		
 		return context
 
