@@ -182,6 +182,9 @@ class events_by_special(event_list):
 			if self.get_mature_check()[1] == 'access_mature_prompt':
 				context['embed_mature_form'] = True
 		
+		if not context['event_instances'] and not context.get('error', False):
+			context['error'] = 'filter_empty'
+		
 		return context
 
 

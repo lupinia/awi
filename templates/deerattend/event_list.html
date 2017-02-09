@@ -15,11 +15,13 @@
 	{% else %}
 		<div class="transbox fulltext_page">
 			<div id="fulltext_page_title">
-				<div id="fulltext_page_title_extra">
-					<div class="hovericons32">
-						<a href="?display={{is_map_view|yesno:'list,map'}}"><img src="{{ STATIC_PREFIX }}images/icons/{{is_map_view|yesno:'list,map'}}-32.png" alt="Switch to {{is_map_view|yesno:'List,Map'}} View" title="Switch to {{is_map_view|yesno:'List,Map'}} View" /></a>
+				{% if geojson_slug %}
+					<div id="fulltext_page_title_extra">
+						<div class="hovericons32">
+							<a href="{{is_map_view|yesno:'.,?display=map'}}"><img src="{{ STATIC_PREFIX }}images/icons/{{is_map_view|yesno:'list,map'}}-32.png" alt="Switch to {{is_map_view|yesno:'List,Map'}} View" title="Switch to {{is_map_view|yesno:'List,Map'}} View" /></a>
+						</div>
 					</div>
-				</div>
+				{% endif %}
 				
 				<div id="fulltext_page_title_main">
 					<h2>Events Attended By Natasha{% if cur_filter %} - {{cur_filter.name}}{% endif %}</h2>
