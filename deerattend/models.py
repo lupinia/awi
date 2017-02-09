@@ -60,6 +60,7 @@ class event_type(models.Model):
 	slug = models.SlugField(unique=True)
 	notes = models.TextField(null=True, blank=True)
 	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	map_color = models.CharField(max_length=6, blank=True, default='3bb2d0', help_text="Hexadecimal-format color code for events of this type in the map view.")
 	
 	def __unicode__(self):
 		return self.name

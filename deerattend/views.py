@@ -8,11 +8,15 @@
 
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Q
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views import generic
 
+from awi.views import json_response
 from deerattend.models import *
 from deertrees.views import special_feature_view
+from awi_access.models import check_mature
 
 special_filter_list = {
 	'photos':{'name':'Events with Photos', 'slug':'photos', 'filter':Q(photos__isnull=False), 'is_mature':False, },
@@ -23,24 +27,30 @@ special_filter_list = {
 	'no-mature':{'name':'Hide Mature', 'slug':'no-mature', 'filter':Q(event__mature=False), 'is_mature':True, },
 }
 
-class event_list(special_feature_view):
-	model=event_instance
-	context_object_name='event_instances'
-	template_name='deerattend/event_list.html'
+# Base class for all of the other event list views
+class event_list(special_feature_view, generic.ListView):
+	model = event_instance
+	context_object_name = 'event_instances'
+	template_name = 'deerattend/event_list.html'
+	mature_check = (None, '')
 	
 	special_filters = special_filter_list
 	
+	def get_mature_check(self):
+		if self.mature_check[0] is None:
+			self.mature_check = check_mature(self.request)
+		return self.mature_check
+	
 	def filtered_queryset(self, *args, **kwargs):
-		if self.request.user.is_authenticated():
-			if not self.request.user.is_superuser or not self.request.user.is_staff:
-				# Regular User
-				queryset = event_instance.objects.filter(event__mature=False)
-			else:
-				# Privileged User
-				queryset = event_instance.objects.all()
+		if self.request.user.is_superuser or self.request.user.is_staff:
+			# Privileged User
+			queryset = event_instance.objects.all()
 		else:
-			# Anonymous User
-			queryset = event_instance.objects.filter(Q(event__mature=False) & (Q(confirmed=True) | Q(date_start__gte=timezone.now())))
+			# Regular or anonymous user
+			queryset = event_instance.objects.filter(Q(confirmed=True) | Q(date_start__gte=timezone.now()))
+		
+		if not self.get_mature_check()[0]:
+			queryset = queryset.exclude(event__mature=True)
 		
 		return queryset.order_by('-date_start').prefetch_related('flags').select_related('event','event__type','venue','photos','report')
 	
@@ -52,6 +62,9 @@ class event_list(special_feature_view):
 					breadcrumbs.append({'url':reverse('deerattend:filter_'+cur_type, kwargs={'slug':cur['slug']}), 'title':cur['name']})
 				else:
 					breadcrumbs.append({'url':reverse('deerattend:filter_'+cur_type, kwargs={'slug':cur.slug}), 'title':cur.name})
+			
+			if self.request.GET.get('display', False) == 'map':
+				breadcrumbs.append({'url':'?display=map', 'title':'Map View'})
 			
 			return breadcrumbs
 		else:
@@ -67,50 +80,60 @@ class event_list(special_feature_view):
 			return False
 	
 	def get_filters(self):
-		if self.request.user.is_authenticated():
-			if not self.request.user.is_superuser or not self.request.user.is_staff:
-				# Regular User
-				type_query = event_type.objects.filter(event__mature=False)
-				flag_query = attendance_flag.objects.filter(event__mature=False)
-			else:
-				# Privileged User
-				type_query = event_type.objects.all()
-				flag_query = attendance_flag.objects.all()
+		if self.request.user.is_superuser or self.request.user.is_staff:
+			# Privileged User
+			type_query = event_type.objects.all()
+			flag_query = attendance_flag.objects.all()
 		else:
-			# Anonymous User
-			type_query = event_type.objects.filter(Q(event__mature=False) & (Q(event__event_instance__confirmed=True) | Q(event__event_instance__date_start__gte=timezone.now())))
-			flag_query = attendance_flag.objects.filter(Q(event_instance__event__mature=False) & (Q(event_instance__confirmed=True) | Q(event_instance__date_start__gte=timezone.now())))
+			# Regular or anonymous user
+			type_query = event_type.objects.filter(Q(event__event_instance__confirmed=True) | Q(event__event_instance__date_start__gte=timezone.now()))
+			flag_query = attendance_flag.objects.filter(Q(event_instance__confirmed=True) | Q(event_instance__date_start__gte=timezone.now()))
+		
+		if not self.get_mature_check()[0]:
+			type_query = type_query.exclude(event__mature=True)
+			flag_query = flag_query.exclude(event_instance__event__mature=True)
 		
 		filters = {}
 		filters['types'] = type_query.order_by('name').annotate(num_items=Count('event__event_instance'))
 		filters['flags'] = flag_query.order_by('name').annotate(num_items=Count('event_instance'))
 		filters['special'] = []
 		for slug, special in self.special_filters.iteritems():
-			if special.get('is_mature',False):
-				if self.request.user.is_authenticated() and (self.request.user.is_superuser or self.request.user.is_staff):
-					filters['special'].append(special)
+			if special.get('is_mature',False) and not self.get_mature_check()[0]:
+				pass
 			else:
 				filters['special'].append(special)
 		return filters
+	
+	def get_context_data(self, **kwargs):
+		context=super(event_list, self).get_context_data(**kwargs)
+		context['filters'] = self.get_filters()
+		context['can_edit'] = self.can_edit()
+		
+		if context['event_instances']:
+			last_update = context['event_instances'].values('timestamp_mod').latest('timestamp_mod')
+			context['update_time'] = last_update.get('timestamp_mod', False)
+		
+		if self.request.GET.get('display', False) == 'map':
+			context['is_map_view'] = True
+		else:
+			context['is_map_view'] = False
+		
+		return context
 
 
-class full_list(event_list, generic.ListView):
+
+class full_list(event_list):
 	def get_queryset(self, *args, **kwargs):
 		return self.filtered_queryset(*args, **kwargs)
 	
 	def get_context_data(self, **kwargs):
 		context=super(full_list,self).get_context_data(**kwargs)
 		context['breadcrumbs'] = self.build_breadcrumbs()
-		context['filters'] = self.get_filters()
-		
-		last_update = event_instance.objects.all().values('timestamp_mod').latest('timestamp_mod')
-		context['update_time'] = last_update.get('timestamp_mod', False)
-		context['filters_special'] = context['filters']['special']
-		context['can_edit'] = self.can_edit()
+		context['geojson_slug'] = 'full_list'
 		return context
 
 
-class events_by_type(event_list, generic.ListView):
+class events_by_type(event_list):
 	def get_queryset(self, *args, **kwargs):
 		return self.filtered_queryset(*args, **kwargs).filter(event__type__slug=self.kwargs['slug'])
 	
@@ -119,12 +142,12 @@ class events_by_type(event_list, generic.ListView):
 		context['cur_filter'] = event_type.objects.get(slug=self.kwargs['slug'])
 		context['cur_filter_type'] = 'type'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'type')
-		context['filters'] = self.get_filters()
-		context['can_edit'] = self.can_edit()
+		context['geojson_slug'] = 'filter_type_%s' % context['cur_filter'].slug
+		
 		return context
 
 
-class events_by_flag(event_list, generic.ListView):
+class events_by_flag(event_list):
 	def get_queryset(self, *args, **kwargs):
 		return self.filtered_queryset(*args, **kwargs).filter(flags__slug=self.kwargs['slug'])
 	
@@ -133,15 +156,17 @@ class events_by_flag(event_list, generic.ListView):
 		context['cur_filter'] = attendance_flag.objects.get(slug=self.kwargs['slug'])
 		context['cur_filter_type'] = 'flag'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'flag')
-		context['filters'] = self.get_filters()
-		context['can_edit'] = self.can_edit()
+		context['geojson_slug'] = 'filter_flag_%s' % context['cur_filter'].slug
 		return context
 
 
-class events_by_special(event_list, generic.ListView):
+class events_by_special(event_list):
 	def get_queryset(self, *args, **kwargs):
 		if self.special_filters.get(self.kwargs['slug'], False):
-			return self.filtered_queryset(*args, **kwargs).filter(self.special_filters[self.kwargs['slug']].get('filter', Q()))
+			if self.special_filters[self.kwargs['slug']].get('is_mature', False) and not self.get_mature_check()[0]:
+				return event_instance.objects.none()
+			else:
+				return self.filtered_queryset(*args, **kwargs).filter(self.special_filters[self.kwargs['slug']].get('filter', Q()))
 		else:
 			return self.filtered_queryset(*args, **kwargs)
 	
@@ -150,27 +175,100 @@ class events_by_special(event_list, generic.ListView):
 		context['cur_filter'] = self.special_filters.get(self.kwargs['slug'], False)
 		context['cur_filter_type'] = 'special'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'special')
-		context['filters'] = self.get_filters()
-		context['can_edit'] = self.can_edit()
+		
+		if self.special_filters.get(self.kwargs['slug'], {}).get('is_mature', False) and not self.get_mature_check()[0]:
+			context['event_instances'] = []
+			context['error'] = self.get_mature_check()[1]
+			if self.get_mature_check()[1] == 'access_mature_prompt':
+				context['embed_mature_form'] = True
+		
 		return context
 
 
+# Non-class-based views and helper objects.
 def widget(parent=False, parent_type=False, request=False):
+	queryset = event_instance.objects.filter(date_start__gte=timezone.now())
 	if request:
-		queryset = event_instance.objects.filter(date_start__gte=timezone.now())
-		if request.user.is_authenticated():
-			if not request.user.is_superuser or not request.user.is_staff:
-				# Regular User
-				queryset = queryset.filter(event__mature=False)
-		else:
-			# Anonymous User
-			queryset = queryset.filter(Q(event__mature=False))
-		
-		events_list = queryset.order_by('date_start').prefetch_related('flags').select_related('event','event__type','venue','photos','report')[:10]
-		
-		if events_list:
-			return events_list
-		else:
-			return False
+		mature_check = check_mature(request)
+		if not mature_check[0]:
+			queryset = queryset.exclude(event__mature=True)
+	else:
+		queryset = queryset.exclude(event__mature=True)
+	
+	events_list = queryset.order_by('date_start').prefetch_related('flags').select_related('event','event__type','venue','photos','report')[:10]
+	if events_list:
+		return events_list
 	else:
 		return False
+
+
+
+def geojson_event_instance(request, slug, **kwargs):
+	return_data = []
+	mature_check = check_mature(request)
+	query = venue.objects.exclude(Q(geo_lat__isnull=True) | Q(geo_long__isnull=True) | Q(event_instance__isnull=True)).annotate(num_items=Count('event_instance')).prefetch_related('event_instance_set')
+	item_filters = Q()
+	
+	if request.user.is_superuser or request.user.is_staff:
+		# Privileged User
+		query = query.all()
+	else:
+		# Regular or anonymous user
+		query = query.filter(Q(event_instance__confirmed=True) | Q(event_instance__date_start__gte=timezone.now()))
+		item_filters = item_filters & (Q(confirmed=True) | Q(date_start__gte=timezone.now()))
+	
+	if not mature_check[0]:
+		query = query.exclude(event_instance__event__mature=True)
+		item_filters = item_filters & Q(event__mature=False)
+	
+	if slug == 'full_list':
+		pass
+	elif 'filter_type' in slug:
+		filter = slug.replace('filter_type_','')
+		filter_obj = get_object_or_404(event_type, slug=filter)
+		query = query.filter(event_instance__event__type=filter_obj)
+		item_filters = item_filters & Q(event__type=filter_obj)
+	elif 'filter_flag' in slug:
+		filter = slug.replace('filter_flag_','')
+		filter_obj = get_object_or_404(attendance_flag, slug=filter)
+		query = query.filter(event_instance__flags=filter_obj)
+		item_filters = item_filters & Q(flags=filter_obj)
+	elif 'event_' in slug:
+		filter = slug.replace('event_','')
+		filter_obj = get_object_or_404(event, slug=filter)
+		query = query.filter(event_instance__event=filter_obj)
+		item_filters = item_filters & Q(event=filter_obj)
+	else:
+		raise Http404
+	
+	for item in query:
+		if item.num_items > 5:
+			marker_size='large'
+		else:
+			marker_size='medium'
+		
+		events = item.event_instance_set.filter(item_filters).select_related('event', 'event__type')
+		event_names = []
+		marker_color = '#3bb2d0'
+		
+		for subitem in events:
+			event_names.append(subitem.get_name())
+			if subitem.event.type.map_color:
+				marker_color = '#%s' % subitem.event.type.map_color
+		
+		return_data.append({
+			'type':'Feature',
+			'geometry': {
+				'type':'Point', 
+				'coordinates':[item.geo_long, item.geo_lat],
+			},
+			'properties': {
+				'marker-symbol':item.num_items, 
+				'marker-color':marker_color,
+				'marker-size':marker_size, 
+				'title':'%s (%s)' % (item.name, item.get_city()),
+				'description':' <br />'.join(event_names)
+			},
+		})
+	
+	return json_response(request, data=return_data)
