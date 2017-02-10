@@ -30,17 +30,7 @@
 			
 			{% if event_instances %}
 				{% if is_map_view and geojson_slug %}
-					<link href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css' rel='stylesheet' />
-					<div class="fullpage_map">
-						<div id="events_map" class="map_obj"></div>
-						<script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>
-						<script>
-							L.mapbox.accessToken = 'pk.eyJ1IjoibHVwaW5pYSIsImEiOiJjaXN1ejh4NDIwOXcxMnRvZGwwbWV6bnV1In0.TZWO35h5uvnlfnH9GtpJFQ';
-							var map = L.mapbox.map('events_map', 'mapbox.streets');
-							var markers = L.mapbox.featureLayer().loadURL('{% url "deerattend:geojson" geojson_slug %}').addTo(map);
-							markers.on('ready', function () { map.fitBounds(markers.getBounds()); });
-						</script>
-					</div>
+					{% include 'map_embed.html' %}
 				{% else %}
 					<table class="events_table">
 						<tr>
@@ -55,7 +45,7 @@
 									{% if cur_filter_type != 'type' %}<div>{{content_item.event.type}}</div>{% endif %}
 									<div class="hovericons16 item_flags">
 										{% for flag in content_item.flags.all %}
-											<a href="{% url 'deerattend:filter_flag' flag.slug %}" title="Filter:  {{flag.name}}"><img src="{{MEDIA_URL}}{{flag.icon}}" alt="{{flag.name}}" title="{{flag.name}}" height="16" /></a>&nbsp;
+											<a href="{% url 'deerattend:filter_flag' flag.slug %}" title="Filter:  {{flag.name}}"><img src="{{flag.get_icon_url}}" alt="{{flag.name}}" title="{{flag.name}}" height="16" /></a>&nbsp;
 										{% endfor %}
 									</div>
 								</td>

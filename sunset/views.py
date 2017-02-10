@@ -32,6 +32,13 @@ class single_image(leaf_view):
 			asset_list = context['object'].assets.all()
 			for asset in asset_list:
 				context['assets'][asset.type] = asset
+			
+			if context['object'].geo_lat and context['object'].geo_long:
+				# Setting up the map.
+				context['map_type'] = 'photo_sub_map'
+				context['map_tiles'] = 'outdoors'
+				context['map_lat'] = context['object'].geo_lat
+				context['map_long'] = context['object'].geo_long
 		else:
 			context['image'] = ''
 		

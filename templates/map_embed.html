@@ -1,0 +1,31 @@
+<link href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css' rel='stylesheet' />
+<div class="{% if map_type %}{{map_type}}{% else %}fullpage_map{% endif %}">
+	<div id="{% if map_name %}{{map_name}}{% else %}awi_map{% endif %}" class="map_obj"></div>
+	<script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>
+	<script>
+		L.mapbox.accessToken = '{{mapbox_token}}';
+		var map = L.mapbox.map('{% if map_name %}{{map_name}}{% else %}awi_map{% endif %}'){% if map_lat and map_long %}.setView([{{map_lat}}, {{map_long}}], 14){% endif %};
+		L.mapbox.styleLayer('mapbox://styles/mapbox/{% if map_tiles %}{{map_tiles}}{% else %}streets{% endif %}-v10').addTo(map);
+		
+		{% if map_lat and map_long %}
+			var geojson = [
+				{
+					type: 'Feature',
+					geometry: {
+						type: 'Point',
+						coordinates: [{{map_long}}, {{map_lat}}]
+					},
+					properties: {
+						'marker-color':'#8f52cc', 
+						'marker-size':'medium',
+						'marker-symbol':'{% if map_icon %}{{map_icon}}{% else %}heart{% endif %}'
+					}
+				},
+			]
+			var markers = L.mapbox.featureLayer().setGeoJSON(geojson).addTo(map);
+		{% elif map_data_url %}
+			var markers = L.mapbox.featureLayer(null, { sanitizer: function(x) { return x; } }).loadURL('{{map_data_url}}').addTo(map);
+			markers.on('ready', function () { map.fitBounds(markers.getBounds()); });
+		{% endif %}
+	</script>
+</div>

@@ -119,6 +119,8 @@ class event_list(special_feature_view, generic.ListView):
 		context['geojson_slug'] = self.geojson_slug
 		if self.request.GET.get('display', False) == 'map' and self.geojson_slug:
 			context['is_map_view'] = True
+			context['map_type'] = 'fullpage_map'
+			context['map_data_url'] = reverse('deerattend:geojson', kwargs={'slug':self.geojson_slug,})
 		else:
 			context['is_map_view'] = False
 		
@@ -165,6 +167,8 @@ class event_instances(event_list):
 			if venue_count.get('venue__count', 0) > 1:
 				context['geojson_slug'] = 'event_%s' % cur_filter.slug
 				context['is_split_view'] = True
+				context['map_type'] = 'events_sub_map'
+				context['map_data_url'] = reverse('deerattend:geojson', kwargs={'slug':context['geojson_slug'],})
 			else:
 				single_location = context['event_instances'].first()
 				context['single_location'] = '%s (%s)' % (unicode(single_location.venue), single_location.venue.get_city())
