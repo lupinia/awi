@@ -54,6 +54,7 @@
 	}
 	
 	&.mature {
+		border:1px solid $color_bg_leaf_mature_hover;
 		&:link, &:visited { background-color:$color_bg_leaf_mature; }
 		&:hover, &:active, &:focus { background-color:$color_bg_leaf_mature_hover; }
 	}
