@@ -8,6 +8,7 @@
 
 import uuid
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
@@ -32,6 +33,9 @@ class venue(models.Model):
 	def __unicode__(self):
 		return self.name
 	
+	def get_absolute_url(self):
+		return reverse('deerattend:filter_venue', kwargs={'slug':self.slug,})
+	
 	def get_city(self):
 		if self.state:
 			return "%s, %s, %s" % (self.city, self.state, self.country)
@@ -51,6 +55,9 @@ class attendance_flag(models.Model):
 	
 	def get_absolute_url(self):
 		return reverse('deerattend:filter_flag', kwargs={'slug':self.slug,})
+	
+	def get_icon_url(self):
+		return "%s%s" % (settings.MEDIA_URL, self.icon.name)
 	
 	class Meta:
 		verbose_name = 'flag'
@@ -82,6 +89,9 @@ class event(models.Model):
 	
 	def __unicode__(self):
 		return self.name
+	
+	def get_absolute_url(self):
+		return reverse('deerattend:filter_event', kwargs={'slug':self.slug,})
 
 class event_instance(models.Model):
 	event = models.ForeignKey(event, on_delete=models.PROTECT)

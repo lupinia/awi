@@ -41,3 +41,23 @@ class event_special_filter_map(Sitemap):
 	
 	def location(self, item):
 		return reverse('deerattend:filter_special', kwargs={'slug':item,})
+
+class event_venue_map(Sitemap):
+	priority = 0.3
+	changefreq = 'yearly'
+	
+	def items(self):
+		return venue.objects.all()
+	
+	def lastmod(self, obj):
+		return obj.timestamp_mod
+
+class event_map(Sitemap):
+	priority = 0.5
+	changefreq = 'yearly'
+	
+	def items(self):
+		return event.objects.all()
+	
+	def lastmod(self, obj):
+		return obj.timestamp_mod

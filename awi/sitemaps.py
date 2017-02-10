@@ -11,11 +11,16 @@ SITEMAP_OBJECTS = {
 	'writing':page_map,
 	'directories':cat_map,
 	'extras':special_map,
+	
 	'foodmenu':menu_cat_map,
 	'foodflags':menu_flag_map,
+	
 	'eventtypes':event_type_map,
 	'eventflags':event_flag_map,
 	'eventspecial':event_special_filter_map,
+	'eventvenues':event_venue_map,
+	'events':event_map,
+	
 	'tags':tag_map,
 	'static':static_map,
 }
