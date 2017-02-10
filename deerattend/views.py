@@ -307,13 +307,41 @@ def geojson_event_instance(request, slug, **kwargs):
 		raise Http404
 	
 	for item in query:
-		events = item.event_instance_set.filter(item_filters).select_related('event', 'event__type')
+		events = item.event_instance_set.filter(item_filters).select_related('event', 'event__type', 'photos', 'report', 'report__cat').prefetch_related('flags').order_by('-date_start')
 		event_names = []
 		event_count = 0
 		marker_color = '#3bb2d0'
 		
 		for subitem in events:
-			event_names.append(subitem.get_name())
+			if subitem.is_upcoming():
+				extra_classes = ' event_upcoming'
+			elif subitem.is_tentative():
+				extra_classes = ' event_tentative'
+			else:
+				extra_classes = ''
+			
+			if subitem.flags or subitem.photos or subitem.report:
+				flag_row = []
+				
+				if subitem.photos:
+					flag_row.append('<a href="%s" class="blue"><img src="%simages/icons/camera.png" alt="%s" title="%s" /></a>' % (subitem.photos.get_absolute_url(), settings.STATIC_URL, subitem.photos.title, subitem.photos.title))
+				
+				if subitem.report:
+					flag_row.append('<a href="%s" class="red"><img src="%simages/icons/book.png" alt="%s" title="%s" /></a>' % (subitem.report.get_absolute_url(), settings.STATIC_URL, subitem.report.get_title(), subitem.report.get_title()))
+				
+				for f in subitem.flags.all():
+					flag_row.append('<a href="%s"><img src="%s" alt="%s" title="%s" /></a>' % (f.get_absolute_url(), f.get_icon_url(), f.name, f.name))
+				
+				flags = '<div class="hovericons16 item_flags">%s</div>' % ''.join(flag_row)
+				margin_right = len(flag_row) * 24
+				margin_right = margin_right + 10
+			else:
+				flags = ''
+				margin_right = 0
+			
+			event_row = '<div class="event_row%s"><div class="event_name" style="margin-right:%dpx;"><a href="%s">%s</a> (%s)</div>%s</div>' % (extra_classes, margin_right, subitem.event.get_absolute_url(), subitem.get_name(), subitem.date_start.strftime('%b %d, %Y'), flags)
+			
+			event_names.append(event_row)
 			event_count = event_count + 1
 			if subitem.event.type.map_color:
 				marker_color = '#%s' % subitem.event.type.map_color
@@ -335,8 +363,8 @@ def geojson_event_instance(request, slug, **kwargs):
 				'marker-symbol':event_count, 
 				'marker-color':marker_color,
 				'marker-size':marker_size, 
-				'title':'%s (%s)' % (item.name, item.get_city()),
-				'description':' <br />'.join(event_names)
+				'title':'<a href="%s">%s</a><br /><span class="city">%s</span>' % (item.get_absolute_url(), item.name, item.get_city()),
+				'description':'<div class="event_list_tooltip">%s</div>' % ' '.join(event_names)
 			},
 		})
 	

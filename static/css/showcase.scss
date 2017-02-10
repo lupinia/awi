@@ -377,13 +377,6 @@ body {
 		margin-bottom:0px;
 	}
 	
-	.photo_page_map {
-		padding:0px;
-		background:none;
-		margin-top:10px;
-		margin-bottom:0px;
-	}
-	
 	.photo_page_image {
 		margin-top:5px;
 		
@@ -991,6 +984,99 @@ a {
 		height:710px;
 	}
 }
+
+.sub_map {
+	padding:0px;
+	background:none;
+	margin:0px;
+	
+	.map_obj {
+		width:100%;
+		height:250px;
+	}
+}
+
+.photo_sub_map {
+	margin-top:10px;
+	@extend .sub_map;
+}
+
+.events_sub_map {
+	@extend .sub_map;
+	.map_obj { height:300px; }
+}
+
+
+/* Mapbox, I love you, but I really should not have to reset this much of your CSS with "!important" to change basic formatting. */
+.leaflet-map-pane { z-index:3 !important; }
+.leaflet-control-container .leaflet-top, .leaflet-control-container .leaflet-bottom { z-index:4 !important; }
+.leaflet-popup-tip { border-top-color:$color_bgtrans !important; }
+
+.leaflet-popup-content-wrapper { 
+	background:none !important; 
+	border-radius:none !important; 
+	box-shadow:none !important; 
+}
+
+.leaflet-popup-content {
+	@extend .transbox;
+	color:$color_maintext;
+	border:0px;
+	border-radius:5px;
+	font-family: $font_en;
+	
+	.marker-title {
+		font-weight:bold;
+		text-align:center;
+		border-bottom:1px solid $color_border;
+		padding:5px;
+		margin-bottom:5px;
+		font-size:medium;
+		
+		a { font-weight:bold; @include default_links(none,underline); }
+		
+		.city { font-size:0.7em; font-weight:normal; }
+	}
+	
+	.marker-description .event_list_tooltip {
+		margin-top:3px;
+		
+		.event_row {
+			position:relative;
+			margin-top:2px;
+			padding-left:3px;
+			padding-right:3px;
+			padding-top:2px;
+			padding-bottom:2px;
+			
+			&.event_upcoming { font-weight:bold; background-color:$color_bg_leaf_featured_hover; }
+			&.event_tentative { font-style:italic; background-color:$color_bg_leaf_hover; }
+			&.event_mature { background-color:$color_bg_leaf_mature; }
+			
+			.event_name { 
+				padding-top:1px; 
+				padding-bottom:1px; 
+				color:$color_subtext;
+				
+				/* I also really shouldn't have to override link styling this many times. */
+				a:link, a:visited { color:$color_maintext; }
+				a:hover, a:active, a:focus { color:$color_maintext; text-decoration:underline; }
+			}
+			
+			.item_flags {
+				position:absolute;
+				right:5px;
+				top:1px;
+			}
+		}
+	}
+	
+	.hovericons16 {
+		/* Seriously?  I had to override box-sizing with !important? */
+		a { box-sizing:content-box !important; }
+		img { margin:0px !important; box-sizing:content-box !important; }
+	}
+}
 /*	=====	*/
 
 
@@ -998,9 +1084,6 @@ a {
 .loginform {
 	width:170px;
 }
-
-.leaflet-map-pane { z-index:3 !important; }
-.leaflet-control-container .leaflet-top, .leaflet-control-container .leaflet-bottom { z-index:4 !important; }
 
 .page_icons {
 	text-align:left;
