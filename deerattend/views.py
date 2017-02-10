@@ -113,6 +113,10 @@ class event_list(special_feature_view, generic.ListView):
 		if context['event_instances']:
 			last_update = context['event_instances'].values('timestamp_mod').latest('timestamp_mod')
 			context['update_time'] = last_update.get('timestamp_mod', False)
+			
+			photo_cat = context['event_instances'].exclude(photos__isnull=True).first()
+			if photo_cat:
+				context['category'] = photo_cat.photos
 		else:
 			context['error'] = 'filter_empty'
 		
@@ -172,10 +176,6 @@ class event_instances(event_list):
 			else:
 				single_location = context['event_instances'].first()
 				context['single_location'] = '%s (%s)' % (unicode(single_location.venue), single_location.venue.get_city())
-			
-			photo_cat = context['event_instances'].exclude(photos__isnull=True).first()
-			if photo_cat:
-				context['category'] = photo_cat.photos
 		
 		return context
 
