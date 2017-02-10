@@ -10,10 +10,13 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 
 def site(request):
-	return {'site':Site.objects.get_current()}
+	return {
+		'site':Site.objects.get_current(), 
+		'domain_name':request.get_host(), 
+	}
 
-def debug_check(request):
-	return {'debug_check':settings.DEBUG}
-
-def domain_name(request):
-	return {'domain_name':request.get_host()}
+def settings_vars(request):
+	return {
+		'debug_check':settings.DEBUG,
+		'mapbox_token':settings.MAPBOX_KEY,
+	}
