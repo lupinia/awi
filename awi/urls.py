@@ -41,6 +41,8 @@ urlpatterns = [
 	
 	url(r'^settings/$',access_views.settings_page.as_view(),name='settings'),
 	
+	url(r'^tools/sunset/(?P<slug>.*)\.json', sunset_views.geojson_image, name='sunset_geojson'),
+	
 	url(r'^contact/$',check_honeypot(contact_page.as_view()),name='contact'),
 	url(r'^gamescripts/', include('secondlife.urls')),
 	url(r'^personal/cooking/menu/', include('deerfood.urls',namespace='deerfood'), kwargs={'special_feature_slug':'menu'}),
