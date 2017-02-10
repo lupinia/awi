@@ -4,11 +4,11 @@
 
 {% if 'sidebar' in blockname %}
 	{% for event in leaves %}
-	<a href="{% url 'deerattend:full_list' %}" class="sidebar_link {% if event.event_upcoming %}featured{% elif event.event.mature %}mature{% elif event.is_tentative %}notpublic{% endif %}">
+	<a href="{% url 'deerattend:full_list' %}" class="sidebar_link {% if event.is_upcoming %}featured{% elif event.event.mature %}mature{% elif event.is_tentative %}notpublic{% endif %}">
 		<span class="sidebar_link_title">{{event}}</span>
 		<div class="sidebar_link_subtext">{{event.venue.get_city}}</div>
 		<div class="sidebar_link_subtext">{{event.date_start|date:'M j, Y'}} - {{event.date_end|date:'M j, Y'}}</div>
-		{% if event.event_upcoming %}
+		{% if event.is_upcoming %}
 			<div class="sidebar_link_subtext">Confirmed Appearance</div>
 		{% elif event.event.mature %}
 			<div class="sidebar_link_subtext">Mature Event (18+)</div>
