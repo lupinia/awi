@@ -1,7 +1,5 @@
-{% extends "base.html" %}
+{% extends "deerattend/event_filters.html" %}
 {% load humanize %}
-{% block title %}{{block.super}} - Events Attended By Natasha{% if cur_filter %} - {{cur_filter.name}}{% endif %}{% endblock %}
-{% block bg_image %}{% include 'sunset/bg_image.html' with bg_tag='furry' %}{% endblock %}
 
 {% block content_left %}
 	{% if error %}
@@ -13,17 +11,17 @@
 			{% endif %}
 		</div>
 	{% else %}
-		<div class="transbox fulltext_page">
-			<div id="fulltext_page_title">
+		<div class="transbox {% if is_map_view and geojson_slug %}map_page{% else %}fulltext_page{% endif %}">
+			<div id="page_title">
 				{% if geojson_slug %}
-					<div id="fulltext_page_title_extra">
-						<div class="hovericons32">
+					<div id="page_title_extra">
+						<div class="hovericons32 hovericons-wide">
 							<a href="{{is_map_view|yesno:'.,?display=map'}}"><img src="{{ STATIC_PREFIX }}images/icons/{{is_map_view|yesno:'list,map'}}-32.png" alt="Switch to {{is_map_view|yesno:'List,Map'}} View" title="Switch to {{is_map_view|yesno:'List,Map'}} View" /></a>
 						</div>
 					</div>
 				{% endif %}
 				
-				<div id="fulltext_page_title_main">
+				<div id="page_title_main">
 					<h2>Events Attended By Natasha{% if cur_filter %} - {{cur_filter.name}}{% endif %}</h2>
 					{% if update_time %}<div id="byline">Last updated:  {{update_time|date:'F j, Y  G:i:s'}}</div>{% endif %}
 					<br />
@@ -34,7 +32,7 @@
 				{% if is_map_view and geojson_slug %}
 					<link href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css' rel='stylesheet' />
 					<div class="fullpage_map">
-						<div id="events_map" style="width: 100%; height: 700px;"></div>
+						<div id="events_map" class="map_obj"></div>
 						<script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>
 						<script>
 							L.mapbox.accessToken = 'pk.eyJ1IjoibHVwaW5pYSIsImEiOiJjaXN1ejh4NDIwOXcxMnRvZGwwbWV6bnV1In0.TZWO35h5uvnlfnH9GtpJFQ';
@@ -46,15 +44,15 @@
 				{% else %}
 					<table class="events_table">
 						<tr>
-							<th>Type</th>
+							<th>{% if cur_filter_type == 'type' %}Flags{% else %}Type{% endif %}</th>
 							<th class="col_main">Event</th>
-							<th>Location</th>
+							{% if cur_filter_type != 'venue' %}<th>Location</th>{% endif %}
 							<th>Dates</th>
 						</tr>
 						{% for content_item in event_instances %}
 							<tr class="{% if content_item.event.mature %}event_mature {% endif %}{% if content_item.is_tentative %}event_tentative {% elif content_item.is_upcoming %}event_upcoming {% endif %} event_instance">
 								<td>
-									<div>{{content_item.event.type}}</div>
+									{% if cur_filter_type != 'type' %}<div>{{content_item.event.type}}</div>{% endif %}
 									<div class="hovericons16 item_flags">
 										{% for flag in content_item.flags.all %}
 											<a href="{% url 'deerattend:filter_flag' flag.slug %}" title="Filter:  {{flag.name}}"><img src="{{MEDIA_URL}}{{flag.icon}}" alt="{{flag.name}}" title="{{flag.name}}" height="16" /></a>&nbsp;
@@ -84,13 +82,18 @@
 											<div class="event_highlight">Mature Event (18+)</div>
 										{% endif %}
 										
-										<div>{{content_item}}</div>
+										<div class="event_title"><a href="{% url 'deerattend:filter_event' content_item.event.slug %}">{{content_item}}</a></div>
 										{% if content_item.notes %}
 											<div class="notes">{{content_item.notes}}</div>
 										{% endif %}
 									</div>
 								</td>
-								<td>{{content_item.venue.get_city}}</td>
+								{% if cur_filter_type != 'venue' %}
+									<td>
+										<div>{{content_item.venue.get_city}}</div>
+										<sub><a href="{% url 'deerattend:filter_venue' content_item.venue.slug %}">{{content_item.venue}}</a></sub>
+									</td>
+								{% endif %}
 								<td>{{content_item.date_start|date:'M j, Y'}} - {{content_item.date_end|date:'M j, Y'}}</td>
 							</tr>
 						{% endfor %}
@@ -101,60 +104,3 @@
 	{% endif %}
 {% endblock %}
 
-{% block content_right %}
-	<div class="right_sidebar">
-		{% if can_edit %}
-			<div class="transbox right_sidebar_section">
-				<a class="sidebar_link" href="{% url 'admin:deerattend_event_instance_add' %}">
-					<img class="sidebar_link_img" src="{{ STATIC_PREFIX }}images/icons/add.png" alt="Add New Event Instance" title="Add New Event Instance" />
-					<span class="sidebar_link_title">Add New Event</span>
-				</a>
-			</div>
-		{% endif %}
-		
-		<div class="transbox right_sidebar_section">
-			<h3>Event Types</h3>
-			{% for filter in filters.types %}
-				{% if filter != cur_filter %}
-					<a href="{% url 'deerattend:filter_type' filter.slug %}{% if is_map_view %}?display=map{% endif %}" class="sidebar_link" title="{{filter.name}}">
-						<span class="sidebar_link_title">{{filter.name}}</span>
-						<div class="sidebar_link_subtext">{{filter.num_items}} Item{{filter.num_items|pluralize}}</div>
-					</a>
-				{% endif %}
-			{% endfor %}
-			{% if cur_filter and cur_filter_type == 'type' %}
-				<a class="sidebar_link" href="{% url 'deerattend:full_list' %}{% if is_map_view %}?display=map{% endif %}" title="Clear Filters"><em>Clear Filters</em></a>
-			{% endif %}
-		</div>
-		
-		<div class="transbox right_sidebar_section">
-			<h3>Attendance Flags</h3>
-			{% for filter in filters.flags %}
-				{% if filter != cur_filter %}
-					<a href="{% url 'deerattend:filter_flag' filter.slug %}{% if is_map_view %}?display=map{% endif %}" class="sidebar_link" title="{{filter.name}}">
-						<img src="{{MEDIA_URL}}{{filter.icon}}" alt="{{filter.name}}" title="{{filter.name}}" class="sidebar_link_img" />
-						<span class="sidebar_link_title">{{filter.name}}</span>
-						<div class="sidebar_link_subtext">{{filter.num_items}} Item{{filter.num_items|pluralize}}</div>
-					</a>
-				{% endif %}
-			{% endfor %}
-			{% if cur_filter and cur_filter_type == 'flag' %}
-				<a class="sidebar_link" href="{% url 'deerattend:full_list' %}{% if is_map_view %}?display=map{% endif %}" title="Clear Filters"><em>Clear Filters</em></a>
-			{% endif %}
-		</div>
-		
-		<div class="transbox right_sidebar_section">
-			<h3>Filters</h3>
-			{% for filter in filters.special %}
-				{% if filter != cur_filter %}
-					<a href="{% url 'deerattend:filter_special' filter.slug %}{% if is_map_view %}?display=map{% endif %}" class="sidebar_link{% if filter.is_mature %} mature{% endif %}" title="{{filter.name}}">
-						<span class="sidebar_link_title">{{filter.name}}</span>
-					</a>
-				{% endif %}
-			{% endfor %}
-			{% if cur_filter and cur_filter_type == 'special' %}
-				<a class="sidebar_link" href="{% url 'deerattend:full_list' %}{% if is_map_view %}?display=map{% endif %}" title="Clear Filters"><em>Clear Filters</em></a>
-			{% endif %}
-		</div>
-	</div>
-{% endblock %}

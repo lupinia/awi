@@ -616,6 +616,13 @@ body {
 				font-variant: small-caps;
 				color:$color_subtext;
 			}
+			
+			.event_title {
+				font-size:medium;
+				
+				a:link, a:visited { color:$color_afocus; text-decoration:none; }
+				a:hover, a:active, a:focus { color:$color_alink; text-decoration:none; font-weight:bold; }
+			}
 		}
 		
 		.hovericons16 a { 
@@ -926,12 +933,33 @@ a {
 	&.boldlink { font-weight: bold; }
 }
 
+.filters_list {
+	a.sidebar_link {
+		position:relative;
+		padding-top:3px;
+		padding-bottom:3px;
+		
+		.sidebar_link_title { 
+			font-size:0.9em; 
+			margin-right:15px;
+			&.no_icon { line-height: normal; height:auto; }
+		}
+		
+		.item_count {
+			position:absolute;
+			right:5px;
+			top:5px;
+			font-size:xx-small;
+			font-weight:bold;
+		}
+	}
+}
+
 .hovericons16 { @include hovericons(16px,none,$color_bg_hover,3px); }
 .hovericons24 { @include hovericons(24px,none,$color_bg_hover); }
-.hovericons32 { 
-	@include hovericons(32px,$color_bg_hover,$color_bg_hover_blue);
-	a { padding:5px; }
-}
+.hovericons32 { @include hovericons(32px,$color_bg_hover,$color_bg_hover_blue); }
+
+.hovericons-wide a { padding:5px; }
 
 .hoverlinks {
 	a {
@@ -948,6 +976,19 @@ a {
 			background:none !important;
 			img { visibility:inherit; }
 		}
+	}
+}
+/*	=====	*/
+
+
+/*	Maps and Map Accessories	*/
+.fullpage_map .map_obj {
+	width:100%;
+	height:75vh;
+	min-height:500px;
+	
+	@media #{$scr_tall} {
+		height:710px;
 	}
 }
 /*	=====	*/
