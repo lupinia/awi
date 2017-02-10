@@ -34,6 +34,7 @@ class event_list(special_feature_view, generic.ListView):
 	template_name = 'deerattend/event_list.html'
 	mature_check = (None, '')
 	
+	geojson_slug = None
 	special_filters = special_filter_list
 	
 	def get_mature_check(self):
@@ -63,7 +64,7 @@ class event_list(special_feature_view, generic.ListView):
 				else:
 					breadcrumbs.append({'url':reverse('deerattend:filter_'+cur_type, kwargs={'slug':cur.slug}), 'title':cur.name})
 			
-			if self.request.GET.get('display', False) == 'map':
+			if self.request.GET.get('display', False) == 'map' and self.geojson_slug:
 				breadcrumbs.append({'url':'?display=map', 'title':'Map View'})
 			
 			return breadcrumbs
@@ -112,8 +113,11 @@ class event_list(special_feature_view, generic.ListView):
 		if context['event_instances']:
 			last_update = context['event_instances'].values('timestamp_mod').latest('timestamp_mod')
 			context['update_time'] = last_update.get('timestamp_mod', False)
+		else:
+			context['error'] = 'filter_empty'
 		
-		if self.request.GET.get('display', False) == 'map':
+		context['geojson_slug'] = self.geojson_slug
+		if self.request.GET.get('display', False) == 'map' and self.geojson_slug:
 			context['is_map_view'] = True
 		else:
 			context['is_map_view'] = False
@@ -127,9 +131,48 @@ class full_list(event_list):
 		return self.filtered_queryset(*args, **kwargs)
 	
 	def get_context_data(self, **kwargs):
+		self.geojson_slug = 'full_list'
+		
 		context=super(full_list,self).get_context_data(**kwargs)
 		context['breadcrumbs'] = self.build_breadcrumbs()
-		context['geojson_slug'] = 'full_list'
+		return context
+
+
+class event_instances(event_list):
+	template_name = 'deerattend/event_detail.html'
+	
+	def get_queryset(self, *args, **kwargs):
+		return self.filtered_queryset(*args, **kwargs).filter(event__slug=self.kwargs['slug'])
+	
+	def get_context_data(self, **kwargs):
+		cur_filter = event.objects.get(slug=self.kwargs['slug'])
+		self.geojson_slug = 'event_%s' % cur_filter.slug
+		
+		context = super(event_instances,self).get_context_data(**kwargs)
+		context['is_map_view'] = False
+		context['cur_filter'] = cur_filter
+		context['cur_filter_type'] = 'event'
+		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'event')
+		
+		if cur_filter.mature and not self.get_mature_check()[0]:
+			context['event_instances'] = []
+			context['error'] = self.get_mature_check()[1]
+			if self.get_mature_check()[1] == 'access_mature_prompt':
+				context['embed_mature_form'] = True
+		
+		if context['event_instances']:
+			venue_count = context['event_instances'].aggregate(Count('venue', distinct=True))
+			if venue_count.get('venue__count', 0) > 1:
+				context['geojson_slug'] = 'event_%s' % cur_filter.slug
+				context['is_split_view'] = True
+			else:
+				single_location = context['event_instances'].first()
+				context['single_location'] = '%s (%s)' % (unicode(single_location.venue), single_location.venue.get_city())
+			
+			photo_cat = context['event_instances'].exclude(photos__isnull=True).first()
+			if photo_cat:
+				context['category'] = photo_cat.photos
+		
 		return context
 
 
@@ -138,11 +181,28 @@ class events_by_type(event_list):
 		return self.filtered_queryset(*args, **kwargs).filter(event__type__slug=self.kwargs['slug'])
 	
 	def get_context_data(self, **kwargs):
-		context=super(events_by_type,self).get_context_data(**kwargs)
-		context['cur_filter'] = event_type.objects.get(slug=self.kwargs['slug'])
+		cur_filter = event_type.objects.get(slug=self.kwargs['slug'])
+		self.geojson_slug = 'filter_type_%s' % cur_filter.slug
+		
+		context = super(events_by_type,self).get_context_data(**kwargs)
+		context['cur_filter'] = cur_filter
 		context['cur_filter_type'] = 'type'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'type')
-		context['geojson_slug'] = 'filter_type_%s' % context['cur_filter'].slug
+		
+		return context
+
+
+class events_by_venue(event_list):
+	def get_queryset(self, *args, **kwargs):
+		return self.filtered_queryset(*args, **kwargs).filter(venue__slug=self.kwargs['slug'])
+	
+	def get_context_data(self, **kwargs):
+		cur_filter = venue.objects.get(slug=self.kwargs['slug'])
+		
+		context = super(events_by_venue,self).get_context_data(**kwargs)
+		context['cur_filter'] = cur_filter
+		context['cur_filter_type'] = 'venue'
+		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'venue')
 		
 		return context
 
@@ -152,11 +212,13 @@ class events_by_flag(event_list):
 		return self.filtered_queryset(*args, **kwargs).filter(flags__slug=self.kwargs['slug'])
 	
 	def get_context_data(self, **kwargs):
-		context=super(events_by_flag,self).get_context_data(**kwargs)
-		context['cur_filter'] = attendance_flag.objects.get(slug=self.kwargs['slug'])
+		cur_filter = attendance_flag.objects.get(slug=self.kwargs['slug'])
+		self.geojson_slug = 'filter_flag_%s' % cur_filter.slug
+		
+		context = super(events_by_flag,self).get_context_data(**kwargs)
+		context['cur_filter'] = cur_filter
 		context['cur_filter_type'] = 'flag'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'flag')
-		context['geojson_slug'] = 'filter_flag_%s' % context['cur_filter'].slug
 		return context
 
 
@@ -209,7 +271,7 @@ def widget(parent=False, parent_type=False, request=False):
 def geojson_event_instance(request, slug, **kwargs):
 	return_data = []
 	mature_check = check_mature(request)
-	query = venue.objects.exclude(Q(geo_lat__isnull=True) | Q(geo_long__isnull=True) | Q(event_instance__isnull=True)).annotate(num_items=Count('event_instance')).prefetch_related('event_instance_set')
+	query = venue.objects.exclude(Q(geo_lat__isnull=True) | Q(geo_long__isnull=True) | Q(event_instance__isnull=True)).prefetch_related('event_instance_set')
 	item_filters = Q()
 	
 	if request.user.is_superuser or request.user.is_staff:
@@ -245,19 +307,23 @@ def geojson_event_instance(request, slug, **kwargs):
 		raise Http404
 	
 	for item in query:
-		if item.num_items > 5:
-			marker_size='large'
-		else:
-			marker_size='medium'
-		
 		events = item.event_instance_set.filter(item_filters).select_related('event', 'event__type')
 		event_names = []
+		event_count = 0
 		marker_color = '#3bb2d0'
 		
 		for subitem in events:
 			event_names.append(subitem.get_name())
+			event_count = event_count + 1
 			if subitem.event.type.map_color:
 				marker_color = '#%s' % subitem.event.type.map_color
+		
+		if event_count > 3:
+			marker_size='large'
+		elif event_count < 2:
+			marker_size='small'
+		else:
+			marker_size='medium'
 		
 		return_data.append({
 			'type':'Feature',
@@ -266,7 +332,7 @@ def geojson_event_instance(request, slug, **kwargs):
 				'coordinates':[item.geo_long, item.geo_lat],
 			},
 			'properties': {
-				'marker-symbol':item.num_items, 
+				'marker-symbol':event_count, 
 				'marker-color':marker_color,
 				'marker-size':marker_size, 
 				'title':'%s (%s)' % (item.name, item.get_city()),
