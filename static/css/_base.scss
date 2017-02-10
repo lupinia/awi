@@ -20,16 +20,7 @@ body {
 	font-size:small;
 }
 
-a {
-	&:link, &:visited {
-		color: $color_alink;
-		text-decoration:underline;
-	}
-	&:hover, &:active, &:focus {
-		color: $color_afocus;
-		text-decoration:none;
-	}
-}
+a { @include default_links; }
 
 /*	Errors	*/
 .error_critical { @include error($color_border_err_crit, $color_bg_err_crit, $color_text_err_crit, $img_bg_err_crit); }

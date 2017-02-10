@@ -59,3 +59,14 @@
 		&:hover, &:active, &:focus { background-color:$color_bg_leaf_mature_hover; }
 	}
 }
+
+@mixin default_links($normal_decor:underline,$focus_decor:none) {
+	&:link, &:visited {
+		color: $color_alink;
+		text-decoration:$normal_decor;
+	}
+	&:hover, &:active, &:focus {
+		color: $color_afocus;
+		text-decoration:$focus_decor;
+	}
+}
