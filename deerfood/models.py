@@ -6,6 +6,7 @@
 #	Models
 #	=================
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
@@ -41,6 +42,9 @@ class menu_flag(models.Model):
 	
 	def get_absolute_url(self):
 		return reverse('deerfood:menu_flag', kwargs={'slug':self.slug,})
+	
+	def get_icon_url(self):
+		return "%s%s" % (settings.MEDIA_URL, self.icon.name)
 	
 	class Meta:
 		verbose_name = 'menu item flag'
