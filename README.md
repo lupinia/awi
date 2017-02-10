@@ -46,7 +46,6 @@ Third-Party Apps/Modules Used
 - **[ExifTool](http://www.sno.phy.queensu.ca/~phil/exiftool/)**:  Advanced metadata read/write tool.
 - **[HTML2Text](https://github.com/Alir3z4/html2text)**:  Library for converting HTML to Markdown.
 - **[JustifiedGallery](http://miromannino.github.io/Justified-Gallery/)**:  JQuery plugin for displaying a justified grid of mixed-width thumbnails.
-- **[Leaflet](http://leafletjs.com/)**:  Map-display JavaScript library.
 - **[MapBox](https://www.mapbox.com/)**:  Map data.
 - **[Pillow](https://python-pillow.org/)**:  Upgraded fork of PIL (Python Imaging Library).
 - **[PyExifTool](https://github.com/smarnach/pyexiftool)**:  Python wrapper for ExifTool.
