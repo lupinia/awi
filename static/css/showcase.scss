@@ -221,14 +221,15 @@ body {
 	min-width:400px;
 	
 	@media #{$scr_midwidth} {
-		width:70% !important;
+		width:inherit !important;
+		margin-right:190px;
 	}
 	
-	#fulltext_page_title {
+	#fulltext_page_title, #page_title {
 		position:relative;
 		
 		#byline { font-size:x-small; }
-		#fulltext_page_title_extra {
+		#fulltext_page_title_extra, #page_title_extra {
 			width:170px;
 			text-align:right;
 			margin:2px;
