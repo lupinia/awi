@@ -322,14 +322,35 @@ body {
 	}
 }
 
-.photo_page {
+.map_page {
 	@extend %left_main;
-	width:82%;
+	margin-right:190px;
 	min-width:400px;
 	
-	@media #{$scr_midwidth} {
-		width:70% !important;
+	#page_title {
+		position:relative;
+		
+		#byline { font-size:x-small; }
+		#page_title_extra {
+			width:170px;
+			text-align:right;
+			margin:2px;
+			position:absolute;
+			right:5px;
+			
+			&.admin_options {
+				width:190px;
+			}
+			
+			.secondary_time { font-size:xx-small; }
+		}
 	}
+}
+
+.photo_page {
+	@extend %left_main;
+	margin-right:190px;
+	min-width:400px;
 	
 	#photo_page_title {
 		position:relative;
