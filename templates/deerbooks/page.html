@@ -53,9 +53,8 @@
 		<div class="right_sidebar_section">
 			<h3>External</h3>
 			<div class="page_icons hovericons32">
-				<a class="red" href="http://readability.com/save?url={{request.build_absolute_uri}}"><img src="{{ STATIC_PREFIX }}images/icons/service-readability.png" alt="Readability" title="Readability.com (External service)" /></a>
-				<a class="grey" href="http://www.instapaper.com/hello2?url={{request.build_absolute_uri}}&title=Lupinia - {{object.title}}"><img src="{{ STATIC_PREFIX }}images/icons/service-instapaper.png" alt="Readability" title="Instapaper (External service)" /></a>
-				<a class="red" href="https://getpocket.com/save?url={{request.build_absolute_uri}}&title=Lupinia - {{object.title}}"><img src="{{ STATIC_PREFIX }}images/icons/service-pocket.png" alt="Pocket" title="Pocket (External service)" /></a>
+				<a class="red" href="https://getpocket.com/save?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-pocket.png" alt="Pocket" title="Pocket (External service)" /></a>
+				<a class="grey" href="http://www.instapaper.com/hello2?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-instapaper.png" alt="Readability" title="Instapaper (External service)" /></a>
 			</div>
 		</div>
 	{% endif %}
