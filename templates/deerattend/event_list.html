@@ -3,7 +3,7 @@
 
 {% block content_left %}
 	{% if error %}
-		<div class="transbox left_sidebar">
+		<div class="left_sidebar">
 			{% load errors %}
 			{% error_display error %}
 			{% if embed_mature_form %}
@@ -11,7 +11,7 @@
 			{% endif %}
 		</div>
 	{% else %}
-		<div class="transbox {% if is_map_view and geojson_slug %}map_page{% else %}fulltext_page{% endif %}">
+		<div class="{% if is_map_view and geojson_slug %}map_page{% else %}left_full{% endif %}">
 			<div id="page_title">
 				{% if geojson_slug %}
 					<div id="page_title_extra">

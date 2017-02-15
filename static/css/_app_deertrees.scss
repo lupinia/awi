@@ -1,0 +1,142 @@
+//	Lupinia Studios Main Theme - "Showcase"
+//	App-Specific SASS Stylesheet - DeerTrees
+//	By Natasha L.
+//	www.lupinia.net | github.com/lupinia
+
+.right_sidebar_section .tag_list_item .hovericons16 {
+	float:right;
+	clear:right;
+	@include hovericons(12px,none,$color_bg_hover,2px);
+	
+	img {
+		width:12px;
+		height:12px;
+		vertical-align:top;
+	}
+}
+
+.leaf_links_wrapper {
+	padding-bottom:10px;
+	padding-left:0px;
+	
+	.leaf_link {
+		width:46%;
+		float:left;
+		margin:6px;
+		padding:0px;
+		
+		.left_split & { width:95%; min-width:100px !important; }
+		
+		&.tall {
+			height:140px;
+			min-width:350px;
+		}
+		
+		&.midheight {
+			height:80px;
+			min-width:300px;
+		}
+		
+		&.short {
+			height:40px;
+			min-width:180px;
+			width:29%;
+		}
+		
+		.item {
+			box-sizing:padding-box;
+			display:block;
+			text-align:left;
+			border:none;
+			text-decoration:none;
+			font-weight:normal;
+			border-radius: 5px;
+			padding:7px;
+			font-size:small;
+			z-index:5;
+			height:100%;
+			width:100%;
+			position:relative;
+			background:$color_bgdark;
+			color:$color_subtext;
+			
+			.item_flags {
+				position:absolute;
+				bottom:3px;
+				right:5px;
+				
+				&.hovericons16 a { margin:0px !important; padding:2px !important; }
+			}
+			
+			&.featured .item_summary_head, &.mature .item_summary_head { width:88%; }
+		}
+		
+		a.leaf_a {
+			@extend .item;
+			@include block_links;
+			position:static;
+		}
+		
+		.item_summary_head {
+			font-style:italic;
+			font-size:x-small;
+			margin-bottom:2px;
+			text-overflow:ellipsis;
+			white-space:nowrap;
+			overflow:hidden;
+			width:100%;
+			display:inline-block;
+			
+			.item_summary_title {
+				font-weight:bold;
+				font-style:normal;
+				font-size:large;
+				color: $color_maintext !important;
+			}
+		}
+		
+		.item_summary_body {
+			max-height:60%;
+			overflow:hidden;
+			text-overflow:ellipsis;
+			display:block;
+		}
+		
+		.item_feature_mark {
+			float:right;
+			margin:0px;
+			padding:0px;
+			width:30px;
+			height:30px;
+			
+			img {
+				width:24px;
+				height:24px;
+			}
+		}
+	}
+}
+
+
+//	JustifiedGallery
+.leaf_thumbs_wrapper.justified-gallery {
+	> a, > div {
+		opacity: 1;
+		filter: alpha(opacity=100);
+		
+		> .caption {
+			display:initial !important;
+			opacity:1 !important; 
+			filter: alpha(opacity=100) !important;
+			font-size: medium;
+			font-weight:bold;
+			
+			.full_page_split & { font-size:small; }
+		}
+		
+		&:hover > .caption, &:active > .caption, &:focus > .caption { background-color:$color_bg_leaf_hover; }
+		&.featured:hover > .caption, &.featured:active > .caption, &.featured:focus > .caption { background-color:$color_bg_leaf_featured_hover; }
+		&.mature:hover > .caption, &.mature:active > .caption, &.mature:focus > .caption { background-color:$color_bg_leaf_mature_hover; }
+	}
+}
+//	=====

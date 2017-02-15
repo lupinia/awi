@@ -6,9 +6,14 @@
 @import 'colors';
 @import 'mixins';
 @import url('https://fonts.googleapis.com/css?family=Noto+Sans:400,400i,700,700i&subset=latin-ext');
+@import url('http://fonts.googleapis.com/earlyaccess/notosanscherokee.css'); 
 
-$font_en_serif:  Cambria,'Palatino Linotype','Book Antiqua','URW Palladio L',serif;
-$font_en:  'Noto Sans', "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+
+//	Primary Structure
+html {
+	width:100%;
+	height:100%;
+}
 
 body {
 	color: $color_maintext;
@@ -20,10 +25,67 @@ body {
 	font-size:small;
 }
 
+.chr { font-family: $font_chr; }
+
+//	Look and Feel
+.transbox {
+	@include transbox_style;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	margin:2px;
+	padding:0px;
+}
+//	=====
+
+
+//	Links and Link Accessories
 a { @include default_links; }
+
+.hoverimgs {
+	a {
+		display:block;
+		margin:0px;
+		padding:0px;
+		background-repeat:no-repeat;
+		
+		&:link, &:visited {
+			img { visibility:hidden; }
+		}
+		
+		&:hover, &:active, &:focus {
+			background:none !important;
+			img { visibility:inherit; }
+		}
+	}
+}
+
+.hovericons16 { @include hovericons(16px,none,$color_bg_hover,3px); }
+.hovericons24 { @include hovericons(24px,none,$color_bg_hover); }
+.hovericons32 { @include hovericons(32px,$color_bg_hover,$color_blue); }
+//	=====
+
+
+//	Fixing Floats for Fun and Profit
+.clearfix {
+	height:1px;
+	width:1px;
+	display:block;
+	content:" ";
+	
+	&.clear_right { clear:right; }
+	&.clear_left { clear:left; }
+	&.clear_both { clear:both; }
+	&.float_left { float:left; }
+	&.float_right { float:right; }
+}
+//	=====
+
 
 /*	Errors	*/
 .error_critical { @include error($color_border_err_crit, $color_bg_err_crit, $color_text_err_crit, $img_bg_err_crit); }
 .error_warning { @include error($color_border_err_warn, $color_bg_err_warn, $color_text_err_warn, $img_bg_err_warn); }
 .error_notice { @include error($color_border_err_info, $color_bg_err_info, $color_text_err_info, $img_bg_err_info); }
+
+#error_css_20170214 { display:none !important; }
 /*	=====	*/

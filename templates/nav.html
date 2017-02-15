@@ -1,29 +1,48 @@
 {% if img %}
-<ul>
-	<li><a href="/" style="background-image:url({{ STATIC_PREFIX }}images/nav/creative-off.png)" title="Creative Work"><img src="{{ STATIC_PREFIX }}images/nav/creative-on.png" alt="Creative Work" /></a>
-		<ul class="submenu_wide">
-			<li><a href="/photo/" style="background-image:url({{ STATIC_PREFIX }}images/nav/photo-off.png)" title="Photography"><img src="{{ STATIC_PREFIX }}images/nav/photo-on.png" alt="Photography" /></a></li>
-			<li><a href="/writing/" style="background-image:url({{ STATIC_PREFIX }}images/nav/writing-off.png)" title="Written Work and Blog"><img src="{{ STATIC_PREFIX }}images/nav/writing-on.png" alt="Written Work and Blog" /></a></li>
-			<li><a href="/sl/" style="background-image:url({{ STATIC_PREFIX }}images/nav/sl-off.png)" title="Second Life Projects/Screenshots"><img src="{{ STATIC_PREFIX }}images/nav/sl-on.png" alt="Second Life Projects/Screenshots" /></a></li>
+<ul role="menubar">
+	<li role="menuitem" aria-haspopup="true"><a tabindex="1" href="/" style="background-image:url({{ STATIC_PREFIX }}images/nav/creative-off.png)" title="Creative Work"><img src="{{ STATIC_PREFIX }}images/nav/creative-on.png" alt="Creative Work" /></a>
+		<ul class="submenu_wide" role="menu">
+			<li role="menuitem"><a tabindex="2" href="/photo/" style="background-image:url({{ STATIC_PREFIX }}images/nav/photo-off.png)" title="Photography"><img src="{{ STATIC_PREFIX }}images/nav/photo-on.png" alt="Photography" /></a></li>
+			<li role="menuitem"><a tabindex="3" href="/writing/" style="background-image:url({{ STATIC_PREFIX }}images/nav/writing-off.png)" title="Written Work and Blog"><img src="{{ STATIC_PREFIX }}images/nav/writing-on.png" alt="Written Work and Blog" /></a></li>
+			<li role="menuitem"><a tabindex="4" href="/sl/" style="background-image:url({{ STATIC_PREFIX }}images/nav/sl-off.png)" title="Second Life Projects/Screenshots"><img src="{{ STATIC_PREFIX }}images/nav/sl-on.png" alt="Second Life Projects/Screenshots" /></a></li>
 		</ul>
 	</li>
-	<li class="menu_header_wide"><a href="/code/" style="background-image:url({{ STATIC_PREFIX }}images/nav/pro-off.png)" title="Professional Work"><img src="{{ STATIC_PREFIX }}images/nav/pro-on.png" alt="Professional Work" /></a>
-		<ul>
-			<li><a href="/code/" style="background-image:url({{ STATIC_PREFIX }}images/nav/software-off.png)" title="Software/Websites/Code"><img src="{{ STATIC_PREFIX }}images/nav/software-on.png" alt="Software/Websites/Code" /></a></li>
-			{% if site.name != 'Furry' %}<li><a href="/code/resume.htm" style="background-image:url({{ STATIC_PREFIX }}images/nav/resume-off.png)" title="Natasha's Résumé"><img src="{{ STATIC_PREFIX }}images/nav/resume-on.png" alt="Natasha's Résumé" /></a></li>{% endif %}
+	<li role="menuitem" class="menu_header_wide" aria-haspopup="true"><a tabindex="5" href="/code/" style="background-image:url({{ STATIC_PREFIX }}images/nav/pro-off.png)" title="Professional Work"><img src="{{ STATIC_PREFIX }}images/nav/pro-on.png" alt="Professional Work" /></a>
+		<ul role="menu">
+			<li role="menuitem"><a href="/code/" tabindex="6" style="background-image:url({{ STATIC_PREFIX }}images/nav/software-off.png)" title="Software/Websites/Code"><img src="{{ STATIC_PREFIX }}images/nav/software-on.png" alt="Software/Websites/Code" /></a></li>
+			{% if not 'meadow' in site.domain %}<li role="menuitem"><a tabindex="7" href="/code/resume.htm" style="background-image:url({{ STATIC_PREFIX }}images/nav/resume-off.png)" title="Natasha's Résumé"><img src="{{ STATIC_PREFIX }}images/nav/resume-on.png" alt="Natasha's Résumé" /></a></li>{% endif %}
 		</ul>
 	</li>
-	<li><a href="/personal/" style="background-image:url({{ STATIC_PREFIX }}images/nav/personal-off.png)" title="Personal "><img src="{{ STATIC_PREFIX }}images/nav/personal-on.png" alt="Professional Work" /></a>
-		<ul class="submenu_wide">
-			{% if site.name == 'Furry' %}<li><a href="/furry/" style="background-image:url({{ STATIC_PREFIX }}images/nav/furry-off.png)" title="Furry, My Little Pony, and Other Fandoms"><img src="{{ STATIC_PREFIX }}images/nav/furry-on.png" alt="Furry, My Little Pony, and Other Fandoms" /></a></li>{% endif %}
-			<li><a href="/personal/cooking/" style="background-image:url({{ STATIC_PREFIX }}images/nav/cooking-off.png)" title="Cooking, Food, and Recipes"><img src="{{ STATIC_PREFIX }}images/nav/cooking-on.png" alt="Cooking, Food, and Recipes" /></a></li>
-			<li><a href="/personal/cars/" style="background-image:url({{ STATIC_PREFIX }}images/nav/cars-off.png)" title="Cars/Vehicles/Automotive"><img src="{{ STATIC_PREFIX }}images/nav/cars-on.png" alt="Cars/Vehicles/Automotive" /></a></li>
-			<!--<li><a href="/cherokee/" style="background-image:url({{ STATIC_PREFIX }}images/nav/cherokee-off.png)" title="Cherokee (ᏣᎳᎩ) Language Resources"><img src="{{ STATIC_PREFIX }}images/nav/cherokee-on.png" alt="Cherokee (ᏣᎳᎩ) Language Resources" /></a></li>-->
+	<li role="menuitem" aria-haspopup="true"><a tabindex="8" href="/personal/" style="background-image:url({{ STATIC_PREFIX }}images/nav/personal-off.png)" title="Personal "><img src="{{ STATIC_PREFIX }}images/nav/personal-on.png" alt="Professional Work" /></a>
+		<ul class="submenu_wide" role="menu">
+			{% if 'meadow' in site.domain %}<li role="menuitem"><a tabindex="9" href="/furry/" style="background-image:url({{ STATIC_PREFIX }}images/nav/furry-off.png)" title="Furry, My Little Pony, and Other Fandoms"><img src="{{ STATIC_PREFIX }}images/nav/furry-on.png" alt="Furry, My Little Pony, and Other Fandoms" /></a></li>{% endif %}
+			<li role="menuitem"><a tabindex="10" href="/personal/cooking/" style="background-image:url({{ STATIC_PREFIX }}images/nav/cooking-off.png)" title="Cooking, Food, and Recipes"><img src="{{ STATIC_PREFIX }}images/nav/cooking-on.png" alt="Cooking, Food, and Recipes" /></a></li>
+			<li role="menuitem"><a tabindex="11" href="/personal/cars/" style="background-image:url({{ STATIC_PREFIX }}images/nav/cars-off.png)" title="Cars/Vehicles/Automotive"><img src="{{ STATIC_PREFIX }}images/nav/cars-on.png" alt="Cars/Vehicles/Automotive" /></a></li>
+			<!--<li role="menuitem"><a tabindex="12" href="/cherokee/" style="background-image:url({{ STATIC_PREFIX }}images/nav/cherokee-off.png)" title="Cherokee (ᏣᎳᎩ) Language Resources"><img src="{{ STATIC_PREFIX }}images/nav/cherokee-on.png" alt="Cherokee (ᏣᎳᎩ) Language Resources" /></a></li>-->
 		</ul>
 	</li>
-	<li><a href="/contact/" style="background-image:url({{ STATIC_PREFIX }}images/nav/contact-off.png)" title="Contact"><img src="{{ STATIC_PREFIX }}images/nav/contact-on.png" alt="Contact" /></a></li>
-	<!--<li class="menu_header_icon"><a href="/search/" style="background-image:url({{ STATIC_PREFIX }}images/icons/search-off.png)" title="Search/Filter"><img src="{{ STATIC_PREFIX }}images/icons/search-on.png" alt="Search/Filter" /></a></li>-->
-	<li class="menu_header_icon"><a href="/settings/" style="background-image:url({{ STATIC_PREFIX }}images/icons/settings-off.png)" title="Settings"><img src="{{ STATIC_PREFIX }}images/icons/settings-on.png" alt="Settings" /></a></li>
+	<li role="menuitem"><a tabindex="13" href="/contact/" style="background-image:url({{ STATIC_PREFIX }}images/nav/contact-off.png)" title="Contact"><img src="{{ STATIC_PREFIX }}images/nav/contact-on.png" alt="Contact" /></a></li>
+	<!--<li role="menuitem" class="menu_header_icon"><a tabindex="14" href="/search/" style="background-image:url({{ STATIC_PREFIX }}images/icons/search-off.png)" title="Search/Filter"><img src="{{ STATIC_PREFIX }}images/icons/search-on.png" alt="Search/Filter" /></a></li>-->
+	<li role="menuitem" class="menu_header_icon"><a tabindex="15" href="/settings/" style="background-image:url({{ STATIC_PREFIX }}images/icons/settings-off.png)" title="Settings"><img src="{{ STATIC_PREFIX }}images/icons/settings-on.png" alt="Settings" /></a></li>
+</ul>
+{% elif mobile %}
+<ul role="menubar">
+	<li id="menu_root_li" aria-haspopup="true" role="menuitem"><a id="menu_root" href="#" title="Menu Root"><img src="{{ STATIC_PREFIX }}images/icons/menu.png" alt="Menu Root" title="Menu Root" /></a>
+		<ul class="submenu_wide hoverimgs" role="menu">
+			<li role="menuitem"><a href="/photo/" style="background-image:url({{ STATIC_PREFIX }}images/nav/photo-off.png)" title="Photography"><img src="{{ STATIC_PREFIX }}images/nav/photo-on.png" alt="Photography" /></a></li>
+			<li role="menuitem"><a href="/writing/" style="background-image:url({{ STATIC_PREFIX }}images/nav/writing-off.png)" title="Written Work and Blog"><img src="{{ STATIC_PREFIX }}images/nav/writing-on.png" alt="Written Work and Blog" /></a></li>
+			<li role="menuitem"><a href="/sl/" style="background-image:url({{ STATIC_PREFIX }}images/nav/sl-off.png)" title="Second Life Projects/Screenshots"><img src="{{ STATIC_PREFIX }}images/nav/sl-on.png" alt="Second Life Projects/Screenshots" /></a></li>
+			<li role="menuitem"><a href="/code/" style="background-image:url({{ STATIC_PREFIX }}images/nav/software-off.png)" title="Software/Websites/Code"><img src="{{ STATIC_PREFIX }}images/nav/software-on.png" alt="Software/Websites/Code" /></a></li>
+			{% if not 'meadow' in site.domain %}<li role="menuitem"><a tabindex="8" href="/code/resume.htm" style="background-image:url({{ STATIC_PREFIX }}images/nav/resume-off.png)" title="Natasha's Résumé"><img src="{{ STATIC_PREFIX }}images/nav/resume-on.png" alt="Natasha's Résumé" /></a></li>{% endif %}
+			<li role="menuitem"><a href="/personal/" style="background-image:url({{ STATIC_PREFIX }}images/nav/personal-off.png)" title="Personal "><img src="{{ STATIC_PREFIX }}images/nav/personal-on.png" alt="Professional Work" /></a></li>
+			{% if 'meadow' in site.domain %}<li role="menuitem"><a tabindex="10" href="/furry/" style="background-image:url({{ STATIC_PREFIX }}images/nav/furry-off.png)" title="Furry, My Little Pony, and Other Fandoms"><img src="{{ STATIC_PREFIX }}images/nav/furry-on.png" alt="Furry, My Little Pony, and Other Fandoms" /></a></li>{% endif %}
+			<li role="menuitem"><a href="/personal/cooking/" style="background-image:url({{ STATIC_PREFIX }}images/nav/cooking-off.png)" title="Cooking, Food, and Recipes"><img src="{{ STATIC_PREFIX }}images/nav/cooking-on.png" alt="Cooking, Food, and Recipes" /></a></li>
+			<li role="menuitem"><a href="/personal/cars/" style="background-image:url({{ STATIC_PREFIX }}images/nav/cars-off.png)" title="Cars/Vehicles/Automotive"><img src="{{ STATIC_PREFIX }}images/nav/cars-on.png" alt="Cars/Vehicles/Automotive" /></a></li>
+			<!--<li role="menuitem"><a href="/cherokee/" style="background-image:url({{ STATIC_PREFIX }}images/nav/cherokee-off.png)" title="Cherokee (ᏣᎳᎩ) Language Resources"><img src="{{ STATIC_PREFIX }}images/nav/cherokee-on.png" alt="Cherokee (ᏣᎳᎩ) Language Resources" /></a></li>-->
+			<li role="menuitem"><a href="/contact/" style="background-image:url({{ STATIC_PREFIX }}images/nav/contact-off.png)" title="Contact"><img src="{{ STATIC_PREFIX }}images/nav/contact-on.png" alt="Contact" /></a></li>
+			<!--<li role="menuitem" class="menu_header_icon"><a href="/search/" style="background-image:url({{ STATIC_PREFIX }}images/icons/search-off.png)" title="Search/Filter"><img src="{{ STATIC_PREFIX }}images/icons/search-on.png" alt="Search/Filter" /></a></li>-->
+		</ul>
+	</li>
 </ul>
 {% else %}
 <a href="/">Home</a> &bull; 
@@ -34,10 +53,8 @@
 <a href="/sl/">Second Life (SL)</a> &bull; 
 <!-- <a href="/cherokee/">Cherokee (ᏣᎳᎩ) Language Resources</a> &bull;  -->
 <a href="/personal/">Personal</a> &bull; 
-{% if site.name == 'Furry' %}<a href="/furry/">Furry/MLP</a> &bull; {% endif %}
+{% if 'meadow' in site.domain %}<a href="/furry/">Furry/MLP</a> &bull; {% endif %}
 <a href="/cars/">Cars</a> &bull; 
-<a href="/contact/">Contact</a> &bull; 
+<a href="/contact/">Contact</a>
 <!-- <a href="/search/">Search</a> &bull;  -->
-<a href="/settings/">Settings</a>
-<br>
 {% endif %}

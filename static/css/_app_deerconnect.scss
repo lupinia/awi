@@ -1,0 +1,53 @@
+//	Lupinia Studios Main Theme - "Showcase"
+//	App-Specific SASS Stylesheet - DeerConnect
+//	By Natasha L.
+//	www.lupinia.net | github.com/lupinia
+
+/*	Contact Form	*/
+form table.contactform {
+	th {
+		text-align:right;
+		font-size:small;
+		vertical-align:top;
+		padding-right:3px;
+	}
+	
+	tr.has_error th {
+		vertical-align:bottom;
+	}
+	
+	td {
+		width:280px;
+		
+		input, textarea {
+			width:100%;
+		}
+		
+		.errorlist {
+			margin:0px;
+			padding:0px;
+			list-style-type: none;
+			
+			li {
+				font-size:x-small;
+				margin:3px;
+				padding:3px;
+				color:  $color_text_err_crit;
+				border-radius:5px;
+				background-color:  $color_bg_err_crit;
+				border:  1px solid $color_border_err_crit;
+				
+			}
+		}
+	}
+	
+	tr.submitbutton td {
+		text-align:right;
+		
+		input {
+			width:auto;
+			margin-top:10px;
+		}
+	}
+}
+/*	=====	*/

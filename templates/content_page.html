@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{% if object %}{{block.super}} - {{object}}{% else %}{{block.super}}{% endif %}{% endblock %}
+{% block bg_image %}{% include 'sunset/bg_image.html' %}{% endblock %}
+
+{% block content_left %}
+	{% if error %}
+		<div class="left_sidebar">
+			{% load errors %}
+			{% error_display error %}
+			{% if embed_mature_form %}
+				{% include 'awi_access/age_form_iframe.html' %}
+			{% endif %}
+	{% elif object %}
+		<div class="left_full {{extra_classes}}"{% if extra_style %} style="{{extra_style}}"{% endif %}>
+			{% if not title_in_sidebar %}
+				<div id="page_title">
+					{% if can_edit %}
+						<div id="page_title_extra">
+							{% include 'deertrees/leaf_adminlinks.html' %}
+							<span class="secondary_time">{{object.display_times.1.label}}:  {{object.display_times.1.timestamp|date:'F j, Y  G:i:s'}}</span>
+						</div>
+					{% endif %}
+
+					<div id="page_title_main"><h2>{{object}}</h2>
+					<div id="byline">{{object.display_times.0.label}}:  {{object.display_times.0.timestamp|date:'F j, Y  G:i:s'}} &bull; {{body_text|wordcount}} words</div>
+					</div>
+				</div>
+			{% endif %}
+	{% endif %}
+	
+	{% block content_body %}{% endblock %}
+		</div>
+{% endblock %}
+
+{% block content_right %}
+	{% block sidebar_modules %}{% endblock %}
+	
+	{% if object and not error %}
+		{% comment %}<!-- Tags -->{% endcomment %}
+		{% if tags %}
+			{% include 'deertrees/taglist_sidebar.html' %}
+		{% endif %}
+		
+		{% comment %}<!-- Access codes -->{% endcomment %}
+		{% if can_edit %}
+			{% include 'awi_access/access_code_widget.html' %}
+		{% endif %}
+	{% endif %}
+{% endblock %}

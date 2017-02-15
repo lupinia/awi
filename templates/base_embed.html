@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+{% now "Y" as curyear %}
+<head>
+	<meta charset="UTF-8">
+	<meta name="author" content="{% include 'authorname.txt' %}" />
+	<meta name="designer" content="Lupinia Studios - www.lupinia.net" />
+	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{{curyear}} by {% include 'authorname.txt' %}" />
+
+	<title>{% block title %}Lupinia Studios{% endblock %}</title>
+	
+	{% block extra_head %}{% endblock %}
+	<link href="{{STATIC_PREFIX}}css/showcase_embed.css" type="text/css" rel="stylesheet" id="main_css" />
+</head>
+
+	<body>
+		<div class="embed_wrapper">
+			{% block content_body %}
+			{% endblock %}
+		</div>
+	</body>
+</html>

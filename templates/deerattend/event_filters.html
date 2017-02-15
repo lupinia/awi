@@ -5,80 +5,78 @@
 
 
 {% block content_right %}
-	<div class="right_sidebar">
-		{% if can_edit %}
-			<div class="transbox right_sidebar_section filters_list">
-				<a class="sidebar_link" href="{% url 'admin:deerattend_event_instance_add' %}{% if cur_filter_type == 'event' %}?event={{cur_filter.pk}}{% elif cur_filter_type == 'venue' %}?venue={{cur_filter.pk}}{% elif cur_filter_type == 'flag' %}?flags={{cur_filter.pk}}{% endif %}">
-					<img class="sidebar_link_img" src="{{ STATIC_PREFIX }}images/icons/add.png" alt="Add New Event Instance" title="Add New Event Instance" />
-					<span class="sidebar_link_title">Add New Event</span>
+	{% if can_edit %}
+		<div class="right_sidebar_section filters_list">
+			<a class="sidebar_link" href="{% url 'admin:deerattend_event_instance_add' %}{% if cur_filter_type == 'event' %}?event={{cur_filter.pk}}{% elif cur_filter_type == 'venue' %}?venue={{cur_filter.pk}}{% elif cur_filter_type == 'flag' %}?flags={{cur_filter.pk}}{% endif %}">
+				<img class="sidebar_link_img" src="{{ STATIC_PREFIX }}images/icons/add.png" alt="Add New Event Instance" title="Add New Event Instance" />
+				<span class="sidebar_link_title">Add New Event</span>
+			</a>
+			{% if cur_filter_type == 'event' %}
+				<a class="sidebar_link" href="{% url 'admin:deerattend_event_change' cur_filter.pk %}">
+					<img class="sidebar_link_img" src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit {{cur_filter.name}}" title="Edit {{cur_filter.name}}" />
+					<span class="sidebar_link_title">Edit {{cur_filter.name}}</span>
 				</a>
-				{% if cur_filter_type == 'event' %}
-					<a class="sidebar_link" href="{% url 'admin:deerattend_event_change' cur_filter.pk %}">
-						<img class="sidebar_link_img" src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit {{cur_filter.name}}" title="Edit {{cur_filter.name}}" />
-						<span class="sidebar_link_title">Edit {{cur_filter.name}}</span>
-					</a>
-				{% elif cur_filter_type == 'type' %}
-					<a class="sidebar_link" href="{% url 'admin:deerattend_event_type_change' cur_filter.pk %}">
-						<img class="sidebar_link_img" src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit {{cur_filter.name}}" title="Edit {{cur_filter.name}}" />
-						<span class="sidebar_link_title">Edit {{cur_filter.name}}</span>
-					</a>
-				{% elif cur_filter_type == 'flag' %}
-					<a class="sidebar_link" href="{% url 'admin:deerattend_attendance_flag_change' cur_filter.pk %}">
-						<img class="sidebar_link_img" src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit {{cur_filter.name}}" title="Edit {{cur_filter.name}}" />
-						<span class="sidebar_link_title">Edit {{cur_filter.name}}</span>
-					</a>
-				{% elif cur_filter_type == 'venue' %}
-					<a class="sidebar_link" href="{% url 'admin:deerattend_venue_change' cur_filter.pk %}">
-						<img class="sidebar_link_img" src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit {{cur_filter.name}}" title="Edit {{cur_filter.name}}" />
-						<span class="sidebar_link_title">Edit {{cur_filter.name}}</span>
-					</a>
-				{% endif %}
-			</div>
+			{% elif cur_filter_type == 'type' %}
+				<a class="sidebar_link" href="{% url 'admin:deerattend_event_type_change' cur_filter.pk %}">
+					<img class="sidebar_link_img" src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit {{cur_filter.name}}" title="Edit {{cur_filter.name}}" />
+					<span class="sidebar_link_title">Edit {{cur_filter.name}}</span>
+				</a>
+			{% elif cur_filter_type == 'flag' %}
+				<a class="sidebar_link" href="{% url 'admin:deerattend_attendance_flag_change' cur_filter.pk %}">
+					<img class="sidebar_link_img" src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit {{cur_filter.name}}" title="Edit {{cur_filter.name}}" />
+					<span class="sidebar_link_title">Edit {{cur_filter.name}}</span>
+				</a>
+			{% elif cur_filter_type == 'venue' %}
+				<a class="sidebar_link" href="{% url 'admin:deerattend_venue_change' cur_filter.pk %}">
+					<img class="sidebar_link_img" src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit {{cur_filter.name}}" title="Edit {{cur_filter.name}}" />
+					<span class="sidebar_link_title">Edit {{cur_filter.name}}</span>
+				</a>
+			{% endif %}
+		</div>
+	{% endif %}
+	
+	<div class="right_sidebar_section filters_list">
+		<h3>Event Types</h3>
+		{% for filter in filters.types %}
+			{% if filter != cur_filter %}
+				<a href="{% url 'deerattend:filter_type' filter.slug %}{% if is_map_view %}?display=map{% endif %}" class="sidebar_link" title="{{filter.name}} - {{filter.num_items}} Item{{filter.num_items|pluralize}}">
+					<span class="sidebar_link_title no_icon">{{filter.name}}</span>
+					<div class="item_count">{{filter.num_items}}</div>
+				</a>
+			{% endif %}
+		{% endfor %}
+		{% if cur_filter and cur_filter_type == 'type' %}
+			<a class="sidebar_link" href="{% url 'deerattend:full_list' %}{% if is_map_view %}?display=map{% endif %}" title="Clear Filters"><em>Clear Filters</em></a>
 		{% endif %}
-		
-		<div class="transbox right_sidebar_section filters_list">
-			<h3>Event Types</h3>
-			{% for filter in filters.types %}
-				{% if filter != cur_filter %}
-					<a href="{% url 'deerattend:filter_type' filter.slug %}{% if is_map_view %}?display=map{% endif %}" class="sidebar_link" title="{{filter.name}} - {{filter.num_items}} Item{{filter.num_items|pluralize}}">
-						<span class="sidebar_link_title no_icon">{{filter.name}}</span>
-						<div class="item_count">{{filter.num_items}}</div>
-					</a>
-				{% endif %}
-			{% endfor %}
-			{% if cur_filter and cur_filter_type == 'type' %}
-				<a class="sidebar_link" href="{% url 'deerattend:full_list' %}{% if is_map_view %}?display=map{% endif %}" title="Clear Filters"><em>Clear Filters</em></a>
+	</div>
+	
+	<div class="right_sidebar_section filters_list">
+		<h3>Attendance Flags</h3>
+		{% for filter in filters.flags %}
+			{% if filter != cur_filter %}
+				<a href="{% url 'deerattend:filter_flag' filter.slug %}{% if is_map_view %}?display=map{% endif %}" class="sidebar_link" title="{{filter.name}} - {{filter.num_items}} Item{{filter.num_items|pluralize}}">
+					<img src="{{filter.get_icon_url}}" alt="{{filter.name}}" title="{{filter.name}}" class="sidebar_link_img" />
+					<span class="sidebar_link_title">{{filter.name}}</span>
+					<div class="item_count">{{filter.num_items}}</div>
+				</a>
 			{% endif %}
-		</div>
-		
-		<div class="transbox right_sidebar_section filters_list">
-			<h3>Attendance Flags</h3>
-			{% for filter in filters.flags %}
-				{% if filter != cur_filter %}
-					<a href="{% url 'deerattend:filter_flag' filter.slug %}{% if is_map_view %}?display=map{% endif %}" class="sidebar_link" title="{{filter.name}} - {{filter.num_items}} Item{{filter.num_items|pluralize}}">
-						<img src="{{filter.get_icon_url}}" alt="{{filter.name}}" title="{{filter.name}}" class="sidebar_link_img" />
-						<span class="sidebar_link_title">{{filter.name}}</span>
-						<div class="item_count">{{filter.num_items}}</div>
-					</a>
-				{% endif %}
-			{% endfor %}
-			{% if cur_filter and cur_filter_type == 'flag' %}
-				<a class="sidebar_link" href="{% url 'deerattend:full_list' %}{% if is_map_view %}?display=map{% endif %}" title="Clear Filters"><em>Clear Filters</em></a>
+		{% endfor %}
+		{% if cur_filter and cur_filter_type == 'flag' %}
+			<a class="sidebar_link" href="{% url 'deerattend:full_list' %}{% if is_map_view %}?display=map{% endif %}" title="Clear Filters"><em>Clear Filters</em></a>
+		{% endif %}
+	</div>
+	
+	<div class="right_sidebar_section filters_list">
+		<h3>Filters</h3>
+		{% for filter in filters.special %}
+			{% if filter != cur_filter %}
+				<a href="{% url 'deerattend:filter_special' filter.slug %}{% if is_map_view %}?display=map{% endif %}" class="sidebar_link{% if filter.is_mature %} mature{% endif %}" title="{{filter.name}}">
+					<span class="sidebar_link_title no_icon">{{filter.name}}</span>
+				</a>
 			{% endif %}
-		</div>
-		
-		<div class="transbox right_sidebar_section filters_list">
-			<h3>Filters</h3>
-			{% for filter in filters.special %}
-				{% if filter != cur_filter %}
-					<a href="{% url 'deerattend:filter_special' filter.slug %}{% if is_map_view %}?display=map{% endif %}" class="sidebar_link{% if filter.is_mature %} mature{% endif %}" title="{{filter.name}}">
-						<span class="sidebar_link_title no_icon">{{filter.name}}</span>
-					</a>
-				{% endif %}
-			{% endfor %}
-			{% if cur_filter and cur_filter_type == 'special' %}
-				<a class="sidebar_link" href="{% url 'deerattend:full_list' %}{% if is_map_view %}?display=map{% endif %}" title="Clear Filters"><em>Clear Filters</em></a>
-			{% endif %}
-		</div>
+		{% endfor %}
+		{% if cur_filter and cur_filter_type == 'special' %}
+			<a class="sidebar_link" href="{% url 'deerattend:full_list' %}{% if is_map_view %}?display=map{% endif %}" title="Clear Filters"><em>Clear Filters</em></a>
+		{% endif %}
 	</div>
 {% endblock %}

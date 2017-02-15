@@ -8,6 +8,8 @@
 {% now "Y" as curyear %}
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
 	<meta name="author" content="{% include 'authorname.txt' %}" />
 	<meta name="designer" content="Lupinia Studios - www.lupinia.net" />
 	<meta name="description" content="{% block desc %}Lupinia Studios is {% include 'authorname.txt' %}'s personal portfolio, featuring her written works, digital photography, and digital graphics.{% endblock %}" />
@@ -23,74 +25,84 @@
 
 <div id="mainwrap">
 	<header>
-		<nav class="hoverlinks transbox">
-			{% include 'nav.html' with img=True %}
-		</nav>
-
-		<div id="header_logo" class="transbox">
-			<a href="/"><img src="{{ STATIC_PREFIX }}images/text/title{% if debug_check %}-beta{% endif %}.png" title="Lupinia Studios (Beta)" alt="Lupinia Studios (Beta)" /><br /></a>
-			<a href="/about/"><img id="sig_image" src="{{ STATIC_PREFIX }}images/text/name-{% include 'authorname.txt' with type='image' %}.png" title="By {% include 'authorname.txt' %}" alt="By {% include 'authorname.txt' %}" /></a>
+		<div id="header_logo">
+			<a href="/" id="large_logo"><img src="{{ STATIC_PREFIX }}images/text/title{% if debug_check %}-beta{% endif %}.png" title="Lupinia Studios (Beta)" alt="Lupinia Studios (Beta)" /><br /></a>
+			<a href="/" id="small_logo"><img src="{{ STATIC_PREFIX }}images/text/admin-title.png" title="Lupinia Studios (Beta)" alt="Lupinia Studios (Beta)" /><br /></a>
+			
+			<a id="sig_image" href="/about/"><img src="{{ STATIC_PREFIX }}images/text/name-{% include 'authorname.txt' with type='image' %}.png" title="By {% include 'authorname.txt' %}" alt="By {% include 'authorname.txt' %}" /></a>
 			
 			{% block social_icons %}{% include 'deerconnect/header_social_icons.html' %}{% endblock %}
 		</div>
+		
+		<nav class="hoverimgs" id="desktop" role="navigation" aria-label="Main Menu">
+			{% include 'nav.html' with img=True %}
+		</nav>
+		<nav id="mobile" role="navigation" aria-label="Main Menu (Mobile)">
+			{% include 'nav.html' with mobile=True %}
+		</nav>
+		
+		{% block breadcrumbs %}
+			{% if breadcrumbs %}
+				<div class="breadcrumbs">
+					<span>
+						<a href="/" title="Home">Home</a> 
+						{% for link in breadcrumbs %}
+							<span class="separator">&gt;</span> {% if forloop.last %}{{link.title}}{% else %}<a href="{{link.url}}" title="{{link.title}}">{{link.title}}</a>{% endif %} 
+						{% endfor %}
+					</span>
+				</div>
+			{% endif %}
+		{% endblock %}
 	</header>
-	{% block breadcrumbs %}
-		{% if breadcrumbs %}
-			<div class="breadcrumbs">
-				<span>
-					<a href="/" title="Home">Home</a> 
-					{% for link in breadcrumbs %}
-						<span class="separator">&gt;</span> {% if forloop.last %}{{link.title}}{% else %}<a href="{{link.url}}" title="{{link.title}}">{{link.title}}</a>{% endif %} 
-					{% endfor %}
-				</span>
+
+
+	<div id="content_area">
+		<div id="content_wrapper">
+			<div class="left_content">
+				<div id="error_css_20170214" class="left_sidebar"><div class="error error_critical">The most recent version of the site's stylesheet did not load.  Please refresh the page.</div></div>
+				{% block content_left %}
+					{% comment %}<!-- This section is for primary content, but can be used for float:left sidebars too.  -->{% endcomment %}
+				{% endblock %}
 			</div>
-			<div style="clear:left;height:0px;width:0px;">&nbsp;</div>
-		{% endif %}
-	{% endblock %}
-
-	<div id="content_area" {% if breadcrumbs %}class="with_breadcrumbs"{% endif %}>
-		{% block content_right %}
-			{% comment %}<!-- This section is for float:right sidebar elements.  -->{% endcomment %}
-		{% endblock %}
-
-		{% block content_left %}
-			{% comment %}<!-- This section is for primary content, but can be used for float:left sidebars too.  -->{% endcomment %}
-		{% endblock %}
-
-		{% block content_center %}
-			{% comment %}<!-- This section can be used to put something between left and right.  -->{% endcomment %}
-		{% endblock %}
-		<br style="clear:right;" />
+			
+			<div class="right_sidebar">
+				{% block content_right %}
+					{% comment %}<!-- This section is for right sidebar elements.  -->{% endcomment %}
+				{% endblock %}
+			</div>
+		</div>
+		
+		<div class="clearfix float_left"></div><div class="clearfix clear_both"></div>
 	</div>
 
 	<footer class="transbox">
 		<div id="footer-right">
-			{% if photo_bg %}&nbsp;{% else %}{% bg_info %}{% endif %}<br />
-			<span class="lower">&copy;2000-{{curyear}} {% include 'authorname.txt' %} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a></span>
+			<div class="bg_info">{% if showcase_mode %}&nbsp;{% else %}{% bg_info %}{% endif %}</div>
+			<div class="lower">&copy;2000-{{curyear}} {% include 'authorname.txt' %} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a></div>
 		</div>
 		
-		<nav>
+		<nav role="navigation" aria-label="Footer Links">
 			{% include 'nav.html' %}
-			
-			<span class="lower">
-			{% block userinfo %}
-				{% if user.is_authenticated %}
-					{% if user.get_full_name %}
-						{{user.get_full_name}} ({{user.get_username}})
-					{% else %}
-						{{user.get_username}}
-					{% endif %}
-					&bull; <a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a>
-					{% if user.is_superuser %}
-					&bull; <a href="/admin/">Administration</a>
-					{% endif %}
-				{% else %}
-					<a href="{% url 'django.contrib.auth.views.login' %}">Login</a>
-				{% endif %}
-			{% endblock %}
-			&nbsp;&nbsp; <span id="processinfo"></span>
-			</span>
 		</nav>
+		<div class="lower" id="footer_userlinks">
+		{% block userinfo %}
+			{% if user.is_authenticated %}
+				{% if user.get_full_name %}
+					<span class="footer_username">{{user.get_full_name}} ({{user.get_username}}) &bull; </span>
+				{% else %}
+					<span class="footer_username">{{user.get_username}} &bull; </span>
+				{% endif %}
+				<a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a>
+				{% if user.is_superuser %}
+				&bull; <a href="/admin/">Administration</a>
+				{% endif %}
+			{% else %}
+				<a href="{% url 'django.contrib.auth.views.login' %}">Login</a>
+			{% endif %}
+				<span class="footer_settings">&bull; <a href="/settings/">Settings</a></span>
+		{% endblock %}
+		<span class="footer_renderinfo">&nbsp;&nbsp; <span id="processinfo"></span></span>
+		</div>
 	</footer>
 </div>
 

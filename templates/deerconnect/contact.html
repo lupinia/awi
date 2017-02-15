@@ -6,7 +6,7 @@
 
 {% block content_left %}
 	{% if error != 'mailform_toosoon' %}
-		<div class="transbox left_sidebar">
+		<div class="left_sidebar">
 			<h2>Contact Form</h2>
 			<p>Use this form to send an email.  Your information will only be used to communicate with the webmaster, and will not be shared with any third-parties, or used to send you unsolicited email.  All fields are required.</p>
 
@@ -23,7 +23,7 @@
 			</form>
 		</div>
 	{% else %}
-		<div class="transbox left_sidebar">
+		<div class="left_sidebar">
 			{% error_display error %}
 		</div>
 	{% endif %}
@@ -31,20 +31,16 @@
 
 {% block content_right %}
 	{% if links_im %}
-		<div class="right_sidebar">
-			<div class="transbox right_sidebar_section">
-				<h4>Messaging Services</h4>
-				{% include 'deerconnect/leaf_contact_link.html' with leaves=links_im blockname="sidebar" highlight_featured=True only %}
-			</div>
+		<div class="right_sidebar_section">
+			<h4>Messaging Services</h4>
+			{% include 'deerconnect/leaf_contact_link.html' with leaves=links_im blockname="sidebar" highlight_featured=True only %}
 		</div>
 	{% endif %}
 	
 	{% if links %}
-		<div class="right_sidebar">
-			<div class="transbox right_sidebar_section">
-				<h4>Other Links</h4>
-				{% include 'deerconnect/leaf_contact_link.html' with leaves=links blockname="sidebar" highlight_featured=True only %}
-			</div>
+		<div class="right_sidebar_section">
+			<h4>Other Links</h4>
+			{% include 'deerconnect/leaf_contact_link.html' with leaves=links blockname="sidebar" highlight_featured=True only %}
 		</div>
 	{% endif %}
 {% endblock %}

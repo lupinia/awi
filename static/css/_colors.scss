@@ -1,8 +1,15 @@
 //	Lupinia Studios Main Theme - "Showcase"
-//	SASS Color Variables
+//	SASS Color and Font Variables
 //	By Natasha L.
 //	www.lupinia.net | github.com/lupinia
 
+//	Fonts
+$font_en_serif:  Cambria,'Palatino Linotype','Book Antiqua','URW Palladio L',serif;
+$font_en:  'Noto Sans', "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+$font_chr:  'Noto Sans Cherokee', "Digohweli", sans-serif;
+
+
+//	Colors
 $color_maintext:  #fff2ff;
 $color_subtext:  #c3beff;
 $color_breadcrumbs:  #ddc0ff;
@@ -10,20 +17,24 @@ $color_alink:  #bbbbff;
 $color_afocus:  #ffffff;
 $color_shadow:  #2a2038;
 $color_border:  #776699;
+$color_bgalt_light:  #eeddff;
 
+$color_bgwhite: #fffcff;
 $color_bgtrans:  rgba(42, 24, 60, 0.85);
 $color_bgtrans_invis:  rgba(42, 24, 60, 0);
 $color_bgtrans_solid:  #2A183C;
 $color_bgtrans_dark:  rgba(25, 7, 43, 0.9);
 $color_bgdark: #19072b;
-$color_bgphoto: #110022;
-$color_bgphoto_trans: rgba(0, 0, 0, 0.85);
+$color_bgshowcase: #110022;
+$color_bgshowcase_trans: rgba(0, 0, 0, 0.85);
 $color_bgbright: #442761;
 
+$color_pink:  #cf53cf;
+$color_blue:  #5b4aFF;
+$color_grey:  #5b6364;
+$color_red:  #c0283a;
+
 $color_bg_hover:  #5b4a71;
-$color_bg_hover_blue:  #5b4aFF;
-$color_bg_hover_grey:  #5b6364;
-$color_bg_hover_red:  #c0283a;
 
 $color_bgtrans_leaf:  rgba(25, 7, 43, 0.6);
 $color_bg_leaf_hover:  #3b3149;

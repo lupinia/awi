@@ -1,0 +1,401 @@
+//	Lupinia Studios Main Theme - "Showcase"
+//	Headers and Footers SASS Stylesheet
+//	By Natasha L.
+//	www.lupinia.net | github.com/lupinia
+//	
+//	The header, footer, and nav rules got a little unwieldy, so I split them off to their own file.
+
+
+/*	Header	*/
+header {
+	position:relative;
+	z-index:4;
+	
+	body.showcase_mode & {
+		position:relative;
+		height:40px;
+		width:100%;
+		@include transbox_style;
+	}
+	
+	@media #{$scr_midwidth} {
+		@include transbox_style;
+		width:630px;
+		height:130px;
+		border-bottom-right-radius:10px;
+	}
+	
+	@media #{$scr_smallwidth} {
+		width:100%;
+		border-radius:0px !important;
+	}
+	
+	@media #{$scr_mobile} {
+		height:40px; 
+	}
+	
+	nav {
+		z-index:7;
+		
+		ul {
+			list-style:none;
+			margin:0px;
+			padding:0px;
+			position:relative;
+			z-index:7;
+			
+			li {
+				width: 140px;
+				
+				&.menu_header_wide, &.menu_header_wide > a {
+					width: 170px !important;
+				}
+				&.menu_header_icon, &.menu_header_icon > a {
+					width: 26px !important;
+				}
+				&.menu_header_wide ul {
+					right:auto !important;
+					margin-left:auto !important;
+					margin-right:auto !important;
+				}
+				
+				> a:hover + ul, > a:active + ul, > a:focus + ul { display:block; }
+			}
+			
+			li:hover > ul, li:active > ul, li:focus > ul {
+				display:block;
+			}
+			
+			ul {
+				display:none;
+				position:relative;
+				top:10px;
+				right:3px;
+				width: 140px;
+				padding:3px;
+				border-radius:5px;
+				@extend .transbox; 
+				
+				&:after {
+					bottom: 100%;
+					left: 50%;
+					border: solid transparent;
+					content: " ";
+					height: 0px;
+					width: 0px;
+					position: absolute;
+					pointer-events: none;
+					border-color: $color_bgtrans_invis;
+					border-bottom-color: $color_bgtrans;
+					border-width: 7px;
+					margin-left: -7px;
+				}
+				
+				&.submenu_wide, &.submenu_wide li, &.submenu_wide li a {
+					width: 170px !important;
+				}
+			}
+		}
+		
+		a {
+			width:140px !important;
+			height:30px !important;
+		}
+	}
+	
+	nav#desktop {
+		@include transbox_style;
+		height:30px;
+		margin:0px;
+		padding:0px;
+		padding-right:10px;
+		padding-bottom:3px;
+		border-bottom-left-radius:10px;
+		
+		position:absolute;
+		top:0px;
+		right:0px;
+		
+		body.showcase_mode & {
+			background: none !important;
+			border-radius:0px !important;
+			border:none !important;
+			box-shadow:none !important;
+			top:auto;
+			bottom:3px;
+			
+			@media #{$scr_midwidth} { right:0px; left:auto; }
+			@media #{$scr_midwidth_lightbox} { display:none !important; }
+		}
+		
+		@media #{$scr_midwidth} {
+			position:absolute;
+			bottom:0px;
+			left:0px;
+			top:auto;
+			right:auto;
+			width:630px;
+			background: $color_bgtrans_solid;
+			border-bottom-left-radius:inherit;
+			border-bottom-right-radius:10px;
+			border-top:1px solid $color_border;
+			padding-right:0px;
+			box-shadow:none;
+		}
+		
+		@media #{$scr_smallwidth} {
+			width:100%;
+			border-radius:0px !important;
+		}
+		
+		@media #{$scr_mobile} {
+			display:none;
+		}
+		
+		> ul > li {
+			float: left;
+		}
+		
+		ul ul.submenu_wide {
+			right: 19px;
+		}
+	}
+	
+	nav#mobile {
+		display:none;
+		position:absolute;
+		right:5px;
+		top:3px;
+		
+		body.showcase_mode & { @media #{$scr_midwidth_lightbox} { display:block !important; } }
+		
+		@media #{$scr_mobile} {
+			display:block;
+		}
+		
+		li#menu_root_li { 
+			width:36px; 
+			
+			> ul { 
+				position:relative; right:140px; 
+				
+				li a {
+					text-align:center;
+					background-position:center center;
+				}
+			}
+		}
+		
+		ul ul:after {
+			right: 12px;
+			left:auto;
+		}
+		
+		a#menu_root { 
+			width:24px !important;
+			height:24px !important;
+			display:inline-block;
+			padding:5px;
+			margin:1px;
+			border-radius:5px;
+			
+			&:link, &:visited {
+				background: $color_bg_hover;
+			}
+			
+			&:hover, &:active, &:focus {
+				background: $color_blue;
+			}
+		}
+	}
+	
+	#header_logo {
+		@include transbox_style;
+		position:absolute;
+		top:0px;
+		left:0px;
+		z-index:5;
+		margin:0px;
+		padding:5px;
+		width:400px;
+		border-bottom-right-radius:10px;
+		
+		body.showcase_mode & {
+			box-shadow:none;
+			background:none;
+			width:auto;
+		}
+		
+		@media #{$scr_midwidth} {
+			box-shadow:none;
+			background:none;
+			position:static;
+		}
+		
+		@media #{$scr_mobile} {
+			position:absolute;
+			width: 320px; 
+		}
+		
+		#small_logo {
+			display:none;
+			
+			@media #{$scr_mobile} {
+				display:block;
+			}
+			
+			body.showcase_mode & { display:block; float:left; }
+		}
+		
+		#large_logo {
+			display:block;
+			
+			@media #{$scr_mobile} {
+				display:none;
+			}
+			
+			body.showcase_mode & { display:none; }
+		}
+		
+		#sig_image {
+			margin-left:15px;
+			margin-top:0px;
+			
+			@media #{$scr_mobile} {
+				display:none;
+			}
+			
+			body.showcase_mode & {
+				display:block; 
+				float:left; 
+				margin-left:0px; 
+				margin-top:8px;
+				margin-right:10px;
+				
+				@media #{$scr_micro_lightbox} { display:none !important; }
+			}
+		}
+		
+		#social_icons {
+			display: inline-block;
+			float: right;
+			margin: 0px;
+			margin-right:15px;
+			margin-top:2px;
+			padding: 0px;
+			
+			@media #{$scr_midwidth} {
+				position:absolute;
+				right:5px;
+				top:7px;
+			}
+			
+			@media #{$scr_micro} {
+				display:none;
+			}
+			
+			body.showcase_mode & {
+				position:static;
+				display:block; 
+				float:left; 
+				margin-top:3px; 
+				
+				@media #{$scr_midwidth} { display:none; }
+				@media #{$scr_midwidth_lightbox} { display:block; }
+				@media #{$scr_mobile} { display:none; }
+			}
+		}
+	}
+	
+	.breadcrumbs {
+		background-color:  $color_bgtrans_dark;
+		color:  $color_breadcrumbs;
+		box-shadow:-1px 1px 3px 1px $color_shadow;
+		font-size:x-small;
+		font-style:italic;
+		border-bottom-right-radius:  5px;
+		
+		margin-bottom:5px;
+		margin-left:0px;
+		margin-top:0px;
+		
+		padding-top:2px;
+		padding-right:10px;
+		padding-bottom:3px;
+		padding-left:8px;
+		
+		position:absolute;
+		z-index:4;
+		left:0px;
+		top:90px;
+		max-width:380px;
+		
+		@media #{$scr_midwidth} { 
+			max-width:90%;
+			background: $color_bgtrans;
+			top:130px;
+			max-width:620px;
+		}
+		
+		@media #{$scr_smallwidth} { max-width:90%; }
+		@media #{$scr_mobile} { background-color:  $color_bgtrans_dark; top:40px; }
+		
+		body.showcase_mode & { max-width:90%; top:40px; background-color:  $color_bgtrans_dark; } 
+		
+		a {
+			&:link, &:visited { text-decoration:none; }
+			&:hover, &:active, focus { text-decoration:underline; }
+		}
+		
+		.separator { color:$color_border; }
+	}
+}
+/*	=====	*/
+
+
+/*	Footer	*/
+footer {
+	width:100%;
+	height:32px;
+	bottom:0;
+	position:absolute;
+	padding-top:3px;
+	padding-bottom:5px;
+	font-size:0.9em;
+	font-style:italic;
+	z-index:5;
+	
+	nav { padding-left:10px; }
+	
+	@media #{$scr_smallwidth} {
+		nav { visibility:hidden; }
+		#footer_userlinks { font-size:0.9em; }
+	}
+	
+	@media #{$scr_mobile} {
+		nav, .footer_username, .footer_settings, .footer_renderinfo { display:none; }
+	}
+	
+	@media #{$scr_micro} {
+		#footer_userlinks { display:none; }
+	}
+	
+	@media #{$scr_tall} { box-shadow:0px -1px 8px 3px $color_bgshowcase !important; }
+	
+	#footer-right {
+		position:absolute;
+		right:0px;
+		margin-left:10px;
+		margin-right:10px;
+		text-align:right;
+	}
+	
+	.lower { 
+		font-size:0.8em; 
+		margin-top:1px;
+		margin-left:10px;
+	}
+	
+	#processinfo { color: $color_border; }
+}
+/*	=====	*/

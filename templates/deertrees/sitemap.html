@@ -3,7 +3,7 @@
 {% load mptt_tags %}
 
 {% block content_left %}
-	<div class="transbox left_sidebar">
+	<div class="left_sidebar">
 		<h2>{% if view == 'sitemap' %}Site Map{% elif return_to %}Select a Category{% elif view == 'catlist' %}All Categories{% endif %}</h2>
 		{% if view == 'catlist' %}
 			<p>This is a list of all categories defined in the system.  {% if return_to %}Click a category to select it.{% endif %}</p>
@@ -11,10 +11,10 @@
 	</div>
 	{% if error %}
 		{% load errors %}
-		<div class="transbox left_sidebar">{% error_display error %}</div>
+		<div class="left_sidebar">{% error_display error %}</div>
 	{% endif %}
 	
-	<div class="transbox fulltext_page">
+	<div class="left_full">
 		<ul class="tree">
 			{% if view == 'sitemap' %}
 				<li><a href="/robots.txt">/robots.txt</a> <em>(Robots.txt file)</em></li>

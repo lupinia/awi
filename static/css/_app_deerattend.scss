@@ -1,0 +1,123 @@
+//	Lupinia Studios Main Theme - "Showcase"
+//	App-Specific SASS Stylesheet - DeerAttend
+//	By Natasha L.
+//	www.lupinia.net | github.com/lupinia
+
+.events_table {
+	border-spacing: 0px;
+	width:100%;
+	
+	th {
+		font-weight:bold;
+		text-align:left;
+		margin:1px;
+		padding:3px;
+		white-space:nowrap;
+		width:1%;
+		border-bottom:1px solid $color_border;
+		
+		&.col_main {
+			width:99% !important;
+		}
+	}
+	
+	td {
+		margin:0px;
+		padding:5px;
+		white-space:nowrap;
+		width:1%;
+		vertical-align:top;
+		border-left:1px solid $color_border;
+		border-bottom:1px solid $color_border;
+		background-color:$color_bgtrans;
+		
+		&.col_main {
+			width:99% !important;
+			white-space:normal !important;
+			font-size:small;
+			
+			.notes {
+				font-size:smaller;
+				font-style:italic;
+				color:$color_subtext;
+			}
+			
+			.related_content { float:right; }
+			
+			.event_highlight {
+				font-size:0.8em;
+				font-style:normal;
+				font-variant: small-caps;
+				color:$color_subtext;
+			}
+			
+			.event_title {
+				font-size:medium;
+				
+				a:link, a:visited { color:$color_afocus; text-decoration:none; }
+				a:hover, a:active, a:focus { color:$color_alink; text-decoration:none; font-weight:bold; }
+			}
+		}
+		
+		.hovericons16 a { 
+			margin:0px !important; 
+			padding:2px !important;
+		}
+		
+		.item_flags { margin-top:2px; }
+		
+		&:last-child {
+			border-right:1px solid $color_border;
+		}
+	}
+	
+	tr.event_mature td { 
+		background-color:$color_bg_leaf_mature_hover; 
+		.event_highlight { color:$color_text_err_crit; }
+	}
+	tr.event_tentative td { font-style:italic; background-color:$color_bg_leaf_hover; }
+	tr.event_upcoming td { background-color:$color_bg_leaf_featured_hover !important; font-weight:bold; }
+}
+
+//	Maps and Map Accessories
+.events_sub_map {
+	@extend .sub_map;
+	.map_obj { height:300px; }
+}
+
+.leaflet-popup-content {
+	.marker-title .city { font-size:0.7em; font-weight:normal; }
+	
+	.marker-description .event_list_tooltip {
+		margin-top:3px;
+		
+		.event_row {
+			position:relative;
+			margin-top:2px;
+			padding-left:3px;
+			padding-right:3px;
+			padding-top:2px;
+			padding-bottom:2px;
+			
+			&.event_upcoming { font-weight:bold; background-color:$color_bg_leaf_featured_hover; }
+			&.event_tentative { font-style:italic; background-color:$color_bg_leaf_hover; }
+			&.event_mature { background-color:$color_bg_leaf_mature; }
+			
+			.event_name { 
+				padding-top:1px; 
+				padding-bottom:1px; 
+				color:$color_subtext;
+				
+				a:link, a:visited { color:$color_maintext; }
+				a:hover, a:active, a:focus { color:$color_maintext; text-decoration:underline; }
+			}
+			
+			.item_flags {
+				position:absolute;
+				right:5px;
+				top:1px;
+			}
+		}
+	}
+}
+//	=====

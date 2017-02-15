@@ -36,6 +36,14 @@ class single_page(leaf_view):
 					context['docfiles'].append(item)
 			
 			context['body_text'] = sunset_embed(context['object'].body, self.request)
+			
+			if self.request.GET.get('read', False):
+				context['showcase_mode'] = True
+			
+			if context['can_edit']:
+				context['edit_url'] = 'admin:deerbooks_page_change'
+			
+			context['extra_classes'] = 'writing_page'
 		
 		return context
 

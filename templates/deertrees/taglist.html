@@ -2,7 +2,7 @@
 {% block title %}{{block.super}} - {% if return_to %}Select a Tag{% else %}All Tags{% endif %}{% endblock %}
 
 {% block content_left %}
-	<div class="transbox left_sidebar">
+	<div class="left_sidebar">
 		{% if perms.deertrees.change_tag %}
 			<div class="admin_options">
 				<div class="hovericons16">
@@ -11,7 +11,8 @@
 			</div>
 		{% endif %}
 		<h2>{% if return_to %}Select a Tag{% else %}All Tags{% endif %}</h2>
-		<div style="clear:right;"><p>This is a list of all tags defined in the system.{% if return_to %}  Click a tag to select it.{% endif %}</p></div>
+		<div class="clearfix clear_left"></div>
+		<p>This is a list of all tags defined in the system.{% if return_to %}  Click a tag to select it.{% endif %}</p>
 		{% if error %}
 			{% load errors %}
 			<br /><hr /><br />
@@ -20,7 +21,7 @@
 	</div>
 
 	{% if error != "no_tags" %}
-		<div class="transbox fulltext_page">
+		<div class="left_full">
 			<h2>All Tags</h2>
 			<div class="leaf_links_wrapper">
 			{% for tag in tags %}
@@ -30,7 +31,7 @@
 					</a>
 				</div>
 			{% endfor %}
-			<br style="clear:left;" />
+			<div class="clearfix clear_left"></div>
 			</div>
 		</div>
 	{% endif %}

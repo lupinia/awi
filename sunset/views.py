@@ -26,7 +26,6 @@ class single_image(leaf_view):
 		context=super(single_image,self).get_context_data(**kwargs)
 		
 		if context['object']:
-			context['photo_page'] = True
 			context['meta'] = context['object'].meta.filter(key__public=True).select_related('key')
 			context['assets'] = {}
 			asset_list = context['object'].assets.all()
@@ -39,6 +38,18 @@ class single_image(leaf_view):
 				context['map_tiles'] = 'outdoors'
 				context['map_lat'] = context['object'].geo_lat
 				context['map_long'] = context['object'].geo_long
+			
+			context['showcase_mode'] = True
+			context['extra_classes'] = 'photo_page'
+			
+			if context['assets'].get('display', False):
+				context['extra_style'] = 'max-width:%dpx;' % context['assets'].get('display', False).img_width
+			
+			if not context['object'].body:
+				context['title_in_sidebar'] = True
+			
+			if context['can_edit']:
+				context['edit_url'] = 'admin:sunset_image_change'
 		else:
 			context['image'] = ''
 		

@@ -6,7 +6,7 @@
 
 {% block content_left %}
 	{% if form %}
-		<div class="transbox left_sidebar">
+		<div class="left_sidebar">
 			<h2>Age Verification</h2>
 			<p>Enter your age to view mature content.  Your age will not be stored in any way (more information in the <a href="/about/privacy.htm">privacy policy</a>).</p>
 
@@ -23,7 +23,7 @@
 			</form>
 		</div>
 	{% else %}
-		<div class="transbox left_sidebar">
+		<div class="left_sidebar">
 			{% error_display error %}
 		</div>
 	{% endif %}

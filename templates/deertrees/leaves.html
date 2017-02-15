@@ -7,15 +7,15 @@
 	{% if homepage %}
 		{% if error %}
 			{% load errors %}
-			<div class="transbox left_sidebar">{% error_display error %}</div>
+			<div class="left_sidebar">{% error_display error %}</div>
 		{% endif %}
 	{% else %}
 		{% if can_edit and not homepage %}
-			<div class="transbox left_sidebar admin_options">
+			<div class="left_sidebar admin_options">
 				{% include 'deertrees/adminlinks.html' %}
 			</div>
 		{% endif %}
-		<div class="transbox {% if body_text and object.desc and not desc_in_block %}fulltext_page{% else %}left_sidebar{% endif %}">
+		<div class="{% if body_text and object.desc and not desc_in_block %}left_full{% else %}left_sidebar{% endif %}">
 			<h2>{{object}}</h2>
 			{% if body_text and not desc_in_block %}
 				<div>
@@ -30,14 +30,14 @@
 			{% if main_left and not main_right %}
 				{% for main_block in main_left %}
 					{% if homepage %}
-						<div class="transbox left_sidebar">
+						<div class="left_sidebar">
 							{% if main_block.title %}<h4>{{main_block.title}}</h4>{% endif %}
 							{% include main_block.template with leaves=main_block.data blockname="main_half" highlight_featured=highlight_featured homepage=homepage only %}
 						</div>
 					{% else %}
-						<div class="transbox fulltext_page">
+						<div class="left_full">
 							{% if main_block == 'desc' %}
-								<div class="fulltext_page_body">
+								<div class="page_body_text">
 									{% include 'deertrees/leaves_desc.html' %}
 								</div>
 							{% else %}
@@ -50,14 +50,14 @@
 			{% elif main_right and not main_left %}
 				{% for main_block in main_right %}
 					{% if homepage %}
-						<div class="transbox left_sidebar">
+						<div class="left_sidebar">
 							{% if main_block.title %}<h4>{{main_block.title}}</h4>{% endif %}
 							{% include main_block.template with leaves=main_block.data blockname="main_half" highlight_featured=highlight_featured homepage=homepage only %}
 						</div>
 					{% else %}
-						<div class="transbox fulltext_page">
+						<div class="left_full">
 							{% if main_block == 'desc' %}
-								<div class="fulltext_page_body">
+								<div class="page_body_text">
 									{% include 'deertrees/leaves_desc.html' %}
 								</div>
 							{% else %}
@@ -68,13 +68,13 @@
 					{% endif %}
 				{% endfor %}
 			{% else %}
-				<div class="transbox full_page_split">
+				<div class="left_split">
 					<div class="left_column">
 						{% if main_left %}
 							{% for main_block in main_left %}
 								<div>
 									{% if main_block == 'desc' %}
-										<div class="fulltext_page_body">
+										<div class="page_body_text">
 											{% include 'deertrees/leaves_desc.html' %}
 										</div>
 									{% else %}
@@ -92,7 +92,7 @@
 							{% for main_block in main_right %}
 								<div>
 									{% if main_block == 'desc' %}
-										<div class="fulltext_page_body">
+										<div class="page_body_text">
 											{% include 'deertrees/leaves_desc.html' %}
 										</div>
 									{% else %}
@@ -105,7 +105,7 @@
 							<br />
 						{% endif %}
 					</div>
-					<br style="clear:left;" />
+					<div class="clearfix clear_both"></div>
 				</div>
 			{% endif %}
 		{% endif %}
@@ -113,14 +113,14 @@
 		{% if main %}
 			{% for main_block in main %}
 				{% if homepage %}
-					<div class="transbox left_sidebar">
+					<div class="left_sidebar">
 						{% if main_block.title %}<h4>{{main_block.title}}</h4>{% endif %}
 						{% include main_block.template with leaves=main_block.data blockname="main_half" highlight_featured=highlight_featured homepage=homepage only %}
 					</div>
 				{% else %}
-					<div class="transbox fulltext_page">
+					<div class="left_full">
 						{% if main_block == 'desc' %}
-							<div class="fulltext_page_body">
+							<div class="page_body_text">
 								{% include 'deertrees/leaves_desc.html' %}
 							</div>
 						{% else %}
@@ -135,12 +135,12 @@
 		{% if main_2 %}
 			{% for main_block in main_2 %}
 				{% if homepage %}
-					<div class="transbox left_sidebar">
+					<div class="left_sidebar">
 						{% if main_block.title %}<h4>{{main_block.title}}</h4>{% endif %}
 						{% include main_block.template with leaves=main_block.data blockname="main_half" highlight_featured=highlight_featured homepage=homepage only %}
 					</div>
 				{% else %}
-					<div class="transbox fulltext_page">
+					<div class="left_full">
 						{% if main_block.title %}<h3>{{main_block.title}}</h3>{% endif %}
 						{% include main_block.template with leaves=main_block.data blockname="main" highlight_featured=highlight_featured homepage=homepage only %}
 					</div>
@@ -152,14 +152,12 @@
 
 {% block content_right %}
 	{% if sidebar or can_edit %}
-		<div class="right_sidebar">
 		{% for sidebar_block in sidebar %}
-			<div class="transbox right_sidebar_section">
+			<div class="right_sidebar_section">
 			{% if sidebar_block.title %}<h4>{{sidebar_block.title}}</h4>{% endif %}
 			{% include sidebar_block.template with leaves=sidebar_block.data blockname="sidebar" highlight_featured=highlight_featured homepage=homepage only %}
 			</div>
 		{% endfor %}
 		{% include 'awi_access/access_code_widget.html' %}
-		</div>
 	{% endif %}
 {% endblock %}

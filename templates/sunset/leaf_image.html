@@ -2,8 +2,6 @@
 {% get_static_prefix as STATIC_PREFIX %}
 
 {% if 'main' in blockname %}
-	<link rel="stylesheet" href="{{STATIC_PREFIX}}css/justifiedGallery.min.css" />
-
 	<div id="sunset_thumb_array">
 		{% for image in leaves %}
 			{% if blockname == 'main_half' and forloop.counter > 8 %}
@@ -26,11 +24,11 @@
 	<script src="{{STATIC_PREFIX}}js/jquery.justifiedGallery.min.js"></script>
 	<script>
 	{% if homepage %}
-		$("#sunset_thumb_array").justifiedGallery({rowHeight:100, maxRowHeight:120, margins:2});
+		$("#sunset_thumb_array").justifiedGallery({rowHeight:100, maxRowHeight:120, margins:2, captionSettings:{animationDuration: 0, visibleOpacity: 1.0, nonVisibleOpacity: 0.0}});
 	{% elif 'left' in blockname or 'right' in blockname %}
-		$("#sunset_thumb_array").justifiedGallery({rowHeight:140, maxRowHeight:160, margins:4});
+		$("#sunset_thumb_array").justifiedGallery({rowHeight:140, maxRowHeight:160, margins:4, captionSettings:{animationDuration: 0, visibleOpacity: 1.0, nonVisibleOpacity: 0.0}});
 	{% else %}
-		$("#sunset_thumb_array").justifiedGallery({rowHeight:200, maxRowHeight:220, margins:7});
+		$("#sunset_thumb_array").justifiedGallery({rowHeight:200, maxRowHeight:220, margins:7, captionSettings:{animationDuration: 0, visibleOpacity: 1.0, nonVisibleOpacity: 0.0}});
 	{% endif %}
 	</script>
 {% endif %}

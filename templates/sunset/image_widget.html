@@ -38,11 +38,11 @@
 	<script src="{{STATIC_PREFIX}}js/jquery.justifiedGallery.min.js"></script>
 	<script>
 	{% if 'left' in blockname or 'right' in blockname %}
-		$("#sunset_thumb_array").justifiedGallery({rowHeight:110, maxRowHeight:130, margins:7, lastRow:'justify'});
-		$("#sunset_thumb_array_featured").justifiedGallery({rowHeight:110, maxRowHeight:130, margins:7, randomize:true, lastRow:'justify'});
+		$("#sunset_thumb_array").justifiedGallery({rowHeight:110, maxRowHeight:130, margins:7, lastRow:'justify', captionSettings:{animationDuration: 0, visibleOpacity: 1.0, nonVisibleOpacity: 0.0}});
+		$("#sunset_thumb_array_featured").justifiedGallery({rowHeight:110, maxRowHeight:130, margins:7, randomize:true, lastRow:'justify', captionSettings:{animationDuration: 0, visibleOpacity: 1.0, nonVisibleOpacity: 0.0}});
 	{% else %}
-		$("#sunset_thumb_array").justifiedGallery({rowHeight:160, maxRowHeight:200, margins:7});
-		$("#sunset_thumb_array_featured").justifiedGallery({rowHeight:160, maxRowHeight:200, margins:7, randomize:true});
+		$("#sunset_thumb_array").justifiedGallery({rowHeight:160, maxRowHeight:200, margins:7, captionSettings:{animationDuration: 0, visibleOpacity: 1.0, nonVisibleOpacity: 0.0}});
+		$("#sunset_thumb_array_featured").justifiedGallery({rowHeight:160, maxRowHeight:200, margins:7, randomize:true, captionSettings:{animationDuration: 0, visibleOpacity: 1.0, nonVisibleOpacity: 0.0}});
 	{% endif %}
 	</script>
 {% endif %}

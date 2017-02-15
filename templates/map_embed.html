@@ -1,4 +1,4 @@
-<link href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css' rel='stylesheet' />
+<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase_mapbox.css" type="text/css" rel="stylesheet" />
 <div class="{% if map_type %}{{map_type}}{% else %}fullpage_map{% endif %}">
 	<div id="{% if map_name %}{{map_name}}{% else %}awi_map{% endif %}" class="map_obj"></div>
 	<script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>

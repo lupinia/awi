@@ -3,7 +3,7 @@
 {% block cookiebanner %}{% endblock %}
 
 {% block content_left %}
-	<div class="transbox errorpage">
+	<div class="errorpage">
 		<h3>I'm Sorry...Something's Wrong, and I Couldn't Fix It!  (500)</h3>
 		<p class="errorpage_image"><img src="{{STATIC_PREFIX}}images/sad_fluttershy.jpg" alt="Sad Fluttershy" title="Fluttershy is really sad that the site is broken!" /></p>
 		<p>I'm really sorry, but there's an error in the site.  I tried so hard to get everything right.  Would you like to <a href="/">return home</a>?  Do you need a hug?</p>
@@ -12,37 +12,34 @@
 {% endblock %}
 
 {% block content_right %}
-	<div class="right_sidebar">
-		<div class="transbox right_sidebar_section">
-			<h3>Other Links</h3>
-			<a href="/" title="Home" class="sidebar_link">
-				<span class="sidebar_link_title">Home</span>
-			</a>
-			<a href="/contact" title="Contact" class="sidebar_link">
-				<span class="sidebar_link_title">Contact Info</span>
-			</a>
-			<a href="/about" title="About" class="sidebar_link">
-				<span class="sidebar_link_title">About</span>
-			</a>
-		</div>
+	<div class="right_sidebar_section">
+		<h3>Other Links</h3>
+		<a href="/" title="Home" class="sidebar_link">
+			<span class="sidebar_link_title">Home</span>
+		</a>
+		<a href="/contact" title="Contact" class="sidebar_link">
+			<span class="sidebar_link_title">Contact Info</span>
+		</a>
+		<a href="/about" title="About" class="sidebar_link">
+			<span class="sidebar_link_title">About</span>
+		</a>
+	</div>
 
-		<div class="transbox right_sidebar_section">
-			<h3>Error Details</h3>
-			<p><em>
-				HTTP 500<br />
-				Internal Server Error<br />
-				seneca.lupinia.net<br />
-				(Django)
-			</em></p>
-		</div>
+	<div class="right_sidebar_section">
+		<h3>Error Details</h3>
+		<p><em>
+			HTTP 500<br />
+			Internal Server Error<br />
+			seneca.lupinia.net<br />
+			(Django)
+		</em></p>
+	</div>
 
-		<div class="transbox right_sidebar_section">
-			<h4>Image Info</h4>
-			<p><em>
-				"Rain Won't Wipe Away the Tears"<br />
-				<sub><a href="http://johnjoseco.deviantart.com/art/Rain-Won-t-Wipe-Away-the-Tears-212771889">By John Joseco</a></sub>
-			</em></p>
-		</div>
-
+	<div class="right_sidebar_section">
+		<h4>Image Info</h4>
+		<p><em>
+			"Rain Won't Wipe Away the Tears"<br />
+			<sub><a href="http://johnjoseco.deviantart.com/art/Rain-Won-t-Wipe-Away-the-Tears-212771889">By John Joseco</a></sub>
+		</em></p>
 	</div>
 {% endblock %}

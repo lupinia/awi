@@ -3,7 +3,7 @@
 {% block cookiebanner %}{% endblock %}
 
 {% block content_left %}
-	<div class="transbox errorpage">
+	<div class="errorpage">
 		<h3>I'm Sorry...I Tried To Find It, I Really Did!  (404)</h3>
 		<p class="errorpage_image"><img src="{{STATIC_PREFIX}}images/scared_fluttershy.gif" alt="Scared Fluttershy" title="Fluttershy is really sorry we couldn't find your file!" /></p>
 		<p>I'm so sorry!  I tried to find "{{old_url}}", but I just don't know where it is.  I looked everywhere!  Would you like to <a href="/">return home</a>?  Please don't be mad!</p>
@@ -11,40 +11,37 @@
 {% endblock %}
 
 {% block content_right %}
-	<div class="right_sidebar">
-		<div class="transbox right_sidebar_section">
-			<h3>Other Links</h3>
-			<a href="/" title="Home" class="sidebar_link">
-				<span class="sidebar_link_title">Home</span>
-			</a>
-			<a href="/contact" title="Contact" class="sidebar_link">
-				<span class="sidebar_link_title">Contact Info</span>
-			</a>
-			<a href="/about" title="About" class="sidebar_link">
-				<span class="sidebar_link_title">About</span>
-			</a>
-		</div>
+	<div class="right_sidebar_section">
+		<h3>Other Links</h3>
+		<a href="/" title="Home" class="sidebar_link">
+			<span class="sidebar_link_title">Home</span>
+		</a>
+		<a href="/contact" title="Contact" class="sidebar_link">
+			<span class="sidebar_link_title">Contact Info</span>
+		</a>
+		<a href="/about" title="About" class="sidebar_link">
+			<span class="sidebar_link_title">About</span>
+		</a>
+	</div>
 
-		<div class="transbox right_sidebar_section">
-			<h3>Error Details</h3>
-			<p><em>
-				HTTP 404<br />
-				File Not Found<br />
-				seneca.lupinia.net<br />
-				(Django)
-			</em></p>
-			<p><em><sub>
-				<strong>Request:</strong><br />
-				{{old_url}}
-			</sub></em></p>
-		</div>
+	<div class="right_sidebar_section">
+		<h3>Error Details</h3>
+		<p><em>
+			HTTP 404<br />
+			File Not Found<br />
+			seneca.lupinia.net<br />
+			(Django)
+		</em></p>
+		<p><em><sub>
+			<strong>Request:</strong><br />
+			{{old_url}}
+		</sub></em></p>
+	</div>
 
-		<div class="transbox right_sidebar_section">
-			<h4>Image Info</h4>
-			<p><em>
-				Screen capture from "My Little Pony"
-			</em></p>
-		</div>
-
+	<div class="right_sidebar_section">
+		<h4>Image Info</h4>
+		<p><em>
+			Screen capture from "My Little Pony"
+		</em></p>
 	</div>
 {% endblock %}

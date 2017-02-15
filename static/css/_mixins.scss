@@ -36,19 +36,22 @@
 			background: $active_bg;
 		}
 		
-		&.blue:hover, &.blue:active, &.blue:focus { background: $color_bg_hover_blue; }
-		&.red:hover, &.red:active, &.red:focus { background: $color_bg_hover_red; }
-		&.grey:hover, &.grey:active, &.grey:focus { background: $color_bg_hover_grey; }
+		&.blue:hover, &.blue:active, &.blue:focus { background: $color_blue; }
+		&.red:hover, &.red:active, &.red:focus { background: $color_red; }
+		&.grey:hover, &.grey:active, &.grey:focus { background: $color_grey; }
 	}
+	
+	&.hovericons-wide a { padding:5px; }
 }
 
-@mixin leaf_links {
+@mixin block_links {
 	background:$color_bgdark;
 	color:$color_subtext;
 	
 	&:hover, &:active, &:focus { background-color:$color_bg_leaf_hover; }
 	
 	&.featured {
+		border:1px solid $color_bg_leaf_featured_hover;
 		&:link, &:visited { background-color:$color_bg_leaf_featured; }
 		&:hover, &:active, &:focus { background-color:$color_bg_leaf_featured_hover; }
 	}
@@ -60,6 +63,22 @@
 	}
 }
 
+@mixin transbox_style {
+	box-shadow:-1px 1px 3px 1px $color_shadow;
+	background: $color_bgtrans;
+	
+	hr {
+		border:none;
+		border-bottom:1px solid $color_border;
+		margin:1px;
+		height:1px;
+		margin-left:20px;
+		margin-right:20px;
+	}
+	
+	h2 { font-size:x-large; }
+}
+
 @mixin default_links($normal_decor:underline,$focus_decor:none) {
 	&:link, &:visited {
 		color: $color_alink;
@@ -69,4 +88,5 @@
 		color: $color_afocus;
 		text-decoration:$focus_decor;
 	}
+	&.boldlink { font-weight: bold; }
 }
