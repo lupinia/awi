@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
-
-{% load static %}
-{% load sunset_bg %}
-{% load cookielaw_tags %}
-{% get_static_prefix as STATIC_PREFIX %}
-{% now "Y" as curyear %}
 <head>
+	{% load static %}
+	{% load cookielaw_tags %}
+	{% load errors %}
+	{% load sunset_bg %}
+	{% get_static_prefix as STATIC_PREFIX %}
+	{% now "Y" as curyear %}
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
@@ -75,7 +75,7 @@
 		<div class="clearfix float_left"></div><div class="clearfix clear_both"></div>
 	</div>
 
-	<footer class="transbox">
+	<footer>
 		<div id="footer-right">
 			<div class="bg_info">{% if showcase_mode %}&nbsp;{% else %}{% bg_info %}{% endif %}</div>
 			<div class="lower">&copy;2000-{{curyear}} {% include 'authorname.txt' %} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a></div>
