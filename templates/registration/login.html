@@ -3,15 +3,15 @@
 {% block userinfo %}{% endblock %}
 
 {% block content_left %}
-	<div class="left_sidebar loginform">
-
-		{% if form.errors %}
-			<p>Your username and password didn't match. Please try again.</p>
-		{% endif %}
-
+	<div class="left_sidebar loginform" role="form" aria-label="User Login Form">
 		{% if not form %}
 			<p>Successfully logged out.  <a href="{% url 'django.contrib.auth.views.login' %}">Login again?</a></p>
 		{% else %}
+			{% if form.non_field_errors %}
+				{% for msg in form.non_field_errors %}
+					<div class="error error_warning">{{msg|escape}}</div>
+				{% endfor %}
+			{% endif %}
 			<form method="post" action="{% url 'django.contrib.auth.views.login' %}">
 				{% csrf_token %}
 				<div>
