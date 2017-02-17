@@ -12,6 +12,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 
 from deertrees.models import category
 from deerbooks.models import page
@@ -67,7 +68,10 @@ class event_type(models.Model):
 	slug = models.SlugField(unique=True)
 	notes = models.TextField(null=True, blank=True)
 	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
-	map_color = models.CharField(max_length=6, blank=True, default='3bb2d0', help_text="Hexadecimal-format color code for events of this type in the map view.")
+	map_color = models.CharField(max_length=6, blank=True, default='4a3bd0', help_text="Hexadecimal-format color code for events of this type in the map view.")
+	
+	# Annoyingly, Mapbox appears to have no way to actually USE the newest Maki icons in a map, so this field is a bit pointless at the moment.  But, hopefully someday it can be used to create more interesting markers.
+	symbol = models.CharField(max_length=40, blank=True, null=True, verbose_name='Maki icon', help_text=mark_safe('Icon to use from the <a href="https://www.mapbox.com/maki-icons/">Mapbox Maki</a> set.  Leave blank to use the number of items of this type as the symbol.'))
 	
 	def __unicode__(self):
 		return self.name

@@ -1,0 +1,6 @@
+{% extends "base_map.html" %}
+{% block title %}{{block.super}} - Events Attended{% if cur_filter %} - {{cur_filter.name}} - Map View{% endif %}{% endblock %}
+
+{% block content_right %}
+	{% include 'deerattend/event_filters.html' %}
+{% endblock %}

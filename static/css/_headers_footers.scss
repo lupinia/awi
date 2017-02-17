@@ -366,6 +366,22 @@ footer {
 	font-style:italic;
 	z-index:5;
 	
+	body.map_mode & { 
+		left:0px;
+		width:auto;
+		height:auto;
+		margin-right:0px; 
+		padding-right:15px; 
+		border-top-right-radius:10px;
+		
+		@media #{$scr_smallwidth} { 
+			nav { display:none; }
+		}
+		@media #{$scr_micro} {
+			#footer_userlinks { display:block; }
+		}
+	}
+	
 	nav { padding-left:10px; }
 	
 	@media #{$scr_smallwidth} {
@@ -389,6 +405,8 @@ footer {
 		margin-left:10px;
 		margin-right:10px;
 		text-align:right;
+		
+		body.map_mode & { display:none; }
 	}
 	
 	.lower { 

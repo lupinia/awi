@@ -1,5 +1,6 @@
-{% extends "deerattend/event_filters.html" %}
-{% load humanize %}
+{% extends "base.html" %}
+{% block title %}{{block.super}} - Events Attended{% if cur_filter %} - {{cur_filter.name}}{% endif %}{% endblock %}
+{% block bg_image %}{% include 'sunset/bg_image.html' with bg_tag='furry' %}{% endblock %}
 
 {% block content_left %}
 	{% if error %}
@@ -94,4 +95,8 @@
 			{% endif %}
 		</div>
 	{% endif %}
+{% endblock %}
+
+{% block content_right %}
+	{% include 'deerattend/event_filters.html' %}
 {% endblock %}

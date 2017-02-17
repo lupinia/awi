@@ -4,7 +4,6 @@
 	{% load static %}
 	{% load cookielaw_tags %}
 	{% load errors %}
-	{% load sunset_bg %}
 	{% get_static_prefix as STATIC_PREFIX %}
 	{% now "Y" as curyear %}
 	<meta charset="UTF-8">
@@ -17,13 +16,15 @@
 
 	<title>{% block title %}Lupinia Studios{% endblock %}</title>
 	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase.css" type="text/css" rel="stylesheet" id="main_css" />
+	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase_mapbox.css" type="text/css" rel="stylesheet" id="map_css" />
 	<script src="{{STATIC_PREFIX}}cookielaw/js/cookielaw.js" type="text/javascript"></script>
+	<script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>
 </head>
 
-{% block bg_image %}{% include 'sunset/bg_image.html' %}{% endblock %}
+<body class="map_mode">
 {% block cookiebanner %}{% cookielaw_banner %}{% endblock %}
 
-<div id="mainwrap">
+<div id="mainwrap" class="fullpage_map">
 	<header>
 		<div id="header_logo">
 			<a href="/" id="large_logo"><img src="{{ STATIC_PREFIX }}images/text/title{% if debug_check %}-beta{% endif %}.png" title="Lupinia Studios (Beta)" alt="Lupinia Studios (Beta)" /><br /></a>
@@ -54,57 +55,36 @@
 			{% endif %}
 		{% endblock %}
 	</header>
-
-
-	<div id="content_area">
-		<div id="content_wrapper">
-			<div class="left_content">
-				<div id="error_css_20170216" class="left_sidebar">{% error_display 'css_stale' %}</div>
-				{% block content_left %}
-					{% comment %}<!-- This section is for primary content, but can be used for float:left sidebars too.  -->{% endcomment %}
-				{% endblock %}
-			</div>
-			
-			<div class="right_sidebar">
-				{% block content_right %}
-					{% comment %}<!-- This section is for right sidebar elements.  -->{% endcomment %}
-				{% endblock %}
-			</div>
-		</div>
-		
-		<div class="clearfix float_left"></div><div class="clearfix clear_both"></div>
+	
+	<div class="right_sidebar">
+		{% block content_right %}
+			{% comment %}<!-- This section is for right sidebar elements.  -->{% endcomment %}
+		{% endblock %}
 	</div>
-
+	
+	<div id="awi_map" class="map_obj">
+		{% error_display 'nojs_map' %}
+	</div>
+	
 	<footer>
-		<div id="footer-right">
-			<div class="bg_info">{% if showcase_mode %}&nbsp;{% else %}{% bg_info %}{% endif %}</div>
-			<div class="lower">&copy;2000-{{curyear}} {% include 'authorname.txt' %} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a></div>
-		</div>
-		
 		<nav role="navigation" aria-label="Footer Links">
 			{% include 'nav.html' %}
 		</nav>
 		<div class="lower" id="footer_userlinks">
-		{% block userinfo %}
-			{% if user.is_authenticated %}
-				{% if user.get_full_name %}
-					<span class="footer_username">{{user.get_full_name}} ({{user.get_username}}) &bull; </span>
-				{% else %}
-					<span class="footer_username">{{user.get_username}} &bull; </span>
-				{% endif %}
-				<a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a>
-				{% if user.is_superuser %}
-				&bull; <a href="/admin/">Administration</a>
-				{% endif %}
-			{% else %}
-				<a href="{% url 'django.contrib.auth.views.login' %}">Login</a>
-			{% endif %}
-				<span class="footer_settings">&bull; <a href="/settings/">Settings</a></span>
-		{% endblock %}
-		<span class="footer_renderinfo">&nbsp;&nbsp; <span id="processinfo"></span></span>
+			&copy;2000-{{curyear}} {% include 'authorname.txt' %} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a>
+			<span class="footer_renderinfo">&nbsp;&nbsp; <span id="processinfo"></span></span>
 		</div>
 	</footer>
 </div>
+
+<script>
+	L.mapbox.accessToken = 'pk.eyJ1IjoibHVwaW5pYSIsImEiOiJjaXl6ZmQ4bDQwNGQ1MzNxd2Y5ZHExaXM4In0.OZfNM3zIXTKDazegaFMpQQ';
+	var map = L.mapbox.map('awi_map');
+	L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v10').addTo(map);
+	
+	var markers = L.mapbox.featureLayer(null, { sanitizer: function(x) { return x; } }).loadURL('{{map_data_url}}').addTo(map);
+	markers.on('ready', function () { map.fitBounds(markers.getBounds()); });
+</script>
 
 </body>
 </html>

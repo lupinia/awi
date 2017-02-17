@@ -10,6 +10,16 @@
 
 .leaflet-map-pane { z-index:3 !important; }
 
+.leaflet-top {
+	top: 0;
+	body.map_mode & { 
+		top:130px;
+		
+		@media #{$scr_midwidth} { top:150px; }
+		@media #{$scr_mobile} { top:60px; }
+	}
+}
+
 .leaflet-popup-content {
 	@include transbox_style;
 	padding: 10px 10px 15px;
@@ -214,10 +224,6 @@
     position: absolute;
     z-index: 4;
     pointer-events: none
-}
-
-.leaflet-top {
-    top: 0
 }
 
 .leaflet-right {

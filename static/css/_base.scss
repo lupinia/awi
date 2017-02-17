@@ -87,5 +87,5 @@ a { @include default_links; }
 .error_warning { @include error($color_border_err_warn, $color_bg_err_warn, $color_text_err_warn, $img_bg_err_warn); }
 .error_notice { @include error($color_border_err_info, $color_bg_err_info, $color_text_err_info, $img_bg_err_info); }
 
-#error_css_20170214 { display:none !important; }
+#error_css_20170214, #error_css_20170216 { display:none !important; }
 /*	=====	*/

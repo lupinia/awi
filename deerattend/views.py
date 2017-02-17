@@ -106,7 +106,7 @@ class event_list(special_feature_view, generic.ListView):
 		return filters
 	
 	def get_context_data(self, **kwargs):
-		context=super(event_list, self).get_context_data(**kwargs)
+		context = super(event_list, self).get_context_data(**kwargs)
 		context['filters'] = self.get_filters()
 		context['can_edit'] = self.can_edit()
 		
@@ -122,9 +122,12 @@ class event_list(special_feature_view, generic.ListView):
 		
 		context['geojson_slug'] = self.geojson_slug
 		if self.request.GET.get('display', False) == 'map' and self.geojson_slug:
+			self.template_name = 'deerattend/event_map.html'
 			context['is_map_view'] = True
 			context['map_type'] = 'fullpage_map'
 			context['map_data_url'] = reverse('deerattend:geojson', kwargs={'slug':self.geojson_slug,})
+			if context['error'] == 'filter_empty':
+				context['error'] = None
 		else:
 			context['is_map_view'] = False
 		
@@ -134,7 +137,10 @@ class event_list(special_feature_view, generic.ListView):
 
 class full_list(event_list):
 	def get_queryset(self, *args, **kwargs):
-		return self.filtered_queryset(*args, **kwargs)
+		if self.request.GET.get('display', False) == 'map':
+			return event_instance.objects.none()
+		else:
+			return self.filtered_queryset(*args, **kwargs)
 	
 	def get_context_data(self, **kwargs):
 		self.geojson_slug = 'full_list'
@@ -182,7 +188,10 @@ class event_instances(event_list):
 
 class events_by_type(event_list):
 	def get_queryset(self, *args, **kwargs):
-		return self.filtered_queryset(*args, **kwargs).filter(event__type__slug=self.kwargs['slug'])
+		if self.request.GET.get('display', False) == 'map':
+			return event_instance.objects.none()
+		else:
+			return self.filtered_queryset(*args, **kwargs).filter(event__type__slug=self.kwargs['slug'])
 	
 	def get_context_data(self, **kwargs):
 		cur_filter = event_type.objects.get(slug=self.kwargs['slug'])
@@ -213,7 +222,10 @@ class events_by_venue(event_list):
 
 class events_by_flag(event_list):
 	def get_queryset(self, *args, **kwargs):
-		return self.filtered_queryset(*args, **kwargs).filter(flags__slug=self.kwargs['slug'])
+		if self.request.GET.get('display', False) == 'map':
+			return event_instance.objects.none()
+		else:
+			return self.filtered_queryset(*args, **kwargs).filter(flags__slug=self.kwargs['slug'])
 	
 	def get_context_data(self, **kwargs):
 		cur_filter = attendance_flag.objects.get(slug=self.kwargs['slug'])
@@ -315,6 +327,7 @@ def geojson_event_instance(request, slug, **kwargs):
 		event_names = []
 		event_count = 0
 		marker_color = '#3bb2d0'
+		marker_symbol = None
 		
 		for subitem in events:
 			if subitem.is_upcoming():
@@ -349,6 +362,12 @@ def geojson_event_instance(request, slug, **kwargs):
 			event_count = event_count + 1
 			if subitem.event.type.map_color:
 				marker_color = '#%s' % subitem.event.type.map_color
+			
+			# This is where Mapbox's Maki markers would be used for the map marker for this venue.
+			# Unfortunately, there doesn't seem to be any way to use them, currently.
+			# Hopefully, this will change in the future.
+			# if subitem.event.type.symbol:
+				# marker_symbol = subitem.event.type.symbol
 		
 		if event_count > 3:
 			marker_size='large'
@@ -357,6 +376,9 @@ def geojson_event_instance(request, slug, **kwargs):
 		else:
 			marker_size='medium'
 		
+		if not marker_symbol:
+			marker_symbol = event_count
+		
 		return_data.append({
 			'type':'Feature',
 			'geometry': {
@@ -364,7 +386,7 @@ def geojson_event_instance(request, slug, **kwargs):
 				'coordinates':[item.geo_long, item.geo_lat],
 			},
 			'properties': {
-				'marker-symbol':event_count, 
+				'marker-symbol':marker_symbol, 
 				'marker-color':marker_color,
 				'marker-size':marker_size, 
 				'title':'<a href="%s">%s</a><br /><span class="city">%s</span>' % (item.get_absolute_url(), item.name, item.get_city()),
