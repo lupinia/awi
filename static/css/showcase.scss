@@ -134,6 +134,23 @@ body {
 		}
 		
 		&.copypaste_boxes input { margin-bottom:5px; }
+		&.content_summary {
+			p { font-size:x-small; }
+			
+			#page_title { 
+				position:static;
+				
+				#byline { font-size:xx-small; margin-top:5px; }
+				#page_title_main h2 { font-size:medium; }
+				#page_title_extra {
+					margin-top:3px;
+					position:static;
+					display:block;
+				}
+			}
+		}
+		
+		
 		
 		a.sidebar_link {
 			@include block_links;
