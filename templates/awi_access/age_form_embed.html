@@ -15,7 +15,7 @@
 	{% if success %}
 		<noscript class="error error_notice">You've successfully submitted your age, please reload the page.</noscript>
 	{% elif form %}
-		<div class="form_wrapper">
+		<div class="form_wrapper" role="form" aria-label="Age Verification Form">
 			{% if error %}
 				{% error_display error %}
 				<br /><hr /><br />

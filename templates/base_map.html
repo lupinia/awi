@@ -1,82 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-	{% load static %}
-	{% load cookielaw_tags %}
-	{% load errors %}
-	{% get_static_prefix as STATIC_PREFIX %}
-	{% now "Y" as curyear %}
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	
-	<meta name="author" content="{% include 'authorname.txt' %}" />
-	<meta name="designer" content="Lupinia Studios - www.lupinia.net" />
-	<meta name="description" content="{% block desc %}Lupinia Studios is {% include 'authorname.txt' %}'s personal portfolio, featuring her written works, digital photography, and digital graphics.{% endblock %}" />
-	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{{curyear}} by {% include 'authorname.txt' %}" />
+{% extends "base_core.html" %}
+{% load errors %}
 
-	<title>{% block title %}Lupinia Studios{% endblock %}</title>
-	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase.css" type="text/css" rel="stylesheet" id="main_css" />
+{% block extra_head %}
 	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase_mapbox.css" type="text/css" rel="stylesheet" id="map_css" />
-	<script src="{{STATIC_PREFIX}}cookielaw/js/cookielaw.js" type="text/javascript"></script>
 	<script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>
-</head>
+{% endblock %}
 
-<body class="map_mode">
-{% block cookiebanner %}{% cookielaw_banner %}{% endblock %}
+{% block body_tag %}<body class="map_mode">{% endblock %}
+{% block mainwrap_extra %}class="fullpage_map"{% endblock %}
 
-<div id="mainwrap" class="fullpage_map">
-	<header>
-		<div id="header_logo">
-			<a href="/" id="large_logo"><img src="{{ STATIC_PREFIX }}images/text/title{% if debug_check %}-beta{% endif %}.png" title="Lupinia Studios (Beta)" alt="Lupinia Studios (Beta)" /><br /></a>
-			<a href="/" id="small_logo"><img src="{{ STATIC_PREFIX }}images/text/admin-title.png" title="Lupinia Studios (Beta)" alt="Lupinia Studios (Beta)" /><br /></a>
-			
-			<a id="sig_image" href="/about/"><img src="{{ STATIC_PREFIX }}images/text/name-{% include 'authorname.txt' with type='image' %}.png" title="By {% include 'authorname.txt' %}" alt="By {% include 'authorname.txt' %}" /></a>
-			
-			{% block social_icons %}{% include 'deerconnect/header_social_icons.html' %}{% endblock %}
-		</div>
-		
-		<nav class="hoverimgs" id="desktop" role="navigation" aria-label="Main Menu">
-			{% include 'nav.html' with img=True %}
-		</nav>
-		<nav id="mobile" role="navigation" aria-label="Main Menu (Mobile)">
-			{% include 'nav.html' with mobile=True %}
-		</nav>
-		
-		{% block breadcrumbs %}
-			{% if breadcrumbs %}
-				<div class="breadcrumbs">
-					<span>
-						<a href="/" title="Home">Home</a> 
-						{% for link in breadcrumbs %}
-							<span class="separator">&gt;</span> {% if forloop.last %}{{link.title}}{% else %}<a href="{{link.url}}" title="{{link.title}}">{{link.title}}</a>{% endif %} 
-						{% endfor %}
-					</span>
-				</div>
-			{% endif %}
-		{% endblock %}
-	</header>
+{% block content_area %}
+	<div id="awi_map" class="map_obj" role="main">
+		{% error_display 'nojs_map' %}
+	</div>
 	
-	<div class="right_sidebar">
+	<div class="right_sidebar" role="complementary" aria-label="Sidebar">
 		{% block content_right %}
 			{% comment %}<!-- This section is for right sidebar elements.  -->{% endcomment %}
 		{% endblock %}
 	</div>
-	
-	<div id="awi_map" class="map_obj">
-		{% error_display 'nojs_map' %}
-	</div>
-	
-	<footer>
-		<nav role="navigation" aria-label="Footer Links">
-			{% include 'nav.html' %}
-		</nav>
-		<div class="lower" id="footer_userlinks">
-			&copy;2000-{{curyear}} {% include 'authorname.txt' %} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a>
-			<span class="footer_renderinfo">&nbsp;&nbsp; <span id="processinfo"></span></span>
-		</div>
-	</footer>
-</div>
+{% endblock %}
 
+{% block footer %}
+	<nav role="navigation" aria-label="Footer Links">
+		{% include 'nav.html' %}
+	</nav>
+	<div class="lower" id="footer_userlinks">
+		&copy;2000-{{curyear}} {% include 'authorname.txt' %} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a>
+		<span class="footer_renderinfo">&nbsp;&nbsp; <span id="processinfo"></span></span>
+	</div>
+{% endblock %}
+
+{% block after_content %}
 <script>
 	L.mapbox.accessToken = 'pk.eyJ1IjoibHVwaW5pYSIsImEiOiJjaXl6ZmQ4bDQwNGQ1MzNxd2Y5ZHExaXM4In0.OZfNM3zIXTKDazegaFMpQQ';
 	var map = L.mapbox.map('awi_map');
@@ -85,6 +40,4 @@
 	var markers = L.mapbox.featureLayer(null, { sanitizer: function(x) { return x; } }).loadURL('{{map_data_url}}').addTo(map);
 	markers.on('ready', function () { map.fitBounds(markers.getBounds()); });
 </script>
-
-</body>
-</html>
+{% endblock %}

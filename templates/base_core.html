@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{% load static %}
+	{% load cookielaw_tags %}
+	{% get_static_prefix as STATIC_PREFIX %}
+	{% now "Y" as curyear %}
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<meta name="author" content="{% include 'authorname.txt' %}" />
+	<meta name="designer" content="Lupinia Studios - www.lupinia.net" />
+	<meta name="description" content="{% block desc %}Lupinia Studios is {% include 'authorname.txt' %}'s personal portfolio, featuring her written works, digital photography, and digital graphics.{% endblock %}" />
+	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{{curyear}} by {% include 'authorname.txt' %}" />
+
+	<title>{% block title %}Lupinia Studios{% endblock %}</title>
+	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase.css" type="text/css" rel="stylesheet" id="main_css" />
+	<script src="{{STATIC_PREFIX}}cookielaw/js/cookielaw.js" type="text/javascript"></script>
+	{% block extra_head %}{% endblock %}
+</head>
+
+{% block body_tag %}<body>{% endblock %}
+{% block cookiebanner %}{% cookielaw_banner %}{% endblock %}
+<div id="mainwrap" {% block mainwrap_extra %}{% endblock %}>
+	<header>
+		<div id="header_logo" role="banner">
+			<a href="/" id="large_logo"><img src="{{ STATIC_PREFIX }}images/text/title{% if debug_check %}-beta{% endif %}.png" title="Lupinia Studios (Beta)" alt="Lupinia Studios (Beta)" /><br /></a>
+			<a href="/" id="small_logo"><img src="{{ STATIC_PREFIX }}images/text/admin-title.png" title="Lupinia Studios (Beta)" alt="Lupinia Studios (Beta)" /><br /></a>
+			
+			<a id="sig_image" href="/about/"><img src="{{ STATIC_PREFIX }}images/text/name-{% include 'authorname.txt' with type='image' %}.png" title="By {% include 'authorname.txt' %}" alt="By {% include 'authorname.txt' %}" /></a>
+			
+			{% block social_icons %}{% include 'deerconnect/header_social_icons.html' %}{% endblock %}
+		</div>
+		
+		<nav class="hoverimgs" id="desktop" role="navigation" aria-label="Main Menu">
+			{% include 'nav.html' with img=True %}
+		</nav>
+		<nav id="mobile" role="navigation" aria-label="Main Menu (Mobile)">
+			{% include 'nav.html' with mobile=True %}
+		</nav>
+		
+		{% block breadcrumbs %}
+			{% if breadcrumbs %}
+				<div class="breadcrumbs" role="navigation" aria-label="Breadcrumbs">
+					<span>
+						<a href="/" title="Home">Home</a> 
+						{% for link in breadcrumbs %}
+							<span class="separator">&gt;</span> {% if forloop.last %}{{link.title}}{% else %}<a href="{{link.url}}" title="{{link.title}}">{{link.title}}</a>{% endif %} 
+						{% endfor %}
+					</span>
+				</div>
+			{% endif %}
+		{% endblock %}
+	</header>
+
+{% block content_area %}{% endblock %}
+
+	<footer role="contentinfo">
+		{% block footer %}
+			<div id="footer-right">
+				<div class="bg_info">{% block bginfo %}&nbsp;{% endblock %}</div>
+				<div class="lower">&copy;2000-{{curyear}} {% include 'authorname.txt' %} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a></div>
+			</div>
+			
+			<nav role="navigation" aria-label="Footer Links">
+				{% include 'nav.html' %}
+			</nav>
+			<div class="lower" id="footer_userlinks">
+			{% block userinfo %}
+				{% if user.is_authenticated %}
+					{% if user.get_full_name %}
+						<span class="footer_username">{{user.get_full_name}} ({{user.get_username}}) &bull; </span>
+					{% else %}
+						<span class="footer_username">{{user.get_username}} &bull; </span>
+					{% endif %}
+					<a href="{% url 'django.contrib.auth.views.logout' %}">Logout</a>
+					{% if user.is_superuser %}
+					&bull; <a href="/admin/">Administration</a>
+					{% endif %}
+				{% else %}
+					<a href="{% url 'django.contrib.auth.views.login' %}">Login</a>
+				{% endif %}
+					<span class="footer_settings">&bull; <a href="/settings/">Settings</a></span>
+			{% endblock %}
+			<span class="footer_renderinfo">&nbsp;&nbsp; <span id="processinfo"></span></span>
+			</div>
+		{% endblock %}
+	</footer>
+</div>
+
+{% block after_content %}{% endblock %}
+
+</body>
+</html>
