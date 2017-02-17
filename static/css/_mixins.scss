@@ -4,6 +4,7 @@
 //	www.lupinia.net | github.com/lupinia
 
 @mixin error($border,$bgcolor,$color,$bgimg) {
+	display:block;
 	min-height:45px;
 	margin:3px;
 	padding:5px;

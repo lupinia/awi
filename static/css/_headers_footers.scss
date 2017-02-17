@@ -355,6 +355,7 @@ header {
 
 /*	Footer	*/
 footer {
+	@include transbox_style;
 	width:100%;
 	height:32px;
 	bottom:0;

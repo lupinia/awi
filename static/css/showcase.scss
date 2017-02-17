@@ -6,20 +6,6 @@
 /*	Generated from SASS	*/
 @import 'base';
 
-//	Variables
-$scr_tall: "screen and (min-height: 1000px)";
-$scr_midwidth: "screen and (max-width: 1150px)";
-$scr_smallwidth: "screen and (max-width: 800px)";
-$scr_mobile: "screen and (max-width: 640px)";
-$scr_micro: "screen and (max-width: 400px)";
-
-$scr_and_tall: "and (min-height: 1000px)";
-
-$scr_midwidth_lightbox: "screen and (max-width: 1000px)";
-$scr_micro_lightbox: "screen and (max-width: 450px)";
-//	=====
-
-
 /*	Primary Content and Structure	*/
 body {
 	background: $color_bgdark;
