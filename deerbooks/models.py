@@ -113,6 +113,10 @@ class page(leaf):
 			else:
 				return body_stripped[:length].rsplit(' ',1)[0]+'...'
 	
+	@property
+	def rss_description(self):
+		return self.body_summary()
+	
 	def get_export_filename(self):
 		if self.book_title:
 			return 'book.%s' % self.book_title.slug

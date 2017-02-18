@@ -7,6 +7,7 @@
 #	=================
 
 from django.conf import settings
+from django.contrib.syndication.views import Feed
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
@@ -27,7 +28,7 @@ class leaf_parent():
 	highlight_featured = True
 	
 	
-	def get_leaves(self, parent=False, parent_type=False):
+	def get_leaves(self, parent=False, parent_type=False, is_feed=False):
 		blocks_main = settings.DEERTREES_BLOCKS
 		leaf_filters = {}
 		related_list = []
@@ -68,9 +69,12 @@ class leaf_parent():
 			leaf_filters['featured'] = True
 			leaf_filters['cat__in'] = descendants
 		
-		leaves = leaf.objects.select_related(*related_list).prefetch_related(*prefetch_list).filter(**leaf_filters).filter(access_query(self.request)).order_by(*leaf_ordering)
+		if is_feed:
+			leaf_ordering = ['-timestamp_post',]
 		
-		if leaves:
+		leaves = leaf.objects.select_related(*related_list).prefetch_related(*prefetch_list).filter(**leaf_filters).filter(access_query(getattr(self, 'request', False))).order_by(*leaf_ordering)
+		
+		if leaves or is_feed:
 			return leaves
 		else:
 			return False
@@ -115,7 +119,7 @@ class leaf_parent():
 				
 				# Pagination counter check should go here.
 				if not blocks_main.get(type,{}).get('count',0) or leaf_count.get(type,0) <= blocks_main.get(type,{}).get('count',50):
-					leaf_data = getattr(leaf_item,type,None)
+					leaf_data = getattr(leaf_item, type, None)
 					if leaf_data:
 						leaf_content[type].append(leaf_data)
 						leaf_count[type] = leaf_count[type] + 1
@@ -174,26 +178,11 @@ class homepage(leaf_parent, generic.TemplateView):
 		context = super(homepage,self).get_context_data(**kwargs)
 		context['highlight_featured'] = self.highlight_featured
 		context['homepage'] = True
+		context['rss_feed'] = True
 		
 		blocks = self.assemble_blocks(parent_type = 'homepage', view_type='home')
 		if blocks[0]:
 			context.update(blocks[1])
-		
-		return context
-
-
-class main_rssfeed(leaf_parent, generic.TemplateView):
-	template_name='deertrees/rss.xml'
-	
-	def get_context_data(self, **kwargs):
-		context = super(main_rssfeed,self).get_context_data(**kwargs)
-		context['highlight_featured'] = self.highlight_featured
-		
-		leaves = self.get_leaves(parent_type = 'main_feed')
-		if leaves:
-			context['leaves'] = leaves[:30]
-		else:
-			context['error'] = 'feed_empty'
 		
 		return context
 
@@ -233,6 +222,8 @@ class category_list(leaf_parent, generic.DetailView):
 				context['object'] = ''
 				context['error'] = canview[1]
 		else:
+			context['rss_feed'] = True
+			
 			if context['object'].can_edit(self.request)[0]:
 				context['return_to'] = context['object'].get_absolute_url()
 				context['can_edit'] = True
@@ -331,6 +322,78 @@ class all_tags(generic.TemplateView):
 			context['return_to'] = self.request.GET.get('return_to')
 		
 		return context
+
+
+# RSS Feeds
+class main_rssfeed(leaf_parent, Feed):
+	title_text = "Lupinia Studios"
+	author_name = "Natasha L."
+	item_author_name = "Natasha L."
+	description = "Photography, writing, and creative works by Natasha L."
+	feed_copyright = timezone.now().strftime('Copyright (c) 2000-%Y Natasha L.')
+	
+	def title(self, obj=None):
+		if obj:
+			return '%s - %s' % (self.title_text, unicode(obj))
+		else:
+			return self.title_text
+	
+	def link(self, obj=None):
+		if obj:
+			return obj.get_absolute_url()
+		else:
+			return "/"
+	
+	def items(self, obj=None):
+		if obj:
+			return self.get_leaves(parent=obj, parent_type = 'category', is_feed=True)[:50]
+		else:
+			return self.get_leaves(parent_type = 'main_feed', is_feed=True)[:50]
+	
+	def item_title(self, item):
+		leaf_item = getattr(item, item.type, None)
+		return u'%s - %s' % (item.type.capitalize(), unicode(leaf_item))
+	
+	def item_link(self, item):
+		leaf_item = getattr(item, item.type, None)
+		url_func = getattr(leaf_item, 'get_absolute_url', None)
+		if url_func:
+			return url_func()
+		else:
+			return None
+	
+	def item_pubdate(self, item):
+		return item.timestamp_post
+	
+	def item_updateddate(self, item):
+		return item.timestamp_mod
+	
+	def item_categories(self, item):
+		return item.tags.all().values_list('slug', flat=True)
+	
+	def item_description(self, item):
+		leaf_item = getattr(item, item.type, None)
+		return getattr(leaf_item, 'rss_description', 'No Description')
+	
+	def item_enclosure_url(self, item):
+		leaf_item = getattr(item, item.type, None)
+		enclosure_obj = getattr(leaf_item, 'rss_enclosure_obj', None)
+		return getattr(enclosure_obj, 'rss_enclosure_url', None)
+	
+	def item_enclosure_length(self, item):
+		leaf_item = getattr(item, item.type, None)
+		enclosure_obj = getattr(leaf_item, 'rss_enclosure_obj', None)
+		return getattr(enclosure_obj, 'rss_enclosure_length', None)
+	
+	def item_enclosure_type(self, item):
+		leaf_item = getattr(item, item.type, None)
+		enclosure_obj = getattr(leaf_item, 'rss_enclosure_obj', None)
+		return getattr(enclosure_obj, 'rss_enclosure_type', None)
+
+
+class cat_rssfeed(main_rssfeed):
+	def get_object(self, request, cached_url):
+		return category.objects.get(cached_url=cached_url)
 
 
 #	Helper functions imported by other views

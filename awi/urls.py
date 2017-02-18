@@ -52,6 +52,7 @@ urlpatterns = [
 	
 	#	DeerTrees and DeerBooks are special cases for this site.
 	url(r'^$',deertrees_views.homepage.as_view(),name='home'),
+	url(r'^feed\.rss$',deertrees_views.main_rssfeed(),name='home_rss'),
 	url(r'^tags/$',deertrees_views.all_tags.as_view(),name='all_tags'),
 	url(r'^tags/(?P<slug>.*)/$',deertrees_views.tag_list.as_view(),name='tag'),
 	
@@ -69,6 +70,7 @@ urlpatterns = [
 	
 	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.img',sunset_views.single_image.as_view(),name='image_single'),
 	
+	url(r'^(?P<cached_url>[\w\d_/-]+)/feed\.rss$',deertrees_views.cat_rssfeed(),name='category_rss'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/$',deertrees_views.category_list.as_view(),name='category'),
 ]
 

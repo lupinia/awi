@@ -46,6 +46,10 @@ class category(MPTTModel, access_control):
 	def get_absolute_url(self):
 		return reverse('category', kwargs={'cached_url':self.cached_url,})
 	
+	@property
+	def rss_description(self):
+		return self.desc
+	
 	def save(self, *args, **kwargs):
 		if self.parent:
 			self.cached_url = '%s/%s' % (self.parent.cached_url, self.slug)
@@ -208,6 +212,10 @@ class leaf(access_control):
 		return_times[return_mod]['label'] = 'Updated'
 		
 		return return_times
+	
+	@property
+	def rss_description(self):
+		return 'No Description'
 
 #	Create a leaf that links to something else that isn't part of this category system.
 #	Handy for things like third-party apps, or self-contained apps with their own organizational structure.
@@ -221,6 +229,10 @@ class special_feature(leaf):
 	
 	def __unicode__(self):
 		return self.title
+	
+	@property
+	def rss_description(self):
+		return self.desc
 	
 	class Meta:
 		verbose_name = 'special feature'

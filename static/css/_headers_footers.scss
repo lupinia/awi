@@ -234,8 +234,10 @@ header {
 		
 		@media #{$scr_mobile} {
 			position:absolute;
-			width: 320px; 
+			width: 350px; 
 		}
+		
+		@media #{$scr_micro} { width:250px; }
 		
 		#small_logo {
 			display:none;

@@ -7,6 +7,7 @@
 #	=================
 
 import exiftool
+import magic
 import os
 import urllib
 
@@ -91,6 +92,29 @@ class image(leaf):
 			else:
 				self.summary = body_text[:250].rsplit(' ',1)[0]+'...'
 		super(image, self).save(*args, **kwargs)
+	
+	def body_summary(self,length=255):
+		if self.summary:
+			if len(self.summary) <= length:
+				return self.summary
+			else:
+				return self.summary[:length].rsplit(' ',1)[0]+'...'
+		elif self.body:
+			body_stripped = strip_tags(self.body)
+			if len(body_stripped) <= length:
+				return body_stripped
+			else:
+				return body_stripped[:length].rsplit(' ',1)[0]+'...'
+		else:
+			return None
+	
+	@property
+	def rss_description(self):
+		return self.body_summary()
+	
+	@property
+	def rss_enclosure_obj(self):
+		return self.assets.filter(type="icon").first()
 	
 	def is_public(self):
 		ispublic = super(image, self).is_public()
@@ -316,6 +340,7 @@ class image_asset(models.Model):
 	
 	img_width = models.IntegerField(null=True, blank=True, verbose_name='image width')
 	img_height = models.IntegerField(null=True, blank=True, verbose_name='image height')
+	img_mimetype = models.CharField(max_length=60, null=True, blank=True, verbose_name='image MIME type')
 	image_file = models.ImageField(upload_to=image_asset_uploadto, height_field='img_height', width_field='img_width', verbose_name='file')
 	
 	timestamp_post = models.DateTimeField(auto_now_add=True, verbose_name='date/time created')
@@ -328,8 +353,23 @@ class image_asset(models.Model):
 	def get_url(self):
 		return "%s%s" % (settings.MEDIA_URL,self.image_file.name)
 	
+	@property
+	def rss_enclosure_url(self):
+		return self.get_url()
+	
+	@property
+	def rss_enclosure_length(self):
+		return self.image_file.size
+	
+	@property
+	def rss_enclosure_type(self):
+		return self.img_mimetype
+	
 	def save(self, *args, **kwargs):
 		self.hash = hash_file(self.image_file)
+		if self.image_file:
+			self.image_file.file.seek(0)
+			self.img_mimetype = magic.from_buffer(self.image_file.file.read(1024), mime=True)
 		if self.type == 'original':
 			self.parent.rebuild_assets = True
 			self.parent.save()
