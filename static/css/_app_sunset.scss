@@ -3,6 +3,7 @@
 //	By Natasha L.
 //	www.lupinia.net | github.com/lupinia
 
+/*	App:  Sunset	*/
 .sunset_embed {
 	.thumb_right & img {
 		max-width:200px;
@@ -71,6 +72,14 @@
 		}
 	}
 }
+
+//	Maps and Map Accessories
+.photo_sub_map {
+	margin-top:15px;
+	@extend .sub_map;
+}
+/*	=====	*/
+
 
 /*	JustifiedGallery	*/
 .justified-gallery {
@@ -155,11 +164,3 @@
 	}
 }
 /*	=====	*/
-
-
-//	Maps and Map Accessories
-.photo_sub_map {
-	margin-top:15px;
-	@extend .sub_map;
-}
-//	=====
