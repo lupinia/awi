@@ -8,7 +8,8 @@
 		{% if page.featured and highlight_featured %}
 			<br />
 			<span class="sidebar_link_subtext">Featured</span>
-		{% elif page.mature %}
+		{% endif %}
+		{% if page.mature %}
 			<br />
 			<span class="sidebar_link_subtext">Mature Content</span>
 		{% endif %}
@@ -25,8 +26,12 @@
 		{% else %}
 			<div class="leaf_link tall">
 				<a class="leaf_a {% if page.featured and highlight_featured %}featured{% elif page.mature %}mature{% elif not page.is_public.0 %}notpublic{% endif %}" href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}}">
-					{% if page.featured and highlight_featured %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
-					{% elif page.mature %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
+					{% if page.mature or page.featured and highlight_featured %}
+						<span class="item_feature_mark">
+							{% if page.featured and highlight_featured %}<img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" />{% endif %}
+							{% if page.mature %}<img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" />{% endif %}
+						</span>
+					{% endif %}
 					
 					<span class="item_summary_head"><span class="item_summary_title">{{page.get_title}}</span><br /> 
 						{{page.display_times.0.label}}: {{page.display_times.0.timestamp}}
