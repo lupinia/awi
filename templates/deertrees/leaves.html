@@ -2,15 +2,11 @@
 {% block title %}{{block.super}} - {% if homepage or not object %}Photography, Writing, and Creative Works by {% include 'authorname.txt' %}{% else %}{{object}}{% endif %}{% endblock %}
 {% block bg_image %}{% if homepage %}{{block.super}}{% else %}{% include 'sunset/bg_image.html' %}{% endif %}{% endblock %}
 {% block desc %}{% if object.summary %}{{object}} - {{object.summary}}{% elif object %}{{block.super}} - {{object}}{% else %}{{block.super}}{% endif %}{% endblock %}
+{% load errors %}
 
 {% block content_left %}
-	{% if homepage %}
-		{% if error %}
-			{% load errors %}
-			<div class="left_sidebar">{% error_display error %}</div>
-		{% endif %}
-	{% else %}
-		{% if can_edit and not homepage %}
+	{% if not homepage %}{% if not error or error == "cat_empty" %}
+		{% if can_edit %}
 			<div class="left_sidebar admin_options">
 				{% include 'deertrees/adminlinks.html' %}
 			</div>
@@ -23,8 +19,17 @@
 				</div>
 			{% endif %}
 		</div>
+	{% endif %}{% endif %}
+	
+	{% if error %}
+		<div class="left_sidebar">
+			{% error_display error %}
+			{% if embed_mature_form %}
+				{% include 'awi_access/age_form_iframe.html' %}
+			{% endif %}
+		</div>
 	{% endif %}
-
+	
 	{% if error != "cat_empty" %}
 		{% if main_left or main_right %}
 			{% if main_left and not main_right %}
@@ -158,6 +163,7 @@
 			{% include sidebar_block.template with leaves=sidebar_block.data blockname="sidebar" highlight_featured=highlight_featured homepage=homepage only %}
 			</div>
 		{% endfor %}
+		
 		{% include 'awi_access/access_code_widget.html' %}
 	{% endif %}
 {% endblock %}
