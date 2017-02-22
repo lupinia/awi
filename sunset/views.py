@@ -10,8 +10,8 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import Http404
 
-from awi.views import json_response
 from awi_access.models import access_query
+from awi_utils.views import json_response
 from deertrees.views import leaf_view
 from sunset.models import *
 

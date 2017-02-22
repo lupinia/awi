@@ -21,7 +21,7 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 from PIL import Image, ImageOps
 
-from awi.utils import notify
+from awi_utils.utils import notify
 from sunset.models import *
 
 class Command(BaseCommand):

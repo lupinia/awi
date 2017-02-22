@@ -14,7 +14,7 @@ from django import template
 from django.conf import settings
 from django.db.models import Q
 
-from awi.utils import notify
+from awi_utils.utils import notify
 from sunset.models import image, background_tag
 
 register = template.Library()

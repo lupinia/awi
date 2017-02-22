@@ -52,22 +52,23 @@ INSTALLED_APPS = (
 	'honeypot',
 	
 	#	My Apps - System/Core
-	'deerfind',		# 404 Map
-	'awi_error',	# Error Handling
 	'awi_access',	# Access Control
-	'secondlife',	# Access control data for objects/scripts in Second Life
+	'awi_error',	# Error Handling
+	'awi_utils',	# Miscellaneous Utility Modules
+	'deerfind',		# Intelligent 404 Recovery
 	
 	#	My Apps - Primary Content Objects
-	'deertrees',	# Categories
 	'deerbooks',	# Text-based content
 	'deerconnect',	# Link directory and contact form/links
+	'deertrees',	# Categories
 	'sunset',		# Photo/image gallery
 	
 	#	My Apps - Other
-	'deerhealth',	# Prescription Tracker
-	'deerfood',		# Restaurant-style menu
-	'deercoins',	# Coin collection database
 	'deerattend',	# Convention/event database
+	'deercoins',	# Coin collection database
+	'deerfood',		# Restaurant-style menu
+	'deerhealth',	# Prescription Tracker
+	'secondlife',	# Access control data for objects/scripts in Second Life
 )
 
 #	System Settings
@@ -86,8 +87,8 @@ TEMPLATES = [{
 			
 			#	Non-standard ones
 			'django.core.context_processors.request',
-			'awi.context_processors.site',
-			'awi.context_processors.settings_vars',
+			'awi_utils.context_processors.site',
+			'awi_utils.context_processors.settings_vars',
 			'awi_access.context_processors.mature_check',
 			'deerconnect.context_processors.social_icons',
 		],

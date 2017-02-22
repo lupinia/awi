@@ -13,10 +13,10 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views import generic
 
-from awi.views import json_response
+from awi_access.models import check_mature
+from awi_utils.views import json_response
 from deerattend.models import *
 from deertrees.views import special_feature_view
-from awi_access.models import check_mature
 
 special_filter_list = {
 	'photos':{'name':'Events with Photos', 'slug':'photos', 'filter':Q(photos__isnull=False), 'is_mature':False, },
