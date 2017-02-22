@@ -11,7 +11,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.sitemaps.views import sitemap
-from django.views.decorators.cache import cache_control
+from django.views.decorators.cache import cache_control, never_cache
 
 from honeypot.decorators import check_honeypot
 
@@ -36,14 +36,14 @@ urlpatterns = [
 	
 	url(r'^accounts/login/','django.contrib.auth.views.login'),
 	url(r'^accounts/logout/','django.contrib.auth.views.logout',{'template_name':'registration/login.html'}),
-	url(r'^accounts/age_form/$',check_honeypot(field_name=settings.HONEYPOT_FIELD_NAME_AWIACCESS)(access_views.age_verify_full.as_view()),name='age_form'),
-	url(r'^accounts/age_form_embed/$',check_honeypot(field_name=settings.HONEYPOT_FIELD_NAME_AWIACCESS)(access_views.age_verify.as_view()),name='age_form_embed'),
+	url(r'^accounts/age_form/$',never_cache(check_honeypot(field_name=settings.HONEYPOT_FIELD_NAME_AWIACCESS)(access_views.age_verify_full.as_view())),name='age_form'),
+	url(r'^accounts/age_form_embed/$',never_cache(check_honeypot(field_name=settings.HONEYPOT_FIELD_NAME_AWIACCESS)(access_views.age_verify.as_view())),name='age_form_embed'),
 	
 	url(r'^settings/$',access_views.settings_page.as_view(),name='settings'),
 	
 	url(r'^tools/sunset/(?P<slug>.*)\.json', sunset_views.geojson_image, name='sunset_geojson'),
 	
-	url(r'^contact/$',check_honeypot(contact_page.as_view()),name='contact'),
+	url(r'^contact/$',never_cache(check_honeypot(contact_page.as_view())),name='contact'),
 	url(r'^gamescripts/', include('secondlife.urls')),
 	url(r'^personal/cooking/menu/', include('deerfood.urls',namespace='deerfood'), kwargs={'special_feature_slug':'menu'}),
 	url(r'^furry/cons/', include('deerattend.urls',namespace='deerattend'), kwargs={'special_feature_slug':'cons'}),
