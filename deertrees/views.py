@@ -27,7 +27,6 @@ class leaf_parent():
 	template_name = 'deertrees/leaves.html'
 	highlight_featured = True
 	
-	
 	def get_leaves(self, parent=False, parent_type=False, is_feed=False):
 		blocks_main = settings.DEERTREES_BLOCKS
 		leaf_filters = {}
@@ -285,6 +284,7 @@ class tag_list(leaf_parent, generic.DetailView):
 		blocks = self.assemble_blocks(context['object'],'tag',context['object'].view_type)
 		if blocks[0]:
 			context.update(blocks[1])
+			context['rss_feed'] = True
 		else:
 			context['error'] = 'tag_empty'
 		
@@ -331,6 +331,7 @@ class main_rssfeed(leaf_parent, Feed):
 	item_author_name = "Natasha L."
 	description = "Photography, writing, and creative works by Natasha L."
 	feed_copyright = timezone.now().strftime('Copyright (c) 2000-%Y Natasha L.')
+	parent_type = 'main_feed'
 	
 	def title(self, obj=None):
 		if obj:
@@ -346,7 +347,7 @@ class main_rssfeed(leaf_parent, Feed):
 	
 	def items(self, obj=None):
 		if obj:
-			return self.get_leaves(parent=obj, parent_type = 'category', is_feed=True)[:50]
+			return self.get_leaves(parent=obj, parent_type = self.parent_type, is_feed=True)[:50]
 		else:
 			return self.get_leaves(parent_type = 'main_feed', is_feed=True)[:50]
 	
@@ -392,8 +393,22 @@ class main_rssfeed(leaf_parent, Feed):
 
 
 class cat_rssfeed(main_rssfeed):
+	parent_type = 'category'
+	
 	def get_object(self, request, cached_url):
-		return category.objects.get(cached_url=cached_url)
+		obj = get_object_or_404(category, cached_url=cached_url)
+		if obj.can_view(request)[0]:
+			return obj
+		else:
+			raise Http404
+
+
+class tag_rssfeed(main_rssfeed):
+	parent_type = 'tag'
+	
+	def get_object(self, request, slug):
+		obj = get_object_or_404(tag, slug=slug)
+		return obj
 
 
 #	Helper functions imported by other views
@@ -452,7 +467,6 @@ class leaf_view(generic.DetailView):
 				self.request.session['deerfind_norecover'] = True
 				raise Http404
 			elif canview[1] == 'access_perms':
-				from django.core.exceptions import PermissionDenied
 				raise PermissionDenied
 			elif canview[1] == 'access_mature_prompt':
 				context['error'] = canview[1]
