@@ -50,12 +50,14 @@
 		</div>
 		
 		{% comment %}<!-- External services -->{% endcomment %}
-		<div class="right_sidebar_section">
-			<h3>External</h3>
-			<div class="page_icons hovericons32">
-				<a class="red" href="https://getpocket.com/save?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-pocket.png" alt="Pocket" title="Pocket (External service)" /></a>
-				<a class="grey" href="http://www.instapaper.com/hello2?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-instapaper.png" alt="Readability" title="Instapaper (External service)" /></a>
+		{% if object.is_public.0 %}
+			<div class="right_sidebar_section">
+				<h3>External</h3>
+				<div class="page_icons hovericons32">
+					<a class="red" href="https://getpocket.com/save?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-pocket.png" alt="Pocket" title="Pocket (External service)" /></a>
+					<a class="grey" href="http://www.instapaper.com/hello2?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-instapaper.png" alt="Readability" title="Instapaper (External service)" /></a>
+				</div>
 			</div>
-		</div>
+		{% endif %}
 	{% endif %}
 {% endblock %}
