@@ -15,6 +15,7 @@ from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.text import slugify
 
+from awi_utils.utils import format_html
 from deertrees.models import leaf
 
 def attachment_path(instance, filename):
@@ -112,6 +113,10 @@ class page(leaf):
 				return body_stripped
 			else:
 				return body_stripped[:length].rsplit(' ',1)[0]+'...'
+	
+	@property
+	def body_html(self):
+		return format_html(self.body)
 	
 	@property
 	def rss_description(self):

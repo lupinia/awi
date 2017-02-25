@@ -261,11 +261,7 @@ class category_list(leaf_parent, generic.DetailView):
 				context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
 			
 			context['highlight_featured'] = self.highlight_featured
-			
-			if context['object'].desc:
-				context['body_text'] = sunset_embed(context['object'].desc, self.request)
-			else:
-				context['body_text'] = context['object'].summary
+			context['body_text'] = sunset_embed(context['object'].body_html, self.request)
 		
 		return context
 
@@ -294,8 +290,7 @@ class tag_list(leaf_parent, generic.DetailView):
 		context['breadcrumbs'].append({'url':reverse('all_tags'), 'title':'Tags'})
 		context['breadcrumbs'].append({'url':reverse('tag',kwargs={'slug':context['object'].slug,}), 'title':context['object'].title})
 		
-		if context['object'].desc:
-			context['body_text'] = context['object'].desc
+		context['body_text'] = sunset_embed(context['object'].body_html, self.request)
 		
 		return context
 

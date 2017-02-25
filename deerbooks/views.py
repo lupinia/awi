@@ -35,7 +35,7 @@ class single_page(leaf_view):
 					context['alt_version_exclude'].append(item.filetype)
 					context['docfiles'].append(item)
 			
-			context['body_text'] = sunset_embed(context['object'].body, self.request)
+			context['body_text'] = sunset_embed(context['object'].body_html, self.request)
 			
 			if self.request.GET.get('read', False):
 				context['showcase_mode'] = True
@@ -86,7 +86,7 @@ class book(generic.DetailView):
 			if not canview[0]:
 				continue
 			else:
-				page.body = sunset_embed(page.body, self.request)
+				page.body = sunset_embed(page.body_html, self.request)
 				context['pages'].append(page)
 				
 				# source_url should be the url for the first visible page

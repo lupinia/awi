@@ -12,11 +12,7 @@
 		{% if object.body %}
 			<div class="page_body_text">
 				{% autoescape off %}
-					{% if "<p>" in object.body or "<br />" in object.body %}
-						{{object.body}}
-					{% else %}
-						{{object.body|linebreaks}}
-					{% endif %}
+					{{object.body}}
 				{% endautoescape %}
 			</div>
 		{% endif %}

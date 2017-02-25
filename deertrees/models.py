@@ -10,9 +10,12 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
+from django.utils.html import strip_tags
 from django.utils.text import slugify
 
 from mptt.models import MPTTModel, TreeForeignKey
+
+from awi_utils.utils import format_html
 from awi_access.models import access_control
 
 def viewtype_options():
@@ -47,8 +50,31 @@ class category(MPTTModel, access_control):
 		return reverse('category', kwargs={'cached_url':self.cached_url,})
 	
 	@property
+	def body_html(self):
+		if self.desc:
+			return format_html(self.desc)
+		else:
+			return format_html(self.summary)
+	
+	@property
 	def rss_description(self):
-		return self.desc
+		if self.desc:
+			return self.desc
+		else:
+			return self.summary
+	
+	def get_summary(self,length=255):
+		if self.summary:
+			if len(self.summary) <= length:
+				return self.summary
+			else:
+				return self.summary[:length].rsplit(' ',1)[0]+'...'
+		else:
+			body_stripped = strip_tags(self.desc)
+			if len(body_stripped) <= length:
+				return body_stripped
+			else:
+				return body_stripped[:length].rsplit(' ',1)[0]+'...'
 	
 	def save(self, *args, **kwargs):
 		if self.parent:
@@ -99,6 +125,10 @@ class tag(models.Model):
 		else:
 			return (request.user.has_perm('deertrees.change_tag'), 'access_perms')
 		return (False,'')
+	
+	@property
+	def body_html(self):
+		return format_html(self.desc)
 	
 	class Meta:
 		ordering = ['slug',]

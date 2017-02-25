@@ -23,6 +23,7 @@ from datetime import datetime
 from fractions import Fraction
 from PIL import Image, ImageOps
 
+from awi_utils.utils import format_html
 from awi_access.models import access_control
 from deertrees.models import leaf, category, tag
 from sunset.utils import watermark, hash_file
@@ -105,6 +106,15 @@ class image(leaf):
 				return body_stripped
 			else:
 				return body_stripped[:length].rsplit(' ',1)[0]+'...'
+		else:
+			return None
+	
+	@property
+	def body_html(self):
+		if self.body:
+			return format_html(self.body)
+		elif self.summary:
+			return format_html(self.summary)
 		else:
 			return None
 	

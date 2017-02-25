@@ -5,11 +5,7 @@
 	{% if object and not error %}
 		<div class="page_body_text">
 			{% autoescape off %}
-				{% if "<p>" in body_text or "<br />" in body_text %}
-					{{body_text}}
-				{% else %}
-					{{body_text|linebreaks}}
-				{% endif %}
+				{{body_text}}
 			{% endautoescape %}
 		</div>
 	{% endif %}

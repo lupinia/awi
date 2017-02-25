@@ -14,7 +14,6 @@ import markdown
 import re
 
 from django import template
-from django.utils.html import linebreaks
 
 def html_md(input_string, promote=True):
 	md_maker = html2text.HTML2Text()
@@ -22,9 +21,6 @@ def html_md(input_string, promote=True):
 	md_maker.bypass_tables = False
 	md_maker.skip_internal_links = True
 	md_maker.body_width = 0
-	
-	if not "<p>" in input_string and not "<br />" in input_string:
-		input_string = linebreaks(input_string)
 	
 	md = md_maker.handle(input_string)
 	md = re.sub(r'\((/.*?)\)',r'(http://www.lupinia.net\1)',md)
