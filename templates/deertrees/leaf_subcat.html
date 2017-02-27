@@ -1,3 +1,6 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
 {% if 'sidebar' in blockname %}
 	{% for subcat in leaves %}
 	<a href="{% url 'category' subcat.cached_url %}" title="{{subcat.title}} - {{subcat.summary}}" class="sidebar_link {% if subcat.featured and highlight_featured %}featured{% elif subcat.mature %}mature{% elif not subcat.is_public.0 %}notpublic{% endif %}">
