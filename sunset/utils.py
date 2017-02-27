@@ -52,7 +52,7 @@ def sunset_embed(body, request=False):
 	from sunset.models import image
 	self_closing = ['sunset',]
 	
-	if "<sunset" in body:
+	if body and "<sunset" in body:
 		body_raw = BeautifulSoup(body, selfClosingTags=self_closing)
 		imglist = body_raw.findAll('sunset')
 		
