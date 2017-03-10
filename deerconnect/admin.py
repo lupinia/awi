@@ -28,7 +28,7 @@ class link_admin(leaf_admin):
 	
 	def save_model(self, request, obj, form, change):
 		obj.healthy = True
-		obj.save()
+		super(link_admin, self).save_model(request, obj, form, change)
 
 class contact_admin(access_admin):
 	list_select_related = True
@@ -46,7 +46,7 @@ class contact_admin(access_admin):
 	
 	def save_model(self, request, obj, form, change):
 		obj.healthy = True
-		obj.save()
+		super(contact_admin, self).save_model(request, obj, form, change)
 
 admin.site.register(link,link_admin)
 admin.site.register(contact_link,contact_admin)
