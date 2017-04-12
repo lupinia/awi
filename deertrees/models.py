@@ -110,11 +110,15 @@ class tag(models.Model):
 	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
 	
-	def __unicode__(self):
+	@property
+	def display_title(self):
 		if self.title:
 			return self.title
 		else:
 			return self.slug
+	
+	def __unicode__(self):
+		return self.display_title
 	
 	def get_absolute_url(self):
 		return reverse('tag', kwargs={'slug':self.slug,})
