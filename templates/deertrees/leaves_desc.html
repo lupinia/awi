@@ -1,8 +1,3 @@
-{% if error %}
-	{% load errors %}
-	{% error_display error %}
-	<br /><hr /><br />
-{% endif %}
 {% if body_text %}
 	{% autoescape off %}
 		{{body_text}}
