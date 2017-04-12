@@ -32,8 +32,10 @@ class link_base(models.Model):
 	class Meta:
 		abstract = True
 
+
 class link(link_base, leaf):
 	involved = models.BooleanField(help_text="Indicates a project the webmaster has involvement with.")
+
 
 #	This is a special case that won't be part of the usual tree/leaf system, nor will they have tags
 #	Instead, these will be displayed on any descendant of a given category

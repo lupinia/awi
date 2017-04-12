@@ -79,6 +79,7 @@ urlpatterns = [
 #	This varies a bit from the documentation, because these need to come before any wildcard URL maps
 if settings.DEBUG:
 	import debug_toolbar
+	
 	urlpatterns_debug = [
 		url(r'^__debug__/', include(debug_toolbar.urls)),
 		url(r'^intentional500/', system_error, name='intentional500'),
