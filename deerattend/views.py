@@ -157,7 +157,7 @@ class event_instances(event_list):
 		return self.filtered_queryset(*args, **kwargs).filter(event__slug=self.kwargs['slug'])
 	
 	def get_context_data(self, **kwargs):
-		cur_filter = event.objects.get(slug=self.kwargs['slug'])
+		cur_filter = get_object_or_404(event, slug=self.kwargs['slug'])
 		self.geojson_slug = 'event_%s' % cur_filter.slug
 		
 		context = super(event_instances,self).get_context_data(**kwargs)
@@ -194,7 +194,7 @@ class events_by_type(event_list):
 			return self.filtered_queryset(*args, **kwargs).filter(event__type__slug=self.kwargs['slug'])
 	
 	def get_context_data(self, **kwargs):
-		cur_filter = event_type.objects.get(slug=self.kwargs['slug'])
+		cur_filter = get_object_or_404(event_type, slug=self.kwargs['slug'])
 		self.geojson_slug = 'filter_type_%s' % cur_filter.slug
 		
 		context = super(events_by_type,self).get_context_data(**kwargs)
@@ -210,7 +210,7 @@ class events_by_venue(event_list):
 		return self.filtered_queryset(*args, **kwargs).filter(venue__slug=self.kwargs['slug'])
 	
 	def get_context_data(self, **kwargs):
-		cur_filter = venue.objects.get(slug=self.kwargs['slug'])
+		cur_filter = get_object_or_404(venue, slug=self.kwargs['slug'])
 		
 		context = super(events_by_venue,self).get_context_data(**kwargs)
 		context['cur_filter'] = cur_filter
@@ -228,7 +228,7 @@ class events_by_flag(event_list):
 			return self.filtered_queryset(*args, **kwargs).filter(flags__slug=self.kwargs['slug'])
 	
 	def get_context_data(self, **kwargs):
-		cur_filter = attendance_flag.objects.get(slug=self.kwargs['slug'])
+		cur_filter = get_object_or_404(attendance_flag, slug=self.kwargs['slug'])
 		self.geojson_slug = 'filter_flag_%s' % cur_filter.slug
 		
 		context = super(events_by_flag,self).get_context_data(**kwargs)

@@ -9,6 +9,7 @@
 from django.views import generic
 from django.core.urlresolvers import reverse
 from django.db.models import Count
+from django.shortcuts import get_object_or_404
 
 from deerfood.models import menu_item, menu_section, menu_flag
 from deertrees.views import special_feature_view
@@ -62,7 +63,7 @@ class menu_by_section(menu_item_list, generic.ListView):
 	
 	def get_context_data(self, **kwargs):
 		context=super(menu_by_section,self).get_context_data(**kwargs)
-		context['cur_filter'] = menu_section.objects.get(slug=self.kwargs['slug'])
+		context['cur_filter'] = get_object_or_404(menu_section, slug=self.kwargs['slug'])
 		context['cur_filter_type'] = 'section'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'section')
 		context['filters'] = self.get_filters()
@@ -76,7 +77,7 @@ class menu_by_flag(menu_item_list, generic.ListView):
 	
 	def get_context_data(self, **kwargs):
 		context=super(menu_by_flag,self).get_context_data(**kwargs)
-		context['cur_filter'] = menu_flag.objects.get(slug=self.kwargs['slug'])
+		context['cur_filter'] = get_object_or_404(menu_flag, slug=self.kwargs['slug'])
 		context['cur_filter_type'] = 'flag'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'flag')
 		context['filters'] = self.get_filters()
