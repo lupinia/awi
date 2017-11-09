@@ -17,12 +17,16 @@ from sunset.utils import sunset_embed
 
 class single_page(leaf_view):
 	model=page
+	alt_view = False
 	
 	def get_queryset(self, *args, **kwargs):
 		return super(single_page, self).get_queryset(*args, **kwargs).select_related('book_title').prefetch_related('docfiles')
 	
 	def get_context_data(self, **kwargs):
 		context=super(single_page,self).get_context_data(**kwargs)
+		
+		if self.alt_view and context.get('embed_mature_form') == True:
+			raise Http403
 		
 		if context['object']:
 			if context['object'].book_title:
@@ -53,18 +57,22 @@ class single_page_htm(single_page):
 class single_page_txt(single_page):
 	template_name='deerbooks/page.txt'
 	content_type = 'text/plain; charset=utf-8'
+	alt_view = True
 
 class single_page_md(single_page):
 	template_name='deerbooks/page.md'
 	content_type = 'text/markdown; charset=utf-8'
+	alt_view = True
 
 class single_page_tex(single_page):
 	template_name='deerbooks/page.tex'
 	content_type = 'application/x-tex'
+	alt_view = True
 
 
 class book(generic.DetailView):
 	model=toc
+	alt_view = True
 	
 	def get_queryset(self, *args, **kwargs):
 		return super(book, self).get_queryset(*args, **kwargs).prefetch_related('pages')
