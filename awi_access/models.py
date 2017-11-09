@@ -54,6 +54,9 @@ def access_query(request=False):
 				#	Regular User
 				published_query = models.Q(published = True) or models.Q(owner = request.user)
 				returned_query = returned_query & models.Q(security__lt = 2) & published_query
+		else:
+			#	Guest
+			returned_query = returned_query & models.Q(security__lt = 1) & models.Q(published = True)
 		
 		mature_check = check_mature(request)
 		if not mature_check[0]:
