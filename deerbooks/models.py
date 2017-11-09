@@ -8,9 +8,9 @@
 
 from os.path import join
 
-from django.db import models
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.db import models
 from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.text import slugify
