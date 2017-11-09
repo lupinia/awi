@@ -3,7 +3,7 @@
 //	By Natasha L.
 //	www.lupinia.net | github.com/lupinia
 
-@mixin error($border,$bgcolor,$color,$bgimg) {
+@mixin error($border,$bgcolor,$color,$bgimg:none) {
 	display:block;
 	min-height:45px;
 	margin:3px;

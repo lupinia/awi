@@ -475,6 +475,10 @@ class leaf_view(generic.DetailView):
 			context['tags'] = context['object'].tags.all()
 			context['category'] = context['object'].cat
 			
+			# Info for non-public content
+			if not context['object'].is_public()[0]:
+				context['non_public'] = context['object'].is_public()[1]
+			
 			# Editing Functions
 			if context['object'].can_edit(self.request)[0]:
 				context['return_to'] = context['object'].get_absolute_url()

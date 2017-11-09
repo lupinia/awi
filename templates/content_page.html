@@ -33,6 +33,22 @@
 {% endblock %}
 
 {% block content_right %}
+	{% comment %}<!-- Non-Public -->{% endcomment %}
+	{% if object and not error and non_public %}
+		<div class="right_sidebar_section non_public_info">
+			<h3>Not Public Content</h3>
+			<div class="error error_warning_nobg">
+				<div><strong>This page is not publicly available.</strong>  Restrictions currently in place:</div>
+				<ul>
+					{% for reason in non_public %}
+						<li>{{reason}}</li>
+					{% endfor %}
+				</ul>
+				<div><strong>Please do not share this page</strong> without first consulting with its author.</div>
+			</div>
+		</div>
+	{% endif %}
+	
 	{% block sidebar_modules %}{% endblock %}
 	
 	{% if object and not error %}
