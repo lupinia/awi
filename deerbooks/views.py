@@ -24,6 +24,7 @@ class single_page(leaf_view):
 	
 	def get_context_data(self, **kwargs):
 		context=super(single_page,self).get_context_data(**kwargs)
+		context['has_reading_mode'] = True
 		
 		if self.alt_view and context.get('embed_mature_form') == True:
 			raise Http403
@@ -41,7 +42,7 @@ class single_page(leaf_view):
 			
 			context['body_text'] = sunset_embed(context['object'].body_html, self.request)
 			
-			if self.request.GET.get('read', False):
+			if self.request.GET.get('mode', False) == 'read':
 				context['showcase_mode'] = True
 			
 			if context['can_edit']:

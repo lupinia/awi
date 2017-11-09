@@ -19,8 +19,14 @@
 							{% include 'deertrees/leaf_adminlinks.html' %}
 							<span class="secondary_time">{{object.display_times.1.label}}:  {{object.display_times.1.timestamp|date:'F j, Y  G:i:s'}}</span>
 						</div>
+					{% elif has_reading_mode %}
+						<div id="page_title_extra">
+							<div class="hovericons32 hovericons-wide">
+								<a href="{{showcase_mode|yesno:'?mode=normal,?mode=read'}}"{% if showcase_mode %} class="red"{% endif %}><img src="{{ STATIC_PREFIX }}images/icons/{{showcase_mode|yesno:'webpage,book'}}-32.png" alt="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" title="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" /></a>
+							</div>
+						</div>
 					{% endif %}
-
+					
 					<div id="page_title_main"><h2>{{object}}</h2>
 					<div id="byline">{{object.display_times.0.label}}:  {{object.display_times.0.timestamp|date:'F j, Y  G:i:s'}} &bull; {{body_text|wordcount}} words</div>
 					</div>
