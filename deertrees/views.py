@@ -381,7 +381,7 @@ class main_rssfeed(leaf_parent, Feed):
 		enclosure_obj = getattr(leaf_item, 'rss_enclosure_obj', None)
 		return getattr(enclosure_obj, 'rss_enclosure_length', None)
 	
-	def item_enclosure_type(self, item):
+	def item_enclosure_mime_type(self, item):
 		leaf_item = getattr(item, item.type, None)
 		enclosure_obj = getattr(leaf_item, 'rss_enclosure_obj', None)
 		return getattr(enclosure_obj, 'rss_enclosure_type', None)
