@@ -27,7 +27,7 @@
 						</div>
 					{% endif %}
 					
-					<div id="page_title_main"><h2>{{object}}</h2>
+					<div id="page_title_main"><h2>{{object}} {% if object.restriction == 'locked' %}<img src="{{STATIC_PREFIX}}images/icons/restriction-{{object.restriction}}16.png" alt="{{object.restriction|title}}" title="{{object.restriction|title}}" />{% endif %}</h2>
 					<div id="byline">{{object.display_times.0.label}}:  {{object.display_times.0.timestamp|date:'F j, Y  G:i:s'}} &bull; {{body_text|wordcount}} words</div>
 					</div>
 				</div>

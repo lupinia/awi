@@ -1,8 +1,11 @@
 {% if 'sidebar' in blockname %}
 	{% for link in leaves %}
-		<a href="/{{link.cat.cached_url}}/{{link.url}}" title="{{link.title}} - {{link.desc}}" class="sidebar_link {% if link.featured and highlight_featured %}featured{% elif link.mature %}mature{% elif not link.is_public.0 %}notpublic{% endif %}">
+		<a href="/{{link.cat.cached_url}}/{{link.url}}" title="{{link.title}} - {{link.desc}}" class="sidebar_link {% if link.restriction and link.restriction != 'unknown' %}restricted{% elif link.featured and highlight_featured %}featured{% elif link.mature %}mature{% endif %}">
 			<span class="sidebar_link_title">{{link.title}}</span>
-		{% if link.featured and highlight_featured %}
+		{% if link.restriction and link.restriction != 'unknown' %}
+			<br />
+			<span class="sidebar_link_subtext">{{link.restriction|title}}</span>
+		{% elif link.featured and highlight_featured %}
 			<br />
 			<span class="sidebar_link_subtext">Featured</span>
 		{% elif link.mature %}

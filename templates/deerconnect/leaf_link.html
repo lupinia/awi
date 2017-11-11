@@ -3,13 +3,16 @@
 
 {% if 'sidebar' in blockname %}
 	{% for link in leaves %}
-	<a href="{{link.url}}" target="_BLANK" title="{{link.label}} - {{link.desc}}" class="sidebar_link {% if link.featured and highlight_featured %}featured{% elif link.mature %}mature{% elif not link.is_public.0 %}notpublic{% endif %}">
+	<a href="{{link.url}}" target="_BLANK" title="{{link.label}} - {{link.desc}}" class="sidebar_link {% if link.restriction and link.restriction != 'unknown' %}restricted{% elif link.featured and highlight_featured %}featured{% elif link.mature %}mature{% endif %}">
 		<span class="sidebar_link_title">{{link.label}}</span>
 		{% if link.involved %}
 			<br />
 			<span class="sidebar_link_subtext">Natasha's Project</span>
 		{% endif %}
-		{% if link.featured and highlight_featured %}
+		{% if link.restriction and link.restriction != 'unknown' %}
+			<br />
+			<span class="sidebar_link_subtext">{{link.restriction|title}}</span>
+		{% elif link.featured and highlight_featured %}
 			<br />
 			<span class="sidebar_link_subtext">Featured</span>
 		{% elif link.mature %}
@@ -25,8 +28,9 @@
 <div class="leaf_links_wrapper">
 	{% for link in leaves %}
 		<div class="leaf_link tall">
-			<a class="leaf_a {% if link.featured and highlight_featured %}featured{% elif link.mature %}mature{% elif not link.is_public.0 %}notpublic{% endif %}" href="{{link.url}}" target="_BLANK" title="{{link.label}}" >
-				{% if link.featured and highlight_featured %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
+			<a class="leaf_a {% if link.restriction and link.restriction != 'unknown' %}restricted{% elif link.featured and highlight_featured %}featured{% elif link.mature %}mature{% endif %}" href="{{link.url}}" target="_BLANK" title="{{link.label}}" >
+				{% if link.restriction and link.restriction != 'unknown' %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/restriction-{{link.restriction}}24.png" alt="{{link.restriction|title}}" title="{{link.restriction|title}}" /></span>
+				{% elif link.featured and highlight_featured %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
 				{% elif link.mature %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
 				
 				<span class="item_summary_head"><span class="item_summary_title">{{link.label}}</span><br /> 

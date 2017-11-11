@@ -256,6 +256,20 @@ class access_control(models.Model):
 		
 		return (public, restrictions)
 	
+	# Helper method for extracting a reason for non-public status that's easier to work with programmaticly
+	@property
+	def restriction(self):
+		ispublic = self.is_public()
+		if ispublic[0]:
+			return False
+		else:
+			if not self.published:
+				return 'draft'
+			elif self.security > 0:
+				return 'locked'
+			else:
+				return 'unknown'
+	
 	class Meta:
 		abstract = True
 

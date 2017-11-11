@@ -69,7 +69,7 @@
 				&.hovericons16 a { margin:0px !important; padding:2px !important; }
 			}
 			
-			&.featured .item_summary_head, &.mature .item_summary_head { width:88%; }
+			&.featured .item_summary_head, &.mature .item_summary_head, &.restricted .item_summary_head { width:88%; }
 		}
 		
 		a.leaf_a {
@@ -138,6 +138,7 @@
 		&:hover > .caption, &:active > .caption, &:focus > .caption { background-color:$color_bg_leaf_hover; }
 		&.featured:hover > .caption, &.featured:active > .caption, &.featured:focus > .caption { background-color:$color_bg_leaf_featured_hover; }
 		&.mature:hover > .caption, &.mature:active > .caption, &.mature:focus > .caption { background-color:$color_bg_leaf_mature_hover; }
+		&.restricted:hover > .caption, &.restricted:active > .caption, &.restricted:focus > .caption { background-color:$color_bg_leaf_restricted_hover; }
 	}
 }
 /*	=====	*/

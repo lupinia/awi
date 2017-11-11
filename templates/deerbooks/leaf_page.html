@@ -3,13 +3,15 @@
 
 {% if 'sidebar' in blockname %}
 	{% for page in leaves %}
-	<a href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}} - {{page.body_summary}}" class="sidebar_link {% if page.featured and highlight_featured %}featured{% elif page.mature %}mature{% elif not page.is_public.0 %}notpublic{% endif %}">
+	<a href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}} - {{page.body_summary}}" class="sidebar_link {% if page.restriction and page.restriction != 'unknown' %}restricted{% elif page.featured and highlight_featured %}featured{% elif page.mature %}mature{% endif %}">
 		<span class="sidebar_link_title">{{page.get_title}}</span>
-		{% if page.featured and highlight_featured %}
+		{% if page.restriction and page.restriction != 'unknown' %}
+			<br />
+			<span class="sidebar_link_subtext">{{page.restriction|title}}</span>
+		{% elif page.featured and highlight_featured %}
 			<br />
 			<span class="sidebar_link_subtext">Featured</span>
-		{% endif %}
-		{% if page.mature %}
+		{% elif page.mature %}
 			<br />
 			<span class="sidebar_link_subtext">Mature Content</span>
 		{% endif %}
@@ -25,13 +27,10 @@
 			{% comment %}<!-- Do nothing.  -->{% endcomment %}
 		{% else %}
 			<div class="leaf_link tall">
-				<a class="leaf_a {% if page.featured and highlight_featured %}featured{% elif page.mature %}mature{% elif not page.is_public.0 %}notpublic{% endif %}" href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}}">
-					{% if page.mature or page.featured and highlight_featured %}
-						<span class="item_feature_mark">
-							{% if page.featured and highlight_featured %}<img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" />{% endif %}
-							{% if page.mature %}<img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" />{% endif %}
-						</span>
-					{% endif %}
+				<a class="leaf_a {% if page.restriction and page.restriction != 'unknown' %}restricted{% elif page.featured and highlight_featured %}featured{% elif page.mature %}mature{% endif %}" href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}}">
+					{% if page.restriction and page.restriction != 'unknown' %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/restriction-{{page.restriction}}24.png" alt="{{page.restriction|title}}" title="{{page.restriction|title}}" /></span>
+					{% elif page.featured and highlight_featured %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
+					{% elif page.mature %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
 					
 					<span class="item_summary_head"><span class="item_summary_title">{{page.get_title}}</span><br /> 
 						{{page.display_times.0.label}}: {{page.display_times.0.timestamp}}

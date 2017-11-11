@@ -3,9 +3,12 @@
 
 {% if 'sidebar' in blockname %}
 	{% for subcat in leaves %}
-	<a href="{% url 'category' subcat.cached_url %}" title="{{subcat.title}} - {{subcat.summary}}" class="sidebar_link {% if subcat.featured and highlight_featured %}featured{% elif subcat.mature %}mature{% elif not subcat.is_public.0 %}notpublic{% endif %}">
+	<a href="{% url 'category' subcat.cached_url %}" title="{{subcat.title}} - {{subcat.summary}}" class="sidebar_link {% if subcat.restriction and subcat.restriction != 'unknown' %}restricted{% elif subcat.featured and highlight_featured %}featured{% elif subcat.mature %}mature{% endif %}">
 		<span class="sidebar_link_title">{{subcat.title}}</span>
-		{% if subcat.featured and highlight_featured %}
+		{% if subcat.restriction and subcat.restriction != 'unknown' %}
+			<br />
+			<span class="sidebar_link_subtext">{{subcat.restriction|title}}</span>
+		{% elif subcat.featured and highlight_featured %}
 			<br />
 			<span class="sidebar_link_subtext">Featured</span>
 		{% elif subcat.mature %}
@@ -21,7 +24,7 @@
 <div class="leaf_links_wrapper">
 	{% for subcat in leaves %}
 		<div class="leaf_link midheight">
-			<a class="leaf_a {% if subcat.featured and highlight_featured %}featured{% elif subcat.mature %}mature{% elif not subcat.is_public.0 %}notpublic{% endif %}" href="{% url 'category' subcat.cached_url %}" title="{{subcat.title}}">
+			<a class="leaf_a {% if subcat.restriction and subcat.restriction != 'unknown' %}restricted{% elif subcat.featured and highlight_featured %}featured{% elif subcat.mature %}mature{% endif %}" href="{% url 'category' subcat.cached_url %}" title="{{subcat.title}}">
 				{% if subcat.mature %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
 				<span class="item_summary_head"><span class="item_summary_title">{{subcat.title}}</span></span><br />
 				<span class="item_summary_body">{{subcat.summary}}</span>

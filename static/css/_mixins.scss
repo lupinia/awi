@@ -62,6 +62,12 @@
 		&:link, &:visited { background-color:$color_bg_leaf_mature; }
 		&:hover, &:active, &:focus { background-color:$color_bg_leaf_mature_hover; }
 	}
+	
+	&.restricted {
+		border:1px solid $color_bg_leaf_restricted_hover;
+		&:link, &:visited { background-color:$color_bg_leaf_restricted; }
+		&:hover, &:active, &:focus { background-color:$color_bg_leaf_restricted_hover; }
+	}
 }
 
 @mixin transbox_style {

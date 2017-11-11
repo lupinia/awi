@@ -198,6 +198,15 @@ class leaf(access_control):
 		
 		return ispublic
 	
+	# Helper method for extracting a reason for non-public status that's easier to work with programmaticly
+	@property
+	def restriction(self):
+		cur_restriction = super(leaf, self).restriction
+		if self.scheduled() and not self.is_public()[0]:
+			return 'scheduled'
+		else:
+			return cur_restriction
+	
 	def tag_item(self, taglist):
 		return_data = {'skipped':[], 'added':[], 'created':[]}
 		if ', ' in taglist:

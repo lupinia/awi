@@ -3,7 +3,7 @@
 
 {% if 'sidebar' in blockname %}
 	{% for subcat in leaves %}
-	<a href="{% url 'category' subcat.cached_url %}" title="{{subcat}} - {{subcat.summary}}" class="sidebar_link {% if subcat.featured and highlight_featured %}featured{% elif subcat.mature %}mature{% elif not subcat.is_public.0 %}notpublic{% endif %}">
+	<a href="{% url 'category' subcat.cached_url %}" title="{{subcat}} - {{subcat.summary}}" class="sidebar_link {% if subcat.restriction and subcat.restriction != 'unknown' %}restricted{% elif subcat.featured and highlight_featured %}featured{% elif subcat.mature %}mature{% endif %}">
 		<span class="sidebar_link_title">{{subcat}}</span>
 		{% if subcat.featured and highlight_featured %}
 			<br />
@@ -22,7 +22,7 @@
 	
 	<div id="sunset_thumb_subcats" class="leaf_thumbs_wrapper">
 	{% for subcat in leaves %}
-		<a href="{% url 'category' subcat.cached_url %}" title="{{subcat}}" {% if subcat.featured and highlight_featured %}class="featured"{% elif subcat.mature %}class="mature"{% elif not subcat.is_public.0 %}class="notpublic"{% endif %}>
+		<a href="{% url 'category' subcat.cached_url %}" title="{{subcat}}" {% if subcat.restriction and subcat.restriction != 'unknown' %}class="restricted"{% elif subcat.featured and highlight_featured %}class="featured"{% elif subcat.mature %}class="mature"{% endif %}>
 			{% if subcat.icon %}
 				<img src="{{subcat.icon.get_url}}" alt="{{subcat}}" title="{{subcat}}" />
 			{% else %}
