@@ -48,13 +48,16 @@ class Command(BaseCommand):
 	
 	def check_link(self, url):
 		agent = {'user-agent': settings.DEERCONNECT_HEALTHCHECK_USERAGENT}
-		r = requests.head(url, headers=agent)
-		if r.status_code == 200:
-			status = True
-		else:
-			status = False
-		
-		return (status, r.status_code)
+		try:
+			r = requests.head(url, headers=agent)
+			if r.status_code == 200:
+				status = True
+			else:
+				status = False
+			
+			return (status, r.status_code)
+		except requests.exceptions.SSLError:
+			return (False, 495)	# Borrowing an nginx status code indicating a certificate failure
 	
 	def check_links_bulk(self, links):
 		failure_count = 0
