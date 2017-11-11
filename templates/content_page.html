@@ -40,7 +40,7 @@
 
 {% block content_right %}
 	{% comment %}<!-- Non-Public -->{% endcomment %}
-	{% if object and not error and non_public %}
+	{% if object and not error and non_public and not title_in_sidebar %}
 		<div class="right_sidebar_section non_public_info">
 			<h3>Not Public Content</h3>
 			<div class="error error_warning_nobg">

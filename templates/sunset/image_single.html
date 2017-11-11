@@ -42,6 +42,21 @@
 			</div>
 		{% endif %}
 		
+		{% comment %}<!-- Non-Public -->{% endcomment %}
+		{% if not error and non_public %}
+			<div class="right_sidebar_section non_public_info">
+				<h3>Not Public Content</h3>
+				<div class="error error_warning_nobg">
+					<div><strong>This image is not publicly available.</strong>  Restrictions currently in place:</div>
+					<ul>
+						{% for reason in non_public %}
+							<li>{{reason}}</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		{% endif %}
+		
 		{% comment %}<!-- Metadata -->{% endcomment %}
 		{% if meta %}
 			<div class="right_sidebar_section">
