@@ -30,7 +30,7 @@
 		{% if not object.body %}
 			<div class="right_sidebar_section content_summary">
 				<div id="page_title">
-					<div id="page_title_main"><h2>{{object}}</h2></div>
+					<div id="page_title_main"><h2>{{object}} {% if object.restriction and object.restriction != 'unknown' %}&nbsp;<img src="{{STATIC_PREFIX}}images/icons/restriction-{{object.restriction}}16.png" alt="{{object.restriction|title}}" title="{{object.restriction|title}}" />{% endif %}</h2></div>
 					<div id="byline">{{object.display_times.0.label}}:  {{object.display_times.0.timestamp|date:'F j, Y  G:i:s'}}</div>
 					{% if can_edit %}
 						<div id="page_title_extra">
