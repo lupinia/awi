@@ -16,7 +16,7 @@ class prescription(models.Model):
 	slug = models.SlugField(unique=True)
 	quantity = models.IntegerField(help_text="The amount that you have right now, minus today's dose")
 	per_day = models.IntegerField(help_text="The total number of these you take per day")
-	last_update = models.DateField(auto_now=True)
+	last_update = models.DateField(auto_now=True, db_index=True)
 	owner = models.ForeignKey(User)
 	
 	def __unicode__(self):

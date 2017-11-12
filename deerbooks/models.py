@@ -37,9 +37,9 @@ class export_file(models.Model):
 		('docx','Word Document (DocX)'),
 	)
 	
-	filetype = models.CharField(max_length=10, choices=FILETYPE_OPTIONS, verbose_name='file type')
+	filetype = models.CharField(max_length=10, choices=FILETYPE_OPTIONS, db_index=True, verbose_name='file type')
 	docfile = models.FileField(upload_to='writing', verbose_name='file')
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	
 	def __unicode__(self):
 		return self.filename()
@@ -81,8 +81,8 @@ class page(leaf):
 	body = models.TextField()
 	summary = models.CharField(max_length=255, null=True, blank=True, help_text="A short description of this page's content (defaults to the first 255 characters of the body text).")
 	
-	auto_export = models.BooleanField(default=True, verbose_name='auto-build document files', help_text="Uncheck this to disable automatic generation of document files, and the built-in LaTeX view.  Markdown and Plain Text will still be available if the Alternate Views option is checked.")
-	alt_views = models.BooleanField(default=True, verbose_name='allow alternate view formats', help_text="Uncheck this to disable the built-in Plain Text and Markdown alternate views.  Uploaded document files will still be available, and the built-in LaTeX view will still be available if Automatically Build Document Files is checked.")
+	auto_export = models.BooleanField(default=True, db_index=True, verbose_name='auto-build document files', help_text="Uncheck this to disable automatic generation of document files, and the built-in LaTeX view.  Markdown and Plain Text will still be available if the Alternate Views option is checked.")
+	alt_views = models.BooleanField(default=True, db_index=True, verbose_name='allow alternate view formats', help_text="Uncheck this to disable the built-in Plain Text and Markdown alternate views.  Uploaded document files will still be available, and the built-in LaTeX view will still be available if Automatically Build Document Files is checked.")
 	docfiles = models.ManyToManyField(export_file, blank=True, verbose_name='document files', related_name='pages')
 	latex_fail = models.BooleanField(default=False, verbose_name='LaTeX compilation failure')
 	
@@ -170,8 +170,8 @@ class export_log(models.Model):
 class attachment(models.Model):
 	name = models.CharField(max_length=100)
 	file = models.FileField(upload_to=attachment_path)
-	timestamp_mod=models.DateTimeField(auto_now=True, verbose_name='date/time modified')
-	timestamp_post=models.DateTimeField(default=timezone.now, verbose_name='date/time created')
+	timestamp_mod=models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post=models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def __unicode__(self):
 		return self.name

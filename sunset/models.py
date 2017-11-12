@@ -33,7 +33,7 @@ def image_asset_uploadto(instance, filename):
 	return 'gallery/%s_%s.%s' % (instance.parent.slug, instance.type, original[-1])
 
 class background_tag(models.Model):
-	tag = models.CharField(max_length=50)
+	tag = models.SlugField(max_length=50, unique=True)
 	default = models.BooleanField(default=False, blank=True, help_text="Check this box if this tag should be considered a default option for pages/views that don't specify any other background info, such as the home/site root view.")
 	
 	def __unicode__(self):
@@ -63,12 +63,12 @@ class image(leaf):
 	body = models.TextField(null=True, blank=True, verbose_name='description')
 	summary = models.CharField(max_length=255, null=True, blank=True, help_text='Short summary used in the description meta tag, and in place of the Description field if Description is empty.')
 	
-	rebuild_assets = models.BooleanField(default=True, help_text='If this is checked, the assets for this image will be rebuild on the next run of the process_images command.')
+	rebuild_assets = models.BooleanField(default=True, db_index=True, help_text='If this is checked, the assets for this image will be rebuild on the next run of the process_images command.')
 	auto_fields = models.BooleanField(default=True, verbose_name='automatic fields from EXIF?', help_text='If this is checked, the Title, Summary/Description, and Latitude/Longitude will be rebuilt from the EXIF data of the original image file.  If you have manually edited any of these fields, uncheck this box.')
-	is_new = models.BooleanField(default=True, help_text='System field:  If True, this image will be published after its first asset build.')
+	is_new = models.BooleanField(default=True, db_index=True, help_text='System field:  If True, this image will be published after its first asset build.')
 	
-	geo_lat = models.DecimalField(decimal_places=15, max_digits=20, blank=True, null=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
-	geo_long = models.DecimalField(decimal_places=15, max_digits=20, blank=True, null=True, verbose_name='longitude', help_text='Positive numbers are eastern hemisphere, negative numbers are western.')
+	geo_lat = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
+	geo_long = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='longitude', help_text='Positive numbers are eastern hemisphere, negative numbers are western.')
 	
 	# Page backgrounds
 	bg_tags = models.ManyToManyField(background_tag, blank=True, related_name='images', verbose_name='background tags', help_text='To use this image as a sitewide background, select the background tag(s) it should be associated with.')
@@ -345,7 +345,7 @@ class image_asset(models.Model):
 		('unknown','Unknown')
 	)
 	
-	type = models.CharField(max_length=16, choices=TYPE_OPTIONS, default='unknown')
+	type = models.CharField(max_length=16, db_index=True, choices=TYPE_OPTIONS, default='unknown')
 	parent = models.ForeignKey(image, related_name='assets', on_delete=models.CASCADE)
 	
 	img_width = models.IntegerField(null=True, blank=True, verbose_name='image width')
@@ -353,8 +353,8 @@ class image_asset(models.Model):
 	img_mimetype = models.CharField(max_length=60, null=True, blank=True, verbose_name='image MIME type')
 	image_file = models.ImageField(upload_to=image_asset_uploadto, height_field='img_height', width_field='img_width', verbose_name='file')
 	
-	timestamp_post = models.DateTimeField(auto_now_add=True, verbose_name='date/time created')
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='date/time created')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	hash = models.CharField(max_length=255, null=True, blank=True, editable=False, help_text='SHA hash of the image file, to assist in detecting duplicates and changes.')
 	
 	def __unicode__(self):
@@ -406,8 +406,8 @@ class image_meta_key(models.Model):
 	key = models.CharField(max_length=100, unique=True, help_text='Enter the metadata key exactly as it appears in the output of ExifTool.')
 	display_name = models.CharField(max_length=100, blank=True, null=True, help_text='Friendly label used when metadata with this key is displayed.')
 	format_type = models.CharField(max_length=40, choices=FORMAT_OPTIONS, default='text', verbose_name='format', help_text='Used to properly display metadata that uses this key.')
-	public = models.BooleanField(default=False, help_text='If this box is checked, metadata using this key will be collected and stored in the database, but not displayed publicly.')
-	ignore = models.BooleanField(default=False, help_text='If this box is checked, metadata using this key will not be collected or stored in the database, and existing metadata using this key may be deleted.')
+	public = models.BooleanField(default=False, db_index=True, help_text='If this box is checked, metadata using this key will be collected and stored in the database, but not displayed publicly.')
+	ignore = models.BooleanField(default=False, db_index=True, help_text='If this box is checked, metadata using this key will not be collected or stored in the database, and existing metadata using this key may be deleted.')
 	
 	def __unicode__(self):
 		if self.display_name:
@@ -563,12 +563,12 @@ class batch_import(access_control):
 	cat = models.ForeignKey(category, verbose_name='category', help_text="This must be set manually.", on_delete=models.PROTECT)
 	
 	next_sequence_number = models.IntegerField(blank=True, default=1)
-	active = models.BooleanField(default=True)
+	active = models.BooleanField(default=True, db_index=True)
 	sync_success = models.BooleanField(default=False, help_text='System field:  Indicates whether the last sync attempt was successful.')
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
-	timestamp_sync = models.DateTimeField(blank=True, null=True, verbose_name='date/time synchronized')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
+	timestamp_sync = models.DateTimeField(blank=True, null=True, db_index=True, verbose_name='date/time synchronized')
 	
 	# The following fields will auto-populate discovered images, in addition to standard data from parsing the original file, if set.
 	tags = models.ManyToManyField(tag, blank=True, help_text="Added to tags embedded in file, if set.")
@@ -735,7 +735,7 @@ class batch_image(models.Model):
 	img_obj = models.ForeignKey(image, null=True, blank=True, on_delete=models.CASCADE)
 	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
 	status = models.CharField(max_length=255, null=True, blank=True)
-	hash = models.CharField(max_length=255, null=True, blank=True, editable=False)
+	hash = models.CharField(max_length=255, null=True, blank=True, editable=False, db_index=True)
 	
 	def __unicode__(self):
 		return '%s - %s' % (unicode(self.parent), self.img_filename)

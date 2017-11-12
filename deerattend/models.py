@@ -20,16 +20,16 @@ from deerbooks.models import page
 class venue(models.Model):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	# Location
 	address = models.CharField(max_length=250, verbose_name='street address')
 	city = models.CharField(max_length=250)
 	state = models.CharField(max_length=250, blank=True, null=True, verbose_name='state/province/territory')
 	country = models.CharField(max_length=250)
-	geo_lat = models.DecimalField(decimal_places=15, max_digits=20, blank=True, null=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
-	geo_long = models.DecimalField(decimal_places=15, max_digits=20, blank=True, null=True, verbose_name='longitude', help_text='Positive numbers are eastern hemisphere, negative numbers are western.')
+	geo_lat = models.DecimalField(decimal_places=15, max_digits=20, blank=True, null=True, db_index=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
+	geo_long = models.DecimalField(decimal_places=15, max_digits=20, blank=True, null=True, db_index=True, verbose_name='longitude', help_text='Positive numbers are eastern hemisphere, negative numbers are western.')
 	
 	def __unicode__(self):
 		return self.name
@@ -49,7 +49,7 @@ class attendance_flag(models.Model):
 	img_width = models.IntegerField(null=True, blank=True)
 	img_height = models.IntegerField(null=True, blank=True)
 	icon = models.ImageField(upload_to='attend_icons', height_field='img_height', width_field='img_width')
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	
 	def __unicode__(self):
 		return self.name
@@ -67,7 +67,7 @@ class event_type(models.Model):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
 	notes = models.TextField(null=True, blank=True)
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	map_color = models.CharField(max_length=6, blank=True, default='4a3bd0', help_text="Hexadecimal-format color code for events of this type in the map view.")
 	
 	# Annoyingly, Mapbox appears to have no way to actually USE the newest Maki icons in a map, so this field is a bit pointless at the moment.  But, hopefully someday it can be used to create more interesting markers.
@@ -89,7 +89,7 @@ class event(models.Model):
 	type = models.ForeignKey(event_type, on_delete=models.PROTECT)
 	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
-	mature = models.BooleanField(help_text='Check this box to indicate a mature/18+ event.')
+	mature = models.BooleanField(help_text='Check this box to indicate a mature/18+ event.', db_index=True)
 	
 	def __unicode__(self):
 		return self.name
@@ -102,20 +102,20 @@ class event_instance(models.Model):
 	instance = models.CharField(max_length=15, verbose_name='instance label', help_text="Label for the specific instance of an event.  Ideally a year, but not necessarily.  For example, 'Jan 2012', or '3'.")
 	name = models.CharField(max_length=100, null=True, blank=True, help_text="Override the standard format of 'event_instance.event.name event_instance.instance'")
 	slug = models.SlugField(unique=True)
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name='UUID')
 	
 	# Attendance Details
-	confirmed = models.BooleanField(default=True, help_text='Check this box if attendance at this event has been confirmed (purchased registration, etc).')
+	confirmed = models.BooleanField(default=True, db_index=True, help_text='Check this box if attendance at this event has been confirmed (purchased registration, etc).')
 	flags = models.ManyToManyField(attendance_flag,blank=True)
 	notes = models.TextField(null=True, blank=True)
 	photos = models.ForeignKey(category, null=True, blank=True, on_delete=models.SET_NULL, help_text='Select a Category that contains photos taken at this event.')
 	report = models.ForeignKey(page, null=True, blank=True, on_delete=models.SET_NULL, help_text='Select a Page describing/related to experiences at this event.')
 	
 	# Time and Place
-	date_start = models.DateField(null=True, blank=True, verbose_name='start date')
-	date_end = models.DateField(null=True, blank=True, verbose_name='end_date')
+	date_start = models.DateField(null=True, blank=True, db_index=True, verbose_name='start date')
+	date_end = models.DateField(null=True, blank=True, db_index=True, verbose_name='end_date')
 	venue = models.ForeignKey(venue, on_delete=models.PROTECT)
 	
 	def get_name(self):

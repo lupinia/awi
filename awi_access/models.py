@@ -150,12 +150,12 @@ class user_settings(models.Model):
 class access_control(models.Model):
 	SECURITY_OPTIONS = ((0,'Public'),(1,'Logged-In Users'),(2,'Staff'))
 	
-	published = models.BooleanField(help_text='Unpublished items can only be viewed by the creator, or users with Staff privileges, regardless of Security setting.')
-	featured = models.BooleanField(help_text='Display this item on the homepage, and at the top of the list elsewhere.')
-	mature = models.BooleanField(help_text='Mature content can only be viewed by users who verify their age.')
-	security = models.IntegerField(choices=SECURITY_OPTIONS, default=0, blank=True)
+	published = models.BooleanField(db_index=True, help_text='Unpublished items can only be viewed by the creator, or users with Staff privileges, regardless of Security setting.')
+	featured = models.BooleanField(db_index=True, help_text='Display this item on the homepage, and at the top of the list elsewhere.')
+	mature = models.BooleanField(db_index=True, help_text='Mature content can only be viewed by users who verify their age.')
+	security = models.IntegerField(choices=SECURITY_OPTIONS, default=0, db_index=True, blank=True)
 	owner = models.ForeignKey(User, on_delete=models.PROTECT)
-	sites = models.ManyToManyField(Site, help_text='Sites/domains on which this item will appear.')
+	sites = models.ManyToManyField(Site, db_index=True, help_text='Sites/domains on which this item will appear.')
 	access_code = models.ForeignKey(access_code, null=True, blank=True, on_delete=models.SET_NULL)
 	
 	def create_code(self, age=30, desc=None, request=False):

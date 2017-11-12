@@ -40,8 +40,8 @@ class category(MPTTModel, access_control):
 	
 	view_type = models.CharField(choices=viewtype_options(), max_length=15, default='default', help_text='Determines the placement of content when this category is displayed.')
 	sitemap_include = models.BooleanField(default=True, verbose_name='include in sitemap', help_text='Check this box to include this category in sitemap views.')
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def __unicode__(self):
 		return self.title
@@ -107,8 +107,8 @@ class tag(models.Model):
 	
 	view_type = models.CharField(choices=viewtype_options(), max_length=15, default='default', help_text='Determines the placement of content when this tag is displayed.')
 	sitemap_include = models.BooleanField(default=True, verbose_name='include in sitemap', help_text='Check this box to include this tag in sitemap views.')
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	@property
 	def display_title(self):
@@ -145,11 +145,11 @@ class leaf(access_control):
 	cat = models.ForeignKey(category, null=True, blank=True, on_delete=models.PROTECT, verbose_name='category')
 	tags = models.ManyToManyField(tag, blank=True)
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created', help_text='Set this to a future date to schedule it.')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created', help_text='Set this to a future date to schedule it.')
 	timedisp = models.CharField(max_length=10, choices=TIMEDISP_OPTIONS, default='post', verbose_name='preferred timestamp', help_text='Determines which timestamp (modified, or created) will be publicly displayed.  The other option will only be visible to users who can edit this item.')
 	
-	type = models.CharField(max_length=20, default='unknown', help_text='System field:  Indicates which model this leaf is.')
+	type = models.CharField(max_length=20, default='unknown', db_index=True, help_text='System field:  Indicates which model this leaf is.')
 	
 	def __unicode__(self):
 		return '%s:  %d' % (self.type.capitalize(), self.pk)

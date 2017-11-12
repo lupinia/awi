@@ -16,8 +16,8 @@ from deerbooks.models import page
 class menu_section(models.Model):
 	name = models.CharField(max_length=150)
 	slug = models.SlugField(unique=True)
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def __unicode__(self):
 		return self.name
@@ -35,7 +35,7 @@ class menu_flag(models.Model):
 	img_width = models.IntegerField(null=True, blank=True, verbose_name='icon height')
 	img_height = models.IntegerField(null=True, blank=True, verbose_name='icon width')
 	icon = models.ImageField(upload_to='menu_icons',height_field='img_height',width_field='img_width')
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	
 	def __unicode__(self):
 		return self.name
@@ -56,8 +56,8 @@ class menu_item(models.Model):
 	section = models.ForeignKey(menu_section, on_delete=models.PROTECT)
 	flags = models.ManyToManyField(menu_flag, blank=True)
 	recipe_internal = models.ForeignKey(page, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='recipe', help_text='Select a Page that contains the recipe for this item.')
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def __unicode__(self):
 		return self.name
