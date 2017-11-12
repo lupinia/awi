@@ -531,13 +531,12 @@ class leaf_view(generic.DetailView):
 						changed = True
 				elif self.request.GET.get('new_access_code', False) and self.request.user == context['object'].owner:
 					if self.request.GET.get('new_access_code', False) == 'permanent':
-						new_age = None
+						new_age = 0
 					else:
 						new_age = self.request.GET.get('new_access_code', False)
 					
-					if new_age is None or self.check_int(new_age):
-						if new_age is not None:
-							new_age = int(new_age)
+					if self.check_int(new_age):
+						new_age = int(new_age)
 						
 						if context['object'].access_code and context['object'].access_code.valid() and self.check_int(self.request.GET.get('replace', False)) and int(self.request.GET.get('replace', False)) == context['object'].access_code.pk:
 							context['object'].access_code.is_valid = False

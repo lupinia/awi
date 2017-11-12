@@ -73,7 +73,7 @@ class access_code(models.Model):
 	item_type = models.CharField(max_length=40, default='unknown', editable=False)
 	owner = models.ForeignKey(User, on_delete=models.CASCADE)
 	
-	allowed_age = models.IntegerField(default=30, help_text='The number of days for which this code should be valid.  Enter 0 for a code that does not expire.')
+	allowed_age = models.IntegerField(default=30, blank=True, help_text='The number of days for which this code should be valid.  Enter 0 for a code that does not expire.')
 	desc = models.CharField(max_length=100, null=True, blank=True)
 	is_valid = models.BooleanField(default=True)
 	
