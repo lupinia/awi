@@ -61,23 +61,33 @@ def not_found(request):
 		request.session['deerfind_norecover'] = False		# Always reset, just in case.
 		
 		#	Simple at first, check a list of known-bad URLs for redirects.
-		url_check=pointer.objects.filter(old_url=request.path)
+		pointer_obj = pointer.objects.filter(old_url=request.path).first()
 		
-		if url_check.exists():
-			return_url=url_check[0].new_url
+		if pointer_obj:
+			return_url = pointer_obj.new_url
 			
 			#	Log hits to known-bad URLs, to gauge whether the redirect is still necessary.
-			hitcount=hitlog.objects.create(
-				pointer=url_check[0],
-				user_agent = request.META.get('HTTP_USER_AGENT',''),
-				accept = request.META.get('HTTP_ACCEPT',''),
-				accept_encoding = request.META.get('HTTP_ACCEPT_ENCODING',''),
-				accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE',''),
-				host = request.META.get('HTTP_HOST',''),
-				referer = request.META.get('HTTP_REFERER',''),
-				query_string = request.META.get('QUERY_STRING',''),
-				remote_addr = request.META.get('REMOTE_ADDR',''),
-			)
+			if pointer_obj.log_hits:
+				hitlog_fields = {
+					'pointer': pointer_obj, 
+					'user_agent': unicode(request.META.get('HTTP_USER_AGENT','')), 
+					'accept': unicode(request.META.get('HTTP_ACCEPT','')), 
+					'accept_encoding': unicode(request.META.get('HTTP_ACCEPT_ENCODING','')), 
+					'accept_language': unicode(request.META.get('HTTP_ACCEPT_LANGUAGE','')), 
+					'host': unicode(request.META.get('HTTP_HOST','')), 
+					'query_string': unicode(request.META.get('QUERY_STRING','')), 
+					'remote_addr': unicode(request.META.get('REMOTE_ADDR','')), 
+				}
+				
+				if request.META.get('HTTP_REFERER','').startswith('http'):
+					hitlog_fields['referer'] = unicode(request.META.get('HTTP_REFERER',''))
+				elif request.META.get('HTTP_REFERER',''):
+					hitlog_fields['referer'] = '(Redacted - Possibly Malicious)'
+				else:
+					hitlog_fields['referer'] = ''
+				
+				hitlog_obj = hitlog.objects.create(**hitlog_fields)
+		
 		else:
 			#	Time to go digging.  The plan here is to check each known finder function.
 			#	Finder functions should receive request as a parameter, and return a tuple;

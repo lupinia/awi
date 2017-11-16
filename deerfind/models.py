@@ -29,12 +29,17 @@ class pointer(models.Model):
 	old_url = models.CharField(max_length=255, unique=True)
 	new_url = models.CharField(max_length=255)
 	category = models.ForeignKey(category, on_delete=models.PROTECT, verbose_name='type')
+	log_hits = models.BooleanField(default=True, blank=True, verbose_name='log hits')
 	
 	def __unicode__(self):
 		return '%s -> %s' % (self.old_url, self.new_url)
 	
+	@property
 	def hit_count(self):
-		return self.hitlog_set.count()
+		if self.log_hits:
+			return self.hitlog_set.count()
+		else:
+			return 0
 	
 	class Meta:
 		verbose_name = 'URL redirect pointer'
@@ -54,9 +59,12 @@ class hitlog(models.Model):
 	query_string = models.CharField(max_length=250, null=True, blank=True)
 	remote_addr = models.CharField(max_length=250, null=True, blank=True)
 	
+	@property
+	def timestamp_str(self):
+		return self.time.strftime('%b %-d, %Y %H:%M:%S')
+	
 	def __unicode__(self):
-		hit_date = self.time.strftime('%b %-d, %Y %H:%M:%S')
-		return '%s - %s' % (self.pointer.old_url, hit_date)
+		return '%s - %s' % (self.pointer.old_url, self.timestamp_str)
 	
 	class Meta:
 		verbose_name = 'pointer hit log entry'
@@ -74,7 +82,7 @@ class g2map(models.Model):
 	class Meta:
 		verbose_name = 'Gallery2 URL redirect pointer'
 
-
+# Temporary object for managing the migration from Gallery2 to Sunset
 class g2raw(MPTTModel):
 	g2id = models.IntegerField(unique=True, verbose_name='G2 item ID')
 	type = models.CharField(max_length=255, default='Unknown')
