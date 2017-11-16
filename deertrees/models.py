@@ -35,10 +35,11 @@ class category(MPTTModel, access_control):
 	
 	view_type = models.CharField(choices=viewtype_options(), max_length=15, default='default', help_text='Determines the placement of content when this category is displayed.')
 	sitemap_include = models.BooleanField(default=True, verbose_name='include in sitemap', help_text='Check this box to include this category in sitemap views.')
+	trash = models.BooleanField(default=False, db_index=True, verbose_name='recycle bin', help_text='System field:  Indicates whether this category is the "recycle bin" for deleted items.')
 	
 	background_tag = models.ForeignKey('sunset.background_tag', null=True, blank=True, on_delete=models.SET_NULL, help_text='Set this to indicate the preferred background image themes for this category.')
 	icon = models.ForeignKey('sunset.image_asset', null=True, blank=True, on_delete=models.SET_NULL, help_text='System field:  Image asset used as a thumbnail for this category.')
-	icon_manual = models.BooleanField(default=False, help_text='System field:  Indicates whether the Icon field was set manually; if so, it will not be replaced by the automatic thumbnail assignment script.')
+	icon_manual = models.BooleanField(default=False, db_index=True, help_text='System field:  Indicates whether the Icon field was set manually; if so, it will not be replaced by the automatic thumbnail assignment script.')
 	
 	cached_url = models.CharField(max_length=255, null=True, blank=True, unique=True, help_text='System field:  Full unique slug for this category, including all parents.')
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')

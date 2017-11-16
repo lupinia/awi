@@ -7,6 +7,7 @@
 #	=================
 
 from django.contrib import admin
+from django.contrib.messages import constants as messages
 from django.core.urlresolvers import reverse
 
 from django_mptt_admin.admin import DjangoMpttAdmin
@@ -18,8 +19,8 @@ from deertrees.models import *
 class cat_admin(DjangoMpttAdmin,access_admin):
 	list_select_related = True
 	fieldsets = [
-		(None,{'fields':(('title', 'slug', 'parent',), 'summary', 'desc'),},),
-		("Options",{'fields':(('view_type', 'background_tag', 'sitemap_include',),),},),
+		(None,{'fields':(('title', 'slug',), 'parent', 'summary', 'desc'),},),
+		("Options",{'fields':(('view_type', 'background_tag',), ('sitemap_include','trash',),),},),
 	] + access_admin.fieldsets
 	list_filter = access_admin.list_filter + ['background_tag', 'view_type', 'sitemap_include']
 	
@@ -59,12 +60,16 @@ class leaf_admin(access_admin):
 	actions = ['recycle',] + access_admin.actions
 	
 	def recycle(self, request, queryset):
-		rows_updated = queryset.update(published=False,cat_id=75)
-		if rows_updated == 1:
-			message_bit = "1 item was"
+		recycle_bin = category.objects.filter(trash=True).first()
+		if recycle_bin:
+			rows_updated = queryset.update(published=False,cat=recycle_bin)
+			if rows_updated == 1:
+				message_bit = "1 item was"
+			else:
+				message_bit = "%s items were" % rows_updated
+			self.message_user(request, "%s successfully recycled." % message_bit)
 		else:
-			message_bit = "%s items were" % rows_updated
-		self.message_user(request, "%s successfully recycled." % message_bit)
+			self.message_user(request, "Cannot recycle items until a recycle bin category is defined.", level=messages.ERROR)
 	
 	recycle.short_description = "Recycle selected items"
 
