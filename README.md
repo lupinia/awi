@@ -1,14 +1,8 @@
 # Lupinia Website (Awi)
 
-Full website for Lupinia Studios, built with Django.
+Full website for Lupinia Studios, built with Django.  The site can be viewed at **[www.lupinia.net](http://www.lupinia.net/)**.
 
 Built by Natasha L. (@lupinia)
-
-Servers
--------
-
-- **[seneca.lupinia.net](http://www.lupinia.net/)** *(v5.1)* - Production server.  It runs the current stable version of this codebase at all times.  All domains are primarily pointed at this server.
-- **[allegheny.lupinia.net](http://allegheny.lupinia.net/)** *(v3.2)* - Deprecated former production server; currently runs the legacy PHP version of the Awi codebase, and it no longer handles production traffic, but some of its data has not yet been transferred to Seneca.
 
 Apps/Modules Included
 ---------------------
@@ -40,7 +34,7 @@ Third-Party Apps/Modules Used
 - **[Django Honeypot](https://github.com/jamesturk/django-honeypot/)**:  Provides tools to reduce automated form spam.
 - **[Django MPTT](https://github.com/django-mptt/django-mptt/)**:  Provides support for a recursive traversal tree structure; used for nested categories.
 - **[Django MPTT Admin](https://github.com/mbraak/django-mptt-admin)**:  Enhanced administrative interface for objects using Django MPTT
-- **[Django Processinfo](https://github.com/jedie/django-processinfo)**:  Basic server stats/health report.
+- **[Django Processinfo](https://github.com/jedie/django-processinfo)**:  Basic server stats/health report.  *(Deprecated, pending removal)*
 - **[Django Static Precompiler](https://github.com/andreyfedoseev/django-static-precompiler)**:  Server-side compilation of CSS from SCSS.
 - **[Django S3 Folder Storage](https://github.com/jamstooks/django-s3-folder-storage)**:  Adds Amazon S3 as a file storage provider, with the ability to use folders within the same bucket (instead of separate buckets for everything).
 - **[ExifTool](http://www.sno.phy.queensu.ca/~phil/exiftool/)**:  Advanced metadata read/write tool.
@@ -55,9 +49,12 @@ Third-Party Apps/Modules Used
 Infrastructure
 --------------
 
-The site's current server uses Nginx as a front-end web server, uWSGI to serve its Django applications, and PostgreSQL Server 9.2 as a database back-end.  It also uses Amazon S3 for all static and media file hosting.
+- **Web Server**:  Nginx *(seneca.lupinia.net)*
+- **WSGI Connector**:  uWSGI
+- **Database Server**:  PostgreSQL
+- **Static/Media Hosting**:  Amazon S3 *(cdn.fur.vc)*
 
 License
 -------
 
-This project is not licensed for re-use, but individual components of it may be licensed and distributed separately, including apps I've built.
+This project as a whole is not currently licensed for re-use, but individual components of it may be licensed and distributed separately, including apps I've built.
