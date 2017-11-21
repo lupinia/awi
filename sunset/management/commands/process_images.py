@@ -7,19 +7,12 @@
 #	Performs a background import of photos, and processes their assets
 #	=================
 
-import exiftool
-import os.path
-import urllib
-
 from django.conf import settings
-from django.core.files import File
-from django.core.mail import mail_admins
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Q
 from django.utils import timezone
 
-from datetime import datetime, timedelta
-from PIL import Image, ImageOps
+from datetime import timedelta
 
 from awi_utils.utils import notify
 from sunset.models import *
@@ -31,16 +24,15 @@ class Command(BaseCommand):
 		try:
 			# Priority 1:  Process assets for a new image.
 			# Priority 2:  Process assets for an existing image.
-			# Priority 3:  Process the oldest folder that hasn't sync'ed in the last X hours (set on next line)
+			# Priority 3:  Process the oldest folder that hasn't sync'ed in the last X hours (set on next line (TODO: Move this to settings))
 			folder_resync_time = timedelta(hours=24)
 			
 			# Let's begin!
 			# Priority 1:  Process assets for a new image.
 			self.log("Checking for new images to process.")
 			complete = False
-			imagelist = image.objects.filter(rebuild_assets=True, is_new=True).order_by('timestamp_mod').prefetch_related('assets', 'meta')
-			if imagelist.exists():
-				img = imagelist.first()
+			img = image.objects.filter(rebuild_assets=True, is_new=True).order_by('timestamp_mod').prefetch_related('assets', 'meta').first()
+			if img:
 				self.log("Processing assets for image %s." % img, image=img)
 				complete = self.asset_process(img)
 			else:
@@ -50,20 +42,21 @@ class Command(BaseCommand):
 			# Priority 2:  Process assets for an existing image.
 			if not complete:
 				self.log("Checking for old images to reprocess.")
-				imagelist = image.objects.filter(rebuild_assets=True).order_by('timestamp_mod').prefetch_related('assets', 'meta')
-				if imagelist.exists():
-					img = imagelist.first()
+				img = image.objects.filter(rebuild_assets=True).order_by('timestamp_mod').prefetch_related('assets', 'meta').first()
+				if img:
 					self.log("Processing assets for image %s." % img, image=img)
 					complete = self.asset_process(img)
 				else:
 					# Nothing to do!
 					self.log("No existing images in need of asset/meta reprocessing.")
 			
-			# Priority 3:  Process the oldest folder that hasn't sync'ed in the last X hours (set on next line)
+			# Priority 3:  Process the oldest folder that hasn't sync'ed in the last X hours
+			# We're also looping through all of them that meet the criteria until we find one that has images in it.
+			# If we don't do this, it doesn't take long for a lot of folders to become unsustainable.
 			if not complete:
 				self.log("Checking for batch folders to sync.")
 				import_list = batch_import.objects.filter(Q(timestamp_sync__lt=timezone.now()-folder_resync_time) | Q(timestamp_sync=None)).filter(active=True).order_by('-timestamp_mod','timestamp_sync').prefetch_related('meta', 'images')
-				if import_list.exists():
+				if import_list:
 					for to_import in import_list:
 						self.log("Checking folder %s." % to_import, batch=to_import)
 						import_status = to_import.process_folder()
