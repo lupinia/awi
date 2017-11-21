@@ -35,7 +35,7 @@ class batch_image_inline_admin(admin.TabularInline):
 	model = batch_image
 	extra = 0
 	fields = ['img_filename','img_obj','timestamp_mod','status',]
-	readonly_fields = ['img_filename','img_obj','timestamp_mod','status',]
+	readonly_fields = ['timestamp_mod','status',]
 
 # End inlines, begin regular admin objects
 class image_admin(leaf_admin):
