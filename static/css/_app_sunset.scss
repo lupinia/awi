@@ -5,6 +5,11 @@
 
 /*	App:  Sunset	*/
 .sunset_embed {
+	
+	.thumb & img {
+		max-width:250px;
+	}
+	
 	.thumb_right & img {
 		max-width:200px;
 	}
@@ -20,6 +25,18 @@
 	.thumb_175 & img {
 		max-width:175px !important;
 	}
+	
+	.thumb_200 & img {
+		max-width:200px !important;
+	}
+	
+	.thumb_225 & img {
+		max-width:225px !important;
+	}
+}
+
+.thumb .caption {
+	text-align:center;
 }
 
 .left_content .left_full.photo_page {
