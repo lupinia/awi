@@ -36,6 +36,32 @@ h1,h2,h3,h4,h5,h6 {
 	margin:2px;
 	padding:0px;
 }
+
+fieldset {
+	display:block;
+	padding:5px;
+	margin-bottom:15px;
+	border:1px solid $color_bg_leaf_hover;
+	padding-left:10px;
+	padding-right:10px;
+	
+	legend {
+		color:$color_subtext;
+		font-variant: small-caps;
+		padding-left:0px;
+	}
+	
+	ul {
+		margin:0px;
+		padding-left:0px;
+		list-style-type:none;
+		
+		li {
+			margin-bottom:7px;
+		}
+	}
+}
+
 //	=====
 
 

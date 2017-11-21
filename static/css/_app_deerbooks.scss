@@ -34,59 +34,34 @@ body.showcase_mode .left_content .left_full.writing_page { max-width:80em; }
 	.resume {
 		padding-top:10px;
 		
-		fieldset {
-			display:block;
-			padding:5px;
-			margin-bottom:15px;
-			border:1px solid $color_bg_leaf_hover;
-			padding-left:10px;
-			padding-right:10px;
-			
-			legend {
-				color:$color_subtext;
-				font-variant: small-caps;
-				padding-left:0px;
-			}
-			
-			ul {
-				margin:0px;
-				padding-left:0px;
-				list-style-type:none;
+		fieldset.resume-joblist {
+			.job {
+				border-bottom:1px solid $color_border;
+				margin-bottom:10px;
 				
-				li {
-					margin-bottom:7px;
+				&:last-child {
+					border-bottom:none;
+					margin-bottom:none;
 				}
-			}
-			
-			&.resume-joblist {
-				.job {
-					border-bottom:1px solid $color_border;
-					margin-bottom:10px;
+				
+				.job-head {
+					.job-dates { float:right; font-size:smaller; font-variant: small-caps; text-align:right; display:block; }
+					.job-title { font-weight:bold; }
+					.job-employer { font-weight:bold; font-size:larger; }
+				}
+				
+				.job-detail { 
+					clear:right;
 					
-					&:last-child {
-						border-bottom:none;
-						margin-bottom:none;
-					}
-					
-					.job-head {
-						.job-dates { float:right; font-size:smaller; font-variant: small-caps; text-align:right; display:block; }
-						.job-title { font-weight:bold; }
-						.job-employer { font-weight:bold; font-size:larger; }
-					}
-					
-					.job-detail { 
-						clear:right;
+					.job-detail-link { 
+						font-size:x-small;
+						font-style:italic;
+						display:block;
+						margin-top:3px;
 						
-						.job-detail-link { 
-							font-size:x-small;
-							font-style:italic;
-							display:block;
-							margin-top:3px;
-							
-							a { font-weight:bold; }
-							a:link, a:visited { text-decoration:none; }
-							a:hover, a:active, a:focus { text-decoration:underline; }
-						}
+						a { font-weight:bold; }
+						a:link, a:visited { text-decoration:none; }
+						a:hover, a:active, a:focus { text-decoration:underline; }
 					}
 				}
 			}
