@@ -34,8 +34,8 @@ urlpatterns = [
 	url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 	url(r'^admin_tools/', include('admin_tools.urls')),
 	
-	url(r'^accounts/login/','django.contrib.auth.views.login'),
-	url(r'^accounts/logout/','django.contrib.auth.views.logout',{'template_name':'registration/login.html'}),
+	url(r'^accounts/login/','django.contrib.auth.views.login', name='login'),
+	url(r'^accounts/logout/','django.contrib.auth.views.logout',{'template_name':'registration/login.html'}, name='logout'),
 	url(r'^accounts/age_form/$',never_cache(check_honeypot(field_name=settings.HONEYPOT_FIELD_NAME_AWIACCESS)(access_views.age_verify_full.as_view())),name='age_form'),
 	url(r'^accounts/age_form_embed/$',never_cache(check_honeypot(field_name=settings.HONEYPOT_FIELD_NAME_AWIACCESS)(access_views.age_verify.as_view())),name='age_form_embed'),
 	
