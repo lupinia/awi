@@ -48,7 +48,7 @@ def hash_file(f):
 		return False
 
 def sunset_embed(body, request=False):
-	# Moved the input down here to avoid a circular import
+	# Moved the import down here to avoid a circular import
 	from sunset.models import image
 	self_closing = ['sunset',]
 	

@@ -20,35 +20,33 @@ from sunset.models import *
 class Command(BaseCommand):
 	help = "Rebuilds image assets for new/changed gallery images."
 	
+	def add_arguments(self, parser):
+		parser.add_argument(
+			'--folders',
+			action='store_true',
+			dest='folders_only',
+			default=False,
+			help='Only scan folders instead of processing assets',
+		)
+	
 	def handle(self, *args, **options):
 		try:
-			# Priority 1:  Process assets for a new image.
-			# Priority 2:  Process assets for an existing image.
-			# Priority 3:  Process the oldest folder that hasn't sync'ed in the last X hours (set on next line (TODO: Move this to settings))
+			# Priority 1:  Process assets for an image (new images first, then existing images).
+			# Priority 2:  Process the oldest folder that hasn't sync'ed in the last X hours (set on next line (TODO: Move this to settings))
 			folder_resync_time = timedelta(hours=24)
 			
 			# Let's begin!
-			# Priority 1:  Process assets for a new image.
-			self.log("Checking for new images to process.")
 			complete = False
-			img = image.objects.filter(rebuild_assets=True, is_new=True).order_by('timestamp_mod').prefetch_related('assets', 'meta').first()
-			if img:
-				self.log("Processing assets for image %s." % img, image=img)
-				complete = self.asset_process(img)
-			else:
-				# Nothing to do!
-				self.log("No new images in need of asset/meta reprocessing.")
-			
-			# Priority 2:  Process assets for an existing image.
-			if not complete:
-				self.log("Checking for old images to reprocess.")
-				img = image.objects.filter(rebuild_assets=True).order_by('timestamp_mod').prefetch_related('assets', 'meta').first()
+			if not options['folders_only']:
+				# Priority 1:  Process assets for a new image.
+				self.log("Checking for images to process.")
+				img = image.objects.filter(rebuild_assets=True).order_by('-is_new','timestamp_mod').prefetch_related('assets', 'meta').first()
 				if img:
 					self.log("Processing assets for image %s." % img, image=img)
 					complete = self.asset_process(img)
 				else:
 					# Nothing to do!
-					self.log("No existing images in need of asset/meta reprocessing.")
+					self.log("No images in need of asset/meta reprocessing.")
 			
 			# Priority 3:  Process the oldest folder that hasn't sync'ed in the last X hours
 			# We're also looping through all of them that meet the criteria until we find one that has images in it.

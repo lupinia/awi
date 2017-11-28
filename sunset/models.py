@@ -152,9 +152,8 @@ class image(leaf):
 			else:
 				return self.orig_path
 		else:
-			orig_asset_check = self.assets.filter(type='original')
-			if orig_asset_check:
-				orig_asset = orig_asset_check.first()
+			orig_asset = self.assets.filter(type='original').first()
+			if orig_asset:
 				# Parse the original's name to get the actual filename, and the filetype extension.
 				dest_name = orig_asset.image_file.name.split('/')
 				img_filetype_raw = orig_asset.image_file.name.split('.')
