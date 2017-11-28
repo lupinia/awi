@@ -54,6 +54,16 @@ Infrastructure
 - **Database Server**:  PostgreSQL
 - **Static/Media Hosting**:  Amazon S3 *(cdn.fur.vc)*
 
+Management Commands
+-------------------
+
+- **process_images (Sunset):**  If images need their assets rebuilt, this will rebuild them in the background.  If not, it will check batch import folders for new images to import.
+- **compile_latex (DeerBooks):**  If document files for a page need to be built/rebuilt, this will rebuild them in the background.
+- **set_cat_thumb (DeerTrees):**  Set the thumbnail for categories containing images.
+- **cleanup_working_dir (Awi Utils):**  Delete unused files from the local working directories for background processes that need to perform file manipulation (compile_latex, process_images).
+- **health_check (DeerConnect)**:  Performs a HEAD request to every external link in the system, and notifies the administrator(s) if any links return a status other than 200.
+- **promote_seasonal (Awi Utils):**  Selectively feature/unfeature certain categories based on the current month.
+
 License
 -------
 
