@@ -453,15 +453,25 @@ iframe.embedded_form {
 	background-color: $color_bgtrans_solid;
 	width:100%;
 	text-align:center;
-	font-size:small;
+	font-size:0.85em;
 	margin:0px;
 	padding:0px;
 	box-shadow:-1px 1px 5px 3px $color_shadow;
 	
-	div {
+	div#cookielaw_message {
 		background-color: $color_bg_err_info;
 		color: $color_text_err_info;
-		padding:5px;
+		padding:3px;
+	}
+	
+	div#cookielaw_close_button {
+		float:right;
+		margin:2px;
+		margin-left:5px;
+		margin-right:5px;
+		line-height:8px;
+		
+		img { width:10px; height:10px; }
 	}
 }
 /*	=====	*/

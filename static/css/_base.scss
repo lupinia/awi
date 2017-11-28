@@ -76,6 +76,7 @@ a { @include default_links; }
 	}
 }
 
+.hovericons10 { @include hovericons(10px,none,$color_bg_hover,3px); }
 .hovericons16 { @include hovericons(16px,none,$color_bg_hover,3px); }
 .hovericons24 { @include hovericons(24px,none,$color_bg_hover); }
 .hovericons32 { @include hovericons(32px,$color_bg_hover,$color_blue); }

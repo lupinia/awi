@@ -1,5 +1,8 @@
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
 <div id="CookielawBanner">
-	<div>
+	<div id="cookielaw_close_button" class="hovericons10"><a class="red" href="javascript:Cookielaw.createCookielawCookie();"><img src="{{STATIC_PREFIX}}images/icons/exit-16.png" alt="Close" title="Close Banner" /></a></div>
+	<div id="cookielaw_message">
 		This site uses cookies to improve functionality.  If you don't want to use cookies, please disable them in your browser.  <span class="cookie_warning_links"><a class="boldlink" href="javascript:Cookielaw.createCookielawCookie();">Close Banner</a> &bull; <a href="http://www.cookielaw.org/the-cookie-law/">More Information</a></span>
 	</div>
 </div>

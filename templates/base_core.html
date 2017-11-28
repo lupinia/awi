@@ -23,7 +23,7 @@
 </head>
 
 {% block body_tag %}<body>{% endblock %}
-{% block cookiebanner %}{% cookielaw_banner %}{% endblock %}
+{% block cookiebanner %}{% if cookie_banner %}{% cookielaw_banner %}{% endif %}{% endblock %}
 <div id="mainwrap" {% block mainwrap_extra %}{% endblock %}>
 	<header>
 		<div id="header_logo" role="banner">
