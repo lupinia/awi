@@ -55,8 +55,10 @@ class leaf_parent():
 		if parent_type == 'homepage':
 			leaf_ordering = ['-timestamp_post',]
 			leaf_filters['featured'] = True
+		# RSS feed (Home)
 		elif parent_type == 'main_feed':
 			leaf_ordering = ['-timestamp_post',]
+		# 
 		elif parent_type == 'category' and parent:
 			leaf_filters['cat'] = parent
 		elif parent_type == 'tag' and parent:
@@ -432,7 +434,7 @@ def finder(request):
 
 def subcats(parent=False, parent_type=False, request=False):
 	if parent_type == 'category' and parent:
-		child_cats = parent.children.filter(access_query(request)).order_by('title').select_related('icon')
+		child_cats = parent.children.filter(access_query(request)).order_by('-featured','title').select_related('icon')
 		if child_cats:
 			return child_cats
 		else:

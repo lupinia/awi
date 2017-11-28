@@ -91,7 +91,7 @@ DEERTREES_BLOCK_MAP = {
 	'home' : {
 		'main' : ['image', ],
 		'main_2' : ['page', ],
-		'sidebar' : ['special_feature', 'link', 'upcoming_events', ],
+		'sidebar' : ['upcoming_events', 'special_feature', 'link', ],
 		'meta' : {'option_name': 'Homepage', 'selectable':False, },
 	},
 	
