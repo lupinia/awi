@@ -425,6 +425,8 @@ iframe.embedded_form {
 		border: 0px;
 		right: 0;
 		border-top-right-radius:5px;
+		
+		body.showcase_mode & { color:$color_bgwhite; }
 	}
 }
 
