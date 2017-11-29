@@ -1,6 +1,6 @@
 {% load humanize %}
 
-{% if can_edit and not object.is_public.0 %}
+{% if can_edit and not object.is_public.0 and not no_access_codes %}
 	{% if object.access_code and object.access_code.valid %}
 		<div class="right_sidebar_section copypaste_boxes">
 			<h3>Access Codes</h3>
