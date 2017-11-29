@@ -44,6 +44,10 @@ class single_page(leaf_view):
 			
 			if self.request.GET.get('mode', False) == 'read':
 				context['showcase_mode'] = True
+			elif context['object'].showcase_default and self.request.GET.get('mode', False) != 'normal':
+				context['showcase_mode'] = True
+			else:
+				context['showcase_mode'] = False
 			
 			if context['can_edit']:
 				context['edit_url'] = 'admin:deerbooks_page_change'

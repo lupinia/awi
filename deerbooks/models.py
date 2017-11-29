@@ -83,6 +83,7 @@ class page(leaf):
 	
 	auto_export = models.BooleanField(default=True, db_index=True, verbose_name='auto-build document files', help_text="Uncheck this to disable automatic generation of document files, and the built-in LaTeX view.  Markdown and Plain Text will still be available if the Alternate Views option is checked.")
 	alt_views = models.BooleanField(default=True, db_index=True, verbose_name='allow alternate view formats', help_text="Uncheck this to disable the built-in Plain Text and Markdown alternate views.  Uploaded document files will still be available, and the built-in LaTeX view will still be available if Automatically Build Document Files is checked.")
+	showcase_default = models.BooleanField(default=False, verbose_name='show in showcase mode by default?')
 	docfiles = models.ManyToManyField(export_file, blank=True, verbose_name='document files', related_name='pages')
 	latex_fail = models.BooleanField(default=False, verbose_name='LaTeX compilation failure')
 	

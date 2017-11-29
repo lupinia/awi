@@ -19,7 +19,7 @@ class page_admin(leaf_admin):
 	fieldsets = [
 		(None,{'fields':(('title','slug'),'summary','body'),},),
 	] + leaf_admin.fieldsets + [
-		("Options",{'fields':(('auto_export','book_title','book_order',),),},),
+		("Options",{'fields':(('auto_export','book_title','book_order','showcase_default',),),},),
 		('Manage Files',{'fields':('docfiles',),},),
 	]
 	prepopulated_fields={'slug':('title',)}
