@@ -144,8 +144,8 @@ class tag(models.Model):
 class leaf(access_control):
 	TIMEDISP_OPTIONS = (('post','Posted'),('mod','Modified'))
 	
-	cat = models.ForeignKey(category, null=True, blank=True, on_delete=models.PROTECT, verbose_name='category')
-	tags = models.ManyToManyField(tag, blank=True)
+	cat = models.ForeignKey(category, null=True, blank=True, on_delete=models.PROTECT, verbose_name='category', related_name='leaves')
+	tags = models.ManyToManyField(tag, blank=True, related_name='leaves')
 	
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created', help_text='Set this to a future date to schedule it.')

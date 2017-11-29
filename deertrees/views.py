@@ -269,11 +269,12 @@ class category_list(leaf_parent, generic.DetailView):
 
 
 class tag_list(leaf_parent, generic.DetailView):
-	model=tag
+	model = tag
 	
 	def get_context_data(self, **kwargs):
 		context = super(tag_list,self).get_context_data(**kwargs)
 		context['highlight_featured'] = self.highlight_featured
+		context['no_access_codes'] = True
 		if context['object'].can_edit(self.request)[0]:
 			context['return_to'] = context['object'].get_absolute_url()
 			context['can_edit'] = True
@@ -290,33 +291,9 @@ class tag_list(leaf_parent, generic.DetailView):
 			context['breadcrumbs'] = []
 		
 		context['breadcrumbs'].append({'url':reverse('all_tags'), 'title':'Tags'})
-		context['breadcrumbs'].append({'url':reverse('tag',kwargs={'slug':context['object'].slug,}), 'title':context['object'].title})
+		context['breadcrumbs'].append({'url':reverse('tag',kwargs={'slug':context['object'].slug,}), 'title':unicode(context['object'])})
 		
 		context['body_text'] = sunset_embed(context['object'].body_html, self.request)
-		
-		return context
-
-
-class all_tags(generic.TemplateView):
-	template_name='deertrees/taglist.html'
-	
-	def get_context_data(self, **kwargs):
-		context = super(all_tags,self).get_context_data(**kwargs)
-		
-		# TODO:  Filter by sitemap_include and hide empty tags if not return_to
-		tag_list = tag.objects.all().order_by('title')
-		if tag_list:
-			context['tags'] = tag_list
-		else:
-			context['error'] = 'no_tags'
-		
-		if not context.get('breadcrumbs',False):
-			context['breadcrumbs'] = []
-		
-		context['breadcrumbs'].append({'url':reverse('all_tags'), 'title':'Tags'})
-		
-		if self.request.GET.get('return_to') and self.request.user.has_perm('deertrees.change_leaf'):
-			context['return_to'] = self.request.GET.get('return_to')
 		
 		return context
 
@@ -606,7 +583,7 @@ class all_cats(generic.TemplateView, special_feature_view):
 	def get_context_data(self, **kwargs):
 		context = super(all_cats,self).get_context_data(**kwargs)
 		context['view'] = 'catlist'
-		context['cats'] = category.objects.filter(access_query(self.request)).annotate(num_leaves=Count('leaf'))
+		context['cats'] = category.objects.filter(access_query(self.request)).annotate(num_leaves=Count('leaves'))
 		context['breadcrumbs'] = self.breadcrumbs()
 		
 		if self.request.GET.get('return_to') and self.request.user.has_perm('deertrees.change_leaf'):
@@ -622,5 +599,38 @@ class sitemap(all_cats):
 		context = super(sitemap,self).get_context_data(**kwargs)
 		context['view'] = 'sitemap'
 		context['cats'] = context['cats'].filter(sitemap_include=True)
-		context['tags'] = tag.objects.filter(sitemap_include=True).annotate(num_leaves=Count('leaf'))
+		context['tags'] = tag.objects.filter(sitemap_include=True).annotate(num_leaves=Count('leaves'))
+		return context
+
+
+class all_tags(generic.ListView):
+	template_name = 'deertrees/taglist.html'
+	model = tag
+	context_object_name = 'tags'
+	
+	def get_queryset(self, *args, **kwargs):
+		query = super(all_tags, self).get_queryset(*args, **kwargs)
+		
+		if self.request.GET.get('return_to',False) and self.request.user.has_perm('deertrees.change_leaf'):
+			pass
+		else:
+			query = query.filter(sitemap_include=True, leaves__isnull=False)
+		
+		return query.annotate(num_leaves=Count('leaves')).order_by('-num_leaves','slug')
+	
+	def get_context_data(self, **kwargs):
+		context = super(all_tags,self).get_context_data(**kwargs)
+		context['no_access_codes'] = True
+		
+		if not context['tags']:
+			context['error'] = 'no_tags'
+		
+		if not context.get('breadcrumbs',False):
+			context['breadcrumbs'] = []
+		
+		context['breadcrumbs'].append({'url':reverse('all_tags'), 'title':'Tags'})
+		
+		if self.request.GET.get('return_to',False) and self.request.user.has_perm('deertrees.change_leaf'):
+			context['return_to'] = self.request.GET.get('return_to',False)
+		
 		return context
