@@ -42,10 +42,11 @@ urlpatterns = [
 	url(r'^settings/$',access_views.settings_page.as_view(),name='settings'),
 	
 	url(r'^tools/sunset/(?P<slug>.*)\.json', sunset_views.geojson_image, name='sunset_geojson'),
+	url(r'^tools/category_list/$',permission_required('deertrees.change_leaf')(deertrees_views.all_cats.as_view()),name='all_cats'),
 	
 	url(r'^contact/$',never_cache(check_honeypot(contact_page.as_view())),name='contact'),
 	url(r'^gamescripts/', include('secondlife.urls')),
-	url(r'^personal/cooking/menu/', include('deerfood.urls',namespace='deerfood'), kwargs={'special_feature_slug':'menu'}),
+	url(r'^personal/cooking/menu/', include('deerfood.urls', namespace='deerfood'), kwargs={'special_feature_slug':'menu'}),
 	url(r'^furry/cons/', include('deerattend.urls',namespace='deerattend'), kwargs={'special_feature_slug':'cons'}),
 	
 	url(r'^sitemap\.xml$', sitemap, {'sitemaps': SITEMAP_OBJECTS}, name='django.contrib.sitemaps.views.sitemap'),
@@ -53,12 +54,12 @@ urlpatterns = [
 	#	DeerTrees and DeerBooks are special cases for this site.
 	url(r'^$',deertrees_views.homepage.as_view(),name='home'),
 	url(r'^feed\.rss$',deertrees_views.main_rssfeed(),name='home_rss'),
+	
 	url(r'^tags/$',deertrees_views.all_tags.as_view(),name='all_tags'),
 	url(r'^tags/(?P<slug>.*)/$',deertrees_views.tag_list.as_view(),name='tag'),
 	url(r'^tags/(?P<slug>.*)/feed\.rss$',deertrees_views.tag_rssfeed(),name='tag_rss'),
 	
 	url(r'^about/sitemap\.htm$',cache_control(max_age=60*60*48)(deertrees_views.sitemap.as_view()),name='sitemap_htm', kwargs={'special_feature_slug':'sitemap.htm'}),
-	url(r'^tools/category_list/$',permission_required('deertrees.change_leaf')(deertrees_views.all_cats.as_view()),name='all_cats'),
 	
 	url(r'^(?P<cached_url>[\w\d_/-]+)/book\.(?P<slug>.*)\.tex',deerbooks_views.book_tex.as_view(),name='book_tex'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/book\.(?P<slug>.*)\.md',deerbooks_views.book_md.as_view(),name='book_md'),

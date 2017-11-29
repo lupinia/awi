@@ -184,28 +184,38 @@ SUNSET_BG_NOTIFY_FAIL = True	# Send a notification if sunset_bg is used but a ba
 
 #	THIRD-PARTY APPS
 #	==============
-#	static_precompiler
-STATIC_PRECOMPILER_DISABLE_AUTO_COMPILE = True
-STATIC_PRECOMPILER_ROOT = os.path.abspath(os.path.join(STATICFILES_DIRS[0],'css/'))
-STATIC_PRECOMPILER_OUTPUT_DIR = STATICFILES_DIRS[0]
-STATIC_PRECOMPILER_COMPILERS = ( 
-#	('static_precompiler.compilers.SCSS', {"executable": "/usr/local/bin/sassc", "compass_enabled": False}),
-	('static_precompiler.compilers.libsass.SCSS', {
-		"sourcemap_enabled": False,
-		"precision": 8,
-	}),
-)
-
-
 #	debug_toolbar
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
-
+DEBUG_TOOLBAR_PANELS = [
+	'debug_toolbar.panels.versions.VersionsPanel',
+	'debug_toolbar.panels.timer.TimerPanel',
+	'debug_toolbar.panels.settings.SettingsPanel',
+	'debug_toolbar.panels.headers.HeadersPanel',
+	'debug_toolbar.panels.request.RequestPanel',
+	'debug_toolbar.panels.sql.SQLPanel',
+	#'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+	'debug_toolbar.panels.templates.TemplatesPanel',
+	#'debug_toolbar.panels.cache.CachePanel',
+	'debug_toolbar.panels.signals.SignalsPanel',
+	'debug_toolbar.panels.logging.LoggingPanel',
+	'debug_toolbar.panels.redirects.RedirectsPanel',
+	'debug_toolbar.panels.profiling.ProfilingPanel',
+	#'django_uwsgi.panels.UwsgiPanel', 
+]
 
 #	django_admin_tools
 ADMIN_TOOLS_INDEX_DASHBOARD = 'awi.admin_tools_custom.CustomIndexDashboard'
 ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'awi.admin_tools_custom.CustomAppIndexDashboard'
 ADMIN_TOOLS_MENU = 'awi.admin_tools_custom.CustomMenu'
 ADMIN_TOOLS_THEMING_CSS = 'css/admin_tools.css'
+
+
+#	django_processinfo
+#	include app settings from ./django_processinfo/app_settings.py
+from django_processinfo import app_settings as PROCESSINFO
+PROCESSINFO.ADD_INFO = True
+PROCESSINFO.INFO_SEARCH_STRING = '<span id="processinfo"></span>'
+PROCESSINFO.INFO_FORMATTER = '<span id="processinfo">Render time:  %(total).1f ms</span>'
 
 
 #	s3_folder_storage
@@ -218,10 +228,15 @@ DEFAULT_S3_PATH = 'awi'
 STATIC_S3_PATH = 'awi-hagata'
 
 
-#	django_processinfo
-#	include app settings from ./django_processinfo/app_settings.py
-from django_processinfo import app_settings as PROCESSINFO
-PROCESSINFO.ADD_INFO = True
-PROCESSINFO.INFO_SEARCH_STRING = '<span id="processinfo"></span>'
-PROCESSINFO.INFO_FORMATTER = '<span id="processinfo">Render time:  %(total).1f ms</span>'
+#	static_precompiler
+STATIC_PRECOMPILER_DISABLE_AUTO_COMPILE = True
+STATIC_PRECOMPILER_ROOT = os.path.abspath(os.path.join(STATICFILES_DIRS[0],'css/'))
+STATIC_PRECOMPILER_OUTPUT_DIR = STATICFILES_DIRS[0]
+STATIC_PRECOMPILER_COMPILERS = ( 
+#	('static_precompiler.compilers.SCSS', {"executable": "/usr/local/bin/sassc", "compass_enabled": False}),
+	('static_precompiler.compilers.libsass.SCSS', {
+		"sourcemap_enabled": False,
+		"precision": 8,
+	}),
+)
 

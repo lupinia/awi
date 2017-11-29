@@ -43,13 +43,13 @@ INSTALLED_APPS = (
 	'django.contrib.sitemaps',
 	
 	#	Third-party apps
+	'cookielaw', 
+	'debug_toolbar',
+	'django_processinfo',
+	'honeypot',
 	'mptt', 'django_mptt_admin',
 	's3_folder_storage',
-	'django_processinfo',
-	'debug_toolbar',
 	'static_precompiler',
-	'cookielaw', 
-	'honeypot',
 	
 	#	My Apps - System/Core
 	'awi_access',	# Access Control
