@@ -7,6 +7,9 @@ def map(img, g2):
 	cur_img = image.objects.get(pk=img)
 	return g2map.objects.create(g2id=g2, image=cur_img)
 
+def fix(g2):
+	return g2raw.objects.filter(g2id=g2).update(matched=True)
+
 def destination_map():
 	g2_cur_list = g2map.objects.all()
 	dest_map = {}
