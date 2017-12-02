@@ -102,7 +102,6 @@ class leaf_parent():
 			view_type='default'
 			map = blocks_map['default']
 		
-		# These have to be in a specific order, so map.keys() doesn't work reliably.
 		blocks_to_assign_raw = ['main','main_left','main_right','sidebar','main_2']
 		blocks_to_assign = []
 		for blockname in blocks_to_assign_raw:
@@ -412,6 +411,9 @@ def finder(request):
 def subcats(parent=False, parent_type=False, request=False):
 	if parent_type == 'category' and parent:
 		child_cats = parent.children.filter(access_query(request)).order_by('-featured','title').select_related('icon')
+		if not request or not request.user.is_superuser:
+			child_cats = child_cats.exclude(leaves__isnull=True)
+		
 		if child_cats:
 			return child_cats
 		else:
