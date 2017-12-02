@@ -127,12 +127,12 @@ class image(leaf):
 		return self.assets.filter(type="icon").first()
 	
 	def is_public(self):
-		ispublic = super(image, self).is_public()
+		public, restrictions = super(image, self).is_public()
 		if self.is_new:
-			ispublic[0] = False
-			ispublic[1].append('Assets not yet built')
+			public = False
+			restrictions.append('Assets not yet built')
 		
-		return ispublic
+		return (public, restrictions)
 	
 	def get_absolute_url(self):
 		return reverse('image_single', kwargs={'cached_url':self.cat.cached_url, 'slug':self.slug})

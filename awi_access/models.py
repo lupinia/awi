@@ -4,8 +4,13 @@
 #	
 #	=================
 #	Models
+#	class access_code:  Temporary codes to bypass access restrictions
+#	class access_control:  This is just a meta class to be extended by other models in other apps, providing access restrictions and access checks.
+#	class user_meta:  User-specific settings for logged-in users.
+#	
+#	Helper Functions
+#	def check_mature:  Checks whether mature content can be accessed by the current user.
 #	def access_query:  Returns Q objects corresponding to the access level of the current request.  Example usage:  access_control.objects.filter({main condition}).filter(access_query(request))
-#	class access_control:  This is just a meta class to be extended by other models in other apps.
 #	=================
 
 import hashlib
@@ -20,6 +25,7 @@ from django.utils import dateparse
 from django.utils import timezone
 from django.utils.text import slugify
 
+#	Helper Functions
 def check_mature(request=False):
 	if request:
 		if request.user.is_authenticated():
@@ -68,6 +74,7 @@ def access_query(request=False):
 	return returned_query
 
 
+#	Models
 class access_code(models.Model):
 	code = models.SlugField(max_length=255, editable=False, unique=True)
 	item_type = models.CharField(max_length=40, default='unknown', editable=False)
@@ -109,6 +116,10 @@ class access_code(models.Model):
 			return False
 		else:
 			return True
+	
+	def record_hit(self):
+		self.hits = self.hits + 1
+		self.save()
 	
 	def save(self, *args, **kwargs):
 		if self.pk and self.is_valid and not self.valid():
@@ -196,6 +207,7 @@ class access_control(models.Model):
 				
 				if request.GET.get('access_code', False):
 					if self.access_code.check_code(request.GET.get('access_code', False)):
+						self.access_code.record_hit()
 						if not request.session.get('awi_access_codes', False):
 							request.session['awi_access_codes'] = []
 						request.session['awi_access_codes'].append(request.GET.get('access_code', False))

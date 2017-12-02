@@ -193,12 +193,12 @@ class leaf(access_control):
 		return (False,'')
 	
 	def is_public(self):
-		ispublic = super(leaf, self).is_public()
+		public, restrictions = super(leaf, self).is_public()
 		if self.scheduled():
-			ispublic[0] = False
-			ispublic[1].append('Scheduled future postdate')
+			public = False
+			restrictions.append('Scheduled future postdate')
 		
-		return ispublic
+		return (public, restrictions)
 	
 	# Helper method for extracting a reason for non-public status that's easier to work with programmaticly
 	@property
