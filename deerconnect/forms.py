@@ -8,7 +8,7 @@
 
 from django import forms
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.template import Context
 from django.utils import timezone
@@ -31,9 +31,13 @@ class contact_form(forms.Form):
 			if last_message > timezone.now() - expiration:
 				return False
 		
-		msg = {}
-		msg['subject'] = '%s%s' % (settings.EMAIL_SUBJECT_PREFIX, bleach.clean(self.cleaned_data['subject'], tags=[], strip=True))
-		msg['from_email'] = bleach.clean(self.cleaned_data['email'], tags=[], strip=True)
+		sender_name = bleach.clean(self.cleaned_data['name'], tags=[], strip=True)
+		sender_addr = bleach.clean(self.cleaned_data['email'], tags=[], strip=True)
+		
+		msg = EmailMessage()
+		msg.subject = '%s%s' % (settings.EMAIL_SUBJECT_PREFIX, bleach.clean(self.cleaned_data['subject'], tags=[], strip=True))
+		msg.reply_to = [sender_addr,]
+		msg.from_email = '%s <%s>' % (sender_name, settings.DEFAULT_FROM_EMAIL)
 		
 		message_template = get_template('deerconnect/email.txt')
 		message_body = bleach.clean(self.cleaned_data['body'], tags=[], strip=True)
@@ -42,16 +46,16 @@ class contact_form(forms.Form):
 			'message': message_body, 
 			'IP': request.META.get('REMOTE_ADDR'), 
 			'domain': request.META.get('HTTP_HOST'), 
-			'name': bleach.clean(self.cleaned_data['name'], tags=[], strip=True), 
-			'email': msg['from_email'], 
-			'subject': msg['subject'],
+			'name': sender_name, 
+			'email': sender_addr, 
+			'subject': msg.subject,
 		}
 		d = Context(message_context)
 		
-		msg['message'] = message_template.render(d)
-		msg['recipient_list'] = [settings.DEERCONNECT_TO_EMAIL,]
+		msg.body = message_template.render(d)
+		msg.to = [settings.DEERCONNECT_TO_EMAIL,]
 		
-		success = send_mail(**msg)
+		success = msg.send()
 		if success:
 			request.session['deerconnect_mailsent'] = str(timezone.now())
 			return True
