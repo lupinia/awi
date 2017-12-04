@@ -360,7 +360,10 @@ class image_asset(models.Model):
 		return self.image_file.name
 	
 	def get_url(self):
-		return "%s%s" % (settings.MEDIA_URL,self.image_file.name)
+		if self.image_file:
+			return "%s%s" % (settings.MEDIA_URL,self.image_file.name)
+		else:
+			return "%simages/icons/default-image-128.png" % settings.STATIC_URL
 	
 	@property
 	def rss_enclosure_url(self):
