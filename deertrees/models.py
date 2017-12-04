@@ -27,6 +27,13 @@ def viewtype_options():
 	return viewtypes
 
 class category(MPTTModel, access_control):
+	CONTENT_SUMMARY_CHOICES = (
+		('misc', 'Miscellaneous'),
+		('image', 'Images/Photos'),
+		('page', 'Writing'),
+		('link', 'External Links'),
+	)
+	
 	title = models.CharField(max_length=60)
 	slug = models.SlugField()
 	parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
@@ -40,6 +47,7 @@ class category(MPTTModel, access_control):
 	background_tag = models.ForeignKey('sunset.background_tag', null=True, blank=True, on_delete=models.SET_NULL, help_text='Set this to indicate the preferred background image themes for this category.')
 	icon = models.ForeignKey('sunset.image_asset', null=True, blank=True, on_delete=models.SET_NULL, help_text='System field:  Image asset used as a thumbnail for this category.')
 	icon_manual = models.BooleanField(default=False, db_index=True, help_text='System field:  Indicates whether the Icon field was set manually; if so, it will not be replaced by the automatic thumbnail assignment script.')
+	content_summary = models.CharField(max_length=20, default='misc', choices=CONTENT_SUMMARY_CHOICES, help_text='System field:  Stores the main content type for this category, used to display an icon when no image asset is selected.  Will be set by the automatic thumbnail assignment script.')
 	
 	cached_url = models.CharField(max_length=255, null=True, blank=True, unique=True, help_text='System field:  Full unique slug for this category, including all parents.')
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
@@ -50,6 +58,26 @@ class category(MPTTModel, access_control):
 	
 	def get_absolute_url(self):
 		return reverse('category', kwargs={'cached_url':self.cached_url,})
+	
+	@property
+	def content_summary_choices_simplified(self):
+		choices_simplified = []
+		for choice in self.CONTENT_SUMMARY_CHOICES:
+			choices_simplified.append(choice[0])
+		return choices_simplified
+	
+	def set_content_summary(self, summary='misc'):
+		if summary != self.content_summary:
+			choices_simplified = self.content_summary_choices_simplified
+			
+			if summary in choices_simplified:
+				self.content_summary = summary
+				self.save()
+			else:
+				self.content_summary = 'misc'
+				self.save()
+		
+		return self.content_summary
 	
 	@property
 	def body_html(self):
@@ -64,6 +92,15 @@ class category(MPTTModel, access_control):
 			return self.desc
 		else:
 			return self.summary
+	
+	@property
+	def icon_url(self):
+		if self.icon:
+			return self.icon.get_url()
+		elif self.mature:
+			return "%simages/icons/mature128.png" % settings.STATIC_URL
+		else:
+			return "%simages/icons/default-category-%s-128.png" % (settings.STATIC_URL, self.content_summary)
 	
 	def get_summary(self,length=255):
 		if self.summary:
@@ -135,6 +172,16 @@ class tag(models.Model):
 	@property
 	def body_html(self):
 		return format_html(self.desc)
+	
+	def get_summary(self,length=255):
+		if self.desc:
+			body_stripped = strip_tags(self.desc)
+			if len(body_stripped) <= length:
+				return body_stripped
+			else:
+				return body_stripped[:length].rsplit(' ',1)[0]+'...'
+		else:
+			return ''
 	
 	class Meta:
 		ordering = ['slug',]
@@ -257,6 +304,13 @@ class leaf(access_control):
 		return_times[return_mod]['label'] = 'Updated'
 		
 		return return_times
+	
+	@property
+	def timestamp(self):
+		if self.timedisp == 'post':
+			return self.timestamp_post
+		else:
+			return self.timestamp_mod
 	
 	@property
 	def rss_description(self):

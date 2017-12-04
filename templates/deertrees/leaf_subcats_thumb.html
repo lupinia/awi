@@ -22,12 +22,8 @@
 	
 	<div id="sunset_thumb_subcats" class="leaf_thumbs_wrapper">
 	{% for subcat in leaves %}
-		<a href="{% url 'category' subcat.cached_url %}" title="{{subcat}}" {% if subcat.restriction and subcat.restriction != 'unknown' %}class="restricted"{% elif subcat.featured and highlight_featured %}class="featured"{% elif subcat.mature %}class="mature"{% endif %}>
-			{% if subcat.icon %}
-				<img src="{{subcat.icon.get_url}}" alt="{{subcat}}" title="{{subcat}}" />
-			{% else %}
-				<img src="{{STATIC_PREFIX}}deertrees/no_thumb.jpg" alt="{{subcat}}" title="{{subcat}}" />
-			{% endif %}
+		<a href="{% url 'category' subcat.cached_url %}" title="{{subcat}}" class="subcat_thumb{% if not subcat.icon %} default_img{% endif %}{% if subcat.restriction and subcat.restriction != 'unknown' %} restricted{% elif subcat.featured and highlight_featured %} featured{% elif subcat.mature %} mature{% endif %}">
+			<img src="{{subcat.icon_url}}" alt="{{subcat}}" title="{{subcat}}" />
 		</a>
 	{% empty %}
 		<div><sub><em>No Subcategories</em></sub></div>
