@@ -34,7 +34,7 @@ class contact_admin(access_admin):
 	list_select_related = True
 	search_fields = ['label','name','url','desc']
 	fieldsets = [
-		(None,{'fields':(('label','name','im'),'url','desc','icon','cat'),},),
+		(None,{'fields':(('label','name','im'),'url','desc','icon','icon_large','cat'),},),
 		('Time Options',{'fields':(('timestamp_post','timestamp_mod',),),},),
 	] + access_admin.fieldsets
 	list_filter = access_admin.list_filter + ['im',]
