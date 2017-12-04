@@ -132,6 +132,7 @@
 			color: $color_alink;
 			font-size: 12px;
 			font-weight: bold;
+			z-index:1;
 		}
 		
 		&:hover > .caption, &:active > .caption, &:focus > .caption {
