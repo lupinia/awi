@@ -6,6 +6,7 @@
 #	Models
 #	=================
 
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -17,6 +18,7 @@ class link_base(models.Model):
 	url = models.CharField(max_length=250, verbose_name='URL')
 	desc = models.TextField(null=True, blank=True, verbose_name='description')
 	icon = models.ImageField(upload_to='linkicons', null=True, blank=True)
+	icon_large = models.ImageField(upload_to='linkicons_large', null=True, blank=True)
 	healthy = models.BooleanField(default=True, db_index=True)
 	
 	def __unicode__(self):
@@ -28,6 +30,20 @@ class link_base(models.Model):
 	
 	def get_absolute_url(self):
 		return self.url
+	
+	@property
+	def icon_url(self):
+		if self.icon:
+			return "%s%s" % (settings.MEDIA_URL,self.icon.name)
+		else:
+			return "%simages/icons/default-link-16.png" % settings.STATIC_URL
+	
+	@property
+	def icon_large_url(self):
+		if self.icon_large:
+			return "%s%s" % (settings.MEDIA_URL,self.icon_large.name)
+		else:
+			return "%simages/icons/default-link-128.png" % settings.STATIC_URL
 	
 	class Meta:
 		abstract = True
@@ -50,6 +66,23 @@ class contact_link(link_base, access_control):
 	
 	def __unicode__(self):
 		return '%s - %s' % (self.label, self.name)
+	
+	def get_absolute_url(self):
+		return self.url
+	
+	@property
+	def icon_url(self):
+		if self.icon:
+			return "%s%s" % (settings.MEDIA_URL,self.icon.name)
+		else:
+			return "%simages/icons/default-contact-16.png" % settings.STATIC_URL
+	
+	@property
+	def icon_large_url(self):
+		if self.icon_large:
+			return "%s%s" % (settings.MEDIA_URL,self.icon_large.name)
+		else:
+			return "%simages/icons/default-contact-128.png" % settings.STATIC_URL
 	
 	class Meta:
 		verbose_name = 'contact link'

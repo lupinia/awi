@@ -18,7 +18,7 @@ class link_admin(leaf_admin):
 	list_select_related = True
 	search_fields = ['label','url','desc'] + leaf_admin.search_fields
 	fieldsets = [
-		(None,{'fields':(('label','involved'),'url','desc','icon'),},),
+		(None,{'fields':(('label','involved'),'url','desc','icon','icon_large'),},),
 	] + leaf_admin.fieldsets
 	list_filter = leaf_admin.list_filter + ['involved', 'healthy']
 	list_display = ('label','url','involved','healthy',) + leaf_admin.list_display
