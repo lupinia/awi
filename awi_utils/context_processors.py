@@ -22,7 +22,14 @@ def site(request):
 	}
 
 def settings_vars(request):
+	# Add an option to switch the background to all-white, for development purposes.
+	# I can do this pretty easily using my browser's dev tools, but it'd be nice to have it built-in.
+	bg_white = False
+	if settings.DEBUG and request.GET.get('nobg',False):
+		bg_white = True
+	
 	return {
 		'debug_check':settings.DEBUG,
+		'debug_white_bg':bg_white,
 		'mapbox_token':settings.MAPBOX_KEY,
 	}

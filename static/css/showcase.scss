@@ -19,6 +19,7 @@ body {
 	}
 	
 	&.showcase_mode { background-color: $color_bgshowcase; }
+	.debug_white_bg & { background:#FFFFFF !important; }
 }
 
 #mainwrap {
