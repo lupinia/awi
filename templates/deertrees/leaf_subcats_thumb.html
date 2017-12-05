@@ -23,6 +23,13 @@
 	<div id="sunset_thumb_subcats" class="leaf_thumbs_wrapper">
 	{% for subcat in leaves %}
 		<a href="{% url 'category' subcat.cached_url %}" title="{{subcat}}" class="subcat_thumb{% if not subcat.icon %} default_img{% endif %}{% if subcat.restriction and subcat.restriction != 'unknown' %} restricted{% elif subcat.featured and highlight_featured %} featured{% elif subcat.mature %} mature{% endif %}">
+			{% if subcat.restriction and subcat.restriction != 'unknown' %}
+				<div class="feature_mark {{subcat.restriction}}"></div>
+			{% elif subcat.featured and highlight_featured %}
+				<div class="feature_mark"></div>
+			{% elif subcat.mature %}
+				<div class="feature_mark"></div>
+			{% endif %}
 			<img src="{{subcat.icon_url}}" alt="{{subcat}}" title="{{subcat}}" />
 		</a>
 	{% empty %}

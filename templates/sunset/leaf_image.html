@@ -10,6 +10,13 @@
 				{% for asset in image.assets.all %}
 					{% if asset.type == 'icon' %}
 						<a href="{% url 'image_single' image.cat.cached_url image.slug %}" title="{{image}}" {% if image.restriction and image.restriction != 'unknown' %}class="restricted"{% elif image.featured and highlight_featured %}class="featured"{% elif image.mature %}class="mature"{% endif %}>
+							{% if image.restriction and image.restriction != 'unknown' %}
+								<div class="feature_mark {{image.restriction}}"></div>
+							{% elif image.featured and highlight_featured %}
+								<div class="feature_mark"></div>
+							{% elif image.mature %}
+								<div class="feature_mark"></div>
+							{% endif %}
 							<img src="{{asset.get_url}}" alt="{{image}}" title="{{image}}" />
 						</a>
 					{% endif %}

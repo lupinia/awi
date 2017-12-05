@@ -5,7 +5,6 @@
 
 /*	App:  Sunset	*/
 .sunset_embed {
-	
 	.thumb & img {
 		max-width:250px;
 	}
@@ -135,6 +134,32 @@
 			z-index:1;
 		}
 		
+		> .feature_mark {
+			display:none;
+			content:" ";
+			position:absolute;
+			top:0;
+			right:0;
+			z-index:1;
+			width:26px;
+			height:26px;
+			border-bottom-left-radius:20px;
+			opacity:0.5;
+			
+			&:after {
+				display:none;
+				content:" ";
+				position:absolute;
+				top:2px;
+				right:2px;
+				z-index:2;
+				width:16px;
+				height:16px;
+				background-position:center center;
+				background-repeat:no-repeat;
+			}
+		}
+		
 		&:hover > .caption, &:active > .caption, &:focus > .caption {
 			display:initial;
 			opacity:1 !important; 
@@ -142,8 +167,27 @@
 			color: $color_alink;
 		}
 		
-		&.featured > .caption { background-color: $color_bgtrans_leaf_featured; }
-		&.mature > .caption { background-color: $color_bgtrans_leaf_mature; }
+		&.featured {
+			> .caption { background-color: $color_bgtrans_leaf_featured; }
+			> .feature_mark { display:block !important; background:$color_bgtrans_leaf_featured; }
+			> .feature_mark:after { display:block !important; background-image:url(../images/icons/featured16.png); }
+			&:hover > .feature_mark, &:active > .feature_mark, &:focus > .feature_mark { opacity:1; }
+		} 
+		&.mature {
+			> .caption { background-color: $color_bgtrans_leaf_mature; }
+			> .feature_mark { display:block !important; background:$color_bgtrans_leaf_mature; }
+			> .feature_mark:after { display:block !important; background-image:url(../images/icons/mature16.png); }
+			&:hover > .feature_mark, &:active > .feature_mark, &:focus > .feature_mark { opacity:1; }
+		} 
+		&.restricted {
+			> .caption { background-color: $color_bgtrans_leaf_restricted; }
+			> .feature_mark { display:block !important; background:$color_bgtrans_leaf_restricted; }
+			> .feature_mark:after { display:block !important; background-image:url(../images/icons/restriction-locked16.png); }
+			&:hover > .feature_mark, &:active > .feature_mark, &:focus > .feature_mark { opacity:1; }
+			
+			&.draft > .feature_mark:after { background-image:url(../images/icons/restriction-draft16.png); }
+			&.scheduled > .feature_mark:after { background-image:url(../images/icons/restriction-scheduled16.png); }
+		} 
 	}
 	
 	> .entry-visible {
