@@ -299,6 +299,21 @@ body {
 		@media #{$scr_midwidth} { width:auto; max-width:610px; }
 		
 		body.showcase_mode & { width:auto; max-width:inherit; }
+		
+		.left_full_splitheader {
+			//border-bottom:1px solid $color_border_subtle;
+			background:$color_bgtrans_dark;
+			border-top-right-radius:10px;
+			box-shadow:-3px 2px 3px 1px $color_shadow;
+			margin-left:-10px;
+			margin-right:-10px;
+			margin-top:-5px;
+			margin-bottom:7px;
+			padding-left:10px;
+			padding-right:10px;
+			padding-top:5px;
+			padding-bottom:5px;
+		}
 	}
 	
 	.left_split {
@@ -417,6 +432,7 @@ iframe.embedded_form {
 	}
 }
 
+//	Kitty! ^.^
 .github-corner {
 	svg {
 		fill:$color_pink;
@@ -431,6 +447,7 @@ iframe.embedded_form {
 	}
 }
 
+//	Pony!  ^.^
 .djangopony_infopage {
 	position:absolute;
 	bottom:10px;
@@ -451,6 +468,7 @@ iframe.embedded_form {
 @import 'app_deertrees';
 @import 'app_sunset';
 
+//	CookieLaw
 #CookielawBanner {
 	z-index:90;
 	background-color: $color_bgtrans_solid;

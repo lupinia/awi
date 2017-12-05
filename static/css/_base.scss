@@ -53,6 +53,16 @@ fieldset {
 	}
 }
 
+input
+{
+	//	Styling placeholders for form fields is extremely obnoxious.
+	&::-webkit-input-placeholder { color: $color_border_subtle; }
+	&::-moz-placeholder { color: $color_border_subtle; }
+	&:-ms-input-placeholder { color: $color_border_subtle; }
+	&:-moz-placeholder { color: $color_border_subtle; }
+	&::placeholder { color: $color_border_subtle; }
+}
+
 //	=====
 
 
@@ -60,11 +70,12 @@ fieldset {
 a { @include default_links; }
 
 .hoverimgs {
-	a {
+	a, button.hoverimg {
 		display:block;
 		margin:0px;
 		padding:0px;
 		background-repeat:no-repeat;
+		cursor:pointer;
 		
 		&:link, &:visited {
 			img { visibility:hidden; }
@@ -75,6 +86,8 @@ a { @include default_links; }
 			img { visibility:inherit; }
 		}
 	}
+	
+	button.hoverimg img { visibility:hidden; }
 }
 
 .hovericons10 { @include hovericons(10px,none,$color_bg_hover,3px); }

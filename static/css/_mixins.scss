@@ -3,6 +3,16 @@
 //	By Natasha L.
 //	www.lupinia.net | github.com/lupinia
 
+//	Vendor Prefixing
+//	Because this is really annoying, and SASS helps make it a little less annoying.
+@mixin prefix($property, $value, $prefixes: (webkit ms moz)) {
+	@each $prefix in $prefixes {
+		#{'-' + $prefix + '-' + $property}: $value;
+	}
+	#{$property}: $value;
+}
+
+//	Errors
 @mixin error($border,$bgcolor,$color,$bgimg:none) {
 	display:block;
 	min-height:45px;
@@ -20,6 +30,25 @@
 	border-color: $border;
 }
 
+//	The All-Important Transbox
+//	She's my favorite :)
+@mixin transbox_style {
+	box-shadow:-1px 1px 3px 1px $color_shadow;
+	background: $color_bgtrans;
+	
+	hr {
+		border:none;
+		border-bottom:1px solid $color_border;
+		margin:1px;
+		height:1px;
+		margin-left:20px;
+		margin-right:20px;
+	}
+	
+	h2 { font-size:x-large; }
+}
+
+//	Links and Link Accessories
 @mixin hovericons($size,$inactive_bg,$active_bg,$border_radius:5px) {
 	a {
 		width:$size !important;
@@ -70,22 +99,6 @@
 	}
 }
 
-@mixin transbox_style {
-	box-shadow:-1px 1px 3px 1px $color_shadow;
-	background: $color_bgtrans;
-	
-	hr {
-		border:none;
-		border-bottom:1px solid $color_border;
-		margin:1px;
-		height:1px;
-		margin-left:20px;
-		margin-right:20px;
-	}
-	
-	h2 { font-size:x-large; }
-}
-
 @mixin default_links($normal_decor:underline,$focus_decor:none) {
 	&:link, &:visited {
 		color: $color_alink;
@@ -96,4 +109,37 @@
 		text-decoration:$focus_decor;
 	}
 	&.boldlink { font-weight: bold; }
+}
+
+//	Absolute Centering
+//	When Things Absolutely Need To Be Centered
+@mixin center_x {
+	left:0;
+	right:0;
+	margin-left:auto !important;
+	margin-right:auto !important;
+}
+
+@mixin center_y {
+	top:0;
+	bottom:0;
+	margin-top:auto !important;
+	margin-bottom:auto !important;
+}
+
+//	When the normal methods don't work, transform to the rescue!
+@mixin center_x_tf {
+	left:50%;
+	@include prefix(transform, translate(-50%,0));
+}
+
+@mixin center_y_tf {
+	top:50%;
+	@include prefix(transform, translate(0,-50%));
+}
+
+@mixin center_tf {
+	top:50%;
+	left:50%;
+	@include prefix(transform, translate(-50%,-50%));
 }
