@@ -8,13 +8,18 @@
 #	denied_error:	403 error handler.  Just displays a template.
 #	=================
 
+import sys
+
 from django.http import HttpResponseServerError, HttpResponseForbidden
 from django.shortcuts import render
 from django.template import Context, loader
 
 def system_error(request):
 	template=loader.get_template('awi_error/500.html')
-	context=Context({'none':True})
+	type, value, tb = sys.exc_info()
+	if value is None:
+		value = 'No exception info found'
+	context=Context({'error_value':value,})
 	
 	return HttpResponseServerError(content=template.render(context), content_type='text/html; charset=utf-8')
 
