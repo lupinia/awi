@@ -1,0 +1,28 @@
+
+<div class="left_full page_number_list">
+	<div class="page_numbers_transbox">
+		{% spaceless %}
+			{% if page_obj.has_previous %}
+				<div class="page_numbers_component navbutton nav_left">
+					<a href="?{% if paginator_vars %}{% for var in paginator_vars %}{{var.0}}={{var.1}}&amp;{% endfor %}{% endif %}page={{page_obj.previous_page_number}}" title="Previous Page"><img src="{{STATIC_PREFIX}}images/icons/arrow-left-16.png" alt="Previous Page" title="Previous Page" /></a>
+				</div>
+			{% endif %}
+			
+			<div class="page_numbers_component page_numbers_wrapper">
+				{% for cur_page in page_obj.paginator.page_range %}
+					{% if page_obj.number == forloop.counter and not link_to_cur_page %}
+						<span class="page_number_static page_number_cur" title="Page {{cur_page}} (Current Page)">{{cur_page}}</span>
+					{% else %}
+						<a class="page_number{% if page_obj.number == forloop.counter %} page_number_cur{% endif %}" href="?{% if paginator_vars %}{% for var in paginator_vars %}{{var.0}}={{var.1}}&amp;{% endfor %}{% endif %}page={{cur_page}}" title="Page {{cur_page}}">{{cur_page}}</a>
+					{% endif %}
+				{% endfor %}
+			</div>
+			
+			{% if page_obj.has_next %}
+				<div class="page_numbers_component navbutton nav_right">
+					<a href="?{% if paginator_vars %}{% for var in paginator_vars %}{{var.0}}={{var.1}}&amp;{% endfor %}{% endif %}page={{page_obj.next_page_number}}" title="Next Page"><img src="{{STATIC_PREFIX}}images/icons/arrow-right-16.png" alt="Next Page" title="Next Page" /></a>
+				</div>
+			{% endif %}
+		{% endspaceless %}
+	</div>
+</div>

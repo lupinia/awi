@@ -381,8 +381,111 @@ body {
 
 
 /*	Miscellaneous Content and Structure	*/
-.loginform {
-	width:170px;
+//	Pagination Page Counter
+.page_number_list {
+	text-align:center;
+	position:relative;
+	height:32px;
+	border:none;
+	background:none !important;
+	box-shadow:none !important;
+	
+	div.page_numbers_transbox {
+		@include transbox_style;
+		@include center_x_tf;
+		max-width:90%;
+		margin:0px;
+		padding:0px;
+		border-radius:5px;
+		position:absolute;
+		
+		display:flex;
+		flex-wrap:nowrap;
+		justify-content:center;
+		align-items:center;
+		
+		div.page_numbers_component {
+			display:block;
+			height:32px;
+			float:left;
+			margin:0px;
+			padding:0px;
+			
+			&:first-child {
+				> a:first-child, > span.page_number_static:first-child {
+					border-top-left-radius:5px;
+					border-bottom-left-radius:5px;
+				}
+			}
+			
+			&:last-child {
+				> a:last-child, > span.page_number_static:last-child {
+					border-top-right-radius:5px;
+					border-bottom-right-radius:5px;
+				}
+			}
+			
+			a, span.page_number_static {
+				height:32px;
+				line-height:30px;
+				border-right:1px solid $color_border_subtle;
+				font-weight:bold;
+				font-size:1.3em;
+				text-decoration:none;
+				display:inline-block;
+				background: none; 
+				
+				&.page_number_cur { 
+					color: $color_breadcrumbs;
+					background: $color_bgbright_hover;
+				}
+			}
+			
+			a {
+				&:link, &:visited { background: none; }
+				&:hover, &:active, &:focus { background: $color_bg_hover; text-decoration:underline; }
+				
+				&.page_number_cur { 
+					&:link, &:visited { background: $color_bg_hover; }
+					&:hover, &:active, &:focus { background: $color_grey; }
+				}
+			}
+			
+			
+			&.page_numbers_wrapper {
+				overflow:hidden;
+				white-space:nowrap;
+				flex-shrink:1;
+				
+				a, span.page_number_static {
+					width:32px;
+					&:last-child { border-right:none; }
+				}
+			}
+			
+			&.navbutton {
+				width:32px;
+				flex-shrink:0;
+				
+				a {
+					position:relative;
+					width:32px;
+					
+					> img { 
+						@include center_x;
+						@include center_y;
+						display:block;
+						position:absolute;
+					}
+					
+					&:hover, &:active, &:focus { background: $color_blue; }
+				}
+				
+				&.nav_right a { border-right:none; border-left:1px solid $color_border_subtle; }
+			}
+		}
+	}
+	
 }
 
 .thumb_right, .thumb_right_wide { float:right; margin:10px; text-align:center; }
@@ -467,6 +570,11 @@ iframe.embedded_form {
 @import 'app_deerconnect';
 @import 'app_deertrees';
 @import 'app_sunset';
+
+//	Django Auth
+.loginform {
+	width:170px;
+}
 
 //	CookieLaw
 #CookielawBanner {
