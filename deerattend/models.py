@@ -113,7 +113,7 @@ class event_instance(models.Model):
 	# Time and Place
 	date_start = models.DateField(null=True, blank=True, db_index=True, verbose_name='start date')
 	date_end = models.DateField(null=True, blank=True, db_index=True, verbose_name='end_date')
-	venue = models.ForeignKey(venue, on_delete=models.PROTECT)
+	venue = models.ForeignKey(venue, related_name='events', on_delete=models.PROTECT)
 	
 	def get_name(self):
 		if self.name:
@@ -121,15 +121,21 @@ class event_instance(models.Model):
 		else:
 			return "%s %s" % (self.event, self.instance)
 	
+	@property
 	def is_tentative(self):
 		# Check whether this is an upcoming but unconfirmed appearance.
 		if self.date_start > timezone.now().date() and not self.confirmed:
 			return True
+		else:
+			return False
 	
+	@property
 	def is_upcoming(self):
 		# Check whether this is an upcoming confirmed appearance.
 		if self.date_start > timezone.now().date() and self.confirmed:
 			return True
+		else:
+			return False
 	
 	def __unicode__(self):
 		return self.get_name()

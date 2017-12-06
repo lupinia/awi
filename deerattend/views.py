@@ -287,7 +287,7 @@ def widget(parent=False, parent_type=False, request=False):
 def geojson_event_instance(request, slug, **kwargs):
 	return_data = []
 	mature_check = check_mature(request)
-	query = venue.objects.exclude(Q(geo_lat__isnull=True) | Q(geo_long__isnull=True) | Q(event_instance__isnull=True)).prefetch_related('event_instance_set')
+	query = venue.objects.exclude(Q(geo_lat__isnull=True) | Q(geo_long__isnull=True) | Q(events__isnull=True)).prefetch_related('events')
 	item_filters = Q()
 	
 	if request.user.is_superuser or request.user.is_staff:
@@ -295,11 +295,11 @@ def geojson_event_instance(request, slug, **kwargs):
 		query = query.all()
 	else:
 		# Regular or anonymous user
-		query = query.filter(Q(event_instance__confirmed=True) | Q(event_instance__date_start__gte=timezone.now()))
+		query = query.filter(Q(events__confirmed=True) | Q(events__date_start__gte=timezone.now()))
 		item_filters = item_filters & (Q(confirmed=True) | Q(date_start__gte=timezone.now()))
 	
 	if not mature_check[0]:
-		query = query.exclude(event_instance__event__mature=True)
+		query = query.exclude(events__event__mature=True)
 		item_filters = item_filters & Q(event__mature=False)
 	
 	if slug == 'full_list':
@@ -307,32 +307,32 @@ def geojson_event_instance(request, slug, **kwargs):
 	elif 'filter_type' in slug:
 		filter = slug.replace('filter_type_','')
 		filter_obj = get_object_or_404(event_type, slug=filter)
-		query = query.filter(event_instance__event__type=filter_obj)
+		query = query.filter(events__event__type=filter_obj)
 		item_filters = item_filters & Q(event__type=filter_obj)
 	elif 'filter_flag' in slug:
 		filter = slug.replace('filter_flag_','')
 		filter_obj = get_object_or_404(attendance_flag, slug=filter)
-		query = query.filter(event_instance__flags=filter_obj)
+		query = query.filter(events__flags=filter_obj)
 		item_filters = item_filters & Q(flags=filter_obj)
 	elif 'event_' in slug:
 		filter = slug.replace('event_','')
 		filter_obj = get_object_or_404(event, slug=filter)
-		query = query.filter(event_instance__event=filter_obj)
+		query = query.filter(events__event=filter_obj)
 		item_filters = item_filters & Q(event=filter_obj)
 	else:
 		raise Http404
 	
 	for item in query:
-		events = item.event_instance_set.filter(item_filters).select_related('event', 'event__type', 'photos', 'report', 'report__cat').prefetch_related('flags').order_by('-date_start')
+		events = item.events.filter(item_filters).select_related('event', 'event__type', 'photos', 'report', 'report__cat').prefetch_related('flags').order_by('-date_start')
 		event_names = []
 		event_count = 0
 		marker_color = '#3bb2d0'
 		marker_symbol = None
 		
 		for subitem in events:
-			if subitem.is_upcoming():
+			if subitem.is_upcoming:
 				extra_classes = ' event_upcoming'
-			elif subitem.is_tentative():
+			elif subitem.is_tentative:
 				extra_classes = ' event_tentative'
 			else:
 				extra_classes = ''
