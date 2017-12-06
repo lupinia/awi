@@ -14,9 +14,6 @@ from django.db import models
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 
-from deertrees.models import category
-from deerbooks.models import page
-
 class venue(models.Model):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
@@ -110,8 +107,8 @@ class event_instance(models.Model):
 	confirmed = models.BooleanField(default=True, db_index=True, help_text='Check this box if attendance at this event has been confirmed (purchased registration, etc).')
 	flags = models.ManyToManyField(attendance_flag,blank=True)
 	notes = models.TextField(null=True, blank=True)
-	photos = models.ForeignKey(category, null=True, blank=True, on_delete=models.SET_NULL, help_text='Select a Category that contains photos taken at this event.')
-	report = models.ForeignKey(page, null=True, blank=True, on_delete=models.SET_NULL, help_text='Select a Page describing/related to experiences at this event.')
+	photos = models.ForeignKey('deertrees.category', null=True, blank=True, on_delete=models.SET_NULL, help_text='Select a Category that contains photos taken at this event.')
+	report = models.ForeignKey('deerbooks.page', null=True, blank=True, on_delete=models.SET_NULL, help_text='Select a Page describing/related to experiences at this event.')
 	
 	# Time and Place
 	date_start = models.DateField(null=True, blank=True, db_index=True, verbose_name='start date')

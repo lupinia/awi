@@ -11,8 +11,6 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 
-from deerbooks.models import page
-
 class menu_section(models.Model):
 	name = models.CharField(max_length=150)
 	slug = models.SlugField(unique=True)
@@ -55,7 +53,7 @@ class menu_item(models.Model):
 	desc = models.TextField(verbose_name='description')
 	section = models.ForeignKey(menu_section, on_delete=models.PROTECT)
 	flags = models.ManyToManyField(menu_flag, blank=True)
-	recipe_internal = models.ForeignKey(page, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='recipe', help_text='Select a Page that contains the recipe for this item.')
+	recipe_internal = models.ForeignKey('deerbooks.page', null=True, blank=True, on_delete=models.SET_NULL, verbose_name='recipe', help_text='Select a Page that contains the recipe for this item.')
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
