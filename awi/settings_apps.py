@@ -17,6 +17,10 @@ STATICFILES_STORAGE = 's3_folder_storage.s3.StaticStorage'
 # Used as a "scratchpad" for operations that require local file storage.
 WORKING_DIR = os.path.abspath(os.path.join(BASE_DIR,'working_dirs/'))
 
+# Used as an "inbox" for operations that involve importing from local files regularly.
+# NOTE:  It's recommended to put this outside the BASE_DIR, so that users uploading files don't need access to the code.
+IMPORT_DIR = os.path.abspath('/srv/awi_import/')
+
 
 #	CUSTOM APPS
 #	==============
@@ -162,7 +166,7 @@ DEERFIND_FINDERS = (
 
 #	deerbooks
 #	Specify location of a working directory for compiling LaTeX source files.
-DEERBOOKS_CACHE_DIR = os.path.abspath(os.path.join(BASE_DIR,'working_dirs/deerbooks/'))
+DEERBOOKS_CACHE_DIR = os.path.abspath(os.path.join(WORKING_DIR,'deerbooks/'))
 
 
 #	sunset
@@ -176,7 +180,8 @@ SUNSET_IMAGE_ASSET_SIZES = {
 	'full':{'size':(1920,1300),'watermark':True,'exact':False,},
 	'bg':{'size':(1700,1000),'watermark':False,'exact':True,},
 }
-SUNSET_IMPORT_DIR = '/srv/awi_import/sunset'
+
+SUNSET_IMPORT_DIR = os.path.abspath(os.path.join(IMPORT_DIR,'sunset/'))
 SUNSET_CACHE_DIR = os.path.abspath(os.path.join(WORKING_DIR,'sunset/'))
 SUNSET_WATERMARK_IMAGE = os.path.abspath(os.path.join(BASE_DIR,'sunset/watermarks/lupinia.png'))
 SUNSET_BG_NOTIFY_FAIL = True	# Send a notification if sunset_bg is used but a background image cannot be found.
