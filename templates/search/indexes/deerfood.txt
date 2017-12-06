@@ -1,0 +1,9 @@
+{{object}}
+{{object.desc}}
+{{object.section}}
+
+{% for flag in object.flags.all %}
+{% if not forloop.first %} {% endif %}{{flag}}
+{% endfor %}
+
+Cooking recipes kitchen culinary dining gourmet food meal

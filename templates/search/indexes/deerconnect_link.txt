@@ -1,0 +1,8 @@
+{{object}}
+{{object.url}}
+{{object.desc}}
+
+{{object.cat}} 
+{% for tag in object.tags.all %}
+{% if not forloop.first %} {% endif %}{{tag}}
+{% endfor %}

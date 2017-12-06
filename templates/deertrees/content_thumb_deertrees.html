@@ -1,0 +1,40 @@
+{% load searchtools %}
+
+<a href="{{result.url}}" title="{{result.object}} ({{result.score}})" class="search_deertrees{% if result.content_type == 'deertrees.tag' or not result.object.icon %} text_item default_img{% else %} search_deertrees_icon{% endif %}{% if result.object.get_summary %} has_body_text{% endif %} {% if result.object.restriction and result.object.restriction != 'unknown' %}restricted{% elif result.object.featured and highlight_featured %}featured{% elif result.object.mature %}mature{% endif %}" {% if result.content_type == 'deertrees.tag' or not result.object.icon %}style="width:{{result.object|text_item_width|add:'42'}}px;"{% endif %}>
+	<div class="caption caption_static">{% if result.content_type == 'deertrees.tag' %}Tag: {% endif %}{{result.object}}</div>
+	
+	{% if result.content_type == 'deertrees.category' and result.object.icon %}
+		<img src="{{result.object.icon_url}}" alt="{{result.object}}" title="{{result.object}}" />
+	{% else %}
+		{% if result.object.get_summary %}
+			<div class="body_text body_text_bg" style="background-image:url({% if result.content_type == 'deertrees.category' %}{{result.object.icon_url}}{% else %}{{STATIC_PREFIX}}images/icons/default-{{result.content_type|result_icon}}-128.png{% endif %});">&nbsp;</div>
+			<div class="body_text">{{result.object.get_summary}}</div>
+		{% else %}
+			<img src="{% if result.content_type == 'deertrees.category' %}{{result.object.icon_url}}{% else %}{{STATIC_PREFIX}}images/icons/default-{{result.content_type|result_icon}}-128.png{% endif %}" title="{{result.content_type|result_type}}:  {{result.object}}" alt="{{result.content_type|result_type}}" {% if result.object.get_summary %}class="bg_img"{% endif %} />
+		{% endif %}
+	{% endif %}
+	
+	{% if result.content_type|result_type %}
+		<div class="caption caption_extra{% if result.item_count and not result.object.icon %} caption_extra_wide{% endif %}">
+			{% if result.item_count %}
+				{% if result.object.icon %}
+					{{result.content_type|result_type}} - 
+				{% else %}
+					<div class="extra_left">{{result.content_type|result_type}}</div>
+				{% endif %}
+				
+				{% if result.content_type == 'deertrees.category' %}
+					{% if not result.object.icon %}<div class="extra_right">{% endif %}
+						{{result.item_count}} Items
+					{% if not result.object.icon %}</div>{% endif %}
+				{% else %}
+					{% if not result.object.icon %}<div class="extra_right">{% endif %}
+						Used {{result.item_count}} Times
+					{% if not result.object.icon %}</div>{% endif %}
+				{% endif %}
+			{% else %}
+				{{result.content_type|result_type}}
+			{% endif %}
+		</div>
+	{% endif %}
+</a>

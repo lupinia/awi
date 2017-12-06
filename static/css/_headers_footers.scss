@@ -20,7 +20,7 @@ header {
 	
 	@media #{$scr_midwidth} {
 		@include transbox_style;
-		width:630px;
+		width:650px;
 		height:130px;
 		border-bottom-right-radius:10px;
 	}
@@ -161,7 +161,7 @@ header {
 			left:0px;
 			top:auto;
 			right:auto;
-			width:630px;
+			width:650px;
 			background: $color_bgtrans_solid;
 			border-bottom-left-radius:inherit;
 			border-bottom-right-radius:10px;

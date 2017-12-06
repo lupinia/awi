@@ -18,7 +18,7 @@ from honeypot.decorators import check_honeypot
 from awi.sitemaps import SITEMAP_OBJECTS
 from awi_access import views as access_views
 from awi_error.views import system_error, denied_error
-from deerfind.views import not_found
+from deerfind.views import not_found, search_view
 from deerconnect.views import contact_page
 from deertrees import views as deertrees_views
 from deerbooks import views as deerbooks_views
@@ -40,6 +40,8 @@ urlpatterns = [
 	url(r'^accounts/age_form_embed/$',never_cache(check_honeypot(field_name=settings.HONEYPOT_FIELD_NAME_AWIACCESS)(access_views.age_verify.as_view())),name='age_form_embed'),
 	
 	url(r'^settings/$',access_views.settings_page.as_view(),name='settings'),
+	
+	url(r'^search/', search_view.as_view(), name='haystack_search'),
 	
 	url(r'^tools/sunset/(?P<slug>.*)\.json', sunset_views.geojson_image, name='sunset_geojson'),
 	url(r'^tools/category_list/$',permission_required('deertrees.change_leaf')(deertrees_views.all_cats.as_view()),name='all_cats'),

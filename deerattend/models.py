@@ -184,5 +184,16 @@ class event_instance(models.Model):
 	def summary_long(self):
 		return self.get_summary(512)
 	
+	# Special case:  For search indexing, we want to check the parent event for notes if this object doesn't have anything.
+	# The extra database hit is worth it for more-relevant search results.
+	@property
+	def summary_search(self):
+		if not self.notes and self.event.notes:
+			fallback = self.event.get_summary(length)
+		else:
+			fallback = None
+		
+		return summarize(body=self.notes, length=255, fallback=fallback)
+	
 	class Meta:
 		verbose_name = 'event instance'

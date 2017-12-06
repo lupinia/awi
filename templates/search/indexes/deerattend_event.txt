@@ -1,0 +1,14 @@
+{{object}}
+{{object.date_start|date:'F j, Y'}} - {{object.date_end|date:'F j, Y'}}
+{{object.notes}}
+
+{{object.event.notes}}
+
+{{object.event.type}}
+{{object.event.type.notes}}
+
+{{object.venue}}
+
+{% for flag in object.flags.all %}
+{% if not forloop.first %} {% endif %}{{flag}}
+{% endfor %}

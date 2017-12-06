@@ -1,0 +1,9 @@
+{{object}}
+{{object.summary_short}}
+
+{{object.body_html}}
+{{object.cat}}
+
+{% for tag in object.tags.all %}
+{% if not forloop.first %} {% endif %}{{tag}}
+{% endfor %}

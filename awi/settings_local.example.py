@@ -50,3 +50,16 @@ DATABASES = {
 	}
 }
 
+HAYSTACK_CONNECTIONS = {
+	'default': {
+		'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+		'URL': '',
+		'INDEX_NAME': 'haystack_awi',
+		'INCLUDE_SPELLING':True,
+		'KWARGS': {
+			'use_ssl': True,
+			'verify_certs': True,
+		}
+	},
+}
+

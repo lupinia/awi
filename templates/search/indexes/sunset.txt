@@ -1,0 +1,13 @@
+{{object}}
+{{object.body_html}}
+{{object.cat}}
+
+{% for tag in object.tags.all %}
+{% if not forloop.first %} {% endif %}{{tag}}
+{% endfor %}
+
+{% if object.is_recent %}
+{% for tag in object.tags.all %}
+{% if not forloop.first %} {% endif %}{{tag}} {{tag.slug}}
+{% endfor %}
+{% endif %}

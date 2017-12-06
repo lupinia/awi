@@ -1,0 +1,10 @@
+<a href="{{result.url}}" title="{{result.score}}" {% if result.object.restriction and result.object.restriction != 'unknown' %}class="restricted"{% elif result.object.featured and highlight_featured %}class="featured"{% elif result.mature %}class="mature"{% endif %}>
+	{% if result.object.restriction and result.object.restriction != 'unknown' %}
+		<div class="feature_mark {{result.object.restriction}}"></div>
+	{% elif result.object.featured and highlight_featured %}
+		<div class="feature_mark"></div>
+	{% elif result.object.mature %}
+		<div class="feature_mark"></div>
+	{% endif %}
+	<img src="{{result.thumb}}" alt="{{result.object}}" title="{{result.object}}" />
+</a>

@@ -9,14 +9,19 @@
 #	=================
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.http import HttpResponsePermanentRedirect, HttpResponseNotFound
 from django.shortcuts import render
 from django.template import Context, loader
 from django.utils.module_loading import import_string
 
-from deerfind.models import pointer,hitlog
+from haystack.generic_views import FacetedSearchView
 
+from awi_access.models import check_mature
+from deerfind.forms import simple_search_form
+from deerfind.models import pointer, hitlog
 
+#	404 Handling
 def g2_finder(request):
 	import os
 	from deerfind.models import g2map
@@ -48,7 +53,6 @@ def g2_finder(request):
 						return_data = (True,gallery_check[0].image.get_absolute_url())
 	
 	return return_data
-
 
 def not_found(request):
 	return_url = False
@@ -118,3 +122,55 @@ def not_found(request):
 		
 		#	Here's the 404 template.  Sorry we couldn't find what you were looking for!
 		return HttpResponseNotFound(content=template.render(context), content_type='text/html; charset=utf-8')
+
+#	Search Views
+class search_view(FacetedSearchView):
+	form_class = simple_search_form
+	facet_fields = ['pub_date', 'category', 'tags']
+	
+	def get_queryset(self):
+		queryset = super(search_view, self).get_queryset()
+		
+		mature_check = check_mature(self.request)
+		if not mature_check[0]:
+			queryset = queryset.exclude(mature=True)
+		
+		if self.request.user.is_authenticated():
+			if not self.request.user.is_superuser and not self.request.user.is_staff:
+				#	Regular User
+				queryset = queryset.exclude(security__gt = 1)
+		else:
+			#	Guest
+			queryset = queryset.exclude(security__gt = 0)
+		
+		return queryset.load_all()
+	
+	def get_context_data(self, *args, **kwargs):
+		context = super(search_view, self).get_context_data(*args, **kwargs)
+		context['highlight_featured'] = True
+		
+		if context.get('query',False):
+			context['paginator_vars'] = [('q', context.get('query',False)), ]
+		
+		if not context.get('breadcrumbs',False):
+			context['breadcrumbs'] = []
+		context['breadcrumbs'].append({'url':reverse('haystack_search'), 'title':'Search'})
+		
+		return context
+	
+	def form_valid(self, form):
+		# Dear Haystack:
+		# Why do I have to override and re-write this to make suggestions work correctly?
+		# You're starting to get on my nerves.
+		
+		# Copied from Haystack source
+		self.queryset = form.search()
+		context = self.get_context_data(**{
+			self.form_name: form,
+			'query': form.cleaned_data.get(self.search_field),
+			'object_list': self.queryset,
+			
+			# Adding this here, since it didn't work from within get_context_data
+			'spelling_suggestion':self.queryset.spelling_suggestion(form.cleaned_data.get(self.search_field)),
+		})
+		return self.render_to_response(context)

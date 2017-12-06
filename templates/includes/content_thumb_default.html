@@ -1,0 +1,18 @@
+{% load searchtools %}
+
+<a href="{{result.url}}" title="{{result.object}} ({{result.score}})" class="text_item default_img search_default {% if result.security %}restricted{% elif result.featured and highlight_featured %}featured{% elif result.mature %}mature{% endif %}" style="width:{{result.object|text_item_width:150}}px;">
+	{% if result.security or result.mature %}
+		<div class="feature_mark"></div>
+	{% elif result.featured and highlight_featured %}
+		<div class="feature_mark"></div>
+	{% endif %}
+	<div class="caption caption_static">{{result.object}}</div>
+	<div class="default_img_element" style="background-image:url({% if result.thumb %}{{result.thumb}}{% else %}{{STATIC_PREFIX}}images/icons/default-{{result.content_type|result_icon}}-128.png{% endif %});">&nbsp;</div>
+	{% if result.content_type|result_type %}
+		<div class="caption caption_extra{% if result.pub_date %} caption_extra_wide{% endif %}">
+			{% if result.pub_date %}<div class="extra_left">{% endif %}
+				{{result.content_type|result_type}}
+			{% if result.pub_date %}</div> <div class="extra_right">{{result.pub_date|date:'F j, Y'}}</div>{% endif %}
+		</div>
+	{% endif %}
+</a>

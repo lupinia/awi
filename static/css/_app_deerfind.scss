@@ -1,0 +1,258 @@
+//	Lupinia Studios Main Theme - "Showcase"
+//	App-Specific SASS Stylesheet - DeerConnect
+//	By Natasha L.
+//	www.lupinia.net | github.com/lupinia
+
+/*	App:  DeerFind	*/
+/*	Search Form and Results Page	*/
+
+#search_form_main {
+	margin:10px;
+	margin-left:0px;
+	margin-right:0px;
+	position:relative;
+	
+	display:flex;
+	justify-content:space-between;
+	flex-wrap:nowrap;
+	align-items:stretch;
+	height:38px;
+	
+	.navbutton {
+		flex-shrink:0;
+		flex-grow:0;
+		width:38px;
+		
+		a {
+			position:relative;
+			margin:0px !important;
+			img {
+				@include center_x;
+				@include center_y;
+				position:absolute;
+			}
+		}
+	}
+	
+	.search_field {
+		background-color: $color_bgwhite;
+		border-radius: 7px;
+		box-shadow: inset 0 0 5px $color_shadow;
+		//height:28px;
+		padding:5px;
+		margin-left:5px;
+		margin-right:5px;
+		width:75%;
+		position:relative;
+		flex-shrink:1;
+		
+		input, button {
+			@include center_y;
+			position:absolute;
+			display:block; 
+			border:none;
+			background:none;
+			max-height:90%;
+		}
+		
+		button.submit_button_img {
+			margin-left:5px;
+			margin-right:5px;
+			right:0;
+			width:24px;
+			height:24px;
+		}
+		
+		input#id_q {
+			color: $color_bgdark;
+			font-size:1.4em;
+			width:98%;
+			margin-left:5px;
+			padding-right:40px;
+		}
+	}
+}
+
+/*	Search Results JustifiedGallery	*/
+.justified-gallery#search_results_array {
+	> a, > div {
+		&.default_img {
+			@include block_links;
+			background-color: $color_bgdark;
+			border:none !important;
+			
+			> img {
+				// Assumption:  Our default images will always be 128x128
+				@include center_y;
+				@include center_x;
+				max-width:128px !important;
+				max-height:128px !important;
+				top: 0;
+				bottom:0;
+				left: 0;
+				right: 0;
+				opacity: 0.25;
+			}
+			
+			> div.default_img_element {
+				// JustifiedGallery REALLY wants to use any image to override whatever else an element is doing.
+				// So, this will now be a div with a background instead of an actual image.
+				position:absolute;
+				top: 0;
+				bottom:0;
+				left: 0;
+				right: 0;
+				opacity: 0.25;
+				background-position:center center;
+				background-repeat:no-repeat;
+			}
+			
+			&:hover, &:active, &:focus {
+				background-color: $color_bg_leaf_hover;
+				color:$color_afocus;
+				
+				> img, > div.default_img_element { opacity:1; }
+			}
+		}
+		
+		&.featured {
+			background-color:$color_bg_leaf_featured;
+			&:hover, &:active, &:focus { background-color:$color_bg_leaf_featured_hover; }
+			
+		}
+		
+		&.mature {
+			background-color:$color_bg_leaf_mature;
+			&:hover, &:active, &:focus { background-color:$color_bg_leaf_mature_hover; }
+		}
+		
+		&.restricted {
+			background-color:$color_bg_leaf_restricted;
+			&:hover, &:active, &:focus { background-color:$color_bg_leaf_restricted_hover; }
+		}
+		
+		&.text_item { 
+			@include block_links;
+			height:140px;
+			
+			> .caption { 
+				display:initial !important;
+				opacity:1 !important;
+				top:0;
+				bottom:auto;
+				overflow:hidden;
+				text-overflow:ellipsis;
+				white-space:nowrap;
+				background-color:$color_bgtrans_darker;
+				
+				&.caption_extra {
+					font-size:0.8em;
+					top:auto;
+					bottom:0;
+					color:$color_breadcrumbs;
+					font-variant:small-caps;
+					text-align:center;
+					font-weight:normal;
+					padding:2px;
+					padding-top:0px;
+					
+					&.caption_extra_wide {
+						padding-left:5px;
+						padding-right:5px;
+						display:flex !important;
+						flex-wrap:nowrap;
+						justify-content:space-between;
+						align-items:center;
+						
+						.extra_left {
+							// Use the left side for longer text that can be cut off.
+							overflow:hidden;
+							white-space:nowrap;
+							text-overflow:ellipsis;
+							flex-shrink:1;
+							flex-grow:1;
+							text-align:left;
+						}
+						
+						.extra_right {
+							// Use the right side for text that should not be cut off.
+							margin-left:5px;
+							flex-shrink:0;
+							flex-grow:0;
+							text-align:right;
+						}
+					}
+				}
+			}
+			
+			> .feature_mark {
+				opacity:1;
+				background:none;
+				z-index:2;
+				
+				&:after {
+					top:4px;
+					right:4px;
+					//opacity:1;
+				}
+			}
+			
+			> .body_text {
+				max-height:80%;
+				overflow:hidden;
+				text-overflow:ellipsis;
+				display:block;
+				padding:5px;
+				padding-top:30px;
+				margin-bottom:17px;
+				text-decoration:none !important;
+				color:$color_maintext;
+				position:absolute;
+				top:0;
+				bottom:0;
+				left:0;
+				right:0;
+				font-size:0.9em;
+				z-index:1;
+				
+				&.body_text_bg {
+					background-position:center center;
+					background-repeat:no-repeat;
+					opacity:0.05 !important;
+					z-index:0;
+				}
+			}
+			
+			> img {
+				z-index:0;
+				&.bg_img { opacity:0.05 !important; }
+			}
+		}
+		
+		&.search_deertrees_icon {
+			> .caption {
+				display:initial !important;
+				opacity:1 !important; 
+				filter: alpha(opacity=100) !important;
+				
+				&.caption_extra {
+					font-size:0.8em;
+					top:0;
+					bottom:auto;
+					color:$color_breadcrumbs;
+					font-variant:small-caps;
+					text-align:center;
+					//font-weight:normal;
+					padding:2px;
+					padding-top:0px;
+					background-color:$color_bgdarker;
+				}
+			}
+			
+			&:hover > .caption, &:active > .caption, &:focus > .caption { background-color:$color_bg_leaf_hover; }
+		}
+		//	Since I keep getting this wrong:  This comment marks the end of &.search_deertrees_icon
+	}
+}
+
+/*	=====	*/

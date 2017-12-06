@@ -1,0 +1,6 @@
+Contact:  {{object}}
+{{object.url}}
+{{object.desc}}
+
+{{object.cat}} 
+{% if object.im %}Instant Messenger, IM, messaging, message, chat{% endif %}

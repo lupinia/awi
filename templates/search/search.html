@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}{{block.super}} - Search{% if query %}: {{query}}{% if is_paginated and object_list %} - Page {{page_obj.number}} of {{page_obj.paginator.num_pages}}{% endif %}{% endif %}{% endblock %}
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+{% load searchtools %}
+
+{% block content_left %}
+	{% if query %}
+		<div class="left_full">
+			<div id="page_title">
+				<div id="page_title_main">
+					<h2>Search:  {{query}}</h2>
+					{% if object_list %}<div id="byline">{% if is_paginated %}{{page_obj.paginator.count}}{% else %}{{object_list|length}}{% endif %} Results{% if is_paginated  %} &bull; Page {{page_obj.number}} of {{page_obj.paginator.num_pages}}{% endif %}</div>{% endif %}
+				</div>
+			</div>
+		</div>
+	{% endif %}
+	
+	<div class="left_full {{extra_classes}}"{% if extra_style %} style="{{extra_style}}"{% endif %}>
+		<form method="get" action=".">
+			<div {% if query %}class="left_full_splitheader"{% endif %}>
+				<div class="search_form" id="search_form_main">
+					<div class="navbutton nav_left hovericons32">{% if query and object_list and page_obj.has_previous %}<a class="blue" href="?q={{ query }}&amp;page={{ page_obj.previous_page_number }}" title="Previous Page"><img src="{{STATIC_PREFIX}}images/icons/arrow-left-24.png" alt="Previous Page" title="Previous Page" /></a>{% endif %}</div>
+					<div class="search_field hoverimgs">{{form.q}} <button class="submit_button_img hoverimg" type="submit" title="Search" style="background-image:url({{ STATIC_PREFIX }}images/icons/search-button-off.png)"><img src="{{STATIC_PREFIX}}images/icons/search-button-on.png" alt="Search" title="Search" /></button></div>
+					<div class="navbutton nav_right hovericons32">{% if query and object_list and page_obj.has_next %}<a class="blue" href="?q={{ query }}&amp;page={{ page_obj.next_page_number }}" title="Next Page"><img src="{{STATIC_PREFIX}}images/icons/arrow-right-24.png" alt="Next Page" title="Next Page" /></a>{% endif %}</div>
+				</div>
+			</div>
+			
+			{% if query %}
+				{% if object_list %}
+					<div id="search_results_array">
+						{% for result in object_list %}
+							{% include result.content_type|result_template %}
+						{% endfor %}
+					</div>
+				{% else %}
+					<div class="error error_critical"><em>No results found.  {% if spelling_suggestion and spelling_suggestion != query %}Perhaps you were looking for <a href="?q={{spelling_suggestion}}"><strong>{{spelling_suggestion}}</strong></a>?{% endif %}</em></div>
+				{% endif %}
+			{% endif %}
+		</form>
+	</div>
+	
+	{% if is_paginated and query and object_list %}
+		{% include 'includes/page_numbers_embed.html' with pagetype='search' %}
+	{% endif %}
+	
+	{% if query and object_list %}
+		<script src="{{STATIC_PREFIX}}js/jquery.js"></script>
+		<script src="{{STATIC_PREFIX}}js/jquery.justifiedGallery.min.js"></script>
+		<script>
+			$("#search_results_array").justifiedGallery({rowHeight:160, maxRowHeight:200, margins:7, captionSettings:{animationDuration: 0, visibleOpacity: 1.0, nonVisibleOpacity: 0.0}});
+		</script>
+	{% endif %}
+
+{% endblock %}

@@ -1,0 +1,15 @@
+{% load searchtools %}
+
+<a href="{{result.url}}" title="{{result.object}} ({{result.score}})" class="text_item default_img search_deerbooks {% if result.object.restriction and result.object.restriction != 'unknown' %}restricted{% elif result.object.featured and highlight_featured %}featured{% elif result.object.mature %}mature{% endif %}" style="width:{{result.object|text_item_width:180}}px;">
+	{% if result.object.restriction and result.object.restriction != 'unknown' %}
+		<div class="feature_mark {{result.object.restriction}}"></div>
+	{% elif result.object.featured and highlight_featured %}
+		<div class="feature_mark"></div>
+	{% elif result.object.mature %}
+		<div class="feature_mark"></div>
+	{% endif %}
+	<div class="caption">{{result.object}}</div>
+	<div class="body_text body_text_bg" style="background-image:url({{STATIC_PREFIX}}images/icons/default-{{result.content_type|result_icon}}-128.png);">&nbsp;</div>
+	<div class="body_text">{{result.object.body_summary}}</div>
+	<div class="caption caption_extra caption_extra_wide"><div class="extra_left">{{result.parent}}</div> <div class="extra_right">{{result.object.display_times.0.timestamp|date:'F j, Y'}}</div></div>
+</a>

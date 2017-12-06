@@ -45,6 +45,7 @@ INSTALLED_APPS = (
 	#	Third-party apps
 	'cookielaw', 
 	'debug_toolbar',
+	'haystack', 'haystack_panel', 
 	'honeypot',
 	'mptt', 'django_mptt_admin',
 	's3_folder_storage',

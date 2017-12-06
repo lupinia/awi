@@ -1,0 +1,4 @@
+{{object}}
+{{object.body_html}}
+
+{% if object.parent %}{{object.parent}}{% endif %}

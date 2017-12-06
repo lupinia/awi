@@ -1,0 +1,9 @@
+{{object}}
+{{object.address}}
+{{object.city}}
+{{object.country}}
+
+{% for event in object.events.all %}
+{% if not forloop.first %} 
+{% endif %}{{event}} 
+{% endfor %}
