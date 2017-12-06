@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.utils.html import strip_tags
 from django.utils.text import slugify
 
+from datetime import timedelta
 from mptt.models import MPTTModel, TreeForeignKey
 
 from awi_utils.utils import format_html
@@ -315,6 +316,14 @@ class leaf(access_control):
 	@property
 	def rss_description(self):
 		return 'No Description'
+	
+	@property
+	def is_recent(self):
+		if self.timestamp > (timezone.now() - timedelta(days=30*6)):
+			return True
+		else:
+			return False
+
 
 #	Create a leaf that links to something else that isn't part of this category system.
 #	Handy for things like third-party apps, or self-contained apps with their own organizational structure.
