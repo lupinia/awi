@@ -15,14 +15,14 @@
 
 \begin{% templatetag openbrace %}document{% templatetag closebrace %}
 \title{% templatetag openbrace %}\Huge {% if toc.title %}{% field_tex toc.title|safe %}{% else %}Untitled{% endif %}{% templatetag closebrace %}
-\author{% templatetag openbrace %}By {% include 'authorname.txt' %} - \url{% templatetag openbrace %}{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}{% templatetag closebrace %}{% templatetag closebrace %}
+\author{% templatetag openbrace %}By {% include 'includes/authorname.txt' %} - \url{% templatetag openbrace %}{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}{% templatetag closebrace %}{% templatetag closebrace %}
 \date{% templatetag openbrace %}{{timestamp|date:'F j, Y'}}{% templatetag closebrace %}
 \maketitle
 
 \chapter*{% templatetag openbrace %}About the Author, and Contact Information{% templatetag closebrace %}
-{% include 'authorname.txt' %} is a web application developer, and avid photographer and writer, living in the DC metro area.  Visit \url{% templatetag openbrace %}{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}{% templatetag closebrace %} to learn more.  Contact information, including an email form and links to other websites, can be found at \url{% templatetag openbrace %}{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}/contact{% templatetag closebrace %}.
+{% include 'includes/authorname.txt' %} is a web application developer, and avid photographer and writer, living in the DC metro area.  Visit \url{% templatetag openbrace %}{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}{% templatetag closebrace %} to learn more.  Contact information, including an email form and links to other websites, can be found at \url{% templatetag openbrace %}{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}/contact{% templatetag closebrace %}.
 
-\copyright {{timestamp|date:'Y'}} by {% include 'authorname.txt' %}, and is free for distribution, but may not be modified or used for monetary gain.  Original version and further downloads available at \url{% templatetag openbrace %}{{source_url}}{% templatetag closebrace %}
+\copyright {{timestamp|date:'Y'}} by {% include 'includes/authorname.txt' %}, and is free for distribution, but may not be modified or used for monetary gain.  Original version and further downloads available at \url{% templatetag openbrace %}{{source_url}}{% templatetag closebrace %}
 
 \tableofcontents
 

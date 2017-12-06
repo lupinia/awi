@@ -8,10 +8,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
-	<meta name="author" content="{% include 'authorname.txt' %}" />
+	<meta name="author" content="{% include 'includes/authorname.txt' %}" />
 	<meta name="designer" content="Lupinia Studios - www.lupinia.net" />
-	<meta name="description" content="{% block desc %}Lupinia Studios is {% include 'authorname.txt' %}'s personal portfolio, featuring her written works, digital photography, and digital graphics.{% endblock %}" />
-	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{{curyear}} by {% include 'authorname.txt' %}" />
+	<meta name="description" content="{% block desc %}Lupinia Studios is {% include 'includes/authorname.txt' %}'s personal portfolio, featuring her written works, digital photography, and digital graphics.{% endblock %}" />
+	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{{curyear}} by {% include 'includes/authorname.txt' %}" />
 
 	<title>{% block title %}Lupinia Studios{% endblock %}</title>
 	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase.css" type="text/css" rel="stylesheet" id="main_css" />
@@ -30,7 +30,7 @@
 			<a href="/" id="large_logo"><img src="{{ STATIC_PREFIX }}images/text/title{% if debug_check %}-beta{% endif %}.png" title="Lupinia Studios{% if debug_check %} (Beta){% endif %}" alt="Lupinia Studios{% if debug_check %} (Beta){% endif %}" /><br /></a>
 			<a href="/" id="small_logo"><img src="{{ STATIC_PREFIX }}images/text/admin-title.png" title="Lupinia Studios{% if debug_check %} (Beta){% endif %}" alt="Lupinia Studios{% if debug_check %} (Beta){% endif %}" /><br /></a>
 			
-			<a id="sig_image" href="/about/"><img src="{{ STATIC_PREFIX }}images/text/name-{% include 'authorname.txt' with type='image' %}.png" title="By {% include 'authorname.txt' %}" alt="By {% include 'authorname.txt' %}" /></a>
+			<a id="sig_image" href="/about/"><img src="{{ STATIC_PREFIX }}images/text/name-{% include 'includes/authorname.txt' with type='image' %}.png" title="By {% include 'includes/authorname.txt' %}" alt="By {% include 'includes/authorname.txt' %}" /></a>
 			
 			{% block social_icons %}
 				{% if rss_feed or header_icons %}
@@ -45,10 +45,10 @@
 		</div>
 		
 		<nav class="hoverimgs" id="desktop" role="navigation" aria-label="Main Menu">
-			{% include 'nav.html' with img=True %}
+			{% include 'includes/nav.html' with img=True %}
 		</nav>
 		<nav id="mobile" role="navigation" aria-label="Main Menu (Mobile)">
-			{% include 'nav.html' with mobile=True %}
+			{% include 'includes/nav.html' with mobile=True %}
 		</nav>
 		
 		{% block breadcrumbs %}
@@ -71,11 +71,11 @@
 		{% block footer %}
 			<div id="footer-right">
 				<div class="bg_info">{% block bginfo %}&nbsp;{% endblock %}</div>
-				<div class="lower">&copy;2000-{{curyear}} {% include 'authorname.txt' %} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a></div>
+				<div class="lower">&copy;2000-{{curyear}} {% include 'includes/authorname.txt' %} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a></div>
 			</div>
 			
 			<nav role="navigation" aria-label="Footer Links">
-				{% include 'nav.html' %}
+				{% include 'includes/nav.html' %}
 			</nav>
 			<div class="lower" id="footer_userlinks">
 			{% block userinfo %}

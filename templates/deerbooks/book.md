@@ -1,6 +1,6 @@
 # {% if toc.title %}{{toc.title|safe}}{% else %}Untitled{% endif %}
 
-By {% include 'authorname.txt' %} - [{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}](http://{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}/)  
+By {% include 'includes/authorname.txt' %} - [{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}](http://{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}/)  
 *Date:  {{timestamp|date:'F j, Y'}}*
 
 ---
@@ -13,5 +13,5 @@ By {% include 'authorname.txt' %} - [{% if 'www' not in site.domain %}www.{% end
 
 --
 
-(c) {{timestamp|date:'Y'}} {% include 'authorname.txt' %}  
+(c) {{timestamp|date:'Y'}} {% include 'includes/authorname.txt' %}  
 *Original version and further downloads available at {{source_url}}*

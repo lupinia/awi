@@ -23,17 +23,17 @@
 
 {% block footer %}
 	<nav role="navigation" aria-label="Footer Links">
-		{% include 'nav.html' %}
+		{% include 'includes/nav.html' %}
 	</nav>
 	<div class="lower" id="footer_userlinks">
-		&copy;2000-{{curyear}} {% include 'authorname.txt' %} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a>
+		&copy;2000-{{curyear}} {% include 'includes/authorname.txt' %} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a>
 		<span class="footer_renderinfo">&nbsp;&nbsp; <span id="processinfo"></span></span>
 	</div>
 {% endblock %}
 
 {% block after_content %}
 <script>
-	L.mapbox.accessToken = 'pk.eyJ1IjoibHVwaW5pYSIsImEiOiJjaXl6ZmQ4bDQwNGQ1MzNxd2Y5ZHExaXM4In0.OZfNM3zIXTKDazegaFMpQQ';
+	L.mapbox.accessToken = '{{mapbox_token}}';
 	var map = L.mapbox.map('awi_map');
 	L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v10').addTo(map);
 	
