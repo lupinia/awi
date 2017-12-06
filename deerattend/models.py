@@ -189,7 +189,7 @@ class event_instance(models.Model):
 	@property
 	def summary_search(self):
 		if not self.notes and self.event.notes:
-			fallback = self.event.get_summary(length)
+			fallback = self.event.get_summary(255)
 		else:
 			fallback = None
 		
