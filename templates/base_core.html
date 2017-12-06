@@ -27,8 +27,8 @@
 <div id="mainwrap" {% block mainwrap_extra %}{% endblock %}>
 	<header>
 		<div id="header_logo" role="banner">
-			<a href="/" id="large_logo"><img src="{{ STATIC_PREFIX }}images/text/title{% if debug_check %}-beta{% endif %}.png" title="Lupinia Studios (Beta)" alt="Lupinia Studios (Beta)" /><br /></a>
-			<a href="/" id="small_logo"><img src="{{ STATIC_PREFIX }}images/text/admin-title.png" title="Lupinia Studios (Beta)" alt="Lupinia Studios (Beta)" /><br /></a>
+			<a href="/" id="large_logo"><img src="{{ STATIC_PREFIX }}images/text/title{% if debug_check %}-beta{% endif %}.png" title="Lupinia Studios{% if debug_check %} (Beta){% endif %}" alt="Lupinia Studios{% if debug_check %} (Beta){% endif %}" /><br /></a>
+			<a href="/" id="small_logo"><img src="{{ STATIC_PREFIX }}images/text/admin-title.png" title="Lupinia Studios{% if debug_check %} (Beta){% endif %}" alt="Lupinia Studios{% if debug_check %} (Beta){% endif %}" /><br /></a>
 			
 			<a id="sig_image" href="/about/"><img src="{{ STATIC_PREFIX }}images/text/name-{% include 'authorname.txt' with type='image' %}.png" title="By {% include 'authorname.txt' %}" alt="By {% include 'authorname.txt' %}" /></a>
 			
