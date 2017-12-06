@@ -10,8 +10,9 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
-from deertrees.models import leaf, category
 from awi_access.models import access_control
+from awi_utils.utils import summarize
+from deertrees.models import leaf, category
 
 class link_base(models.Model):
 	label = models.CharField(max_length=140)
@@ -24,12 +25,27 @@ class link_base(models.Model):
 	def __unicode__(self):
 		return self.label
 	
-	@property
-	def rss_description(self):
-		return self.desc
-	
 	def get_absolute_url(self):
 		return self.url
+	
+	def get_summary(self,length=255):
+		if length > 255:
+			return summarize(body=self.desc, length=length, prefer_long=True)
+		else:
+			return summarize(body=self.desc, length=length)
+	
+	@property
+	def summary_short(self):
+		return self.get_summary()
+	
+	@property
+	def summary_long(self):
+		return self.get_summary(512)
+	
+	# ALIAS
+	@property
+	def rss_description(self):
+		return self.summary_short
 	
 	@property
 	def icon_url(self):

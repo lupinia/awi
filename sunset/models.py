@@ -23,7 +23,7 @@ from datetime import datetime
 from fractions import Fraction
 from PIL import Image, ImageOps
 
-from awi_utils.utils import format_html
+from awi_utils.utils import format_html, summarize
 from awi_access.models import access_control
 from deertrees.models import leaf, category, tag
 from sunset.utils import watermark, hash_file
@@ -94,20 +94,28 @@ class image(leaf):
 				self.summary = body_text[:250].rsplit(' ',1)[0]+'...'
 		super(image, self).save(*args, **kwargs)
 	
-	def body_summary(self,length=255):
-		if self.summary:
-			if len(self.summary) <= length:
-				return self.summary
-			else:
-				return self.summary[:length].rsplit(' ',1)[0]+'...'
-		elif self.body:
-			body_stripped = strip_tags(self.body)
-			if len(body_stripped) <= length:
-				return body_stripped
-			else:
-				return body_stripped[:length].rsplit(' ',1)[0]+'...'
+	def get_summary(self,length=255):
+		if length > 255:
+			return summarize(body=self.body, summary=self.summary, length=length, prefer_long=True)
 		else:
-			return None
+			return summarize(body=self.body, summary=self.summary, length=length)
+	
+	@property
+	def summary_short(self):
+		return self.get_summary()
+	
+	@property
+	def summary_long(self):
+		return self.get_summary(512)
+	
+	# ALIAS
+	@property
+	def rss_description(self):
+		return self.summary_short
+	
+	# DEPRECATED - Use .get_summary()
+	def body_summary(self,length=255):
+		return self.get_summary(length)
 	
 	@property
 	def body_html(self):
@@ -117,10 +125,6 @@ class image(leaf):
 			return format_html(self.summary)
 		else:
 			return None
-	
-	@property
-	def rss_description(self):
-		return self.body_summary()
 	
 	@property
 	def rss_enclosure_obj(self):

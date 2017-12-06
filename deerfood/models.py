@@ -11,6 +11,8 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 
+from awi_utils.utils import summarize
+
 class menu_section(models.Model):
 	name = models.CharField(max_length=150)
 	slug = models.SlugField(unique=True)
@@ -59,6 +61,25 @@ class menu_item(models.Model):
 	
 	def __unicode__(self):
 		return self.name
+	
+	def get_summary(self,length=255):
+		if length > 255:
+			return summarize(body=self.desc, length=length, prefer_long=True)
+		else:
+			return summarize(body=self.desc, length=length)
+	
+	@property
+	def summary_short(self):
+		return self.get_summary()
+	
+	@property
+	def summary_long(self):
+		return self.get_summary(512)
+	
+	# ALIAS
+	@property
+	def rss_description(self):
+		return self.summary_short
 	
 	class Meta:
 		verbose_name = 'menu item'

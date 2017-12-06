@@ -14,6 +14,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 
+from awi_utils.utils import summarize
+
 class venue(models.Model):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
@@ -76,6 +78,20 @@ class event_type(models.Model):
 	def get_absolute_url(self):
 		return reverse('deerattend:filter_type', kwargs={'slug':self.slug,})
 	
+	def get_summary(self,length=255):
+		if length > 255:
+			return summarize(body=self.notes, length=length, prefer_long=True)
+		else:
+			return summarize(body=self.notes, length=length)
+	
+	@property
+	def summary_short(self):
+		return self.get_summary()
+	
+	@property
+	def summary_long(self):
+		return self.get_summary(512)
+	
 	class Meta:
 		verbose_name = 'type'
 
@@ -93,6 +109,20 @@ class event(models.Model):
 	
 	def get_absolute_url(self):
 		return reverse('deerattend:filter_event', kwargs={'slug':self.slug,})
+	
+	def get_summary(self,length=255):
+		if length > 255:
+			return summarize(body=self.notes, length=length, prefer_long=True)
+		else:
+			return summarize(body=self.notes, length=length)
+	
+	@property
+	def summary_short(self):
+		return self.get_summary()
+	
+	@property
+	def summary_long(self):
+		return self.get_summary(512)
 
 class event_instance(models.Model):
 	event = models.ForeignKey(event, on_delete=models.PROTECT)
@@ -139,6 +169,20 @@ class event_instance(models.Model):
 	
 	def __unicode__(self):
 		return self.get_name()
+	
+	def get_summary(self,length=255):
+		if length > 255:
+			return summarize(body=self.notes, length=length, prefer_long=True)
+		else:
+			return summarize(body=self.notes, length=length)
+	
+	@property
+	def summary_short(self):
+		return self.get_summary()
+	
+	@property
+	def summary_long(self):
+		return self.get_summary(512)
 	
 	class Meta:
 		verbose_name = 'event instance'

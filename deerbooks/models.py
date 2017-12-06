@@ -12,10 +12,9 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
-from django.utils.html import strip_tags
 from django.utils.text import slugify
 
-from awi_utils.utils import format_html
+from awi_utils.utils import format_html, summarize
 from deertrees.models import leaf
 
 def attachment_path(instance, filename):
@@ -91,7 +90,7 @@ class page(leaf):
 	book_order = models.IntegerField(default=0, blank=True, help_text='Use this field to control the position of this page within its book.  The book order does not need to be incremental; pages will be sorted in ascending order (least to greatest) using this field regardless of its value.')
 	
 	def get_title(self, raw=False):
-		if self.book_title and not raw:
+		if not raw and self.book_title:
 			return "%s:  %s" % (self.book_title.title, self.title)
 		else:
 			return self.title
@@ -102,26 +101,32 @@ class page(leaf):
 	def get_absolute_url(self):
 		return reverse('page_htm', kwargs={'cached_url':self.cat.cached_url, 'slug':self.slug})
 	
-	def body_summary(self,length=255):
-		if self.summary:
-			if len(self.summary) <= length:
-				return self.summary
-			else:
-				return self.summary[:length].rsplit(' ',1)[0]+'...'
+	def get_summary(self,length=255):
+		if length > 255:
+			return summarize(body=self.body, summary=self.summary, length=length, prefer_long=True)
 		else:
-			body_stripped = strip_tags(self.body)
-			if len(body_stripped) <= length:
-				return body_stripped
-			else:
-				return body_stripped[:length].rsplit(' ',1)[0]+'...'
+			return summarize(body=self.body, summary=self.summary, length=length)
+	
+	@property
+	def summary_short(self):
+		return self.get_summary()
+	
+	@property
+	def summary_long(self):
+		return self.get_summary(512)
+	
+	# ALIAS
+	@property
+	def rss_description(self):
+		return self.summary_short
+	
+	# DEPRECATED - Use .get_summary()
+	def body_summary(self,length=255):
+		return self.get_summary(length)
 	
 	@property
 	def body_html(self):
 		return format_html(self.body)
-	
-	@property
-	def rss_description(self):
-		return self.body_summary()
 	
 	def get_export_filename(self):
 		if self.book_title:

@@ -16,7 +16,7 @@ from django.utils.text import slugify
 from datetime import timedelta
 from mptt.models import MPTTModel, TreeForeignKey
 
-from awi_utils.utils import format_html
+from awi_utils.utils import format_html, summarize
 from awi_access.models import access_control
 
 def viewtype_options():
@@ -38,7 +38,7 @@ class category(MPTTModel, access_control):
 	title = models.CharField(max_length=60)
 	slug = models.SlugField()
 	parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
-	summary = models.CharField(max_length=255)
+	summary = models.CharField(max_length=255, null=True, blank=True)
 	desc = models.TextField(null=True, blank=True, verbose_name='description body text')
 	
 	view_type = models.CharField(choices=viewtype_options(), max_length=15, default='default', help_text='Determines the placement of content when this category is displayed.')
@@ -88,13 +88,6 @@ class category(MPTTModel, access_control):
 			return format_html(self.summary)
 	
 	@property
-	def rss_description(self):
-		if self.desc:
-			return self.desc
-		else:
-			return self.summary
-	
-	@property
 	def icon_url(self):
 		if self.icon:
 			return self.icon.get_url()
@@ -104,17 +97,23 @@ class category(MPTTModel, access_control):
 			return "%simages/icons/default-category-%s-128.png" % (settings.STATIC_URL, self.content_summary)
 	
 	def get_summary(self,length=255):
-		if self.summary:
-			if len(self.summary) <= length:
-				return self.summary
-			else:
-				return self.summary[:length].rsplit(' ',1)[0]+'...'
+		if length > 255:
+			return summarize(body=self.desc, summary=self.summary, length=length, prefer_long=True)
 		else:
-			body_stripped = strip_tags(self.desc)
-			if len(body_stripped) <= length:
-				return body_stripped
-			else:
-				return body_stripped[:length].rsplit(' ',1)[0]+'...'
+			return summarize(body=self.desc, summary=self.summary, length=length)
+	
+	@property
+	def summary_short(self):
+		return self.get_summary()
+	
+	@property
+	def summary_long(self):
+		return self.get_summary(512)
+	
+	# ALIAS
+	@property
+	def rss_description(self):
+		return self.summary_short
 	
 	def save(self, *args, **kwargs):
 		if self.parent:
@@ -175,14 +174,23 @@ class tag(models.Model):
 		return format_html(self.desc)
 	
 	def get_summary(self,length=255):
-		if self.desc:
-			body_stripped = strip_tags(self.desc)
-			if len(body_stripped) <= length:
-				return body_stripped
-			else:
-				return body_stripped[:length].rsplit(' ',1)[0]+'...'
+		if length > 255:
+			return summarize(body=self.desc, length=length, prefer_long=True, fallback='')
 		else:
-			return ''
+			return summarize(body=self.desc, length=length, fallback='')
+	
+	@property
+	def summary_short(self):
+		return self.get_summary()
+	
+	@property
+	def summary_long(self):
+		return self.get_summary(512)
+	
+	# ALIAS
+	@property
+	def rss_description(self):
+		return self.summary_short
 	
 	class Meta:
 		ordering = ['slug',]
@@ -338,9 +346,24 @@ class special_feature(leaf):
 	def __unicode__(self):
 		return self.title
 	
+	def get_summary(self,length=255):
+		if length > 255:
+			return summarize(body=self.desc, length=length, prefer_long=True)
+		else:
+			return summarize(body=self.desc, length=length)
+	
+	@property
+	def summary_short(self):
+		return self.get_summary()
+	
+	@property
+	def summary_long(self):
+		return self.get_summary(512)
+	
+	# ALIAS
 	@property
 	def rss_description(self):
-		return self.desc
+		return self.summary_short
 	
 	class Meta:
 		verbose_name = 'special feature'
