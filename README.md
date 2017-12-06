@@ -34,7 +34,6 @@ Third-Party Apps/Modules Used
 - **[Django Honeypot](https://github.com/jamesturk/django-honeypot/)**:  Provides tools to reduce automated form spam.
 - **[Django MPTT](https://github.com/django-mptt/django-mptt/)**:  Provides support for a recursive traversal tree structure; used for nested categories.
 - **[Django MPTT Admin](https://github.com/mbraak/django-mptt-admin)**:  Enhanced administrative interface for objects using Django MPTT
-- **[Django Processinfo](https://github.com/jedie/django-processinfo)**:  Basic server stats/health report.  *(Deprecated, pending removal)*
 - **[Django Static Precompiler](https://github.com/andreyfedoseev/django-static-precompiler)**:  Server-side compilation of CSS from SCSS.
 - **[Django S3 Folder Storage](https://github.com/jamstooks/django-s3-folder-storage)**:  Adds Amazon S3 as a file storage provider, with the ability to use folders within the same bucket (instead of separate buckets for everything).
 - **[ExifTool](http://www.sno.phy.queensu.ca/~phil/exiftool/)**:  Advanced metadata read/write tool.
@@ -54,7 +53,7 @@ Infrastructure
 - **Database Server**:  PostgreSQL
 - **Static/Media Hosting**:  Amazon S3 *(cdn.fur.vc)*
 
-Management Commands
+Custom Management Commands
 -------------------
 
 - **process_images (Sunset):**  If images need their assets rebuilt, this will rebuild them in the background.  If not, it will check batch import folders for new images to import.

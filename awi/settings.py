@@ -45,7 +45,6 @@ INSTALLED_APPS = (
 	#	Third-party apps
 	'cookielaw', 
 	'debug_toolbar',
-	'django_processinfo',
 	'honeypot',
 	'mptt', 'django_mptt_admin',
 	's3_folder_storage',
@@ -95,7 +94,6 @@ TEMPLATES = [{
 		'loaders' : [
 			#	It's really stupid that I have to add a custom template loader for django-admin-tools.
 			#	Might be looking for a new alternative.
-			
 			'django.template.loaders.filesystem.Loader',
 			'django.template.loaders.app_directories.Loader',
 			
@@ -106,7 +104,6 @@ TEMPLATES = [{
 
 #	Middleware got a little interesting, to get the caching middleware inserted in the correct order, but not on the dev server.
 middleware_first = (
-	'django_processinfo.middlewares.django_processinfo.ProcessInfoMiddleware',
 	'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 

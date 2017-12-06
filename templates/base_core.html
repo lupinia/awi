@@ -94,7 +94,7 @@
 				{% endif %}
 					<span class="footer_settings">&bull; <a href="/settings/">Settings</a></span>
 			{% endblock %}
-			<span class="footer_renderinfo">&nbsp;&nbsp; <span id="processinfo"></span></span>
+			<span class="footer_renderinfo">&nbsp;&nbsp; {% if render_time %}<span id="processinfo">Render time:  {{render_time}} ms</span>{% endif %}</span>
 			</div>
 		{% endblock %}
 	</footer>

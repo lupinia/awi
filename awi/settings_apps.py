@@ -199,9 +199,10 @@ DEBUG_TOOLBAR_PANELS = [
 	'debug_toolbar.panels.signals.SignalsPanel',
 	'debug_toolbar.panels.logging.LoggingPanel',
 	'debug_toolbar.panels.redirects.RedirectsPanel',
-	'debug_toolbar.panels.profiling.ProfilingPanel',
+	#'debug_toolbar.panels.profiling.ProfilingPanel',
 	#'django_uwsgi.panels.UwsgiPanel', 
 ]
+
 
 #	django_admin_tools
 ADMIN_TOOLS_INDEX_DASHBOARD = 'awi.admin_tools_custom.CustomIndexDashboard'
@@ -210,12 +211,6 @@ ADMIN_TOOLS_MENU = 'awi.admin_tools_custom.CustomMenu'
 ADMIN_TOOLS_THEMING_CSS = 'css/admin_tools.css'
 
 
-#	django_processinfo
-#	include app settings from ./django_processinfo/app_settings.py
-from django_processinfo import app_settings as PROCESSINFO
-PROCESSINFO.ADD_INFO = True
-PROCESSINFO.INFO_SEARCH_STRING = '<span id="processinfo"></span>'
-PROCESSINFO.INFO_FORMATTER = '<span id="processinfo">Render time:  %(total).1f ms</span>'
 
 
 #	s3_folder_storage

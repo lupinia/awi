@@ -35,9 +35,7 @@ itemlist_system = (
 	'deerfind.*',
 )
 
-itemlist_misc_exclude = (
-	'django_processinfo.*',
-) + itemlist_content + itemlist_structure + itemlist_system
+itemlist_misc_exclude = itemlist_content + itemlist_structure + itemlist_system
 
 class CustomMenu(Menu):
     def __init__(self, **kwargs):
@@ -62,7 +60,6 @@ class CustomMenu(Menu):
                 _('Miscellaneous'),
                 exclude=itemlist_misc_exclude,
             ),
-            items.MenuItem(_('Server Health'), reverse('admin:django_processinfo_processinfo_changelist')),
         ]
 
     def init_with_context(self, context):
@@ -89,7 +86,6 @@ class CustomIndexDashboard(Dashboard):
             # collapsible=False,
             children=[
                 [_('Return to site'), '/'],
-                [_('Monitor Server Health'), reverse('%s:django_processinfo_processinfo_changelist' % site_name)],
                 [_('Change password'), reverse('%s:password_change' % site_name)],
                 [_('Log out'), reverse('%s:logout' % site_name)],
             ]
