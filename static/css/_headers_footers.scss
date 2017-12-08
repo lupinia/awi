@@ -381,7 +381,7 @@ header {
 		@media #{$scr_smallwidth} { max-width:90%; }
 		@media #{$scr_mobile} { background-color:  $color_bgtrans_dark; top:40px; }
 		
-		body.showcase_mode & { max-width:90%; top:40px; background-color:  $color_bgtrans_dark; } 
+		body.showcase_mode & { max-width:90%; top:40px; background-color: $color_bgtrans_dark; } 
 		
 		a {
 			&:link, &:visited { text-decoration:none; }

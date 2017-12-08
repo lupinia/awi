@@ -33,7 +33,7 @@
 				{% if is_map_view and geojson_slug %}
 					{% include 'includes/map_embed.html' %}
 				{% else %}
-					<table class="events_table">
+					<table class="showcase_table events_table">
 						<tr>
 							<th>{% if cur_filter_type == 'type' %}Flags{% else %}Type{% endif %}</th>
 							<th class="col_main">Event</th>
@@ -75,7 +75,7 @@
 										
 										<div class="event_title"><a href="{% url 'deerattend:filter_event' content_item.event.slug %}">{{content_item}}</a></div>
 										{% if content_item.notes %}
-											<div class="notes">{{content_item.notes}}</div>
+											<div class="subtext">{{content_item.notes}}</div>
 										{% endif %}
 									</div>
 								</td>

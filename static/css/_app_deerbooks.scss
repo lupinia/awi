@@ -25,12 +25,31 @@ body.showcase_mode .left_content .left_full.writing_page { max-width:80em; }
 		a:link, a:visited { color:$color_blue; }
 		a:hover, a:active, a:focus { color:$color_red; }
 		
-		code { color:$color_border; }
+		code, .code { 
+			color:$color_border; 
+		}
+		
 		fieldset legend { color:$color_border; }
 		.error { background-color:$color_bgdark; }
 	}
 	
-	code { color:$color_breadcrumbs; }
+	code, .code { 
+		color:$color_breadcrumbs;
+	}
+	
+	table.showcase_table {
+		th {
+			color:$color_breadcrumbs;
+			font-size:0.85em;
+			
+			body.showcase_mode & { color:$color_border; }
+		}
+		
+		td { 
+			background-color:$color_bgtrans_solid;
+			body.showcase_mode & { background-color:$color_bgalt_light; }
+		}
+	}
 	
 	/* Custom CSS for resume */
 	.resume {

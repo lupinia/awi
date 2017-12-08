@@ -5,43 +5,13 @@
 
 /*	App:  DeerAttend	*/
 .events_table {
-	border-spacing: 0px;
 	width:100%;
 	
-	th {
-		font-weight:bold;
-		text-align:left;
-		margin:1px;
-		padding:3px;
-		white-space:nowrap;
-		width:1%;
-		border-bottom:1px solid $color_border;
-		
-		&.col_main {
-			width:99% !important;
-		}
-	}
-	
 	td {
-		margin:0px;
-		padding:5px;
-		white-space:nowrap;
-		width:1%;
-		vertical-align:top;
-		border-left:1px solid $color_border;
-		border-bottom:1px solid $color_border;
 		background-color:$color_bgtrans;
 		
 		&.col_main {
-			width:99% !important;
-			white-space:normal !important;
 			font-size:small;
-			
-			.notes {
-				font-size:smaller;
-				font-style:italic;
-				color:$color_subtext;
-			}
 			
 			.related_content { float:right; }
 			
@@ -66,10 +36,6 @@
 		}
 		
 		.item_flags { margin-top:2px; }
-		
-		&:last-child {
-			border-right:1px solid $color_border;
-		}
 	}
 	
 	tr.event_mature td { 

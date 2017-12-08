@@ -20,6 +20,11 @@
 		<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="{{request.build_absolute_uri}}feed.rss" />
 	{% endif %}
 	{% block extra_head %}{% endblock %}
+	{% if highlight_code %}
+		<link rel="stylesheet" href="{{STATIC_PREFIX}}js/highlight/styles/{% if showcase_mode %}vs{% else %}atelier-cave-dark{% endif %}.css">
+		<script src="{{STATIC_PREFIX}}js/highlight/highlight.pack.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+	{% endif %}
 </head>
 
 {% block body_tag %}<body>{% endblock %}

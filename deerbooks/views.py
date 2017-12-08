@@ -6,6 +6,8 @@
 #	Views
 #	=================
 
+import re
+
 from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.views import generic
@@ -58,6 +60,13 @@ class single_page(leaf_view):
 
 class single_page_htm(single_page):
 	template_name='deerbooks/page.html'
+	
+	def get_context_data(self, **kwargs):
+		context = super(single_page_htm,self).get_context_data(**kwargs)
+		regexp = re.compile(r'<pre(.*)><code')
+		if regexp.search(context.get('body_text','')):
+			context['highlight_code'] = True
+		return context
 
 class single_page_txt(single_page):
 	template_name='deerbooks/page.txt'

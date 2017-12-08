@@ -38,6 +38,7 @@ Third-Party Apps/Modules Used
 - **[Django Static Precompiler](https://github.com/andreyfedoseev/django-static-precompiler)**:  Server-side compilation of CSS from SCSS.
 - **[Django S3 Folder Storage](https://github.com/jamstooks/django-s3-folder-storage)**:  Adds Amazon S3 as a file storage provider, with the ability to use folders within the same bucket (instead of separate buckets for everything).
 - **[ExifTool](http://www.sno.phy.queensu.ca/~phil/exiftool/)**:  Advanced metadata read/write tool.
+- **[Highlight.js](https://highlightjs.org/)**:  Syntax highlighting for code displayed in HTML content.
 - **[HTML2Text](https://github.com/Alir3z4/html2text)**:  Library for converting HTML to Markdown.
 - **[JustifiedGallery](http://miromannino.github.io/Justified-Gallery/)**:  JQuery plugin for displaying a justified grid of mixed-width thumbnails.
 - **[MapBox](https://www.mapbox.com/)**:  Map data.

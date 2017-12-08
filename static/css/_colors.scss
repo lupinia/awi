@@ -22,35 +22,21 @@ $scr_micro_lightbox: "screen and (max-width: 450px)";
 
 
 //	Colors
+
+//	Primary Text
 $color_maintext:  #fff2ff;
 $color_subtext:  #c3beff;
 $color_breadcrumbs:  #ddc0ff;
+
+
+//	Links and Block Links
 $color_alink:  #bbbbff;
 $color_afocus:  #ffffff;
-$color_shadow:  #2a2038;
-$color_border:  #776699;
-$color_border_subtle:  #665588;
-$color_bgalt_light:  #eeddff;
-
-$color_bgwhite: #fffcff;
-$color_bgtrans:  rgba(42, 24, 60, 0.85);
-$color_bgtrans_invis:  rgba(42, 24, 60, 0);
-$color_bgtrans_solid:  #2A183C;
-$color_bgtrans_dark:  rgba(25, 7, 43, 0.9);
-$color_bgdark: #19072b;
-$color_bgtrans_darker:  rgba(8, 6, 26, 0.6);
-$color_bgdarker: #08061a;
-$color_bgshowcase: #110022;
-$color_bgshowcase_trans: rgba(0, 0, 0, 0.85);
-$color_bgbright: #442761;
-$color_bgbright_hover: #553861;
-
-$color_pink:  #cf53cf;
-$color_blue:  #5b4aFF;
-$color_grey:  #5b6364;
-$color_red:  #c0283a;
 
 $color_bg_hover:  #5b4a71;
+
+$color_bgbright: #442761;
+$color_bgbright_hover: #553861;
 
 $color_bgtrans_leaf:  rgba(25, 7, 43, 0.6);
 $color_bg_leaf_hover:  #3b3149;
@@ -67,6 +53,34 @@ $color_bgtrans_leaf_restricted:  rgba(48, 39, 64, 0.7);
 $color_bg_leaf_restricted:  #3b2e20;
 $color_bg_leaf_restricted_hover:  #4c3f31;
 
+
+//	Structural Elements
+$color_shadow:  #2a2038;
+$color_border:  #776699;
+$color_border_subtle:  #665588;
+
+
+//	Backgrounds
+$color_bgtrans:  rgba(42, 24, 60, 0.85);
+$color_bgtrans_invis:  rgba(42, 24, 60, 0);
+$color_bgtrans_solid:  #2A183C;
+
+$color_bgtrans_dark:  rgba(25, 7, 43, 0.9);
+$color_bgdark: #19072b;
+
+$color_bgtrans_darker:  rgba(8, 6, 26, 0.6);
+$color_bgdarker: #08061a;
+
+
+//	Showcase Mode
+$color_bgshowcase: #110022;
+$color_bgshowcase_trans: rgba(0, 0, 0, 0.85);
+
+$color_bgwhite: #fffcff;
+$color_bgalt_light:  #fceeff;
+
+
+//	Errors
 $color_border_err_crit:  #AA5555;
 $color_bg_err_crit:  rgba(100, 0, 0, 0.25);
 $color_text_err_crit:  #FFAAAA;
@@ -81,3 +95,10 @@ $color_border_err_info:  #5555AA;
 $color_bg_err_info:  rgba(0, 0, 100, 0.25);
 $color_text_err_info:  #AAAAFF;
 $img_bg_err_info:  url(http://cdn.fur.vc/awi-hagata/images/icons/info.png);
+
+
+//	Other Colors
+$color_pink:  #cf53cf;
+$color_blue:  #5b4aFF;
+$color_grey:  #5b6364;
+$color_red:  #c0283a;
