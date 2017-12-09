@@ -75,8 +75,9 @@ class category(MPTTModel, access_control):
 				self.content_summary = summary
 				self.save()
 			else:
-				self.content_summary = 'misc'
-				self.save()
+				if self.content_summary != 'misc':
+					self.content_summary = 'misc'
+					self.save()
 		
 		return self.content_summary
 	

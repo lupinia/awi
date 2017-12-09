@@ -34,7 +34,7 @@ class Command(BaseCommand):
 					# Also, if there are more subcategories than leaves of the most common type, the content summary will be the default value.
 					
 					cat_contents = {}
-					types_contained = cat.leaves.all().distinct('type').order_by('type').values_list('type', flat=True)
+					types_contained = cat.leaves.all().distinct('type').order_by('-type').values_list('type', flat=True)
 					
 					# The dictionary key is the count, to make it easier to sort them and grab the largest one
 					if types_contained:
@@ -64,7 +64,7 @@ class Command(BaseCommand):
 						asset_query = asset_query.exclude(parent__mature=True)
 					asset = asset_query.first()
 					
-					if asset:
+					if asset and cat.icon != asset:
 						cat.icon = asset
 						cat.save()
 						self.stdout.write('Icon set to %s (%d) for category %s (%d).' % (asset.parent, asset.parent.pk, cat, cat.pk))
