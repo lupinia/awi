@@ -51,6 +51,12 @@ def check_mature(request=False):
 		return (False,'access_norequest')
 
 
+#	Automatically build database constraints based on the current request.
+#	Returns a set of Q objects that can be directly added to the parameters of a .filter() in a QuerySet.
+#	Alternately, you can chain it together with your own Q objects.
+#	Usage examples:
+#		queryset.filter(access_query(self.request)).filter(parent__slug=self.kwargs.get('slug'))
+#		queryset.filter(Q(parent__slug=self.kwargs.get('slug')) & access_query(self.request))
 def access_query(request=False):
 	returned_query = models.Q(sites__id = settings.SITE_ID)
 	
@@ -72,6 +78,37 @@ def access_query(request=False):
 		returned_query = returned_query & models.Q(security__lt = 1) & models.Q(published = True) & models.Q(mature = False)
 	
 	return returned_query
+
+
+#	A version of access_query modified for Haystack.
+#	Expects a SearchQuerySet object.
+#	Unpublished items should not be indexed by Haystack at all, so this assumes they won't be.
+#	Because SearchQuerySets work a little differently from QuerySets, it's more reliable to use .exclude() for most of this.
+#	This is also why this function adds to the SearchQuerySet chain directly, instead of returning .filter() parameters.
+#	Usage example:
+#		queryset = access_search(queryset, self.request)
+def access_search(sqs, request=False):
+	sqs = sqs.filter(sites=settings.SITE_ID)
+	
+	if request:
+		if request.user.is_authenticated():
+			if not request.user.is_superuser and not request.user.is_staff:
+				# Regular User
+				sqs = sqs.exclude(security__gt = 1)
+		
+		else:
+			# Guest
+			sqs = sqs.exclude(security__gt = 0)
+		
+		mature_check = check_mature(request)
+		if not mature_check[0]:
+			sqs = sqs.exclude(mature=True)
+	
+	else:
+		# No request to check, assume least permissions.
+		sqs = sqs.exclude(mature=True, security__gt=0)
+	
+	return sqs
 
 
 #	Models

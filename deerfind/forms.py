@@ -41,9 +41,9 @@ class simple_search_form(FacetedSearchForm):
 		# I'm not currently using a 'HAYSTACK_' settings variable name, because it's not my namespace and collisions are bad.
 		# So, if DEERFIND_DEFAULT_SEARCH_FIELDS exists, we want to use that.
 		# If DEERFIND_DEFAULT_SEARCH_FIELDS doesn't exist, we want to fall back on a single-element list containing the default.
-		# And if *that* doesn't exist for some reason, we'll just use 'text'
+		# And if *that* doesn't exist for some reason, we'll just use 'content'
 		# getattr is fun :)
-		fieldlist = getattr(settings, 'DEERFIND_DEFAULT_SEARCH_FIELDS', [getattr(settings, 'HAYSTACK_DOCUMENT_FIELD', 'text'),])
+		fieldlist = getattr(settings, 'DEERFIND_DEFAULT_SEARCH_FIELDS', [getattr(settings, 'HAYSTACK_DOCUMENT_FIELD', 'content'),])
 		
 		# This is my favorite part!
 		# We'll loop through the fieldlist to get the names of the search fields.
@@ -59,7 +59,7 @@ class simple_search_form(FacetedSearchForm):
 			else:
 				filters = filters | SQ(**{field:AutoQuery(self.cleaned_data['q']),})
 		
-		sqs = self.searchqueryset.filter(sites=settings.SITE_ID).filter(filters)
+		sqs = self.searchqueryset.filter(filters)
 		# See, Haystack?  That wasn't so hard.
 		# It's not exactly the prettiest code, admittedly, but it gets the job done nicely.
 		# And I wasn't even putting that much effort into this.

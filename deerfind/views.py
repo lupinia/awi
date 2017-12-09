@@ -17,7 +17,7 @@ from django.utils.module_loading import import_string
 
 from haystack.generic_views import FacetedSearchView
 
-from awi_access.models import check_mature
+from awi_access.models import check_mature, access_search
 from deerfind.forms import simple_search_form
 from deerfind.models import pointer, hitlog
 
@@ -129,20 +129,7 @@ class search_view(FacetedSearchView):
 	facet_fields = ['pub_date', 'category', 'tags']
 	
 	def get_queryset(self):
-		queryset = super(search_view, self).get_queryset()
-		
-		mature_check = check_mature(self.request)
-		if not mature_check[0]:
-			queryset = queryset.exclude(mature=True)
-		
-		if self.request.user.is_authenticated():
-			if not self.request.user.is_superuser and not self.request.user.is_staff:
-				#	Regular User
-				queryset = queryset.exclude(security__gt = 1)
-		else:
-			#	Guest
-			queryset = queryset.exclude(security__gt = 0)
-		
+		queryset = access_search(super(search_view, self).get_queryset(), self.request)
 		return queryset.load_all()
 	
 	def get_context_data(self, *args, **kwargs):
