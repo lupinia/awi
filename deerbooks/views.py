@@ -124,6 +124,7 @@ class book(generic.DetailView):
 					context['timestamp'] = cur_page_timestamp[0]['timestamp']
 		
 		if not context['pages']:
+			self.request.session['deerfind_norecover'] = True
 			raise Http404
 		
 		return context

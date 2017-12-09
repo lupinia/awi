@@ -75,6 +75,7 @@ def geojson_image(request, slug, **kwargs):
 	elif slug == 'filter_featured':
 		query = query.exclude(featured=False)
 	else:
+		self.request.session['deerfind_norecover'] = True
 		raise Http404
 	
 	for item in query:
