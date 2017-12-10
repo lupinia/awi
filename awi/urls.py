@@ -18,7 +18,7 @@ from honeypot.decorators import check_honeypot
 from awi.sitemaps import SITEMAP_OBJECTS
 from awi_access import views as access_views
 from awi_error.views import system_error, denied_error
-from deerfind.views import not_found, search_view
+from deerfind.views import not_found, search_view, shortcode_redirect
 from deerconnect.views import contact_page
 from deertrees import views as deertrees_views
 from deerbooks import views as deerbooks_views
@@ -30,6 +30,8 @@ handler500 = system_error
 handler403 = denied_error
 
 urlpatterns = [
+	url(r'^s/(?P<type>.)(?P<pk>[0-9]+)', shortcode_redirect, name='shortcode'),
+	
 	url(r'^admin/', include(admin.site.urls)),
 	url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 	url(r'^admin_tools/', include('admin_tools.urls')),

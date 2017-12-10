@@ -13,9 +13,10 @@
 
 import os
 
+from django.apps import apps
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.http import HttpResponsePermanentRedirect, HttpResponseNotFound
+from django.http import Http404, HttpResponsePermanentRedirect, HttpResponseNotFound
 from django.shortcuts import render
 from django.template import Context, loader
 from django.utils.module_loading import import_string
@@ -195,3 +196,16 @@ class search_view(FacetedSearchView):
 			'spelling_suggestion':self.queryset.spelling_suggestion(form.cleaned_data.get(self.search_field)),
 		})
 		return self.render_to_response(context)
+
+
+#	Shortcode Handler
+def shortcode_redirect(request, type, pk, **kwargs):
+	try:
+		label, model = settings.DEERFIND_SHORTCODE_TYPES.get(type, False).split('.')
+		model_obj = apps.get_model(app_label=label, model_name=model)
+		target = model_obj.objects.get(pk=pk)
+		target_url = target.get_absolute_url()
+		return HttpResponsePermanentRedirect(target_url)
+	except:
+		request.session['deerfind_norecover'] = True
+		raise Http404

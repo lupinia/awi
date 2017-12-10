@@ -195,6 +195,17 @@ SEARCH_RESULT_DATA = {
 }
 SEARCH_RESULT_TEMPLATE_DEFAULT = 'includes/content_thumb_default.html'
 
+#	Shortcode model map
+DEERFIND_SHORTCODE_TYPES = {
+	'e': 'deerattend.event',
+	'v': 'deerattend.venue',
+	'p': 'deerbooks.page',
+	'c': 'deertrees.category',
+	't': 'deertrees.tag',
+	'x': 'deertrees.special_feature',
+	'i': 'sunset.image',
+}
+
 
 #	deerbooks
 #	Specify location of a working directory for compiling LaTeX source files.
