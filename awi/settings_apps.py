@@ -50,6 +50,7 @@ DEERTREES_BLOCKS_SPECIAL = {
 	'page_widget' : {'template':'deerbooks/page_widget.html', 'is_leaf':True, 'custom_obj':'deerbooks.views.recent_widget', },
 }
 
+#	This stores the block mapping options for categories and tags.
 DEERTREES_BLOCK_MAP = {
 	'default' : {
 		'main_left' : ['image', 'page', 'category', 'link', ],
@@ -146,6 +147,13 @@ DEERTREES_BLOCK_MAP = {
 		'main_right' : ['image', ],
 		'sidebar' : ['contact_link', 'page', 'category', 'special_feature', 'link', ],
 		'meta' : {'option_name': 'Character (Split View)'},
+	},
+	
+	'vehicle' : {
+		'main_left' : ['image', ],
+		'main_right' : ['page', 'category_thumb', ],
+		'sidebar' : ['category', 'contact_link', 'special_feature', 'link', ],
+		'meta' : {'option_name': 'Vehicle'},
 	},
 }
 
