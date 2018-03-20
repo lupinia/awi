@@ -373,7 +373,7 @@ class cat_rssfeed(main_rssfeed):
 		if obj.can_view(request)[0]:
 			return obj
 		else:
-			self.request.session['deerfind_norecover'] = True
+			request.session['deerfind_norecover'] = True
 			raise Http404
 
 
