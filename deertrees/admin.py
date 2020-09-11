@@ -21,11 +21,13 @@ class cat_admin(DjangoMpttAdmin,access_admin):
 	fieldsets = [
 		(None,{'fields':(('title', 'slug',), 'parent', 'summary', 'desc'),},),
 		("Options",{'fields':(('view_type', 'background_tag',), ('sitemap_include','trash',),),},),
+		('Time Options',{'fields': (('timestamp_post','timestamp_mod',),),},),
 	] + access_admin.fieldsets
 	list_filter = access_admin.list_filter + ['background_tag', 'view_type', 'sitemap_include']
 	
 	list_display = ('title', 'slug', 'parent', 'cached_url', 'sitemap_include', 'view_type', 'background_tag') + access_admin.list_display
 	prepopulated_fields={'slug':('title',)}
+	readonly_fields = ['timestamp_mod',]
 	search_fields = ('title','slug','parent','cached_url','desc')
 	inlines=[g2_inline,]
 	
@@ -36,10 +38,12 @@ class tag_admin(admin.ModelAdmin):
 	fieldsets = [
 		(None,{'fields':(('title','slug'),'desc'),},),
 		("Options",{'fields':(('view_type','sitemap_include'),),},),
+		('Time Options',{'fields': (('timestamp_post','timestamp_mod',),),},),
 	]
 	
 	list_display=('title','slug')
 	prepopulated_fields={'slug':('title',)}
+	readonly_fields = ['timestamp_mod',]
 	search_fields = ('title','slug')
 	
 	def view_on_site(self, obj):
