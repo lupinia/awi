@@ -66,6 +66,7 @@ class image(leaf):
 	rebuild_assets = models.BooleanField(default=True, db_index=True, help_text='If this is checked, the assets for this image will be rebuild on the next run of the process_images command.')
 	auto_fields = models.BooleanField(default=True, verbose_name='automatic fields from EXIF?', help_text='If this is checked, the Title, Summary/Description, and Latitude/Longitude will be rebuilt from the EXIF data of the original image file.  If you have manually edited any of these fields, uncheck this box.')
 	is_new = models.BooleanField(default=True, db_index=True, help_text='System field:  If True, this image will be published after its first asset build.')
+	timestamp_upload = models.DateTimeField(auto_now_add=True, db_index=True, help_text='System field:  Tracks the original time that this image was created in the database, rather than the time the image was initially captured/created.')
 	
 	geo_lat = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
 	geo_long = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='longitude', help_text='Positive numbers are eastern hemisphere, negative numbers are western.')
