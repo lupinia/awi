@@ -6,7 +6,7 @@
 	<div class="errorpage">
 		<h3>I'm Sorry...I Tried To Find It, I Really Did!  (404)</h3>
 		<p class="errorpage_image"><img src="{{STATIC_PREFIX}}images/scared_fluttershy.gif" alt="Scared Fluttershy" title="Fluttershy is really sorry we couldn't find your file!" /></p>
-		<p>I'm so sorry!  I tried to find "{{old_url}}", but I just don't know where it is.  I looked everywhere!  Please don't be mad!  {% if search_result %}I did find "<a href="{{search_result_url}}">{{search_result_title}}</a>" in the search index, is that what you were looking for?  I wasn't quite sure.</p><p>{% endif %}Would you like to <a href="{% url 'haystack_search' %}?q={{search_query}}">try searching for your request</a>?  Or would you like to <a href="/">return home</a>?  Do you need a hug, or some tea?</p>
+		<p>I'm so sorry!  I tried to find "{{old_url}}", but I just don't know where it is.  I looked everywhere!  Please don't be mad!  {% if search_result %}I did find "<a href="{{search_result_url}}">{{search_result_title}}</a>", though, is that what you were looking for?  I wasn't quite sure.</p><p>{% endif %}Would you like to <a href="{% url 'haystack_search' %}?q={{search_query}}">try searching for your request</a>?  Or would you like to <a href="/">return home</a>?  Do you need a hug, or some tea?</p>
 	</div>
 {% endblock %}
 
