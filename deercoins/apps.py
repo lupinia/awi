@@ -4,5 +4,5 @@
 from django.apps import AppConfig
 
 class AwiAppInfo(AppConfig):
-    name = 'deercoins'
-    verbose_name = 'DeerCoins - Coin Collection Catalog'
+	name = 'deercoins'
+	verbose_name = 'DeerCoins - Coin Collection Catalog'

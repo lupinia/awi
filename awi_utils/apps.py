@@ -4,5 +4,5 @@
 from django.apps import AppConfig
 
 class AwiAppInfo(AppConfig):
-    name = 'awi_utils'
-    verbose_name = 'Awi Utils - Miscellaneous Utility Modules'
+	name = 'awi_utils'
+	verbose_name = 'Awi Utils - Miscellaneous Utility Modules'

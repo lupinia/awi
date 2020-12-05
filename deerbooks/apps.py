@@ -4,5 +4,5 @@
 from django.apps import AppConfig
 
 class AwiAppInfo(AppConfig):
-    name = 'deerbooks'
-    verbose_name = 'DeerBooks - Enhanced Text Management'
+	name = 'deerbooks'
+	verbose_name = 'DeerBooks - Enhanced Text Management'

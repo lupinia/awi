@@ -4,5 +4,5 @@
 from django.apps import AppConfig
 
 class AwiAppInfo(AppConfig):
-    name = 'deerconnect'
-    verbose_name = 'DeerConnect - Link Directory'
+	name = 'deerconnect'
+	verbose_name = 'DeerConnect - Link Directory'

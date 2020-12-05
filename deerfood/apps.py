@@ -4,5 +4,5 @@
 from django.apps import AppConfig
 
 class AwiAppInfo(AppConfig):
-    name = 'deerfood'
-    verbose_name = 'DeerFood - Restaurant Menu'
+	name = 'deerfood'
+	verbose_name = 'DeerFood - Restaurant Menu'
