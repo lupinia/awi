@@ -24,6 +24,16 @@ IMPORT_DIR = os.path.abspath('/srv/awi_import/')
 
 #	CUSTOM APPS
 #	==============
+#	usertools / deerguard_sl
+#	Options for Second Life/OpenSim grids allowed for user profiles
+#	Also used by other apps/queries in specific virtual world grids
+GRID_OPTIONS = (
+	('sl','Second Life'),
+	('aditi','Second Life Beta (Aditi)'),
+	('opensim_lup','OpenSim (Lupinia Private)'),
+)
+
+
 #	deertrees
 #	This stores a list of known models that can be attached to a category, their hierarchy when displayed, and a template file's path
 #	Model Name { 

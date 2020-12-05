@@ -56,6 +56,7 @@ INSTALLED_APPS = (
 	'awi_error',	# Error Handling
 	'awi_utils',	# Miscellaneous Utility Modules
 	'deerfind',		# Intelligent 404 Recovery
+	'usertools',	# User Profiles and Data
 	
 	#	My Apps - Primary Content Objects
 	'deerbooks',	# Text-based content

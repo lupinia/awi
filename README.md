@@ -12,6 +12,7 @@ Apps/Modules Included
 	- **Awi Background**:  Dynamic background images for page body site-wide, with a tagging system to include/exclude certain images from certain categories and content items.
 	- **Awi Error**:  Unified error text handling/template tags.
 	- **DeerFind**:  Intelligent 404 handler.
+	- **UserTools**:  Extended user profiles and data used by multiple other apps/modules.
 - **Main Content**
 	- **[DeerTrees](http://www.lupinia.net/code/projects/django/deertrees.htm)**:  Multi-level object-agnostic category system.
 	- **[DeerBooks](http://www.lupinia.net/code/projects/django/deerbooks.htm)**:  Enhanced text/writing management, with multi-format display (HTML, Markdown, Plain Text, LaTeX), and automatic generation of PDF, DVI, and PostScript files from dynamically-generated LaTeX source.
