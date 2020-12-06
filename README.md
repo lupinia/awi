@@ -18,12 +18,14 @@ Apps/Modules Included
 	- **[DeerBooks](http://www.lupinia.net/code/projects/django/deerbooks.htm)**:  Enhanced text/writing management, with multi-format display (HTML, Markdown, Plain Text, LaTeX), and automatic generation of PDF, DVI, and PostScript files from dynamically-generated LaTeX source.
 	- **DeerConnect**:  Link directory and contact information manager, with email form.
 	- **[Sunset](http://www.lupinia.net/code/projects/django/sunset.htm)**:  Advanced image gallery, with built-in watermarking, metadata parsing, hash-based de-duplication, and batch imports from server-side directories.
+- **Second Life Systems/Content**
+	- **secondlife**:  Legacy support for security/authentication scripts in Second Life.  Pending a rebuild, but unlike the others to be rebuilt, this one needs to stay running until it's replaced.
+	- **DeerLand**:  Virtual world property/estate tracking and management.
 - **Other**
 	- **DeerAttend**:  Event attendance history tracker/display.
 	- **DeerHealth**:  Prescription medication tracker.
 	- **DeerFood**:  Restaurant-style menu system.
 	- **DeerCoins**:  Coin collection (numismatic) database and tools.
-	- **secondlife**:  Legacy support for security/authentication scripts in Second Life.  Pending a rebuild, but unlike the others to be rebuilt, this one needs to stay running until it's replaced.
 
 Third-Party Apps/Modules Used
 -----------------------------
