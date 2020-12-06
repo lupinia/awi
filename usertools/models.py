@@ -32,6 +32,8 @@ class name_history(models.Model):
 class person(models.Model):
 	account = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='profiles')
 	display_name = models.CharField(max_length=250)
+	notes = models.TextField(blank=True, null=True)
+	profile_text = models.TextField(blank=True, null=True)
 	
 	grid = models.CharField(max_length=100, choices=settings.GRID_OPTIONS, help_text='Select the virtual world/"grid" for this user.')
 	key = models.UUIDField(db_index=True, help_text=mark_safe('The unique identifier for this user.  <a href="http://wiki.secondlife.com/wiki/Category:LSL_Key" target="_BLANK">More info</a>.'))
@@ -99,6 +101,16 @@ class person(models.Model):
 	
 	def __unicode__(self):
 		return '%s (%s)' % (self.grid_name, self.get_grid_display())
+	
+	class Meta:
+		unique_together = (('key', 'grid'),)
+
+class group(models.Model):
+	name = models.CharField(max_length=40)
+	key = models.UUIDField(db_index=True)
+	grid = models.CharField(max_length=100, choices=settings.GRID_OPTIONS, help_text='Select the virtual world/"grid" for this group.')
+	owner = models.ForeignKey(person, on_delete=models.SET_NULL, blank=True, null=True)
+	description = models.TextField(blank=True, null=True)
 	
 	class Meta:
 		unique_together = (('key', 'grid'),)
