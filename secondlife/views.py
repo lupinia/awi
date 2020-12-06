@@ -9,21 +9,29 @@
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
-from secondlife.models import security_control
 
+from deerguard_sl.models import security_system
+from usertools.models import person
+
+# This function will be deprecated as soon as I write a replacement
 @csrf_exempt
 @require_POST
-def security_response(request, gridname):
-	if gridname == 'opensim_lup':
-		if request.META.get('HTTP_X_SECONDLIFE_OWNER_NAME','') != 'Natasha Softpaw' or request.META.get('HTTP_X_SECONDLIFE_OBJECT_NAME','') != 'LMC Security Server' or request.META.get('HTTP_X_SECONDLIFE_OWNER_KEY','') != 'adc07b15-c9d5-4ba5-8b64-8cf08d4b0a6f':
-			return HttpResponse('ERR')
+def security_response(request, system, zone):
+	try:
+		cur_sys = security_system.objects.filter(slug=system).select_related().prefetch_related('zones','servers').first()
+		cur_zone = cur_sys.zones.filter(slug=zone).select_related().first()
+		server_check = cur_sys.servers.filter(name=request.META.get('HTTP_X_SECONDLIFE_OBJECT_NAME',''), key=request.META.get('HTTP_X_SECONDLIFE_OBJECT_KEY','')).exists()
+		
+		if request.META.get('HTTP_X_SECONDLIFE_OWNER_NAME','') != cur_sys.owner.grid_name or request.META.get('HTTP_X_SECONDLIFE_OWNER_KEY','') != str(cur_sys.owner.key) or not server_check:
+			raise TypeError
+		
+		cur_user = person.objects.get(key=request.POST.get('key'), grid=cur_sys.grid)
+		authcheck = cur_zone.user_allowed(cur_user)
+		
+		if authcheck:
+			return HttpResponse('AUTH %s %s' % (cur_user.key, cur_user.grid_name))
+		else:
+			return HttpResponse('NO AUTH')
 	
-	if gridname == 'sl':
-		if request.META.get('HTTP_X_SECONDLIFE_OWNER_NAME','') != 'Natasha Petrichor' or request.META.get('HTTP_X_SECONDLIFE_OBJECT_NAME','') != 'LMC Security Server' or request.META.get('HTTP_X_SECONDLIFE_OWNER_KEY','') != '5edf25ad-8482-4d91-85fe-ed364b486a95':
-			return HttpResponse('ERR')
-	
-	authcheck = security_control.objects.filter(key=request.POST.get('key')).filter(auth=True).filter(grid=gridname)
-	if authcheck.exists():
-		return HttpResponse('AUTH '+authcheck[0].key+' '+authcheck[0].name)
-	else:
-		return HttpResponse('NO AUTH')
+	except:
+		return HttpResponse('ERR')
