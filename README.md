@@ -56,7 +56,7 @@ Infrastructure
 
 - **Web Server**:  Nginx *(seneca.lupinia.net)*
 - **WSGI Connector**:  uWSGI
-- **Database Server**:  PostgreSQL
+- **Database Server**:  PostgreSQL *(Amazon RDS)*
 - **Static/Media Hosting**:  Amazon S3 *(cdn.fur.vc)*
 - **Search Indexing Server**:  Amazon ElasticSearch
 
