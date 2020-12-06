@@ -29,7 +29,7 @@ IMPORT_DIR = os.path.abspath('/srv/awi_import/')
 #	Also used by other apps/queries in specific virtual world grids
 GRID_OPTIONS = (
 	('sl','Second Life'),
-	('aditi','Second Life Beta (Aditi)'),
+	('sl_aditi','Second Life Beta (Aditi)'),
 	('opensim_lup','OpenSim (Lupinia Private)'),
 )
 
