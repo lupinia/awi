@@ -64,12 +64,16 @@ INSTALLED_APPS = (
 	'deertrees',	# Categories
 	'sunset',		# Photo/image gallery
 	
+	#	My Apps - Second Life Systems/Content
+	'secondlife',	# Access control data for objects/scripts in Second Life (deprecated)
+	'deerland',		# Virtual world estate/property management
+	'deerguard_sl',	# Access control for Second Life objects/scripts
+	
 	#	My Apps - Other
 	'deerattend',	# Convention/event database
 	'deercoins',	# Coin collection database
 	'deerfood',		# Restaurant-style menu
 	'deerhealth',	# Prescription Tracker
-	'secondlife',	# Access control data for objects/scripts in Second Life
 )
 
 #	System Settings

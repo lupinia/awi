@@ -19,8 +19,9 @@ Apps/Modules Included
 	- **DeerConnect**:  Link directory and contact information manager, with email form.
 	- **[Sunset](http://www.lupinia.net/code/projects/django/sunset.htm)**:  Advanced image gallery, with built-in watermarking, metadata parsing, hash-based de-duplication, and batch imports from server-side directories.
 - **Second Life Systems/Content**
-	- **secondlife**:  Legacy support for security/authentication scripts in Second Life.  Pending a rebuild, but unlike the others to be rebuilt, this one needs to stay running until it's replaced.
 	- **DeerLand**:  Virtual world property/estate tracking and management.
+	- **DeerGuard SL**:  Security/authentication system for LSL scripted systems in Second Life and other virtual worlds.
+	- **secondlife**:  Legacy support for security/authentication scripts in Second Life.  Will be replaced by DeerGuard SL.
 - **Other**
 	- **DeerAttend**:  Event attendance history tracker/display.
 	- **DeerHealth**:  Prescription medication tracker.
