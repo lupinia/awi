@@ -27,7 +27,7 @@ class name_history(models.Model):
 		return '%s %s' % (self.grid_name_first, self.grid_name_last)
 	
 	def __unicode__(self):
-		return '%s (Profile: %d)' % (self.grid_name, self.pk)
+		return '%s (Profile: %d)' % (self.grid_name, self.profile.pk)
 
 class person(models.Model):
 	account = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='profiles')
@@ -53,6 +53,10 @@ class person(models.Model):
 	@property
 	def grid_name(self):
 		return '%s %s' % (self.grid_name_first, self.grid_name_last)
+	
+	@property
+	def key_str(self):
+		return str(self.key)
 	
 	def normalize_names(self):
 		return_name_first = ''
@@ -100,7 +104,7 @@ class person(models.Model):
 		super(person, self).save(*args, **kwargs)
 	
 	def __unicode__(self):
-		return '%s (%s)' % (self.grid_name, self.get_grid_display())
+		return '%s (%s)' % (self.display_name, self.grid_username)
 	
 	class Meta:
 		unique_together = (('key', 'grid'),)
@@ -111,6 +115,15 @@ class group(models.Model):
 	grid = models.CharField(max_length=100, choices=settings.GRID_OPTIONS, help_text='Select the virtual world/"grid" for this group.')
 	owner = models.ForeignKey(person, on_delete=models.SET_NULL, blank=True, null=True)
 	description = models.TextField(blank=True, null=True)
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
+	
+	@property
+	def key_str(self):
+		return str(self.key)
+	
+	def __unicode__(self):
+		return 'Group: %s (%s)' % (self.name, self.get_grid_display())
 	
 	class Meta:
 		unique_together = (('key', 'grid'),)
