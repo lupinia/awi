@@ -24,6 +24,9 @@ class security_system(models.Model):
 	
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
+	
+	def __unicode__(self):
+		return '%s (%s)' % (self.name, self.get_grid_display())
 
 class security_server(models.Model):
 	system = models.ForeignKey(security_system, related_name='servers', on_delete=models.CASCADE)
@@ -36,11 +39,18 @@ class security_server(models.Model):
 	timestamp_sync = models.DateTimeField(blank=True, null=True, verbose_name='date/time synchronized')
 	
 	@property
+	def key_str(self):
+		return str(self.key)
+	
+	@property
 	def is_synchronized(self):
 		if self.timestamp_sync and self.timestamp_sync >= self.timestamp_mod:
 			return True
 		else:
 			return False
+	
+	def __unicode__(self):
+		return self.name
 
 class security_zone(models.Model):
 	system = models.ForeignKey(security_system, related_name='zones', on_delete=models.CASCADE)
@@ -102,6 +112,9 @@ class security_zone(models.Model):
 			auth_log.objects.create(zone=self, user=user, action=action, action_code=action_code)
 		
 		return (action, action_code)
+	
+	def __unicode__(self):
+		return self.name
 
 class auth_log(models.Model):
 	zone = models.ForeignKey(security_zone, related_name='logs', on_delete=models.CASCADE)
@@ -109,3 +122,6 @@ class auth_log(models.Model):
 	action = models.BooleanField(blank=True, help_text='True if allowed, False if denied')
 	action_code = models.CharField(max_length=20, default='UNKNOWN')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
+	
+	def __unicode__(self):
+		return 'Auth Log %d' % self.pk
