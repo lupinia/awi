@@ -22,14 +22,14 @@ def security_response(request, system, zone):
 		cur_zone = cur_sys.zones.filter(slug=zone).select_related().first()
 		server_check = cur_sys.servers.filter(name=request.META.get('HTTP_X_SECONDLIFE_OBJECT_NAME',''), key=request.META.get('HTTP_X_SECONDLIFE_OBJECT_KEY','')).exists()
 		
-		if request.META.get('HTTP_X_SECONDLIFE_OWNER_NAME','') != cur_sys.owner.grid_name or request.META.get('HTTP_X_SECONDLIFE_OWNER_KEY','') != str(cur_sys.owner.key) or not server_check:
+		if request.META.get('HTTP_X_SECONDLIFE_OWNER_NAME','') != cur_sys.owner.grid_name or request.META.get('HTTP_X_SECONDLIFE_OWNER_KEY','') != cur_sys.owner.key_str or not server_check:
 			raise TypeError
 		
 		cur_user = person.objects.get(key=request.POST.get('key'), grid=cur_sys.grid)
 		authcheck = cur_zone.user_allowed(cur_user)
 		
 		if authcheck:
-			return HttpResponse('AUTH %s %s' % (cur_user.key, cur_user.grid_name))
+			return HttpResponse('AUTH %s %s' % (cur_user.key_str, cur_user.grid_name))
 		else:
 			return HttpResponse('NO AUTH')
 	
