@@ -185,7 +185,7 @@ class image(leaf):
 	def build_meta(self):
 		img_path = self.get_working_original()
 		if img_path:
-			metareader = exiftool.ExifTool('/usr/local/bin/exiftool')
+			metareader = exiftool.ExifTool('/usr/bin/exiftool') # TODO: Move this to settings
 			metareader.start()
 			if metareader.running:
 				meta = metareader.get_metadata(img_path)
@@ -467,6 +467,7 @@ class image_meta_key(models.Model):
 		fraction_obj = Fraction(float(data)).limit_denominator(8000)
 		return str(fraction_obj)
 	
+	# TODO:  Split stuff like this off to a separate file, and implement translation
 	def format_flash(self, data):
 		flash_settings = {
 			0:'No Flash', 

@@ -125,7 +125,8 @@ class Command(BaseCommand):
 			
 				# We should now have a LaTeX file.
 				# Let's compile it.
-				latex_command = ['/usr/local/bin/rubber','--ps','--pdf','--inplace',texfile]
+				# TODO: Move rubber command path to settings
+				latex_command = ['/usr/bin/rubber','--ps','--pdf','--inplace',texfile]
 				self.log("Beginning compilation with command:  \n%s" % ' '.join(latex_command))
 				compile_status = subprocess.check_output(latex_command,stderr=subprocess.STDOUT)
 				self.log("Compilation complete!  Command output:  \n%s" % compile_status)

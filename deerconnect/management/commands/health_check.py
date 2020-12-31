@@ -17,7 +17,7 @@ from django.db.models import Q
 from deerconnect.models import link, contact_link
 
 class Command(BaseCommand):
-	help = "Assembles PDF, DVI, and PS files from LaTeX source."
+	help = "Checks the validity of external links."
 	cur_link = False
 	
 	def notify(self, status='unknown', code=0):

@@ -283,6 +283,9 @@ AWS_QUERYSTRING_AUTH = False
 DEFAULT_S3_PATH = 'awi'
 STATIC_S3_PATH = 'awi-hagata'
 
+# This is the default, but apparently I have to explicitly set it to silence a warning that shows up in EVERYTHING.  Thanks django-storages.
+AWS_DEFAULT_ACL = None
+
 
 #	static_precompiler
 STATIC_PRECOMPILER_DISABLE_AUTO_COMPILE = True
