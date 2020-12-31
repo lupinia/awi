@@ -29,6 +29,10 @@ class page_admin(leaf_admin):
 	
 	def view_on_site(self, obj):
 		return reverse('page_htm',kwargs={'cached_url':obj.cat.cached_url, 'slug':obj.slug,})
+	
+	def save_model(self, request, obj, form, change):
+		obj.latex_fail = False
+		super(page_admin, self).save_model(request, obj, form, change)
 
 class page_inline(admin.TabularInline):
 	model = page
