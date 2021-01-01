@@ -10,6 +10,8 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.views import login as login_view
+from django.contrib.auth.views import logout as logout_view
 from django.contrib.sitemaps.views import sitemap
 from django.views.decorators.cache import cache_control, never_cache
 
@@ -36,8 +38,8 @@ urlpatterns = [
 	url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 	url(r'^admin_tools/', include('admin_tools.urls')),
 	
-	url(r'^accounts/login/','django.contrib.auth.views.login', name='login'),
-	url(r'^accounts/logout/','django.contrib.auth.views.logout',{'template_name':'registration/login.html'}, name='logout'),
+	url(r'^accounts/login/',login_view, name='login'),
+	url(r'^accounts/logout/',logout_view,{'template_name':'registration/login.html'}, name='logout'),
 	url(r'^accounts/age_form/$',never_cache(check_honeypot(field_name=settings.HONEYPOT_FIELD_NAME_AWIACCESS)(access_views.age_verify_full.as_view())),name='age_form'),
 	url(r'^accounts/age_form_embed/$',never_cache(check_honeypot(field_name=settings.HONEYPOT_FIELD_NAME_AWIACCESS)(access_views.age_verify.as_view())),name='age_form_embed'),
 	
