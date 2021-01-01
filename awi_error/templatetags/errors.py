@@ -10,7 +10,10 @@
 #	=================
 
 from django import template
+from django.utils.safestring import mark_safe
+
 from awi_error.models import error
+
 register = template.Library()
 
 def error_display(input_string):
@@ -19,6 +22,6 @@ def error_display(input_string):
 		error_output = '<%s class="error error_%s" id="%s">%s</%s>' % (error_data.element, error_data.severity, input_string, error_data.message, error_data.element)
 	else:
 		error_output = '<div class="error error_critical" id="%s">An unspecified/undefined error has occurred.  Error code was "%s".</div>' % (input_string, input_string)
-	return error_output
+	return mark_safe(error_output)
 
 register.simple_tag(error_display)

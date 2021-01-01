@@ -14,6 +14,7 @@ import markdown
 import re
 
 from django import template
+from django.utils.safestring import mark_safe
 
 def html_md(input_string, promote=True):
 	md_maker = html2text.HTML2Text()
@@ -32,7 +33,7 @@ def html_md(input_string, promote=True):
 		md = re.sub('(##### )','#### ',md)
 		md = re.sub('(###### )','##### ',md)
 	
-	return md
+	return mark_safe(md)
 
 def html_txt(input_string, promote=True):
 	md = html_md(input_string, promote)
@@ -42,7 +43,7 @@ def html_txt(input_string, promote=True):
 	txt = re.sub(r'!\[.*?\]\((.*?)\)',r'(Image:  \1)',txt)
 	txt = re.sub(r'([0-9]+)\\\.',r'\1.',txt)
 	
-	return txt
+	return mark_safe(txt)
 
 def html_tex(input_string, promote=True):
 	md = html_md(input_string, promote)
@@ -59,7 +60,7 @@ def html_tex(input_string, promote=True):
 	tex = tex.replace('&','\\&')
 	tex = re.sub(r'([0-9]+)\\\.',r'\1.',tex)
 	
-	return tex
+	return mark_safe(tex)
 
 def field_tex(input_string):
 	tex = input_string.replace('_','\\_')
@@ -67,7 +68,7 @@ def field_tex(input_string):
 	tex = tex.replace('$','\\$')
 	tex = tex.replace('&','\\&')
 	
-	return tex
+	return mark_safe(tex)
 
 register = template.Library()
 

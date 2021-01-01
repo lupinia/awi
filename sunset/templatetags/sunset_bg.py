@@ -13,6 +13,7 @@ import random
 from django import template
 from django.conf import settings
 from django.db.models import Q
+from django.utils.safestring import mark_safe
 
 from awi_utils.utils import notify
 from sunset.models import image, background_tag
@@ -80,6 +81,6 @@ def bg_info(input_string=''):
 	
 	if display_footer_info:
 		bg_selected = cur_background
-		return 'Background Photo:  <a href="%s">%s</a>' % (bg_selected.get_absolute_url(), str(bg_selected))
+		return mark_safe('Background Photo:  <a href="%s">%s</a>' % (bg_selected.get_absolute_url(), str(bg_selected)))
 	else:
 		return ' ';
