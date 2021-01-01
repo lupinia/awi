@@ -10,7 +10,6 @@ from django import forms
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
-from django.template import Context
 from django.utils import timezone
 from django.utils import dateparse
 import bleach
@@ -50,9 +49,8 @@ class contact_form(forms.Form):
 			'email': sender_addr, 
 			'subject': msg.subject,
 		}
-		d = Context(message_context)
 		
-		msg.body = message_template.render(d)
+		msg.body = message_template.render(message_context)
 		msg.to = [settings.DEERCONNECT_TO_EMAIL,]
 		
 		success = msg.send()
