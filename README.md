@@ -9,7 +9,6 @@ Apps/Modules Included
 
 - **System/Structure**
 	- **Awi Access**:  Unified access control, permissions, and ownership settings for any object.
-	- **Awi Background**:  Dynamic background images for page body site-wide, with a tagging system to include/exclude certain images from certain categories and content items.
 	- **Awi Error**:  Unified error text handling/template tags.
 	- **DeerFind**:  Intelligent 404 handler.
 	- **UserTools**:  Extended user profiles and data used by multiple other apps/modules.
@@ -17,12 +16,13 @@ Apps/Modules Included
 	- **[DeerTrees](http://www.lupinia.net/code/projects/django/deertrees.htm)**:  Multi-level object-agnostic category system.
 	- **[DeerBooks](http://www.lupinia.net/code/projects/django/deerbooks.htm)**:  Enhanced text/writing management, with multi-format display (HTML, Markdown, Plain Text, LaTeX), and automatic generation of PDF, DVI, and PostScript files from dynamically-generated LaTeX source.
 	- **DeerConnect**:  Link directory and contact information manager, with email form.
-	- **[Sunset](http://www.lupinia.net/code/projects/django/sunset.htm)**:  Advanced image gallery, with built-in watermarking, metadata parsing, hash-based de-duplication, and batch imports from server-side directories.
+	- **[Sunset](http://www.lupinia.net/code/projects/django/sunset.htm)**:  Advanced image gallery, with built-in watermarking, metadata parsing, hash-based de-duplication, and batch imports from server-side directories.  Also provides dynamic background images for page body site-wide.
 - **Second Life Systems/Content**
 	- **DeerLand**:  Virtual world property/estate tracking and management.
 	- **DeerGuard SL**:  Security/authentication system for LSL scripted systems in Second Life and other virtual worlds.
 	- **secondlife**:  Legacy support for security/authentication scripts in Second Life.  Will be replaced by DeerGuard SL.
 - **Other**
+	- **Awi Utils**:  Miscellaneous core components used by multiple other modules/apps.
 	- **DeerAttend**:  Event attendance history tracker/display.
 	- **DeerHealth**:  Prescription medication tracker.
 	- **DeerFood**:  Restaurant-style menu system.
@@ -69,6 +69,8 @@ Custom Management Commands
 - **cleanup_working_dir (Awi Utils):**  Delete unused files from the local working directories for background processes that need to perform file manipulation (compile_latex, process_images).
 - **health_check (DeerConnect)**:  Performs a HEAD request to every external link in the system, and notifies the administrator(s) if any links return a status other than 200.
 - **promote_seasonal (Awi Utils):**  Selectively feature/unfeature certain categories based on the current month.
+- **clearcache (Awi Utils):**  Clear Django's cache, something that Django really should have a built-in management command for.
+- **no_export_deleted (DeerBooks):**  Sets auto_export to False on pages that have been moved to the "Trash" category, in case this wasn't already handled.
 
 License
 -------
