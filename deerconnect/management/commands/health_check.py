@@ -8,6 +8,8 @@
 #	=================
 
 import requests
+import socket
+from urlparse import urlparse
 
 from django.conf import settings
 from django.core.mail import mail_admins
@@ -49,6 +51,15 @@ class Command(BaseCommand):
 	def check_link(self, url):
 		agent = {'user-agent': settings.DEERCONNECT_HEALTHCHECK_USERAGENT}
 		try:
+			# Apparently, requests will throw an impossible-to-catch exception on a DNS error.
+			# And it's indistinguishable from any generic error.
+			# So, I have to parse the URL, extract the domain, and do my own DNS lookup.
+			# There is no reason why I should have to do this manually.
+			parsed_url = urlparse(url)
+			domain = parsed_url.netloc
+			ip = socket.gethostbyname(domain)
+			
+			# Ok, if we made it this far, we didn't encounter a DNS lookup error
 			r = requests.head(url, headers=agent)
 			if r.status_code == 200:
 				status = True
@@ -56,6 +67,8 @@ class Command(BaseCommand):
 				status = False
 			
 			return (status, r.status_code)
+		except socket.gaierror:
+			return (False, 404)	# DNS lookup error, or NXDOMAIN, so manually throw a 404
 		except requests.exceptions.SSLError:
 			return (False, 495)	# Borrowing an nginx status code indicating a certificate failure
 	
