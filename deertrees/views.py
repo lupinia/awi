@@ -397,14 +397,12 @@ def finder(request):
 		basename=os.path.basename(request.path)
 	
 	if '.' in basename:
-		#	Categories don't have dots in the slug
+		# Categories don't have dots in the slug
 		return return_data
 	else:
-		cat_check = category.objects.filter(slug=basename)
-		if cat_check.exists():
-			access_check = cat_check[0].can_view(request)
-			if access_check[0]:
-				return_data = (True,reverse('category',kwargs={'cached_url':cat_check[0].cached_url,}))
+		cat_check = category.objects.filter(slug__iexact=basename).filter(access_query(request)).select_related().first()
+		if cat_check:
+			return_data = (True,reverse('category',kwargs={'cached_url':cat_check.cached_url,}))
 	
 	return return_data
 
