@@ -94,7 +94,7 @@ def not_found(request):
 			context_path=request.path+'?'+request.META.get('QUERY_STRING','')
 		else:
 			context_path=request.path
-		context=Context({'old_url':context_path})
+		context={'old_url':context_path}
 		
 		#	Run a search query, in case what they're looking for can be found with search.
 		#	First, let's clean up the URL and turn it into something we can search.
