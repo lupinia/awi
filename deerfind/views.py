@@ -41,7 +41,7 @@ def not_found(request):
 		request.session['deerfind_norecover'] = False		# Always reset, just in case.
 		
 		#	Simple at first, check a list of known-bad URLs for redirects.
-		pointer_obj = pointer.objects.filter(old_url=request.path).first()
+		pointer_obj = pointer.objects.filter(old_url__iexact=request.path).first()
 		
 		if pointer_obj:
 			return_url = pointer_obj.new_url
