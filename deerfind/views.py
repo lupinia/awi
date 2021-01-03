@@ -20,6 +20,7 @@ from django.http import Http404, HttpResponsePermanentRedirect, HttpResponseNotF
 from django.shortcuts import render
 from django.template import Context, loader
 from django.utils.module_loading import import_string
+from django.urls import resolve
 
 from haystack.generic_views import FacetedSearchView
 from haystack.query import SearchQuerySet, SQ
@@ -69,19 +70,28 @@ def not_found(request):
 				hitlog_obj = hitlog.objects.create(**hitlog_fields)
 		
 		else:
-			#	Time to go digging.  The plan here is to check each known finder function.
-			#	Finder functions should receive request as a parameter, and return a tuple;
-			#		first value boolean (match found)
-			#		second value a string (empty if no match, root-relative URL if match)
-			finder_list = settings.DEERFIND_FINDERS
-			
-			for finder in finder_list:
-				finder_function = import_string(finder)
-				url_check = finder_function(request)
-				if url_check[0]:
-					return_url = url_check[1]
-					break
-		
+			#	Ok, it's not a known-bad URL.
+			#	Let's try one more thing, and see if maybe it's just capitalized weird
+			try:
+				resolver_test = resolve(request.path.lower())
+			except Resolver404:
+				#	Welp, that didn't work.  It was worth a try though!
+				#	Time to go digging.  The plan here is to check each known finder function.
+				#	Finder functions should receive request as a parameter, and return a tuple;
+				#		first value boolean (match found)
+				#		second value a string (empty if no match, root-relative URL if match)
+				finder_list = settings.DEERFIND_FINDERS
+				
+				for finder in finder_list:
+					finder_function = import_string(finder)
+					url_check = finder_function(request)
+					if url_check[0]:
+						return_url = url_check[1]
+						break
+			else:
+				#	Oh cool, it was just partially capitalized.  That's handy!
+				return_url = request.path.lower()
+	
 	if return_url:
 		#	Yay!  We found a match!  No 404 for you!  :D
 		return HttpResponsePermanentRedirect(return_url)
