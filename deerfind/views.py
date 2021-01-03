@@ -98,7 +98,12 @@ def not_found(request):
 		
 		#	Run a search query, in case what they're looking for can be found with search.
 		#	First, let's clean up the URL and turn it into something we can search.
-		basename = os.path.basename(request.path)
+		#	Start by fixing the trailing slash
+		if request.path.endswith('/'):
+			basename=os.path.basename(request.path[:-1])
+		else:
+			basename=os.path.basename(request.path)
+		
 		if '.' in basename:
 			search_path = basename.split('.')[0]
 		else:
