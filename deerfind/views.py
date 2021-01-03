@@ -139,31 +139,44 @@ def not_found(request):
 def g2_finder(request):
 	from deerfind.models import g2map
 	return_data = (False,'')
+	gallery_id = False
 	
-	basename = os.path.basename(request.path)
-	if '.g2' in basename:
-		search_slug_list = basename.split('.')
-		search_slug = search_slug_list[0]
+	# Step 1:  Try to find a valid Gallery2 item ID
+	# Start by handling the corner case of one of the old non-rewritten Gallery2 URLs
+	if request.GET.get('g2_itemId',False):
+		gallery_id = request.GET.get('g2_itemId','')
 	else:
-		search_slug = basename
-	
-	if '.g2' in basename or request.GET.get('g2_itemId',''):
+		# No GET parameter, so this could be a rewritten URL with a .g2 file extension
+		basename = os.path.basename(request.path)
 		if '.g2' in basename:
-			gallery_id = search_slug
-		else:
-			gallery_id = request.GET.get('g2_itemId','')
+			search_slug_list = basename.split('.')
+			gallery_id = search_slug_list[0]
+	
+	# If we're here, we have a valid Gallery2 ID
+	# Let's make sure it's an integer first
+	if gallery_id:
+		try:
+			gallery_id = int(gallery_id)
+			
+			if gallery_id:
+				gallery_check = g2map.objects.filter(g2id=gallery_id).select_related('category', 'image').first()
+				if gallery_check:
+					# Yay!  We found it!  Now let's figure out what type of content it is
+					return_obj = False
+					if gallery_check.category:
+						return_obj = gallery_check.category
+					elif gallery_check.image:
+						return_obj = gallery_check.category
+					
+					# Just need to check your credentials and we'll be all set!
+					if return_obj:
+						access_check = return_obj.can_view(request)
+						if access_check[0]:
+							return_data = (True, return_obj.get_absolute_url())
 		
-		if gallery_id and gallery_id.isdigit():
-			gallery_check=g2map.objects.select_related('category', 'image').filter(g2id=gallery_id)
-			if gallery_check.exists():
-				if gallery_check[0].category:
-					access_check = gallery_check[0].category.can_view(request)
-					if access_check[0]:
-						return_data = (True,gallery_check[0].category.get_absolute_url())
-				elif gallery_check[0].image:
-					access_check = gallery_check[0].image.can_view(request)
-					if access_check[0]:
-						return_data = (True,gallery_check[0].image.get_absolute_url())
+		except ValueError:
+			# gallery_id is not an integer, nothing to do here
+			pass
 	
 	return return_data
 
