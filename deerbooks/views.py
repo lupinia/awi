@@ -165,39 +165,29 @@ def finder(request):
 	if '.' in basename:
 		search_slug_list = basename.split('.')
 		search_slug = search_slug_list[0]
-		search_type = search_slug_list[-1]
+		search_type = search_slug_list[-1].lower()
 		
-		page_check = page.objects.filter(slug=search_slug)
-		if page_check.exists():
-			# Yay!  We found a match!  Let's make sure we can actually view it, though.
-			access_check = page_check[0].can_view(request)
-			if access_check[0]:
-				# Ok cool, had to check your credentials!  It's just standard procedure, you know how it is around here.
-				# Now let's figure out what type of URL to send back.
-				# php, htm, and html are definitely a page object
-				# pdf, dvi, ps, and epub are definitely an export_file object
-				# txt, md, and tex could be either one
-				is_page = ['php','htm','html','txt','md','tex']
-				is_file = ['pdf','dvi','ps','epub','txt','md','tex']
+		page_check = page.objects.filter(slug__iexact=search_slug).filter(access_query(request)).select_related().prefetch_related('docfiles').first()
+		if page_check:
+			# Yay!  We found a match that you're allowed to view!
+			# Now let's figure out what type of URL to send back.
+			# php, htm, and html are definitely a page object
+			# pdf, dvi, ps, and epub are definitely an export_file object
+			# txt, md, and tex could be either one
+			is_page = ['php','htm','html','txt','md','tex']
+			is_file = ['pdf','dvi','ps','epub','rtf','docx','txt','md','tex']
+			
+			# Uploaded files take priority
+			if search_type in is_file and not return_data[0]:
+				check_file = page_check.docfiles.filter(filetype=search_type).first()
+				if check_file:
+					return_data = (True, check_file.get_url())
+			
+			# We didn't find it in the uploaded files, so maybe it's a page?
+			if search_type in is_page and not return_data[0]:
+				if search_type == 'php' or search_type == 'html':
+					search_type = 'htm'
 				
-				# Uploaded files take priority
-				if search_type in is_file and not return_data[0]:
-					check_files = page_check[0].docfiles.all()
-					if check_files:
-						for file in check_files:
-							if file.filetype == search_type:
-								return_data = (True,file.get_url())
-								break
-				
-				# We didn't find it in the uploaded files, so maybe it's a page?
-				if search_type in is_page and not return_data[0]:
-					if search_type == 'php' or search_type == 'htm' or search_type == 'html':
-						return_data = (True,reverse('page_htm',kwargs={'cached_url':page_check[0].cat.cached_url,'slug':page_check[0].slug}))
-					elif search_type == 'txt':
-						return_data = (True,reverse('page_txt',kwargs={'cached_url':page_check[0].cat.cached_url,'slug':page_check[0].slug}))
-					elif search_type == 'md':
-						return_data = (True,reverse('page_md',kwargs={'cached_url':page_check[0].cat.cached_url,'slug':page_check[0].slug}))
-					elif search_type == 'tex':
-						return_data = (True,reverse('page_tex',kwargs={'cached_url':page_check[0].cat.cached_url,'slug':page_check[0].slug}))
+				return_data = (True,reverse('page_%s' % search_type, kwargs={'cached_url':page_check.cat.cached_url, 'slug':page_check.slug}))
 	
 	return return_data
