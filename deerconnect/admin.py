@@ -19,9 +19,11 @@ class link_admin(leaf_admin):
 	search_fields = ['label','url','desc'] + leaf_admin.search_fields
 	fieldsets = [
 		(None,{'fields':(('label','involved'),'url','desc','icon','icon_large'),},),
+		('Health Check Options',{'fields':(('health_check','healthy'),),},),
 	] + leaf_admin.fieldsets
 	list_filter = leaf_admin.list_filter + ['involved', 'healthy']
 	list_display = ('label','url','involved','healthy',) + leaf_admin.list_display
+	readonly_fields = ['healthy',] + leaf_admin.readonly_fields
 	
 	def view_on_site(self, obj):
 		return obj.url
@@ -43,10 +45,6 @@ class contact_admin(access_admin):
 	
 	def view_on_site(self, obj):
 		return obj.url
-	
-	def save_model(self, request, obj, form, change):
-		obj.healthy = True
-		super(contact_admin, self).save_model(request, obj, form, change)
 
-admin.site.register(link,link_admin)
-admin.site.register(contact_link,contact_admin)
+admin.site.register(link, link_admin)
+admin.site.register(contact_link, contact_admin)

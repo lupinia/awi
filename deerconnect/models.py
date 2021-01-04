@@ -20,7 +20,6 @@ class link_base(models.Model):
 	desc = models.TextField(null=True, blank=True, verbose_name='description')
 	icon = models.ImageField(upload_to='linkicons', null=True, blank=True)
 	icon_large = models.ImageField(upload_to='linkicons_large', null=True, blank=True)
-	healthy = models.BooleanField(default=True, db_index=True)
 	
 	def __unicode__(self):
 		return self.label
@@ -67,6 +66,8 @@ class link_base(models.Model):
 
 class link(link_base, leaf):
 	involved = models.BooleanField(help_text="Indicates a project the webmaster has involvement with.")
+	healthy = models.BooleanField(default=True, db_index=True, help_text='Indicates whether this link passed its last health check.  Will reset when saved in the admin view.')
+	health_check = models.BooleanField(default=True, db_index=True, verbose_name='enable health check?', help_text='Uncheck this to exclude this URL from routine checks to validate that it is still reachable.')
 
 
 #	This is a special case that won't be part of the usual tree/leaf system, nor will they have tags
@@ -89,14 +90,14 @@ class contact_link(link_base, access_control):
 	@property
 	def icon_url(self):
 		if self.icon:
-			return "%s%s" % (settings.MEDIA_URL,self.icon.name)
+			return "%s%s" % (settings.MEDIA_URL, self.icon.name)
 		else:
 			return "%simages/icons/default-contact-16.png" % settings.STATIC_URL
 	
 	@property
 	def icon_large_url(self):
 		if self.icon_large:
-			return "%s%s" % (settings.MEDIA_URL,self.icon_large.name)
+			return "%s%s" % (settings.MEDIA_URL, self.icon_large.name)
 		else:
 			return "%simages/icons/default-contact-128.png" % settings.STATIC_URL
 	

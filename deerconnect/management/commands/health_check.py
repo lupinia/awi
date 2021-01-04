@@ -88,7 +88,7 @@ class Command(BaseCommand):
 	
 	def handle(self, *args, **options):
 		try:
-			links = link.objects.filter(Q(published=True) & Q(healthy=True)).exclude(cat_id=75)
+			links = link.objects.filter(Q(published=True) & Q(healthy=True) & Q(health_check=True)).exclude(cat_id=75)
 			fail_count = self.check_links_bulk(links)
 			self.stdout.write("Health check complete on link objects:  %d failures." % fail_count)
 		except:
