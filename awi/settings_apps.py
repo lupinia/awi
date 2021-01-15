@@ -239,6 +239,7 @@ SUNSET_IMPORT_DIR = os.path.abspath(os.path.join(IMPORT_DIR,'sunset/'))
 SUNSET_CACHE_DIR = os.path.abspath(os.path.join(WORKING_DIR,'sunset/'))
 SUNSET_WATERMARK_IMAGE = os.path.abspath(os.path.join(BASE_DIR,'sunset/watermarks/lupinia.png'))
 SUNSET_BG_NOTIFY_FAIL = True	# Send a notification if sunset_bg is used but a background image cannot be found.
+SUNSET_EXIFTOOL_CMD = '/usr/bin/exiftool'	# ExifTool executable path for pyexiftool
 
 
 #	THIRD-PARTY APPS

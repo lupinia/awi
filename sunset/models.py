@@ -185,79 +185,83 @@ class image(leaf):
 	def build_meta(self):
 		img_path = self.get_working_original()
 		if img_path:
-			metareader = exiftool.ExifTool('/usr/bin/exiftool') # TODO: Move this to settings
-			metareader.start()
-			if metareader.running:
-				meta = metareader.get_metadata(img_path)
-				metareader.terminate()
-				
-				# If a meta value for this image exists with this key, update it.
-				# Otherwise, create a new one.
-				# And if this is a special key, update the self image object.
-				# Let's start by setting up some containers for new data
-				new_self_attrs = {}
-				new_meta_objs = []
-				meta_keys = {}
-				
-				# Now let's grab all the existing meta keys, to save some database queries.
-				if not meta_keys:
-					meta_keys_q = image_meta_key.objects.all()
-					for key_obj in meta_keys_q:
-						meta_keys[key_obj.key] = key_obj
-				
-				for key, value in meta.iteritems():
-					# Get or create a meta key object for this key.
-					cur_key = meta_keys.get(key, False)
-					if not cur_key:
-						cur_key = image_meta_key.objects.create(key=key)
-						meta_keys[key] = cur_key
+			if settings.SUNSET_EXIFTOOL_CMD:
+				metareader = exiftool.ExifTool(settings.SUNSET_EXIFTOOL_CMD)
+				metareader.start()
+				if metareader.running:
+					meta = metareader.get_metadata(img_path)
+					metareader.terminate()
 					
-					if not cur_key.ignore:
-						# Check whether this is a special key.
-						if self.auto_fields and self.META_MAP.get(key,False):
-							new_self_attrs[self.META_MAP[key]] = value
+					# If a meta value for this image exists with this key, update it.
+					# Otherwise, create a new one.
+					# And if this is a special key, update the self image object.
+					# Let's start by setting up some containers for new data
+					new_self_attrs = {}
+					new_meta_objs = []
+					meta_keys = {}
+					
+					# Now let's grab all the existing meta keys, to save some database queries.
+					if not meta_keys:
+						meta_keys_q = image_meta_key.objects.all()
+						for key_obj in meta_keys_q:
+							meta_keys[key_obj.key] = key_obj
+					
+					for key, value in meta.iteritems():
+						# Get or create a meta key object for this key.
+						cur_key = meta_keys.get(key, False)
+						if not cur_key:
+							cur_key = image_meta_key.objects.create(key=key)
+							meta_keys[key] = cur_key
 						
-						# Check whether we already have this meta value in the database for this image.
-						meta_check = self.meta.filter(key=cur_key)
-						if meta_check.exists():
-							cur_meta = meta_check.first()
-							if not cur_meta.manual_entry:
-								cur_meta.data = value
-								cur_meta.save()
-						else:
-							new_meta_objs.append(image_meta(image=self, key=cur_key, data=value))
-				
-				# Done with this loop!  Time to clean up a bit.
-				if new_meta_objs:
-					image_meta.objects.bulk_create(new_meta_objs)
-					import_log.objects.create(command='image.build_meta', message='Successfully created %d new meta entries' % len(new_meta_objs), image=self)
-				if self.auto_fields and new_self_attrs:
-					for attr, value in new_self_attrs.iteritems():
-						if attr == 'tags':
-							# Special case:  Bulk-create tags
-							new_tags = ','.join(map(str, value))
-							tag_status = self.tag_item(new_tags)
-						else:
-							if attr == 'timestamp_post':
-								# Special case:  Timestamp
-								# Trying to parse datetimes from ExifTool is a horrendous mess, because the format could be almost anything.
-								if '-' in value:
-									timestamp, tzstamp = value.split('-')
-								elif '+' in value:
-									timestamp, tzstamp = value.split('+')
-								else:
-									timestamp = value
-									tzstamp = ''
-								date_obj = datetime.strptime(timestamp, '%Y:%m:%d %H:%M:%S')
-								value = timezone.make_aware(date_obj)
-							setattr(self, attr, value)
-					self.save()
-					import_log.objects.create(command='image.build_meta', message='Successfully set %d new meta entries' % len(new_self_attrs), image=self)
-				
-				# Done!
-				return True
+						if not cur_key.ignore:
+							# Check whether this is a special key.
+							if self.auto_fields and self.META_MAP.get(key,False):
+								new_self_attrs[self.META_MAP[key]] = value
+							
+							# Check whether we already have this meta value in the database for this image.
+							meta_check = self.meta.filter(key=cur_key)
+							if meta_check.exists():
+								cur_meta = meta_check.first()
+								if not cur_meta.manual_entry:
+									cur_meta.data = value
+									cur_meta.save()
+							else:
+								new_meta_objs.append(image_meta(image=self, key=cur_key, data=value))
+					
+					# Done with this loop!  Time to clean up a bit.
+					if new_meta_objs:
+						image_meta.objects.bulk_create(new_meta_objs)
+						import_log.objects.create(command='image.build_meta', message='Successfully created %d new meta entries' % len(new_meta_objs), image=self)
+					if self.auto_fields and new_self_attrs:
+						for attr, value in new_self_attrs.iteritems():
+							if attr == 'tags':
+								# Special case:  Bulk-create tags
+								new_tags = ','.join(map(str, value))
+								tag_status = self.tag_item(new_tags)
+							else:
+								if attr == 'timestamp_post':
+									# Special case:  Timestamp
+									# Trying to parse datetimes from ExifTool is a horrendous mess, because the format could be almost anything.
+									if '-' in value:
+										timestamp, tzstamp = value.split('-')
+									elif '+' in value:
+										timestamp, tzstamp = value.split('+')
+									else:
+										timestamp = value
+										tzstamp = ''
+									date_obj = datetime.strptime(timestamp, '%Y:%m:%d %H:%M:%S')
+									value = timezone.make_aware(date_obj)
+								setattr(self, attr, value)
+						self.save()
+						import_log.objects.create(command='image.build_meta', message='Successfully set %d new meta entries' % len(new_self_attrs), image=self)
+					
+					# Done!
+					return True
+				else:
+					import_log.objects.create(command='image.build_meta', message='Unable to start ExifTool', image=self)
+					return False
 			else:
-				import_log.objects.create(command='image.build_meta', message='Unable to start ExifTool', image=self)
+				import_log.objects.create(command='image.build_meta', message='ExifTool command missing or not configured', image=self)
 				return False
 		else:
 			import_log.objects.create(command='image.build_meta', message='Original image asset unavailable', image=self)
