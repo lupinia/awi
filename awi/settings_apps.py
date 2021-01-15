@@ -220,6 +220,7 @@ DEERFIND_SHORTCODE_TYPES = {
 #	deerbooks
 #	Specify location of a working directory for compiling LaTeX source files.
 DEERBOOKS_CACHE_DIR = os.path.abspath(os.path.join(WORKING_DIR,'deerbooks/'))
+DEERBOOKS_LATEX_CMD = ['/usr/bin/rubber','--ps','--pdf','--inplace']	# Command format for subprocess.check_output()
 
 
 #	sunset

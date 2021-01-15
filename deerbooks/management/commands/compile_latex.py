@@ -79,6 +79,10 @@ class Command(BaseCommand):
 			tex_custom = False
 			old_docfiles = []
 			
+			if len(settings.DEERBOOKS_LATEX_CMD) < 1:
+				# Executable command missing!
+				raise OSError(1, "LaTeX executable command missing")
+			
 			pages = page.objects.filter(Q(auto_export=True) & Q(latex_fail=False) & Q(published=True)).exclude(cat_id=75).order_by('timestamp_mod')
 			for page_obj in pages:
 				old_docfiles = []
@@ -125,8 +129,8 @@ class Command(BaseCommand):
 			
 				# We should now have a LaTeX file.
 				# Let's compile it.
-				# TODO: Move rubber command path to settings
-				latex_command = ['/usr/bin/rubber','--ps','--pdf','--inplace',texfile]
+				latex_command = settings.DEERBOOKS_LATEX_CMD
+				latex_command.append(texfile)
 				self.log("Beginning compilation with command:  \n%s" % ' '.join(latex_command))
 				compile_status = subprocess.check_output(latex_command,stderr=subprocess.STDOUT)
 				self.log("Compilation complete!  Command output:  \n%s" % compile_status)
