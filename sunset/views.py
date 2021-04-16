@@ -118,6 +118,17 @@ def recent_widget(parent=False, parent_type=False, request=False):
 	else:
 		return False
 
+def import_folder_widget(parent=False, parent_type=False, request=False):
+	if parent and request and request.user and request.user.is_superuser and parent_type == 'category':
+		queryset = batch_import.objects.filter(cat=parent).select_related()
+		if queryset:
+			return queryset
+		else:
+			return False
+	
+	else:
+		return False
+
 
 def finder(request):
 	import os

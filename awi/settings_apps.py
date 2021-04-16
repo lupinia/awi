@@ -57,6 +57,7 @@ DEERTREES_BLOCKS_SPECIAL = {
 	'category_thumb': {'title':'Subcategories', 'template':'deertrees/leaf_subcats_thumb.html', 'is_leaf':False, 'custom_obj':'deertrees.views.subcats', },
 	'upcoming_events': {'title':'Upcoming Events', 'template':'deerattend/widget.html', 'is_leaf':False, 'custom_obj':'deerattend.views.widget', },
 	'image_widget' : {'template':'sunset/image_widget.html', 'is_leaf':True, 'custom_obj':'sunset.views.recent_widget', },
+	'image_folder_widget' : {'template':'sunset/folder_widget.html', 'is_leaf':False, 'custom_obj':'sunset.views.import_folder_widget', },
 	'page_widget' : {'template':'deerbooks/page_widget.html', 'is_leaf':True, 'custom_obj':'deerbooks.views.recent_widget', },
 }
 
@@ -65,41 +66,41 @@ DEERTREES_BLOCK_MAP = {
 	'default' : {
 		'main_left' : ['image', 'page', 'category', 'link', ],
 		'main_right' : ['page', 'category', 'link', 'image', ],
-		'sidebar' : ['contact_link', 'special_feature', 'category', 'page', 'link', ],
+		'sidebar' : ['contact_link', 'special_feature', 'category', 'page', 'link', 'image_folder_widget', ],
 		'meta' : {'option_name': 'Default'},
 	},
 	
 	'image' : {
 		'main' : ['image', 'category', 'page', 'link', ],
-		'sidebar' : ['contact_link', 'special_feature', 'category', 'page', 'link', ],
+		'sidebar' : ['contact_link', 'special_feature', 'category', 'page', 'link', 'image_folder_widget', ],
 		'meta' : {'option_name': 'Photos/Other Images'},
 	},
 	
 	'image_split' : {
 		'main_left' : ['image', ],
 		'main_right' : ['category_thumb', ],
-		'sidebar' : ['contact_link', 'special_feature', 'page', 'link', ],
+		'sidebar' : ['contact_link', 'special_feature', 'page', 'link', 'image_folder_widget', ],
 		'meta' : {'option_name': 'Images with Image Subcategories (Split)'},
 	},
 	
 	'page' : {
 		'main' : ['page', 'category', 'link', ],
 		'main_2' : ['image', ],
-		'sidebar' : ['contact_link', 'page', 'special_feature', 'category', 'link', ],
+		'sidebar' : ['contact_link', 'page', 'special_feature', 'category', 'link', 'image_folder_widget', ],
 		'meta' : {'option_name': 'Writing'},
 	},
 	
 	'desc_split' : {
 		'main_left' : 'desc',
 		'main_right' : ['image', 'page', 'category', 'link', ],
-		'sidebar' : ['contact_link', 'special_feature', 'category', 'link', ],
+		'sidebar' : ['contact_link', 'special_feature', 'category', 'link', 'image_folder_widget', ],
 		'meta' : {'option_name': 'Description-Priority (Split)'},
 	},
 	
 	'desc' : {
 		'main' : 'desc',
 		'main_2' : ['image', 'page', 'category', 'link', ],
-		'sidebar' : ['contact_link', 'special_feature', 'category', 'link', ],
+		'sidebar' : ['contact_link', 'special_feature', 'category', 'link', 'image_folder_widget', ],
 		'meta' : {'option_name': 'Description-Priority'},
 	},
 	
@@ -113,56 +114,56 @@ DEERTREES_BLOCK_MAP = {
 	'photo_root' : {
 		'main_left' : ['category_thumb', ],
 		'main_right' : ['image_widget', ],
-		'sidebar' : ['contact_link', 'special_feature', 'page', 'link', ],
+		'sidebar' : ['contact_link', 'special_feature', 'page', 'link', 'image_folder_widget', ],
 		'meta' : {'option_name': 'Photography (Root)'},
 	},
 	
 	'page_root' : {
 		'main_left' : ['page', 'page_widget', ],
 		'main_right' : ['category', ],
-		'sidebar' : ['contact_link', 'special_feature', 'link', ],
+		'sidebar' : ['contact_link', 'special_feature', 'link', 'image_folder_widget', ],
 		'meta' : {'option_name': 'Writing (Root)'},
 	},
 	
 	'code_root' : {
 		'main_left' : ['page_widget', ],
 		'main_right' : ['category', ],
-		'sidebar' : ['contact_link', 'special_feature', 'page', 'link', ],
+		'sidebar' : ['contact_link', 'special_feature', 'page', 'link', 'image_folder_widget', ],
 		'meta' : {'option_name': 'Code/Professional (Root)'},
 	},
 	
 	'personal_root' : {
 		'main_left' : 'desc',
 		'main_right' : ['page', 'image', ],
-		'sidebar' : ['category', 'contact_link', 'special_feature', 'link', 'upcoming_events', ],
+		'sidebar' : ['category', 'contact_link', 'special_feature', 'link', 'upcoming_events', 'image_folder_widget', ],
 		'meta' : {'option_name': 'Personal (Root)'},
 	},
 	
 	'art_root' : {
 		'main_left' : ['category_thumb', 'image', ],
 		'main_right' : ['page', ],
-		'sidebar' : ['contact_link', 'upcoming_events', 'special_feature', 'link', ],
+		'sidebar' : ['contact_link', 'upcoming_events', 'special_feature', 'link', 'image_folder_widget', ],
 		'meta' : {'option_name': 'Artwork (Root)'},
 	},
 	
 	'char' : {
 		'main' : 'desc',
 		'main_2' : ['image', ],
-		'sidebar' : ['contact_link', 'page', 'category', 'special_feature', 'link', ],
+		'sidebar' : ['contact_link', 'page', 'category', 'special_feature', 'link', 'image_folder_widget', ],
 		'meta' : {'option_name': 'Character'},
 	},
 	
 	'char_split' : {
 		'main_left' : 'desc',
 		'main_right' : ['image', ],
-		'sidebar' : ['contact_link', 'page', 'category', 'special_feature', 'link', ],
+		'sidebar' : ['contact_link', 'page', 'category', 'special_feature', 'link', 'image_folder_widget', ],
 		'meta' : {'option_name': 'Character (Split View)'},
 	},
 	
 	'vehicle' : {
 		'main_left' : ['image', ],
 		'main_right' : ['page', 'category_thumb', ],
-		'sidebar' : ['category', 'contact_link', 'special_feature', 'link', ],
+		'sidebar' : ['category', 'contact_link', 'special_feature', 'link', 'image_folder_widget', ],
 		'meta' : {'option_name': 'Vehicle'},
 	},
 }

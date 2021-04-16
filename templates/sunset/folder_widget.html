@@ -1,0 +1,10 @@
+{% if 'sidebar' in blockname %}
+	<h4>Importing From</h4>
+	{% for folder in leaves %}
+	<a href="{% url 'admin:sunset_batch_import_change' folder.pk %}" class="sidebar_link">
+		<span class="sidebar_link_title">{{folder.folder_shortname}}</span>
+		<div class="sidebar_link_subtext">Last Sync:  {{folder.timestamp_sync|date:'M j, Y'}}</div>
+	</a>
+	{% empty %}
+	{% endfor %}
+{% endif %}
