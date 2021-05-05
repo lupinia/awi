@@ -20,10 +20,10 @@ from honeypot.decorators import check_honeypot
 from awi.sitemaps import SITEMAP_OBJECTS
 from awi_access import views as access_views
 from awi_error.views import system_error, denied_error
-from deerfind.views import not_found, search_view, shortcode_redirect
-from deerconnect.views import contact_page
-from deertrees import views as deertrees_views
 from deerbooks import views as deerbooks_views
+from deerconnect.views import contact_page
+from deerfind.views import not_found, search_view, shortcode_redirect
+from deertrees import views as deertrees_views
 from sunset import views as sunset_views
 
 admin.autodiscover()
@@ -47,9 +47,11 @@ urlpatterns = [
 	
 	url(r'^search/', search_view.as_view(), name='haystack_search'),
 	
-	url(r'^tools/sunset/(?P<slug>.*)\.json', sunset_views.geojson_image, name='sunset_geojson'),
+	# APIs and utility views
 	url(r'^tools/category_list/$',permission_required('deertrees.change_leaf')(deertrees_views.all_cats.as_view()),name='all_cats'),
+	url(r'^tools/sunset/(?P<slug>.*)\.json', sunset_views.geojson_image, name='sunset_geojson'),
 	
+	# Special Features
 	url(r'^contact/$',never_cache(check_honeypot(contact_page.as_view())),name='contact'),
 	url(r'^gamescripts/', include('secondlife.urls')),
 	url(r'^personal/cooking/menu/', include('deerfood.urls', namespace='deerfood'), kwargs={'special_feature_slug':'menu'}),
@@ -57,7 +59,7 @@ urlpatterns = [
 	
 	url(r'^sitemap\.xml$', sitemap, {'sitemaps': SITEMAP_OBJECTS}, name='django.contrib.sitemaps.views.sitemap'),
 	
-	#	DeerTrees and DeerBooks are special cases for this site.
+	# DeerTrees and DeerBooks are special cases for this site.
 	url(r'^$',deertrees_views.homepage.as_view(),name='home'),
 	url(r'^feed\.rss$',deertrees_views.main_rssfeed(),name='home_rss'),
 	
