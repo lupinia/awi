@@ -280,7 +280,7 @@ HAYSTACK_SEARCH_RESULTS_PER_PAGE = 50
 #	s3_folder_storage
 import boto.s3.connection
 AWS_S3_CALLING_FORMAT = boto.s3.connection.OrdinaryCallingFormat()
-AWS_S3_SECURE_URLS = False
+AWS_S3_SECURE_URLS = True
 AWS_QUERYSTRING_AUTH = False
 
 DEFAULT_S3_PATH = 'awi'

@@ -19,8 +19,8 @@ LANGUAGE_CODE = 'en-us'
 #LANGUAGE_CODE = 'chr'		# Cherokee translation for Django is in progress, but not ready yet!
 #LOCALE_PATHS = (os.path.abspath(os.path.join(BASE_DIR,'./locale')),)
 
-MEDIA_URL = 'http://cdn.fur.vc/awi/'
-STATIC_URL = 'http://cdn.fur.vc/awi-hagata/'
+MEDIA_URL = 'https://cdn.fur.vc/awi/'
+STATIC_URL = 'https://cdn.fur.vc/awi-hagata/'
 #	Moved STATICFILES_STORAGE and DEFAULT_FILE_STORAGE to settings_apps because they're used in other apps' settings
 
 SECURE_CONTENT_TYPE_NOSNIFF = True
