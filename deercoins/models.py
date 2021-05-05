@@ -76,6 +76,37 @@ class coin(models.Model):
 	def __unicode__(self):
 		return self.code
 	
+	@property
+	def display_value(self):
+		return u'%s%d' % (self.currency.symbol, self.value)
+	
+	@property
+	def display_country(self):
+		if self.country_as_written:
+			return self.country_as_written
+		else:
+			return self.country.name
+	
+	@property
+	def display_year(self):
+		if self.year_as_written:
+			return '%s (%d)' % (self.year_as_written, self.year)
+		else:
+			return '%d' % self.year
+	
+	@property
+	def location(self):
+		if self.location_page:
+			loc_text = 'Page %d' % self.location_page
+			if self.location_row and self.location_column:
+				loc_text = '%s (R%d:C:%d)' % (loc_text, self.location_row, self.location_column)
+			elif self.location_row:
+				loc_text = '%s (Row %d)' % (loc_text, self.location_row)
+			elif self.location_column:
+				loc_text = '%s (Column %d)' % (loc_text, self.location_column)
+		else:
+			return None
+	
 	def save(self, *args, **kwargs):
 		self.denomination_code = self.create_denomination_code()
 		
