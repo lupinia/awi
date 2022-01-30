@@ -24,7 +24,6 @@ Apps/Modules Included
 - **Other**
 	- **Awi Utils**:  Miscellaneous core components used by multiple other modules/apps.
 	- **DeerAttend**:  Event attendance history tracker/display.
-	- **DeerHealth**:  Prescription medication tracker.
 	- **DeerFood**:  Restaurant-style menu system.
 	- **DeerCoins**:  Coin collection (numismatic) database and tools.
 
@@ -57,8 +56,8 @@ Infrastructure
 - **Web Server**:  Nginx *(seneca.lupinia.net)*
 - **WSGI Connector**:  uWSGI
 - **Database Server**:  PostgreSQL *(Amazon RDS)*
-- **Static/Media Hosting**:  Amazon S3 *(cdn.fur.vc)*
-- **Search Indexing Server**:  Amazon ElasticSearch
+- **Static/Media Hosting**:  Amazon S3/CloudFront *(cdn.fur.vc)*
+- **Search Indexing Server**:  Amazon OpenSearch
 - **Cache Server**:  Amazon ElastiCache (Memcached)
 
 Custom Management Commands
