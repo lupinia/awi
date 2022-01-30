@@ -1,0 +1,14 @@
+ghostscript
+perl-Image-ExifTool
+texinfo
+texinfo-tex
+texlive
+texlive-collection-basic
+texlive-collection-fontsrecommended
+texlive-collection-latex
+texlive-collection-latexrecommended
+texlive-collection-xetex
+texlive-fontbook
+texlive-fontwrap
+texlive-ptext
+texlive-xetex

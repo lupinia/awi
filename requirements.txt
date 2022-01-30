@@ -1,0 +1,46 @@
+#	Lupinia Studios
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Python Requirements and Dependencies
+#	This list was manually assembled
+#	
+#	Specific versions needed:
+#	=================
+beautifulsoup<3.2.2
+django-classy-tags<1.0
+django-debug-toolbar<2.0			# Required for dev, not required for prod
+django-haystack<3.0
+django-mptt-admin<1.0
+django<2.0
+elasticsearch>5.0,<6.0
+markdown2latex==2.1		# Requires manual installation
+markdown<3.0			# Requirement for markdown2latex
+opencv-python-headless<4.3
+Pillow>3.0,<7.0
+rubber==1.4				# Requires manual installation, and there's a name collision in pip
+#	=================
+#	Other dependencies with less-specific version requirements,
+#	as long as they're compatible with the ones above
+#	=================
+psycopg2	# Recommend installing this manually
+bleach
+boto
+certifi
+django-admin-tools
+django-cookie-law
+django-debug-toolbar-line-profiler	# Required for dev, not required for prod
+django-haystack-panel				# Required for dev, not required for prod
+django-honeypot
+django-mptt
+django-s3-folder-storage
+django-static-precompiler
+html2text
+libsass
+numpy
+PyExifTool
+python-magic
+requests
+sqlparse
+urllib3
