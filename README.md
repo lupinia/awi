@@ -59,6 +59,7 @@ Infrastructure
 - **Database Server**:  PostgreSQL *(Amazon RDS)*
 - **Static/Media Hosting**:  Amazon S3 *(cdn.fur.vc)*
 - **Search Indexing Server**:  Amazon ElasticSearch
+- **Cache Server**:  Amazon ElastiCache (Memcached)
 
 Custom Management Commands
 -------------------

@@ -128,13 +128,6 @@ middleware_cache_update = ('django.middleware.cache.UpdateCacheMiddleware',)
 middleware_cache_fetch = ('django.middleware.cache.FetchFromCacheMiddleware',)
 #	End Middleware
 
-CACHES = {
-	'default': {
-		'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-		'LOCATION': 'dbcache',
-	}
-}
-
 STATICFILES_FINDERS = (
 	'django.contrib.staticfiles.finders.FileSystemFinder',
 	'django.contrib.staticfiles.finders.AppDirectoriesFinder',

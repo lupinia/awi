@@ -51,6 +51,13 @@ DATABASES = {
 	}
 }
 
+CACHES = {
+	'default': {
+		'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+		'LOCATION': '',
+	}
+}
+
 HAYSTACK_CONNECTIONS = {
 	'default': {
 		'ENGINE': 'haystack.backends.elasticsearch_backend.Elasticsearch2SearchEngine',

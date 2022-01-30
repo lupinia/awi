@@ -1,4 +1,5 @@
 ghostscript
+libmemcached
 perl-Image-ExifTool
 texinfo
 texinfo-tex

@@ -40,6 +40,7 @@ html2text
 libsass
 numpy
 PyExifTool
+pylibmc
 python-magic
 requests
 sqlparse
