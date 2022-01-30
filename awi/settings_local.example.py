@@ -53,7 +53,7 @@ DATABASES = {
 
 HAYSTACK_CONNECTIONS = {
 	'default': {
-		'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+		'ENGINE': 'haystack.backends.elasticsearch_backend.Elasticsearch2SearchEngine',
 		'URL': '',
 		'INDEX_NAME': 'haystack_awi',
 		'INCLUDE_SPELLING':True,
