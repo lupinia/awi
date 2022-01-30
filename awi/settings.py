@@ -73,7 +73,6 @@ INSTALLED_APPS = (
 	'deerattend',	# Convention/event database
 	'deercoins',	# Coin collection database
 	'deerfood',		# Restaurant-style menu
-	'deerhealth',	# Prescription Tracker
 )
 
 #	System Settings
