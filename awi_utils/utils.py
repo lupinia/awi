@@ -6,6 +6,7 @@
 #	General utility functions/objects
 #	=================
 
+import hashlib
 import platform
 
 from django.conf import settings
@@ -114,3 +115,15 @@ def summarize(body=None, length=255, summary=None, fallback=None, strip=True, pr
 		return result
 
 
+#	More compact version of using hashlib to generate various types of hashes from strings
+def hash_sha1(source):
+	hash = hashlib.sha1(source)
+	return hash.hexdigest()
+
+def hash_sha256(source):
+	hash = hashlib.sha256(source)
+	return hash.hexdigest()
+
+def hash_sha512(source):
+	hash = hashlib.sha512(source)
+	return hash.hexdigest()

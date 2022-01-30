@@ -13,8 +13,6 @@
 #	def access_query:  Returns Q objects corresponding to the access level of the current request.  Example usage:  access_control.objects.filter({main condition}).filter(access_query(request))
 #	=================
 
-import hashlib
-
 from datetime import timedelta
 
 from django.db import models
@@ -24,6 +22,8 @@ from django.contrib.sites.models import Site
 from django.utils import dateparse
 from django.utils import timezone
 from django.utils.text import slugify
+
+from awi_utils.utils import hash_sha256
 
 #	Helper Functions
 def check_mature(request=False):
@@ -163,9 +163,8 @@ class access_code(models.Model):
 			self.is_valid = False
 		
 		if not self.code:
-			hash = hashlib.sha256()
-			hash.update('%s|%s' % (str(timezone.now()), self.item_type))
-			self.code = slugify(hash.hexdigest())
+			hash = hash_sha256('%s|%s' % (str(timezone.now()), self.item_type))
+			self.code = slugify(hash)
 		
 		super(access_code, self).save(*args, **kwargs)
 
