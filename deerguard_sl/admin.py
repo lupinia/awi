@@ -18,13 +18,6 @@ class security_zone_inline(admin.TabularInline):
 	verbose_name_plural = "Security Zones"
 	fields = ('name', 'slug', 'auth_public', 'auth_samegroup', 'auth_private', 'log_allowed', 'log_denied',)
 
-class security_server_inline(admin.TabularInline):
-	model = security_server
-	extra = 0
-	verbose_name_plural = "Security Servers"
-	readonly_fields = ('timestamp_mod', 'timestamp_sync', 'is_synchronized',)
-	fields = ('name', 'key', 'sim', 'timestamp_post', 'timestamp_mod', 'timestamp_sync', 'is_synchronized',)
-
 class security_admin(admin.ModelAdmin):
 	fieldsets = [
 		(None, {'fields':(('name','slug',),'notes',('timestamp_post','timestamp_mod',),),},),
@@ -37,7 +30,6 @@ class security_admin(admin.ModelAdmin):
 	readonly_fields = ['timestamp_mod',]
 	filter_horizontal = ['system_admins',]
 	search_fields = ('name','slug','notes',)
-	inlines=[security_zone_inline, security_server_inline, ]
 
 class zone_admin(admin.ModelAdmin):
 	fieldsets = [
