@@ -78,7 +78,7 @@ urlpatterns = [
 	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.md',deerbooks_views.single_page_md.as_view(),name='page_md'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.tex',deerbooks_views.single_page_tex.as_view(),name='page_tex'),
 	
-	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.img',sunset_views.single_image.as_view(),name='image_single'),
+	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.ihtm',sunset_views.single_image.as_view(),name='image_single'),
 	
 	url(r'^(?P<cached_url>[\w\d_/-]+)/feed\.rss$',deertrees_views.cat_rssfeed(),name='category_rss'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/$',deertrees_views.category_list.as_view(),name='category'),
