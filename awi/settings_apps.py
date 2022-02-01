@@ -32,6 +32,49 @@ GRID_OPTIONS = (
 	('sl_aditi','Second Life Beta (Aditi)'),
 	('opensim_lup','OpenSim (Lupinia Private)'),
 )
+#	gridutils
+#	This dictionary stores the settings for different types of Second Life/OpenSim objects
+#	Use the app name and model name of the parent model to reference these.
+#	Structure:
+#		appname.modelname {
+#			confirm_new:  If True, user attempting to initialize a new object will be required to login to the website to verify the request.
+#			limit_duplicates:  If True, only one device of the same type per user may be rezzed in each region.
+#			limit_move:  If True, the same object UUID with the same auth token in a different region will be blocked.  Otherwise, rezzing this device in a new region will update the existing device, deactivating the old one.
+#			require_url:  If True, a valid remote URL for the in-world device will be expected and maintained.
+#			wearable_allowed:  If True, instances of this device can have their "wearable" attribute set to True, which will bypass location checks entirely.  Use carefully!
+#			auth_key_maxage:  Number of days to wait before the next request will cycle the auth key.
+#			sync_age_yellow:  Number of days to wait before the sync health is a cause for concern (the "red" status is defined by timestamp_sync older than now - auth_key_maxage).}
+DEVICE_SETTINGS = {
+	'gridutils.device': {	# Defaults
+		'confirm_new': False,
+		'limit_duplicates': False,
+		'limit_move': True,
+		'require_url': False,
+		'wearable_allowed': False,
+		'auth_key_maxage': 14,
+		'sync_age_yellow': 7,
+	},
+	# DeerGuard
+	'deerguard_sl.security_server': {
+		'confirm_new': True,
+		'limit_duplicates': False,
+		'limit_move': True,
+		'require_url': False,
+		'wearable_allowed': False,
+		'auth_key_maxage': 30,
+		'sync_age_yellow': 14,
+	},
+}
+
+#	Number of days in the future to expire an authorization token when replacing it
+DEVICE_AUTH_DEPRECATION_DAYS = 365
+
+#	Number of hours in the future to expire a device manual approval request after creating it
+DEVICE_APPROVAL_REQUEST_MAXAGE = 24
+
+# DEVICE_TYPES = (
+	# 'deerguard_sl.security_server',
+# )
 
 
 #	deertrees

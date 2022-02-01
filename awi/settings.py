@@ -66,6 +66,7 @@ INSTALLED_APPS = (
 	
 	#	My Apps - Second Life Systems/Content
 	'deerland',		# Virtual world estate/property management
+	'gridutils',	# Base models and tools for virtual world data management
 	'deerguard_sl',	# Access control for Second Life objects/scripts
 	
 	#	My Apps - Other

@@ -19,6 +19,7 @@ Apps/Modules Included
 	- **[Sunset](http://www.lupinia.net/code/projects/django/sunset.htm)**:  Advanced image gallery, with built-in watermarking, metadata parsing, hash-based de-duplication, and batch imports from server-side directories.  Also provides dynamic background images for page body site-wide.
 - **Second Life Systems/Content**
 	- **DeerLand**:  Virtual world property/estate tracking and management.
+	- **GridUtils**:  Standard models, views, and utility functions for common data types and structures used in Second Life and other virtual worlds.
 	- **DeerGuard SL**:  Security/authentication system for LSL scripted systems in Second Life and other virtual worlds.
 - **Other**
 	- **Awi Utils**:  Miscellaneous core components used by multiple other modules/apps.
