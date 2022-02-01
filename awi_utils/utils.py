@@ -8,6 +8,7 @@
 
 import hashlib
 import platform
+import random
 
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -127,6 +128,36 @@ def hash_sha256(source):
 def hash_sha512(source):
 	hash = hashlib.sha512(source)
 	return hash.hexdigest()
+
+
+#	Generate a random integer sequence of a specific length.
+#		duplicates:  Boolean.  If True, sequential duplicates are allowed.
+#		first_zero:  Boolean.  If True, first digit in sequence can be a zero.
+def rand_int_list(length=1, duplicates=False, first_zero=False):
+	# Handle bad inputs, just in case
+	if length < 1:
+		return []
+	elif length > 1024:
+		length = 1024
+	
+	integer_generator = random.SystemRandom()
+	int_list = []
+	i = 0
+	while i < length:
+		if first_zero and not i:
+			range_start = 1
+		else:
+			range_start = 0
+		int_list.append(integer_generator.randrange(range_start, 9))
+		i += 1
+		
+		# Check for sequential duplicates
+		if duplicates == False and i > 1:
+			if int_list[i-1] == int_list[i-2]:
+				int_list.pop()
+				i -= 1
+	
+	return int_list
 
 
 #	Since Django is stupidly picky about what it will accept for model field choices, 
