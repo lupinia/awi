@@ -20,7 +20,6 @@ Apps/Modules Included
 - **Second Life Systems/Content**
 	- **DeerLand**:  Virtual world property/estate tracking and management.
 	- **DeerGuard SL**:  Security/authentication system for LSL scripted systems in Second Life and other virtual worlds.
-	- **secondlife**:  Legacy support for security/authentication scripts in Second Life.  Will be replaced by DeerGuard SL.
 - **Other**
 	- **Awi Utils**:  Miscellaneous core components used by multiple other modules/apps.
 	- **DeerAttend**:  Event attendance history tracker/display.

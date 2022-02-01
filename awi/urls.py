@@ -53,7 +53,6 @@ urlpatterns = [
 	
 	# Special Features
 	url(r'^contact/$',never_cache(check_honeypot(contact_page.as_view())),name='contact'),
-	url(r'^gamescripts/', include('secondlife.urls')),
 	url(r'^personal/cooking/menu/', include('deerfood.urls', namespace='deerfood'), kwargs={'special_feature_slug':'menu'}),
 	url(r'^furry/cons/', include('deerattend.urls',namespace='deerattend'), kwargs={'special_feature_slug':'cons'}),
 	

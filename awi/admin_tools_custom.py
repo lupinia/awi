@@ -32,7 +32,6 @@ itemlist_sl = (
 	'deerguard_sl.*',
 	'deerland.*',
 	'usertools.*',
-	'secondlife.*',
 )
 
 itemlist_system = (
