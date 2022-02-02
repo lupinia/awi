@@ -633,6 +633,16 @@ class device(location_model):
 		return self.get_owner()[0]
 	
 	@property
+	def auth_key_expired(self):
+		if self.timestamp_authkey:
+			if timezone.now() > self.timestamp_authkey + timedelta(days=self.auth_key_maxage):
+				return True
+			else:
+				return False
+		else:
+			return False
+	
+	@property
 	def init_status(self):
 		# Returns a tuple; first value is boolean (true if initialization is done)
 		# Possible return values:
@@ -713,6 +723,7 @@ class device(location_model):
 		else:
 			return 'grey'
 	
+	
 	#	Settings per-app/per-model
 	@property
 	def model_settings(self):
@@ -754,14 +765,13 @@ class device(location_model):
 		return self.model_settings['sync_age_yellow']
 	
 	@property
-	def auth_key_expired(self):
-		if self.timestamp_authkey:
-			if timezone.now() > self.timestamp_authkey + timedelta(days=self.auth_key_maxage):
-				return True
-			else:
-				return False
-		else:
-			return False
+	def api_request_fields(self):
+		extra_fields = {}
+		if self.wearable_allowed:
+			extra_fields['is_attached'] = True
+		
+		return self.model_settings.get('standard_fields', {}).update(extra_fields)
+	
 	
 	#	Methods (remote URLs)
 	

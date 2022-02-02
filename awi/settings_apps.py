@@ -36,6 +36,7 @@ IMPORT_DIR = os.path.abspath('/srv/awi_import/')
 #			wearable_allowed:  If True, instances of this device can have their "wearable" attribute set to True, which will bypass location checks entirely.  Use carefully!
 #			auth_key_maxage:  Number of days to wait before the next request will cycle the auth key.
 #			sync_age_yellow:  Number of days to wait before the sync health is a cause for concern (the "red" status is defined by timestamp_sync older than now - auth_key_maxage).
+#			standard_fields:  Optional.  Follows the structure of DEVICE_API_STANDARD_FIELDS.
 DEVICE_SETTINGS = {
 	'gridutils.device': {	# Defaults
 		'confirm_new': False,
