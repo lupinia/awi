@@ -24,14 +24,6 @@ IMPORT_DIR = os.path.abspath('/srv/awi_import/')
 
 #	CUSTOM APPS
 #	==============
-#	usertools / deerguard_sl
-#	Options for Second Life/OpenSim grids allowed for user profiles
-#	Also used by other apps/queries in specific virtual world grids
-GRID_OPTIONS = (
-	('sl','Second Life'),
-	('sl_aditi','Second Life Beta (Aditi)'),
-	('opensim_lup','OpenSim (Lupinia Private)'),
-)
 #	gridutils
 #	This dictionary stores the settings for different types of Second Life/OpenSim objects
 #	Use the app name and model name of the parent model to reference these.
