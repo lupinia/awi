@@ -65,9 +65,9 @@ INSTALLED_APPS = (
 	'sunset',		# Photo/image gallery
 	
 	#	My Apps - Second Life Systems/Content
-	'deerland',		# Virtual world estate/property management
 	'gridutils',	# Base models and tools for virtual world data management
 	'deerguard_sl',	# Access control for Second Life objects/scripts
+	#'deerland',		# Virtual world estate/property management
 	
 	#	My Apps - Other
 	'deerattend',	# Convention/event database
