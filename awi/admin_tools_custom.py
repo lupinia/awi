@@ -31,7 +31,6 @@ itemlist_structure = (
 itemlist_sl = (
 	'deerguard_sl.*',
 	'deerland.*',
-	'usertools.*',
 	'gridutils.*',
 )
 
