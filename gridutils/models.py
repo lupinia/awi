@@ -20,10 +20,7 @@ from django.utils.text import slugify
 
 from awi_utils.utils import rand_int_list
 from gridutils.utils import (
-	coord_normalize,
 	device_type_choices,
-	format_slurl,
-	format_vector,
 	location_model,
 	coords_to_square,
 	square_to_coords,
@@ -946,7 +943,7 @@ class device_authorization(models.Model):
 	
 	@property
 	def current_token(self):
-		return self.tokens.filter(is_active=True).filter(models.Q(timestamp_expire__isnull=True) or models.Q(timestamp_expire < timezone.now())).order_by('-version').first()
+		return self.tokens.filter(is_active=True).filter(models.Q(timestamp_expire__isnull=True) or models.Q(timestamp_expire__lt=timezone.now())).order_by('-version').first()
 	
 	def check_avatar(self, user_key):
 		# First, check the allowed_users list
