@@ -10,47 +10,28 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
+from gridutils.models import device
+
 class security_system(models.Model):
 	name = models.CharField(max_length=200)
 	slug = models.SlugField(unique=True)
-	owner = models.ForeignKey('usertools.person', on_delete=models.PROTECT, related_name='security_systems_owned')
-	grid = models.CharField(max_length=100, choices=settings.GRID_OPTIONS, help_text='Select the virtual world/"grid" for this security system.')
+	owner = models.ForeignKey('gridutils.avatar', on_delete=models.PROTECT, related_name='security_systems_owned')
+	grid = models.ForeignKey('gridutils.grid', on_delete=models.PROTECT, help_text='Select the virtual world/"grid" for this security system.')
 	
 	channel_devices = models.BigIntegerField(help_text='LSL script channel for devices to send authorization commands (servers will listen on this channel).')
 	channel_servers = models.BigIntegerField(help_text='LSL script channel for servers to send responses to devices (devices will listen on this channel).')
 	notes = models.TextField(blank=True, null=True)
 	
-	system_admins = models.ManyToManyField('usertools.person', blank=True, related_name='security_systems_managed')
+	system_admins = models.ManyToManyField('gridutils.avatar', blank=True, related_name='security_systems_managed')
 	
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def __unicode__(self):
-		return '%s (%s)' % (self.name, self.get_grid_display())
+		return '%s (%s)' % (self.name, self.grid.name)
 
-class security_server(models.Model):
+class security_server(device):
 	system = models.ForeignKey(security_system, related_name='servers', on_delete=models.CASCADE)
-	name = models.CharField(max_length=64)
-	key = models.UUIDField()
-	sim = models.ForeignKey('deerland.region', on_delete=models.PROTECT)
-	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
-	timestamp_sync = models.DateTimeField(blank=True, null=True, verbose_name='date/time synchronized')
-	
-	@property
-	def key_str(self):
-		return str(self.key)
-	
-	@property
-	def is_synchronized(self):
-		if self.timestamp_sync and self.timestamp_sync >= self.timestamp_mod:
-			return True
-		else:
-			return False
-	
-	def __unicode__(self):
-		return self.name
 
 class security_zone(models.Model):
 	system = models.ForeignKey(security_system, related_name='zones', on_delete=models.CASCADE)
@@ -62,10 +43,10 @@ class security_zone(models.Model):
 	auth_samegroup = models.BooleanField(default=False, blank=True)
 	auth_private = models.BooleanField(default=False, blank=True)
 	
-	auth_users_allowed = models.ManyToManyField('usertools.person', blank=True, related_name='zones_allowed')
-	auth_users_denied = models.ManyToManyField('usertools.person', blank=True, related_name='zones_denied')
-	auth_groups_allowed = models.ManyToManyField('usertools.group', blank=True, related_name='zones_allowed')
-	auth_groups_denied = models.ManyToManyField('usertools.group', blank=True, related_name='zones_denied')
+	auth_users_allowed = models.ManyToManyField('gridutils.avatar', blank=True, related_name='zones_allowed')
+	auth_users_denied = models.ManyToManyField('gridutils.avatar', blank=True, related_name='zones_denied')
+	auth_groups_allowed = models.ManyToManyField('gridutils.group', blank=True, related_name='zones_allowed')
+	auth_groups_denied = models.ManyToManyField('gridutils.group', blank=True, related_name='zones_denied')
 	
 	log_allowed = models.BooleanField(blank=True, default=True)
 	log_denied = models.BooleanField(blank=True, default=True)
@@ -118,7 +99,7 @@ class security_zone(models.Model):
 
 class auth_log(models.Model):
 	zone = models.ForeignKey(security_zone, related_name='logs', on_delete=models.CASCADE)
-	user = models.ForeignKey('usertools.person', related_name='auth_logs', on_delete=models.CASCADE)
+	user = models.ForeignKey('gridutils.avatar', related_name='auth_logs', on_delete=models.CASCADE)
 	action = models.BooleanField(blank=True, help_text='True if allowed, False if denied')
 	action_code = models.CharField(max_length=20, default='UNKNOWN')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
