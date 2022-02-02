@@ -30,6 +30,7 @@ def format_slurl(sim_name, x=128, y=128, z=0):
 	sim_name = sim_name.replace(' ', '%20')
 	return 'https://maps.secondlife.com/secondlife/%s/%d/%d/%d' % (sim_name, x, y, z)
 
+# Convert a set of three numbers (integers or floats) to SL's vector data type
 def format_vector(x, y, z):
 	return '<%d, %d, %d>' % (x, y, z)
 
