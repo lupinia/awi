@@ -65,7 +65,6 @@ class avatar(models.Model):
 	account = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='grid_avatars')
 	key = models.UUIDField(db_index=True, help_text=mark_safe('The unique identifier for this user.  <a href="http://wiki.secondlife.com/wiki/Category:LSL_Key" target="_BLANK">More info</a>.'))
 	grid = models.ForeignKey(grid, on_delete=models.PROTECT, help_text='Select the virtual world/"grid" for this user.')
-	#grid = models.CharField(max_length=100, choices=settings.GRID_OPTIONS, help_text='Select the virtual world/"grid" for this user.')
 	active = models.BooleanField(blank=True, default=True, db_index=True, help_text='If unchecked, user no longer exists.')
 	primary_for_account = models.BooleanField(blank=True, default=True, db_index=True)
 	allow_gridlogin = models.BooleanField(blank=True, default=True, db_index=True)
@@ -310,6 +309,7 @@ class estate(models.Model):
 	covenant = models.TextField(blank=True, null=True)
 	is_mainland = models.BooleanField(blank=True, default=False)
 	is_rental = models.BooleanField(blank=True, default=False)
+	default_estate = models.BooleanField(blank=True, default=False, help_text='If True, this estate is the "catch-all" for regions in its grid that do not have an estate defined at creation time.')
 	
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
