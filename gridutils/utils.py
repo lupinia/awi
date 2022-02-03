@@ -34,6 +34,36 @@ def format_slurl(sim_name, x=128, y=128, z=0):
 def format_vector(x, y, z):
 	return '<%d, %d, %d>' % (x, y, z)
 
+# Convert an SL vector (represented as a string) to three separate numbers
+# Valid inputs are '<x, y, z>' or '(x, y, z)' (spacing is irrelevant)
+# Returns a tuple containing the extracted x, y, and z values.
+# If the input string is invalid, the resulting values will all be zeros
+def parse_vector(vector):
+	x = 0.0
+	y = 0.0
+	z = 0.0
+	
+	# First, let's get rid of extra characters
+	vector_normalized = vector.replace('(', '').replace(')', '').replace('<', '').replace('>', '').replace(' ', '')
+	
+	# We should now have a string containing three comma-separated numbers
+	vector_list_raw = vector_normalized.split(',')
+	if len(vector_list_raw) == 3:
+		vector_list = []
+		for i in vector_list_raw:
+			# This really should be easier.  I hate Python type conversion.
+			try:
+				if '.' in i:
+					n = float(i)
+				else:
+					n = int(i)
+			except ValueError:
+				# Whatever, just skip this one
+				i = 0
+			vector_list.append(n)
+	
+	return vector_list
+
 # Converting between region coordinates and sequentially-numbered parcel border squares
 # Counting starts from southwest corner; X is left to right, Y is bottom to top
 # Why? Because that's how SL does it for some reason.
