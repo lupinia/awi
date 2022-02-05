@@ -765,6 +765,10 @@ class device(location_model):
 		return self.model_settings['sync_age_yellow']
 	
 	@property
+	def api_rate_limit(self):
+		return self.model_settings['api_rate_limit']
+	
+	@property
 	def api_request_fields(self):
 		extra_fields = {}
 		if self.wearable_allowed:

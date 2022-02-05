@@ -36,6 +36,7 @@ IMPORT_DIR = os.path.abspath('/srv/awi_import/')
 #			wearable_allowed:  If True, instances of this device can have their "wearable" attribute set to True, which will bypass location checks entirely.  Use carefully!
 #			auth_key_maxage:  Number of days to wait before the next request will cycle the auth key.
 #			sync_age_yellow:  Number of days to wait before the sync health is a cause for concern (the "red" status is defined by timestamp_sync older than now - auth_key_maxage).
+#			api_rate_limit:  Maximum number of queries per device per minute.
 #			standard_fields:  Optional.  Follows the structure of DEVICE_API_STANDARD_FIELDS.
 DEVICE_SETTINGS = {
 	'gridutils.device': {	# Defaults
@@ -46,6 +47,7 @@ DEVICE_SETTINGS = {
 		'wearable_allowed': False,
 		'auth_key_maxage': 14,
 		'sync_age_yellow': 7,
+		'api_rate_limit': 30,
 	},
 	# DeerGuard
 	'deerguard_sl.security_server': {
@@ -56,6 +58,7 @@ DEVICE_SETTINGS = {
 		'wearable_allowed': False,
 		'auth_key_maxage': 30,
 		'sync_age_yellow': 14,
+		'api_rate_limit': 60,
 	},
 }
 
@@ -65,6 +68,8 @@ DEVICE_AUTH_DEPRECATION_DAYS = 365
 #	Number of hours in the future to expire a device manual approval request after creating it
 DEVICE_APPROVAL_REQUEST_MAXAGE = 24
 
+#	API rate limiting
+DEVICE_API_RATELIMIT_CACHE_PREFIX = 'gudvcapi_devicereq_open'
 
 
 #	deertrees
