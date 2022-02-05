@@ -614,8 +614,8 @@ class device(location_model):
 		return str(self.key)
 	
 	@property
-	def auth_token_str(self):
-		return str(self.auth_token)
+	def remote_url_key_str(self):
+		return str(self.remote_url_key)
 	
 	@property
 	def is_synchronized(self):
@@ -783,13 +783,6 @@ class device(location_model):
 		else:
 			return self.approvals.all().first()
 	
-	def authenticate(self, request=False):
-		if request:
-			# To do!
-			return False
-		else:
-			return False
-	
 	def new_auth_key(self, approval_request=None):
 		if approval_request:
 			target_obj = approval_request
@@ -930,7 +923,6 @@ class device_authorization(models.Model):
 	type = models.CharField(max_length=24, choices=device_type_choices(), blank=True, null=True)
 	
 	active = models.BooleanField(default=True, blank=True)
-	require_login = models.BooleanField(default=True, blank=True, help_text='If checked, users will be required to login to the website to confirm a new device authorization request.')
 	allowed_users = models.ManyToManyField(avatar, blank=True)
 	deprecation_days_override = models.PositiveIntegerField(blank=True, null=True)
 	

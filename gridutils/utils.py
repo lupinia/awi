@@ -59,7 +59,7 @@ def parse_vector(vector):
 					n = int(i)
 			except ValueError:
 				# Whatever, just skip this one
-				i = 0
+				n = 0
 			vector_list.append(n)
 	
 	return vector_list
