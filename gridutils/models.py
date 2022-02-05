@@ -770,11 +770,14 @@ class device(location_model):
 	
 	@property
 	def api_request_fields(self):
-		extra_fields = {}
+		# Start with the standard fields
+		# Then extend them with the fields from model settings
+		api_fields = settings.DEVICE_API_STANDARD_FIELDS
+		api_fields.update(self.model_settings.get('standard_fields', {}))
 		if self.wearable_allowed:
-			extra_fields['is_attached'] = True
+			api_fields['is_attached'] = True
 		
-		return self.model_settings.get('standard_fields', {}).update(extra_fields)
+		return api_fields
 	
 	
 	#	Methods (remote URLs)
