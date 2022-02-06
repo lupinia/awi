@@ -217,8 +217,7 @@ class group(models.Model):
 	is_mature = models.BooleanField(blank=True, default=False)
 	member_count = models.PositiveIntegerField(blank=True, default=0)
 	signup_fee = models.PositiveIntegerField(blank=True, default=0)
-	#title_owners = models.CharField(max_length=40, blank=True, null=True)
-	#title_everyone = models.CharField(max_length=40, blank=True, null=True)
+	data_incomplete = models.BooleanField(editable=False, default=False, db_index=True, help_text='If True, group was created without knowing its name.')
 	
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
@@ -239,8 +238,17 @@ class group(models.Model):
 		return 'Group: %s (%s)' % (self.name, self.grid.name)
 	
 	def save(self, *args, **kwargs):
-		if not self.slug:
-			self.slug = slugify(self.name)
+		if self.data_incomplete:
+			if not self.name:
+				self.name = '__unknown'
+			if not self.slug or self.slug.startswith('--unknown-'):
+				if self.pk:
+					self.slug = '--unknown-%d' % self.pk
+				else:
+					self.slug = '--unknown-%d' % (group.objects.all().count() + 1)
+		else:
+			if not self.slug:
+				self.slug = slugify(self.name)
 		super(group, self).save(*args, **kwargs)
 	
 	class Meta:
@@ -818,6 +826,15 @@ class device(location_model):
 			return True
 		else:
 			return False
+	
+	def check_region(self, region_name):
+		if self.attached:
+			if self.region.name == region_name:
+				return True
+			else:
+				return False
+		else:
+			return None
 	
 	#	Methods (universal)
 	def get_owner(self):

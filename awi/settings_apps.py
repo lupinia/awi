@@ -68,6 +68,29 @@ DEVICE_AUTH_DEPRECATION_DAYS = 365
 #	Number of hours in the future to expire a device manual approval request after creating it
 DEVICE_APPROVAL_REQUEST_MAXAGE = 24
 
+#	Dictionary of required headers for device API requests, and more standardized internal names
+DEVICE_API_REQUIRED_HEADERS = {
+	'HTTP_X_SECONDLIFE_OBJECT_NAME': 'device_name',
+	'HTTP_X_SECONDLIFE_OBJECT_KEY': 'device_key',
+	'HTTP_X_SECONDLIFE_OWNER_NAME': 'owner_name',
+	'HTTP_X_SECONDLIFE_OWNER_KEY': 'owner_key',
+	'HTTP_X_SECONDLIFE_SHARD': 'grid_shard',
+	'HTTP_X_SECONDLIFE_REGION': 'region_name',
+	'HTTP_X_SECONDLIFE_LOCAL_POSITION': 'device_location',
+}
+
+#	Dictionary of expected POST fields for all device API requests, and whether they're required
+#		If True, validation will fail without this field
+DEVICE_API_STANDARD_FIELDS = {
+	'auth_token': True,
+	'object_auth': True,
+	'group_owned': True,
+	
+	'group_key': False,
+	'owner_account_key': False,
+	'previous_region_name': False,	# Only used for a corner case where a region is renamed
+}
+
 #	API rate limiting
 DEVICE_API_RATELIMIT_CACHE_PREFIX = 'gudvcapi_devicereq_open'
 
