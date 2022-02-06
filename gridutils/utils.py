@@ -7,11 +7,65 @@
 #	=================
 
 import math
+import requests
 
 from django.conf import settings
+from django.core.cache import cache
 from django.db import models
 
 from awi_utils.utils import dict_key_choices, hash_sha1, hash_sha256
+
+# Use the Second Life Name-To-Agent API to validate a new username
+# http://wiki.secondlife.com/wiki/Name_to_agent_ID_API
+# Returns a tuple; first value is a pass/fail boolean or None on error, second is a status message
+def verify_sl_name(user, new_name):
+	status = None
+	error = 'unknown'
+	if getattr(settings, 'SECONDLIFE_API_KEY', ''):
+		if user.grid.slug == settings.SECONDLIFE_GRIDSLUG:
+			ratelimit_key = '%s:%s' % (settings.SECONDLIFE_API_RATELIMIT_CACHE_PREFIX, settings.SECONDLIFE_API_KEY)
+			if cache.get(ratelimit_key):
+				error = 'over_limit'
+			else:
+				cache.set(ratelimit_key, 1, 1)
+				api_headers = {'api-key': settings.SECONDLIFE_API_KEY,}
+				payload = {}
+				if ' ' in new_name:
+					payload['username'], payload['lastname'] = new_name.split(' ', 1)
+				else:
+					payload['username'] = new_name
+					payload['lastname'] = 'Resident'
+				
+				try:
+					r = requests.post(url=settings.SECONDLIFE_API_URL_N2A, headers=api_headers, json=payload)
+					response_data = {}
+					if r.status_code == 200 or r.status_code == 404:
+						response_data = r.json()
+					
+					if r.status_code == 200:
+						if response_data.get('agent_id', None) == user.key_str:
+							status = True
+							error = 'success'
+						else:
+							status = False
+							error = 'key_mismatch'
+					elif r.status_code == 403:
+						error = 'rate_limited'
+					elif r.status_code == 404:
+						error = response_data.get('error', '')
+						if error != 'invalid_api_key':
+							status = False
+							error = 'name_invalid'
+					elif r.status_code == 500:
+						error = 'remote_server_error'
+				except requests.exceptions.RequestException:
+					error = 'requests_error'
+		else:
+			error = 'wrong_grid'
+	else:
+		error = 'api_key_missing'
+	
+	return (status, error)
 
 def coord_normalize(value, type='location'):
 	if value < 0:

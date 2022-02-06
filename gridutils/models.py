@@ -13,6 +13,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.safestring import mark_safe
@@ -26,6 +27,7 @@ from gridutils.utils import (
 	square_to_coords,
 	psv_hash,
 	psv_hash256,
+	verify_sl_name,
 )
 
 #	===========
@@ -71,6 +73,7 @@ class avatar(models.Model):
 	grid_username = models.CharField(max_length=100) #TODO: Validator!
 	grid_username_cur = models.CharField(max_length=100, editable=False)
 	display_name = models.CharField(max_length=250, blank=True)
+	grid_username_verified = models.BooleanField(default=True, editable=False)
 	
 	notes = models.TextField(blank=True, null=True)
 	icon_key = models.UUIDField(blank=True, null=True)
@@ -177,10 +180,21 @@ class avatar(models.Model):
 			# We're editing an object that already exists
 			# Check for changes to the username, and update if necessary
 			if self.grid_username.lower() != self.grid_username_cur.lower():
-				name_history.objects.create(profile=self, grid_username=self.grid_username_cur, grid_name_first=self.grid_name_first, grid_name_last=self.grid_name_last)
-				self.grid_name_first, self.grid_name_last, self.grid_username = self.normalize_names()
-				self.grid_username_cur = self.grid_username
-				self.timestamp_namechange = timezone.now()
+				name_verified, verify_status = verify_sl_name(self, self.grid_username)
+				if name_verified is not False:
+					if name_verified or verify_status == 'wrong_grid':
+						self.grid_username_verified = True
+					else:
+						self.grid_username_verified = False
+					
+					name_history.objects.create(profile=self, grid_username=self.grid_username_cur, grid_name_first=self.grid_name_first, grid_name_last=self.grid_name_last)
+					self.grid_name_first, self.grid_name_last, self.grid_username = self.normalize_names()
+					self.grid_username_cur = self.grid_username
+					self.timestamp_namechange = timezone.now()
+				
+				else:
+					# Name verification through the API was successful, but returned incorrect results
+					raise ValidationError('SL username validation failed')
 		
 		else:
 			# This is a new entry, gotta do some cleanup

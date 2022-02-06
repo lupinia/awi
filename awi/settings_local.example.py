@@ -34,11 +34,12 @@ DEFAULT_FROM_EMAIL = ''
 DEERCONNECT_TO_EMAIL = ''
 DEERCONNECT_HEALTHCHECK_USERAGENT = ''
 
-RECAPTCHA_PUBLIC_KEY = ''
-RECAPTCHA_PRIVATE_KEY = ''
 SECRET_KEY = ''	# Make this unique, and don't share it with anybody.
 
+RECAPTCHA_PUBLIC_KEY = ''
+RECAPTCHA_PRIVATE_KEY = ''
 MAPBOX_KEY = ''
+SECONDLIFE_API_KEY = ''	# For name-to-agent API
 
 DATABASES = {
 	'default': {

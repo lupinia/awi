@@ -94,6 +94,10 @@ DEVICE_API_STANDARD_FIELDS = {
 #	API rate limiting
 DEVICE_API_RATELIMIT_CACHE_PREFIX = 'gudvcapi_devicereq_open'
 
+#	Second Life API settings
+SECONDLIFE_API_URL_N2A = 'https://api.secondlife.com/get_agent_id'
+SECONDLIFE_GRIDSLUG = 'sl'
+
 
 #	deertrees
 #	This stores a list of known models that can be attached to a category, their hierarchy when displayed, and a template file's path
