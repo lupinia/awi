@@ -525,9 +525,10 @@ class leaf_view(generic.DetailView):
 							context['object'].create_code(age=new_age, request=self.request)
 							changed = True
 				
-				if changed:
+				#if changed:
 					# I'm annoyed that there isn't an easier/more reliable way to do this.
-					cache.clear()
+					# Commenting it out for now, since this mostly only affects me.
+					#cache.clear()
 			
 			else:
 				context['return_to'] = ''
