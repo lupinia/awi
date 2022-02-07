@@ -842,7 +842,7 @@ class device(location_model):
 			return False
 	
 	def check_region(self, region_name):
-		if self.attached:
+		if self.attached or not self.limit_move:
 			if self.region.name == region_name:
 				return True
 			else:

@@ -86,6 +86,7 @@ DEVICE_API_STANDARD_FIELDS = {
 	'object_auth': True,
 	'group_owned': True,
 	
+	'is_attached': False,	# This shouldn't be present in most requests, but checking it anyway is useful for security
 	'group_key': False,
 	'owner_account_key': False,
 	'previous_region_name': False,	# Only used for a corner case where a region is renamed
@@ -96,6 +97,7 @@ DEVICE_API_RATELIMIT_CACHE_PREFIX = 'gudvcapi_devicereq_open'
 
 #	Second Life API settings
 SECONDLIFE_API_URL_N2A = 'https://api.secondlife.com/get_agent_id'
+SECONDLIFE_API_RATELIMIT_CACHE_PREFIX = 'gudvcapi_slapi_open'
 SECONDLIFE_GRIDSLUG = 'sl'
 
 
