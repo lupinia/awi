@@ -171,6 +171,18 @@ class tag(models.Model):
 		return (False,'')
 	
 	@property
+	def synonym_list(self):
+		sluglist = []
+		if self.title:
+			sluglist.append(self.slug)
+		
+		synonyms = self.synonyms.all().values_list('slug', flat=True)
+		if synonyms:
+			sluglist += list(synonyms)
+		
+		return sluglist
+	
+	@property
 	def body_html(self):
 		return format_html(self.desc)
 	
@@ -207,6 +219,9 @@ class tag_synonym(models.Model):
 	
 	def __unicode__(self):
 		return self.slug
+	
+	class Meta:
+		ordering = ['slug',]
 
 #	This model has been modified for the Awi website, and requires the Awi Access app
 #	This is a single categorized node; everything else that belongs to a category should extend this class
