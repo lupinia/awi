@@ -165,6 +165,27 @@ def psv_hash256(*args):
 def device_type_choices():
 	return dict_key_choices(settings.DEVICE_SETTINGS)
 
+# Functions for working with our proprietary (but hopefully easy-to-parse) API format:
+#	Key/value pairs are separated by $$
+#	Keys are separated from values by |
+def dict_to_apipsv(input={}):
+	output_list = []
+	for key, value in input:
+		output_list.append(u'%s|%s' % (key, unicode(value)))
+	
+	return '$$'.join(output_list)
+
+def parse_apipsv(input=''):
+	parsed = {}
+	elements = input.split('$$')
+	if len(elements) > 0:
+		for element in elements:
+			pair = element.split('|', )
+			if len(pair) > 1:
+				parsed[pair[0]] = pair[1]
+	
+	return parsed
+
 #	==================
 #	Abstract Models
 

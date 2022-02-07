@@ -28,6 +28,7 @@ psycopg2	# Recommend installing this manually
 bleach
 boto
 certifi
+dicttoxml
 django-admin-tools
 django-cookie-law
 django-debug-toolbar-line-profiler	# Required for dev, not required for prod
