@@ -196,6 +196,18 @@ class tag(models.Model):
 	class Meta:
 		ordering = ['slug',]
 
+class tag_synonym(models.Model):
+	parent = models.ForeignKey(tag, on_delete=models.CASCADE, related_name='synonyms')
+	slug = models.SlugField(max_length=200,unique=True)
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
+	
+	def get_absolute_url(self):
+		return reverse('tag', kwargs={'slug':self.parent.slug,})
+	
+	def __unicode__(self):
+		return self.slug
+
 #	This model has been modified for the Awi website, and requires the Awi Access app
 #	This is a single categorized node; everything else that belongs to a category should extend this class
 class leaf(access_control):
