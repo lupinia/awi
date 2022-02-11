@@ -64,9 +64,12 @@ class single_page_htm(single_page):
 	
 	def get_context_data(self, **kwargs):
 		context = super(single_page_htm,self).get_context_data(**kwargs)
+		
+		# Enable Highlight.js code highlighting, if needed
 		regexp = re.compile(r'<pre(.*)><code')
 		if regexp.search(context.get('body_text','')):
 			context['highlight_code'] = True
+		
 		return context
 
 class single_page_txt(single_page):
