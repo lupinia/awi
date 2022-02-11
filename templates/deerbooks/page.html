@@ -4,6 +4,10 @@
 {% block content_body %}
 	{% if object and not error %}
 		<div class="page_body_text">
+			{% if object.is_old %}
+				<p><em>Note:  Some content on this site, including this article, is more than a decade old, and may not accurately reflect the author's current feelings or writing style.  More information <a href="/about/retraction-policy.htm" title="Retraction and Removal Policy">here</a>.</em></p>
+				<hr />
+			{% endif %}
 			{% autoescape off %}
 				{{body_text}}
 			{% endautoescape %}
