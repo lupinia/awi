@@ -35,6 +35,8 @@ from gridutils.utils import (
 class grid(models.Model):
 	name = models.CharField(max_length=64)
 	slug = models.SlugField(max_length=64, unique=True)
+	active = models.BooleanField(default=True, blank=True)
+	shard = models.CharField(max_length=250, null=True, blank=True, help_text='Used for source validation on the device API')
 	
 	def __unicode__(self):
 		return self.name
@@ -599,6 +601,7 @@ class location(location_model):
 class device(location_model):
 	name = models.CharField(max_length=64)
 	key = models.UUIDField(db_index=True)
+	grid = models.ForeignKey(grid, on_delete=models.PROTECT)
 	region = models.ForeignKey(region, on_delete=models.PROTECT, related_name='devices_hosted')
 	active = models.BooleanField(blank=True, default=True, db_index=True, help_text='If unchecked, device has been disabled or deleted.')
 	notes = models.TextField(blank=True, null=True)
@@ -864,7 +867,7 @@ class device(location_model):
 		return (return_type, return_obj)
 	
 	def get_model(self):
-		return getattr(self, self.type, None)
+		return getattr(self, self.type, self)
 	
 	def set_timestamp_sync(self):
 		if self.pk:
@@ -876,6 +879,8 @@ class device(location_model):
 		return '%s (%s)' % (self.name, self.type)
 	
 	def save(self, *args, **kwargs):
+		if not self.grid:
+			self.grid = self.region.estate.grid
 		if not self.pk:
 			self.app = self.__class__
 			self.type = self.__class__.__name__
