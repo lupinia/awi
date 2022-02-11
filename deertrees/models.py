@@ -49,6 +49,7 @@ class category(MPTTModel, access_control):
 	icon = models.ForeignKey('sunset.image_asset', null=True, blank=True, on_delete=models.SET_NULL, help_text='System field:  Image asset used as a thumbnail for this category.')
 	icon_manual = models.BooleanField(default=False, db_index=True, help_text='System field:  Indicates whether the Icon field was set manually; if so, it will not be replaced by the automatic thumbnail assignment script.')
 	content_summary = models.CharField(max_length=20, default='misc', choices=CONTENT_SUMMARY_CHOICES, help_text='System field:  Stores the main content type for this category, used to display an icon when no image asset is selected.  Will be set by the automatic thumbnail assignment script.')
+	always_fresh = models.BooleanField(default=False, blank=True, help_text='If checked, the "old content" note will not be added to older content in this category. Useful for things like policy directories.')
 	
 	cached_url = models.CharField(max_length=255, null=True, blank=True, unique=True, help_text='System field:  Full unique slug for this category, including all parents.')
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
@@ -228,6 +229,8 @@ class tag_synonym(models.Model):
 class leaf(access_control):
 	TIMEDISP_OPTIONS = (('post','Posted'),('mod','Modified'))
 	
+	author_override = models.CharField(max_length=100, null=True, blank=True, help_text="If this was written by a guest author, enter their name here.  Enter 'none' to hide the author info from display (only use this for things like system directories and site policies where authorship is irrelevant).")
+	
 	cat = models.ForeignKey(category, null=True, blank=True, on_delete=models.PROTECT, verbose_name='category', related_name='leaves')
 	tags = models.ManyToManyField(tag, blank=True, related_name='leaves')
 	
@@ -359,6 +362,38 @@ class leaf(access_control):
 			return True
 		else:
 			return False
+	
+	@property
+	def admin_owned(self):
+		if self.owner.pk == settings.SITE_OWNER_ACCOUNT_ID and not self.author_override:
+			return True
+		else:
+			return False
+	
+	@property
+	def is_old(self):
+		if self.cat.always_fresh or not self.admin_owned:
+			return False
+		else:
+			if self.timestamp_mod < (timezone.now() - timedelta(days=365*10)):
+				return True
+			elif (self.timestamp_post < (timezone.now() - timedelta(days=365*10))) and (self.timestamp_mod < (timezone.now() - timedelta(days=365*5))):
+				return True
+			else:
+				return False
+	
+	@property
+	def author(self):
+		if self.author_override:
+			if self.author_override.lower() == 'none':
+				return ''
+			else:
+				return self.author_override
+		else:
+			if self.owner.get_full_name():
+				return self.owner.get_full_name()
+			else:
+				return self.owner.get_username()
 
 
 #	Create a leaf that links to something else that isn't part of this category system.
