@@ -14,7 +14,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 
-from awi_utils.utils import format_html, summarize
+from awi_utils.utils import format_html, hash_md5, summarize
 from deertrees.models import leaf
 
 def attachment_path(instance, filename):
@@ -78,6 +78,7 @@ class page(leaf):
 	slug = models.SlugField(unique=True)
 	title = models.CharField(max_length=100)
 	body = models.TextField()
+	body_hash_cur = models.TextField(default='')
 	summary = models.CharField(max_length=255, null=True, blank=True, help_text="A short description of this page's content (defaults to the first 255 characters of the body text).")
 	
 	auto_export = models.BooleanField(default=True, db_index=True, verbose_name='auto-build document files', help_text="Uncheck this to disable automatic generation of document files, and the built-in LaTeX view.  Markdown and Plain Text will still be available if the Alternate Views option is checked.")
@@ -88,6 +89,20 @@ class page(leaf):
 	
 	book_title = models.ForeignKey(toc, null=True, blank=True, related_name='pages', on_delete=models.SET_NULL, help_text="Make this Page part of a Book by selecting it here.  This will create a Table of Contents linking to the other pages, and this page's title will become {Book Title}: {Page Title}.")
 	book_order = models.IntegerField(default=0, blank=True, help_text='Use this field to control the position of this page within its book.  The book order does not need to be incremental; pages will be sorted in ascending order (least to greatest) using this field regardless of its value.')
+	
+	timestamp_revised = models.DateTimeField(null=True, blank=True, db_index=True, verbose_name='date/time revised', help_text='Date/time of last content edit.')
+	
+	def display_times(self):
+		return_times = super(page, self).display_times()
+		if self.timestamp_revised:
+			revision = {'label':'Revised', 'timestamp':self.timestamp_revised,}
+			if self.timedisp == 'mod' and self.revised:
+				return_times.append(return_times[0])
+				return_times[0] = revision
+			else:
+				return_times.append(revision)
+		
+		return return_times
 	
 	def get_title(self, raw=False):
 		if not raw and self.book_title:
@@ -106,6 +121,13 @@ class page(leaf):
 			return summarize(body=self.body, summary=self.summary, length=length, prefer_long=True)
 		else:
 			return summarize(body=self.body, summary=self.summary, length=length)
+	
+	@property
+	def revised(self):
+		if self.timestamp_revised:
+			return True
+		else:
+			return False
 	
 	@property
 	def summary_short(self):
@@ -151,6 +173,20 @@ class page(leaf):
 				return 'http://%s%s' % (site_obj.domain, reverse(urlconf, kwargs={'cached_url':self.cat.cached_url, 'slug':urlslug}))
 		else:
 			return False
+	
+	@property
+	def body_hash(self):
+		return hash_md5(self.body.encode('utf-8'))
+	
+	def save(self, *args, **kwargs):
+		if self.body_hash_cur:
+			if self.body_hash_cur != self.body_hash:
+				self.body_hash_cur = self.body_hash
+				if self.published and not self.scheduled():
+					self.timestamp_revised = timezone.now()
+		else:
+			self.body_hash_cur = self.body_hash
+		super(page, self).save(*args, **kwargs)
 
 
 class export_log(models.Model):

@@ -11,6 +11,10 @@
 			{% autoescape off %}
 				{{body_text}}
 			{% endautoescape %}
+			{% if object.revised %}
+				<hr />
+				<p><em>This article has been updated as of {{object.timestamp_revised|date:'F j, Y  G:i:s'}}</em></p>
+			{% endif %}
 		</div>
 	{% endif %}
 {% endblock %}
