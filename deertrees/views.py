@@ -390,19 +390,25 @@ def finder(request):
 	import os
 	return_data = (False,'')
 	
-	#	Fix the trailing slash
+	# Fix the trailing slash
 	if request.path.endswith('/'):
 		basename=os.path.basename(request.path[:-1])
 	else:
 		basename=os.path.basename(request.path)
 	
-	if '.' in basename:
-		# Categories don't have dots in the slug
-		return return_data
-	else:
-		cat_check = category.objects.filter(slug__iexact=basename).filter(access_query(request)).select_related().first()
-		if cat_check:
-			return_data = (True,reverse('category',kwargs={'cached_url':cat_check.cached_url,}))
+	# Check for special features that were improperly categorized
+	feature_check = special_feature.objects.filter(url__iexact=basename).filter(access_query(request)).select_related().first()
+	if feature_check and feature_check.url_reverse:
+		return_data = (True, reverse(feature_check.url_reverse))
+	
+	if not return_data[0]:
+		if '.' in basename:
+			# Categories don't have dots in the slug
+			return return_data
+		else:
+			cat_check = category.objects.filter(slug__iexact=basename).filter(access_query(request)).select_related().first()
+			if cat_check:
+				return_data = (True, reverse('category',kwargs={'cached_url':cat_check.cached_url,}))
 	
 	return return_data
 
