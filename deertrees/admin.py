@@ -20,7 +20,7 @@ class cat_admin(DjangoMpttAdmin,access_admin):
 	list_select_related = True
 	fieldsets = [
 		(None,{'fields':(('title', 'slug',), 'parent', 'summary', 'desc'),},),
-		("Options",{'fields':(('view_type', 'background_tag',), ('sitemap_include','trash',),),},),
+		("Options",{'fields':(('view_type', 'background_tag',), ('sitemap_include','always_fresh','trash',),),},),
 		('Time Options',{'fields': (('timestamp_post','timestamp_mod',),),},),
 	] + access_admin.fieldsets
 	list_filter = access_admin.list_filter + ['background_tag', 'view_type', 'sitemap_include']
@@ -54,6 +54,7 @@ class leaf_admin(access_admin):
 	list_filter = access_admin.list_filter + ['timestamp_post','timestamp_mod','cat','tags',]
 	list_display = ('cat','timestamp_post','timestamp_mod',) + access_admin.list_display
 	fieldsets = [
+		('Additional Settings',{'fields': ('author_override',),},),
 		('Time Options',{'fields': (('timestamp_post','timestamp_mod','timedisp'),),},),
 		('Categorization',{'fields': ('cat','tags'),},),
 	] + access_admin.fieldsets
