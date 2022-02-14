@@ -81,7 +81,7 @@ class leaf_admin(access_admin):
 
 class special_feature_admin(leaf_admin):
 	search_fields = ['url','title','desc'] + leaf_admin.search_fields
-	fieldsets = [(None,{'fields':(('title','url'),'desc'),},),] + leaf_admin.fieldsets
+	fieldsets = [(None,{'fields':('title',('url','url_reverse',),'desc'),},),] + leaf_admin.fieldsets
 	prepopulated_fields={'url':('title',)}
 	list_display = ('title','url') + leaf_admin.list_display
 	

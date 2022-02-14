@@ -400,6 +400,7 @@ class leaf(access_control):
 #	Handy for things like third-party apps, or self-contained apps with their own organizational structure.
 class special_feature(leaf):
 	url = models.CharField(max_length=60, unique=True, verbose_name='URL', help_text='Similar to a Slug field, but can accept any character, to make it easier to link to non-DeerTrees URLs.')
+	url_reverse = models.CharField(max_length=250, null=True, blank=True, help_text='Enter the keyword used by Django to look up this special feature in urls.py.')
 	title = models.CharField(max_length=60)
 	desc = models.CharField(max_length=255, null=True, blank=True, verbose_name='Description')
 	
