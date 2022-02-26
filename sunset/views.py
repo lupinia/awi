@@ -9,6 +9,7 @@
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 
 from awi_access.models import access_query
 from awi_utils.views import json_response
@@ -75,7 +76,7 @@ def geojson_image(request, slug, **kwargs):
 	elif slug == 'filter_featured':
 		query = query.exclude(featured=False)
 	else:
-		self.request.session['deerfind_norecover'] = True
+		request.session['deerfind_norecover'] = True
 		raise Http404
 	
 	for item in query:
@@ -142,6 +143,6 @@ def finder(request):
 		image_check = image.objects.filter(slug__iexact=search_slug).filter(access_query(request)).select_related().first()
 		if image_check:
 			# Yay!  We found a match!  And it's authorized for viewing.
-			return_data = (True, reverse('image_single',kwargs={'cached_url':image_check.cat.cached_url,'slug':image_check.slug}))
+			return_data = (True, reverse('image_single', kwargs={'cached_url':image_check.cat.cached_url, 'slug':image_check.slug,}))
 	
 	return return_data

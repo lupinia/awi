@@ -90,19 +90,19 @@ def not_found(request):
 		template = loader.get_template('deerfind/404.html')
 		
 		#	Get the attempted URL to display to the user
+		context_path = request.path
 		if request.META.get('QUERY_STRING',False):
-			context_path=request.path+'?'+request.META.get('QUERY_STRING','')
-		else:
-			context_path=request.path
-		context={'old_url':context_path}
+			context_path = '%s?%s' % (context_path, request.META.get('QUERY_STRING',''))
+		
+		context = {'old_url':context_path,}
 		
 		#	Run a search query, in case what they're looking for can be found with search.
 		#	First, let's clean up the URL and turn it into something we can search.
 		#	Start by fixing the trailing slash
 		if request.path.endswith('/'):
-			basename=os.path.basename(request.path[:-1])
+			basename = os.path.basename(request.path[:-1])
 		else:
-			basename=os.path.basename(request.path)
+			basename = os.path.basename(request.path)
 		
 		if '.' in basename:
 			search_path = basename.split('.')[0]

@@ -19,14 +19,14 @@ from deertrees.views import leaf_view
 from sunset.utils import sunset_embed
 
 class single_page(leaf_view):
-	model=page
+	model = page
 	alt_view = False
 	
 	def get_queryset(self, *args, **kwargs):
 		return super(single_page, self).get_queryset(*args, **kwargs).select_related('book_title').prefetch_related('docfiles')
 	
 	def get_context_data(self, **kwargs):
-		context=super(single_page,self).get_context_data(**kwargs)
+		context = super(single_page,self).get_context_data(**kwargs)
 		context['has_reading_mode'] = True
 		
 		if self.alt_view and context.get('embed_mature_form') == True:
@@ -60,7 +60,7 @@ class single_page(leaf_view):
 		return context
 
 class single_page_htm(single_page):
-	template_name='deerbooks/page.html'
+	template_name = 'deerbooks/page.html'
 	
 	def get_context_data(self, **kwargs):
 		context = super(single_page_htm,self).get_context_data(**kwargs)
@@ -73,23 +73,23 @@ class single_page_htm(single_page):
 		return context
 
 class single_page_txt(single_page):
-	template_name='deerbooks/page.txt'
+	template_name = 'deerbooks/page.txt'
 	content_type = 'text/plain; charset=utf-8'
 	alt_view = True
 
 class single_page_md(single_page):
-	template_name='deerbooks/page.md'
+	template_name = 'deerbooks/page.md'
 	content_type = 'text/markdown; charset=utf-8'
 	alt_view = True
 
 class single_page_tex(single_page):
-	template_name='deerbooks/page.tex'
+	template_name = 'deerbooks/page.tex'
 	content_type = 'application/x-tex'
 	alt_view = True
 
 
 class book(generic.DetailView):
-	model=toc
+	model = toc
 	alt_view = True
 	
 	def get_queryset(self, *args, **kwargs):
@@ -134,15 +134,15 @@ class book(generic.DetailView):
 		return context
 
 class book_tex(book):
-	template_name='deerbooks/book.tex'
+	template_name = 'deerbooks/book.tex'
 	content_type = 'application/x-tex'
 
 class book_txt(book):
-	template_name='deerbooks/book.txt'
+	template_name = 'deerbooks/book.txt'
 	content_type = 'text/plain; charset=utf-8'
 
 class book_md(book):
-	template_name='deerbooks/book.md'
+	template_name = 'deerbooks/book.md'
 	content_type = 'text/markdown; charset=utf-8'
 
 

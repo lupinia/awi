@@ -392,9 +392,9 @@ def finder(request):
 	
 	# Fix the trailing slash
 	if request.path.endswith('/'):
-		basename=os.path.basename(request.path[:-1])
+		basename = os.path.basename(request.path[:-1])
 	else:
-		basename=os.path.basename(request.path)
+		basename = os.path.basename(request.path)
 	
 	# Check for special features that were improperly categorized
 	feature_check = special_feature.objects.filter(url__iexact=basename).filter(access_query(request)).select_related().first()
@@ -437,7 +437,7 @@ class leaf_view(generic.DetailView):
 			return False
 	
 	def get_context_data(self, **kwargs):
-		context=super(leaf_view,self).get_context_data(**kwargs)
+		context = super(leaf_view,self).get_context_data(**kwargs)
 		
 		# Permissions check
 		canview = context['object'].can_view(self.request)
