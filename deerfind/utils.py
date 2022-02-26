@@ -1,7 +1,36 @@
-#	Temporary tools for building the G2 object map
+#	DeerFind (Django App)
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Utility functions and helpers
+
+from django.apps import apps
+from django.conf import settings
 
 from deerfind.models import g2map, g2raw
 from sunset.models import image
+
+def shortcode_lookup(type, pk):
+	obj = None
+	error = 'unknown'
+	
+	if settings.DEERFIND_SHORTCODE_TYPES.get(type, False):
+		label, model = settings.DEERFIND_SHORTCODE_TYPES[type].split('.')
+		try:
+			model_obj = apps.get_model(app_label=label, model_name=model)
+		except:
+			error - 'invalid_model'
+		else:
+			obj = model_obj.objects.filter(pk=pk).first()
+	
+	else:
+		error = 'invalid_type'
+	
+	return (obj, error)
+
+
+#	Temporary tools for building the G2 object map
 
 def map(img, g2):
 	cur_img = image.objects.get(pk=img)

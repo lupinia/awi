@@ -13,11 +13,9 @@
 
 import os
 
-from django.apps import apps
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponsePermanentRedirect, HttpResponseNotFound
-from django.shortcuts import render
 from django.template import Context, loader
 from django.utils.module_loading import import_string
 
@@ -28,6 +26,7 @@ from haystack.inputs import AutoQuery
 from awi_access.models import check_mature, access_search
 from deerfind.forms import simple_search_form
 from deerfind.models import pointer, hitlog
+from deerfind.utils import shortcode_lookup
 
 #	404 Handler
 def not_found(request):
@@ -218,12 +217,14 @@ class search_view(FacetedSearchView):
 
 #	Shortcode Handler
 def shortcode_redirect(request, type, pk, **kwargs):
-	try:
-		label, model = settings.DEERFIND_SHORTCODE_TYPES.get(type, False).split('.')
-		model_obj = apps.get_model(app_label=label, model_name=model)
-		target = model_obj.objects.get(pk=pk)
-		target_url = target.get_absolute_url()
-		return HttpResponsePermanentRedirect(target_url)
-	except:
+	target, error = shortcode_lookup(type, pk)
+	if target:
+		try:
+			target_url = target.get_absolute_url()
+			return HttpResponsePermanentRedirect(target_url)
+		except:
+			request.session['deerfind_norecover'] = True
+			raise Http404
+	else:
 		request.session['deerfind_norecover'] = True
 		raise Http404
