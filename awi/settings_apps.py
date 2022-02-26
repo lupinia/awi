@@ -301,6 +301,8 @@ SUNSET_IMAGE_ASSET_SIZES = {
 	'display':{'size':(1280,960),'watermark':True,'exact':False,},
 	'full':{'size':(1920,1300),'watermark':True,'exact':False,},
 	'bg':{'size':(1700,1000),'watermark':False,'exact':True,},
+	'og':{'size':(1200,630),'watermark':True,'exact':True,},
+	'twitter':{'size':(1200,600),'watermark':True,'exact':True,},
 }
 
 SUNSET_IMPORT_DIR = os.path.abspath(os.path.join(IMPORT_DIR,'sunset/'))

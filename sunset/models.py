@@ -350,6 +350,8 @@ class image_asset(models.Model):
 		('display','Display-Resized Copy'),
 		('full','Public Full-Size Image'),
 		('bg','Site Background'),
+		('og','OpenGraph Card Image'),
+		('twitter','Twitter Card Image'),
 		('unknown','Unknown')
 	)
 	
