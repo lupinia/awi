@@ -13,9 +13,9 @@ from django.utils import dateparse
 from django.utils import timezone
 from django.views.generic.edit import FormView
 
+from awi_access.models import access_query
 from deerconnect.forms import contact_form
 from deerconnect.models import contact_link
-from awi_access.models import access_query
 
 class contact_page(FormView):
 	template_name = 'deerconnect/contact.html'
@@ -37,7 +37,11 @@ class contact_page(FormView):
 		
 		context['breadcrumbs'].append({'url':reverse('contact'), 'title':'Contact'})
 		
-		if self.request.session.get('deerconnect_mailsent',False):
+		if self.request.session.get('deerconnect_success_msg', False):
+			context['form'] = ''
+			context['error'] = 'mailform_success'
+			self.request.session['deerconnect_success_msg'] = False
+		elif self.request.session.get('deerconnect_mailsent', False):
 			last_message = dateparse.parse_datetime(self.request.session.get('deerconnect_mailsent',False))
 			expiration = datetime.timedelta(days=1)
 			if last_message > timezone.now() - expiration:

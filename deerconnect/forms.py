@@ -21,7 +21,7 @@ class contact_form(forms.Form):
 	email = forms.EmailField(label='Email Address', max_length=150)
 	name = forms.CharField(label='Your Name', max_length=150)
 	subject = forms.CharField(label='Subject', max_length=150)
-	body = forms.CharField(label='Message Body', max_length=5000, widget=forms.Textarea)
+	body = forms.CharField(label='Message Body', max_length=10000, widget=forms.Textarea)
 	
 	def send_email(self, request):
 		if request.session.get('deerconnect_mailsent',False):
@@ -56,6 +56,7 @@ class contact_form(forms.Form):
 		success = msg.send()
 		if success:
 			request.session['deerconnect_mailsent'] = str(timezone.now())
+			request.session['deerconnect_success_msg'] = True
 			return True
 		else:
 			return False
