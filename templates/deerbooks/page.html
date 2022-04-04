@@ -13,7 +13,7 @@
 			{% endautoescape %}
 			{% if object.revised %}
 				<hr />
-				<p><em>This article has been updated as of {{object.timestamp_revised|date:'F j, Y  G:i:s'}}</em></p>
+				<p><em>This article has been updated as of {{object.timestamp_revised|date:'F j, Y  G:i'}}</em></p>
 			{% endif %}
 		</div>
 	{% endif %}
@@ -60,7 +60,7 @@
 				<div class="page_icons hovericons32">
 					{% if can_edit and has_reading_mode %}<a href="{{showcase_mode|yesno:'?mode=normal,?mode=read'}}"{% if showcase_mode %} class="red"{% endif %}><img src="{{ STATIC_PREFIX }}images/icons/{{showcase_mode|yesno:'webpage,book'}}-32.png" alt="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" title="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" /></a>{% endif %}
 					<a class="red" href="https://getpocket.com/save?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-pocket.png" alt="Pocket" title="Pocket (External service)" /></a>
-					<a class="grey" href="http://www.instapaper.com/hello2?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-instapaper.png" alt="Readability" title="Instapaper (External service)" /></a>
+					<a class="grey" href="https://www.instapaper.com/hello2?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-instapaper.png" alt="Readability" title="Instapaper (External service)" /></a>
 				</div>
 			</div>
 		{% endif %}
