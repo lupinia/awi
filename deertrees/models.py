@@ -377,7 +377,7 @@ class leaf(access_control):
 		else:
 			if self.timestamp_mod < (timezone.now() - timedelta(days=365*10)):
 				return True
-			elif (self.timestamp_post < (timezone.now() - timedelta(days=365*10))) and (self.timestamp_mod < (timezone.now() - timedelta(days=365*5))):
+			elif (self.timestamp_post < (timezone.now() - timedelta(days=365*10))) and (self.timestamp_mod < (timezone.now() - timedelta(days=365*2))):
 				return True
 			else:
 				return False
