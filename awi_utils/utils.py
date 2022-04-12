@@ -148,11 +148,11 @@ def rand_int_list(length=1, duplicates=False, first_zero=False):
 	int_list = []
 	i = 0
 	while i < length:
-		if first_zero and not i:
+		if not first_zero and not i:
 			range_start = 1
 		else:
 			range_start = 0
-		int_list.append(integer_generator.randrange(range_start, 9))
+		int_list.append(integer_generator.randrange(range_start, 10))
 		i += 1
 		
 		# Check for sequential duplicates
