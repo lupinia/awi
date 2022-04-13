@@ -213,6 +213,64 @@ def rand_char_list(length=1, duplicates=False, mix_case=False, exclude=[], inclu
 	
 	return char_list
 
+#	Special type of random character generator that generates a license plate number
+#	Each character in the sequence string will be replaced individually, 
+# 	so the length of the sequence defines the length of the returned string
+#	Use the following characters to define a valid sequence:
+#		#: Number (0-9)
+#		+: Non-Zero Number (1-9)
+#		?: Letter (excluding I or O)
+#		*: Letter or number (0-9), excluding I or O
+#	Any other characters in the sequence will treated as literal and not replaced
+#	This includes specific letters and numbers, or spaces and hyphens.
+def rand_license_plate(sequence):
+	plate_number = []
+	if len(sequence) > 128:
+		sequence = sequence[:127]
+	
+	# Let's go through this one letter at a time
+	i = 0
+	length = len(sequence)
+	while i < length:
+		char = sequence[i]
+		new_char = ''
+		literal = False
+		
+		# Let's look for numbers first
+		if char == '#' or char == '+':
+			if char == '+':
+				no_zero = True
+			else:
+				no_zero = False
+			new_char = str(rand_int_list(1, exclude_zero=no_zero, first_zero=True)[0])
+		
+		# If it's not a number, maybe it's a letter?
+		elif char == '?' or char == '*':
+			if char == '*':
+				digits = True
+			else:
+				digits = False
+			new_char = rand_char_list(1, exclude=['i', 'o'], include_digits=digits)[0]
+		
+		# Must be a literal, then
+		else:
+			new_char = char
+			literal = True
+		
+		# Let's do some clean-up
+		if i == 0 or literal:
+			# If this is the first character, or it's a literal character, always use it
+			plate_number.append(new_char)
+			i += 1
+		elif new_char != plate_number[i-1]:
+			# If this is a random character and not the first one, only use it if it's not a duplicate
+			plate_number.append(new_char)
+			i += 1
+	
+	# All done!
+	return ''.join(plate_number)
+
+
 #	Since Django is stupidly picky about what it will accept for model field choices, 
 #	I have to write a function that will turn the output of .keys() from a dict into tuple pairs.
 def dict_key_choices(source_dict):
