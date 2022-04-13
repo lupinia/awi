@@ -6,15 +6,13 @@
 #	Views (Sitewide)
 #	=================
 
-import random
 import simplejson
-
-from string import ascii_uppercase
 
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 
-from awi_utils.utils import rand_int_list
+from awi_utils.utils import rand_license_plate
+from awi_utils.sl_plates import plate_types
 
 def json_response(request, data=''):
 	return HttpResponse(simplejson.dumps(data), content_type='application/json')
@@ -24,43 +22,34 @@ class placeholder(TemplateView):
 		context=super(placeholder,self).get_context_data(**kwargs)
 		return context
 
-#	This is a quickly-built convenience tool that I didn't have a better home for
+#	This is a tangentially-related convenience tool that I didn't have a better home for
 class plate_generator(TemplateView):
 	template_name = 'sl_plategen.html'
 	
 	def get_context_data(self, **kwargs):
 		context=super(plate_generator,self).get_context_data(**kwargs)
+		context['generated'] = False
 		
-		platetype = kwargs.get('platetype', '').lower()
-		context['platetype'] = platetype
-		platevalue = ''
-		plate_values = []
-		letter_range = ascii_uppercase.replace('I', '')
-		letter_range = letter_range.replace('O', '')
+		slug = kwargs.get('slug', '').lower()
+		cur_plate = plate_types.get(slug.upper(), {})
+		cur_plate_sequence = cur_plate.get('sequence', '')
 		
-		if platetype == 'fdci-cr':
-			plate_values.append(random.choice(letter_range))
-			second_letter = random.choice(letter_range)
-			
-			# Try to minimize duplicates
-			if second_letter == plate_values[0]:
-				second_letter = random.choice(letter_range)
-			plate_values.append(second_letter)
-			
-			plate_values += rand_int_list(3, first_zero=True)
-			platevalue = ''.join(map(str, plate_values))
+		if cur_plate_sequence:
+			context['slug'] = slug
+			context['notes'] = cur_plate.get('notes', '')
+			platevalue = rand_license_plate(cur_plate_sequence)
+			if platevalue:
+				context['generated'] = True
+				context['platevalue'] = platevalue
 		
-		elif platetype == 'fdci-pj':
-			plate_values = rand_int_list(3)
-			platevalue = 'J-%s' % ''.join(map(str, plate_values))
-		
-		elif platetype == 'fdci-vb':
-			platevalue = ''.join(map(str, rand_int_list(3)))
-		
-		if platevalue:
-			context['generated'] = True
-			context['platevalue'] = platevalue
 		else:
-			context['generated'] = False
+			plate_codes = plate_types.keys()
+			plate_codes.sort()
+			context['plate_types'] = []
+			for code in plate_codes:
+				p = plate_types[code]
+				p['code'] = code.upper()
+				p['slug'] = code.lower()
+				context['plate_types'].append(p)
 		
 		return context

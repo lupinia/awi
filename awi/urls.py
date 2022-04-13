@@ -52,7 +52,7 @@ urlpatterns = [
 	url(r'^tools/category_list/$', permission_required('deertrees.change_leaf')(deertrees_views.all_cats.as_view()), name='all_cats'),
 	url(r'^tools/sunset/(?P<slug>.*)\.json', sunset_views.geojson_image, name='sunset_geojson'),
 	url(r'^tools/plate_generator/$', never_cache(plate_generator.as_view()), name='sl_plategen_root'),
-	url(r'^tools/plate_generator/(?P<platetype>.*)\.html', never_cache(plate_generator.as_view()), name='sl_plategen'),
+	url(r'^tools/plate_generator/(?P<slug>.*)\.html', never_cache(plate_generator.as_view()), name='sl_plategen'),
 	
 	# Special Features
 	url(r'^contact/$', never_cache(check_honeypot(contact_page.as_view())), name='contact'),
