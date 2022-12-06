@@ -4,7 +4,7 @@
 
 {% if 'sidebar' in blockname %}
 	{% for link in leaves %}
-	<a href="{{link.url}}" target="_BLANK" title="{{link.label}} - {{link.name}}" class="sidebar_link {% if link.restriction and link.restriction != 'unknown' %}restricted{% elif link.featured and highlight_featured %}featured{% elif link.mature %}mature{% endif %}">
+	<a href="{{link.url}}" target="_BLANK" title="{{link.label}} - {{link.name}}" class="sidebar_link {% if link.restriction and link.restriction != 'unknown' %}restricted{% elif link.featured and highlight_featured %}featured{% elif link.mature %}mature{% endif %}" rel="me">
 		{% if link.icon %}<img src="{{MEDIA_PREFIX}}{{link.icon.name}}" alt="{{link.label}}" title="{{link.label}}" class="sidebar_link_img" />{% endif %}
 		<span class="sidebar_link_title">{% if not link.icon %}{{link.label}} - {% endif %}{{link.name}}</span>
 		{% if link.im %}
@@ -24,7 +24,7 @@
 <div class="leaf_links_wrapper">
 	{% for link in leaves %}
 		<div class="leaf_link midheight">
-			<a class="leaf_a {% if link.restriction and link.restriction != 'unknown' %}restricted{% elif link.featured and highlight_featured %}featured{% elif link.mature %}mature{% endif %}" href="{{link.url}}" target="_BLANK" title="{{link.label}} - {{link.name}}">
+			<a class="leaf_a {% if link.restriction and link.restriction != 'unknown' %}restricted{% elif link.featured and highlight_featured %}featured{% elif link.mature %}mature{% endif %}" href="{{link.url}}" target="_BLANK" title="{{link.label}} - {{link.name}}" rel="me">
 				{% if link.featured and highlight_featured %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
 				{% elif link.mature %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
 				
