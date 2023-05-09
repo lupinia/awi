@@ -10,6 +10,7 @@ import simplejson
 
 from django.http import HttpResponse
 from django.views.generic import TemplateView
+from django.utils import timezone
 
 from awi_utils.utils import rand_license_plate
 from awi_utils.sl_plates import plate_types
@@ -52,4 +53,13 @@ class plate_generator(TemplateView):
 				p['slug'] = code.lower()
 				context['plate_types'].append(p)
 		
+		return context
+
+#	A homepage for new tabs, to just show a photo background, plus some helpful extra data
+class newtab_view(TemplateView):
+	template_name = 'newtab_page.html'
+	
+	def get_context_data(self, **kwargs):
+		context=super(newtab_view,self).get_context_data(**kwargs)
+		context['time_local'] = timezone.now()
 		return context

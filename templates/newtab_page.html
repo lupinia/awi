@@ -1,0 +1,9 @@
+{% extends "base_blank.html" %}
+{% load sunset_bg %}
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+{% block body_tag %}{% block bg_image %}{% include 'sunset/bg_image.html' %}{% endblock %}{% endblock %}
+
+{% block page_structure %}
+{% endblock %}

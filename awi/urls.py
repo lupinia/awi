@@ -20,7 +20,7 @@ from honeypot.decorators import check_honeypot
 from awi.sitemaps import SITEMAP_OBJECTS
 from awi_access import views as access_views
 from awi_error.views import system_error, denied_error
-from awi_utils.views import plate_generator
+from awi_utils.views import plate_generator, newtab_view
 from deerbooks import views as deerbooks_views
 from deerconnect.views import contact_page
 from deerfind.views import not_found, search_view, shortcode_redirect
@@ -53,6 +53,7 @@ urlpatterns = [
 	url(r'^tools/sunset/(?P<slug>.*)\.json', sunset_views.geojson_image, name='sunset_geojson'),
 	url(r'^tools/plate_generator/$', never_cache(plate_generator.as_view()), name='sl_plategen_root'),
 	url(r'^tools/plate_generator/(?P<slug>.*)\.html', never_cache(plate_generator.as_view()), name='sl_plategen'),
+	url(r'^tools/newtab\.html$', never_cache(newtab_view.as_view()), name='newtab_page'),
 	
 	# Special Features
 	url(r'^contact/$', never_cache(check_honeypot(contact_page.as_view())), name='contact'),
