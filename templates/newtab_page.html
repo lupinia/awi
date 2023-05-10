@@ -32,4 +32,49 @@
 </div>
 {% endblock %}
 
-{% block after_content %}{% endblock %}
+{% block after_content %}
+<script>
+	var first_run = true;
+	
+	function update_times() {
+		var clocks = document.getElementsByClassName("timestamp_time");
+		for (var i=0; i < clocks.length; i++) {
+			var clock = clocks.item(i);
+			var time = clock.innerHTML.split(":");
+			var hours = parseInt(time[0]);
+			var minutes = parseInt(time[1])+1;
+			
+			if (minutes > 59) {
+				hours++;
+				minutes = 0;
+				
+				if (hours > 23) {
+					hours = 0;
+				}
+			}
+			
+			hours = hours.toString();
+			minutes = minutes.toString();
+			
+			if (hours.length < 2) {
+				hours = "0" + hours;
+			}
+			if (minutes.length < 2) {
+				minutes = "0" + minutes;
+			}
+			
+			clock.innerHTML = hours + ":" + minutes;
+		}
+	}
+	
+	function load_updater() {
+		if (first_run == true) {
+			update_times();
+			setInterval(update_times, 60 * 1000);
+			first_run = false;
+		}
+	}
+	
+	setTimeout(load_updater, {{clock_sync}});
+</script>
+{% endblock %}

@@ -67,6 +67,7 @@ class newtab_view(TemplateView):
 		context=super(newtab_view,self).get_context_data(**kwargs)
 		context['newtab'] = True
 		context['time_local'] = timezone.now()
+		context['clock_sync'] = (60 - context['time_local'].second) * 1000
 		if settings.NEWTAB_CLOCK_LIST:
 			context['time_list'] = []
 			for label, zone in settings.NEWTAB_CLOCK_LIST:
