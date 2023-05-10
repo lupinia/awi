@@ -1,9 +1,34 @@
 {% extends "base_blank.html" %}
-{% load sunset_bg %}
 {% load static %}
 {% get_static_prefix as STATIC_PREFIX %}
+{% load tz %}
 
+{% block title %}New Tab{% endblock %}
 {% block body_tag %}{% block bg_image %}{% include 'sunset/bg_image.html' %}{% endblock %}{% endblock %}
 
 {% block page_structure %}
+<div id="newtab">
+	<div id="center_info">
+		{% if time_local %}
+			<fieldset class="timestamp" id="timestamp_main">
+				<legend>Washington</legend>
+				<div class="timestamp_time">{{time_local|time:"H:i"}}</div>
+				<div class="timestamp_date">{{time_local|date:"F j, Y"}}</div>
+			</fieldset>
+		{% endif %}
+	</div>
+	{% if time_list %}{% localtime off %}
+		<div id="footer">
+		{% for clock in time_list %}
+			<fieldset class="timestamp">
+				<legend>{{clock.label}}</legend>
+				<div class="timestamp_time">{{clock.timestamp|time:"H:i"}}</div>
+				<div class="timestamp_date">{{clock.timestamp|date:"F j, Y"}}</div>
+			</fieldset>
+		{% endfor %}
+		</div>
+	{% endlocaltime %}{% endif %}
+</div>
 {% endblock %}
+
+{% block after_content %}{% endblock %}

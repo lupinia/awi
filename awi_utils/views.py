@@ -6,8 +6,12 @@
 #	Views (Sitewide)
 #	=================
 
+import pytz
 import simplejson
 
+from datetime import datetime
+
+from django.conf import settings
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 from django.utils import timezone
@@ -61,5 +65,14 @@ class newtab_view(TemplateView):
 	
 	def get_context_data(self, **kwargs):
 		context=super(newtab_view,self).get_context_data(**kwargs)
+		context['newtab'] = True
 		context['time_local'] = timezone.now()
+		if settings.NEWTAB_CLOCK_LIST:
+			context['time_list'] = []
+			for label, zone in settings.NEWTAB_CLOCK_LIST:
+				context['time_list'].append(
+					{'label': label,
+					'timestamp': datetime.now(pytz.timezone(zone))}
+				)
+		
 		return context

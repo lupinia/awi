@@ -311,6 +311,21 @@ SUNSET_WATERMARK_IMAGE = os.path.abspath(os.path.join(BASE_DIR,'sunset/watermark
 SUNSET_BG_NOTIFY_FAIL = True	# Send a notification if sunset_bg is used but a background image cannot be found.
 SUNSET_EXIFTOOL_CMD = '/usr/bin/exiftool'	# ExifTool executable path for pyexiftool
 
+#	New tab page view
+#	Tuple of strings:
+#		First value is the label that will be displayed
+#		Second value is the actual timezone data for pytz
+NEWTAB_CLOCK_LIST = [
+	('Seattle', 'America/Los_Angeles'),
+	('Lima', 'America/Lima'),
+	('UTC', 'UTC'),
+	('Baghdad', 'Asia/Baghdad'),
+	('Karachi', 'Asia/Karachi'),
+	('Perth', 'Australia/Perth'),
+	('Adelaide', 'Australia/Adelaide'),
+	('Sydney', 'Australia/Sydney'),
+]
+
 
 #	THIRD-PARTY APPS
 #	==============
