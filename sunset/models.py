@@ -275,11 +275,7 @@ class image(leaf):
 			if original.format == 'JPEG':
 				params['quality'] = 100
 			
-			if type_params.get('watermark',False):
-				# Watermark this image before performing operations.
-				working_copy = watermark(original)
-			else:
-				working_copy = original.copy()
+			working_copy = original.copy()
 			
 			if type_params.get('exact',False):
 				working_copy = ImageOps.fit(working_copy, type_params.get('size',(100,100)), Image.LANCZOS, centering=(0.5,0.5))
@@ -289,6 +285,10 @@ class image(leaf):
 					pass
 				else:
 					working_copy.thumbnail(type_params.get('size',(100,100)), Image.LANCZOS)
+			
+			if type_params.get('watermark',False):
+				# Watermark this image after performing operations.
+				working_copy = watermark(working_copy)
 			
 			working_copy.save(fp='%s/%s_%s.%s' % (settings.SUNSET_CACHE_DIR, self.slug, type, self.orig_type), **params)
 			
