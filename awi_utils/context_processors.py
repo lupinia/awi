@@ -10,15 +10,17 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 
 def site(request):
-	if '.eu' in request.get_host():
+	domain_name = request.get_host()
+	if '.eu' in domain_name:
 		show_cookie_banner = True
 	else:
 		show_cookie_banner = False
 	
 	return {
 		'site':Site.objects.get_current(), 
-		'domain_name':request.get_host(), 
+		'domain_name':domain_name, 
 		'cookie_banner':show_cookie_banner,
+		'permalink':'%s://%s%s' % (request.scheme, domain_name, request.path),
 	}
 
 def settings_vars(request):
@@ -32,4 +34,12 @@ def settings_vars(request):
 		'debug_check':settings.DEBUG,
 		'debug_white_bg':bg_white,
 		'mapbox_token':settings.MAPBOX_KEY,
+		'locale':settings.LANGUAGE_CODE,
+	}
+
+def sitemeta(request):
+	return {
+		'title_page':'',
+		'sitemeta_page_type':'website',
+		'sitemeta_is_image':False,
 	}
