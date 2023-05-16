@@ -97,7 +97,7 @@ def bg_filename(context, input_string=''):
 			if bg_query_cat:
 				bg_query = bg_query_cat
 			else:
-				bg_query = bg_query.filter(bg_tags__category__id=has_cat).filter(featured=True)
+				bg_query = bg_query.filter(bg_tags__category__id=has_cat)
 		
 		elif context.get('tag', False):
 			# Third check:  If bg_type is current_tag, try to pick something from the current tag.
