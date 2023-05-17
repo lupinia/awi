@@ -394,6 +394,10 @@ class leaf(access_control):
 				return self.owner.get_full_name()
 			else:
 				return self.owner.get_username()
+	
+	@property
+	def tags_list(self):
+		return self.tags.all().values_list('slug', flat=True)
 
 
 #	Create a leaf that links to something else that isn't part of this category system.
