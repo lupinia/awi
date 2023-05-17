@@ -19,8 +19,8 @@
 	{% if permalink %}<meta property="og:url" content="{{permalink}}" />{% endif %}
 	
 {% if sitemeta_page_type == 'article' %}
-	{% if sitemeta_timestamp_pub %}<meta property="article:published_time" content="{{sitemeta_timestamp_pub}}" />{% endif %}
-	{% if sitemeta_timestamp_mod %}<meta property="article:modified_time" content="{{sitemeta_timestamp_mod}}" />{% endif %}
+	{% if sitemeta_timestamp_pub %}<meta property="article:published_time" content="{{sitemeta_timestamp_pub|date:"c"}}" />{% endif %}
+	{% if sitemeta_timestamp_mod %}<meta property="article:modified_time" content="{{sitemeta_timestamp_mod|date:"c"}}" />{% endif %}
 	{% if sitemeta_author_name %}<meta property="article:author" content="{{sitemeta_author_name}}" />{% endif %}
 	{% if sitemeta_category %}<meta property="article:section" content="{{sitemeta_category}}" />{% endif %}
 {% endif %}
