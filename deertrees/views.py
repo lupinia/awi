@@ -573,6 +573,7 @@ class leaf_view(generic.DetailView):
 			context['sitemeta_category'] = str(context['object'].cat)
 			context['sitemeta_timestamp_pub'] = context['object'].timestamp_post
 			context['sitemeta_timestamp_mod'] = context['object'].timestamp_mod
+			context['sitemeta_article_tags'] = context['object'].tags_list
 		
 		return context
 

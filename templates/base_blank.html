@@ -23,6 +23,9 @@
 	{% if sitemeta_timestamp_mod %}<meta property="article:modified_time" content="{{sitemeta_timestamp_mod|date:"c"}}" />{% endif %}
 	{% if sitemeta_author_name %}<meta property="article:author" content="{{sitemeta_author_name}}" />{% endif %}
 	{% if sitemeta_category %}<meta property="article:section" content="{{sitemeta_category}}" />{% endif %}
+	{% if sitemeta_article_tags %}{% for article_tag in sitemeta_article_tags %}
+	<meta property="article:tag" content="{{article_tag}}" />
+	{% endfor %}{% endif %}
 {% endif %}
 	
 	<meta name="twitter:title" content="{% if title_page %}{{title_page}}{% elif title_site %}{{title_site}}{% else %}Lupinia Studios - Photography, Writing, and Creative Works by {% if sitemeta_author_name %}{{sitemeta_author_name}}{% else %}Natasha L.{% endif %}{% endif %}" />
