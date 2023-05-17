@@ -574,6 +574,9 @@ class leaf_view(generic.DetailView):
 			context['sitemeta_timestamp_pub'] = context['object'].timestamp_post
 			context['sitemeta_timestamp_mod'] = context['object'].timestamp_mod
 			context['sitemeta_article_tags'] = context['object'].tags_list
+			
+			if not context['object'].admin_owned:
+				context['sitemeta_article_author_name'] = context['object'].author
 		
 		return context
 
