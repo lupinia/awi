@@ -5,11 +5,11 @@
 {% now "Y" as curyear %}
 <head>
 	<meta charset="UTF-8">
-	<meta name="author" content="{% include 'includes/authorname.txt' %}" />
+	{% if sitemeta_author_name %}<meta name="author" content="{{sitemeta_author_name}}" />{% endif %}
 	<meta name="designer" content="Lupinia Studios - www.lupinia.net" />
-	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{{curyear}} by {% include 'includes/authorname.txt' %}" />
+	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{{curyear}} by {% if sitemeta_author_name %}{{sitemeta_author_name}}{% else %}Natasha L.{% endif %}" />
 
-	<title>{% block title %}Lupinia Studios{% endblock %}</title>
+	<title>{% block title %}{% if title_site and title_page %}{{title_site}} - {{title_page}}{% elif title_site %}{{title_site}}{% else %}Lupinia Studios{% endif %}{% endblock %}</title>
 	
 	{% block extra_head %}{% endblock %}
 	<link href="{{STATIC_PREFIX}}css/showcase_embed.css" type="text/css" rel="stylesheet" id="main_css" />

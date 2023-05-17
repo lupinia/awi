@@ -7,16 +7,16 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
-	{% if og_meta %}
-		<meta property="og:site_name" content="Lupinia Studios" />
-	{% endif %}
-	<meta name="author" content="{% include 'includes/authorname.txt' %}" />
+	{% if sitemeta_author_name %}<meta name="author" content="{{sitemeta_author_name}}" />{% endif %}
 	<meta name="designer" content="Lupinia Studios - www.lupinia.net" />
-	<meta name="description"  content="{% block desc %}Lupinia Studios is {% include 'includes/authorname.txt' %}'s personal portfolio, featuring her written works, digital photography, and digital graphics.{% endblock %}" property="og:description" />
-	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{{curyear}} by {% include 'includes/authorname.txt' %}" />
-	<meta property="og:site_name" content="Lupinia Studios" />
+	<meta name="description" property="og:description" content="{% block desc %}{% if sitemeta_desc %}{{sitemeta_desc}}{% else %}Lupinia Studios is {% if sitemeta_author_name %}{{sitemeta_author_name}}{% else %}Natasha L.{% endif %}'s personal portfolio, featuring her written works, digital photography, and digital graphics.{% endif %}{% endblock %}" />
+	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{{curyear}} by {% if sitemeta_author_name %}{{sitemeta_author_name}}{% else %}Natasha L.{% endif %}" />
 
-	<title>{% block title %}Lupinia Studios{% endblock %}</title>
+	<meta property="og:site_name" content="{% if title_site %}{{title_site}}{% else %}Lupinia Studios{% endif %}" />
+	<meta property="og:title" content="{% if title_page %}{{title_page}}{% elif title_site %}{{title_site}}{% else %}Lupinia Studios - Photography, Writing, and Creative Works by {% if sitemeta_author_name %}{{sitemeta_author_name}}{% else %}Natasha L.{% endif %}{% endif %}" />
+	<meta name="twitter:title" content="{% if title_page %}{{title_page}}{% elif title_site %}{{title_site}}{% else %}Lupinia Studios - Photography, Writing, and Creative Works by {% if sitemeta_author_name %}{{sitemeta_author_name}}{% else %}Natasha L.{% endif %}{% endif %}" />
+	<title>{% block title %}{% if title_site and title_page %}{{title_site}} - {{title_page}}{% elif title_site %}{{title_site}}{% else %}Lupinia Studios - Photography, Writing, and Creative Works by {% if sitemeta_author_name %}{{sitemeta_author_name}}{% else %}Natasha L.{% endif %}{% endif %}{% endblock %}</title>
+	
 	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase.css" type="text/css" rel="stylesheet" id="main_css" />
 	{% block cookielaw_js %}<script src="{{STATIC_PREFIX}}cookielaw/js/cookielaw.js" type="text/javascript"></script>{% endblock %}
 	{% if rss_feed %}

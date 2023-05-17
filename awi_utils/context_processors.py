@@ -39,7 +39,11 @@ def settings_vars(request):
 
 def sitemeta(request):
 	return {
+		'title_site':settings.SITE_TITLE,
 		'title_page':'',
+		'title_img':settings.SITE_TITLE_IMG_CODE,
+		'sitemeta_author_name':settings.DEFAULT_AUTHOR_NAME,
+		'sitemeta_author_twitter':settings.DEFAULT_AUTHOR_TWITTER,
 		'sitemeta_page_type':'website',
 		'sitemeta_is_image':False,
 	}
