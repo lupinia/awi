@@ -31,6 +31,7 @@ class contact_page(FormView):
 	
 	def get_context_data(self, **kwargs):
 		context = super(contact_page, self).get_context_data(**kwargs)
+		context['title_page'] = "Contact Information"
 		
 		if not context.get('breadcrumbs',False):
 			context['breadcrumbs'] = []
