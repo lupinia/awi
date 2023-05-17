@@ -58,6 +58,8 @@ class single_page(leaf_view):
 			context['extra_classes'] = 'writing_page'
 			
 			context['sitemeta_desc'] = context['object'].summary_short
+			if context['object'].revised:
+				context['sitemeta_timestamp_mod'] = context['object'].timestamp_revised
 		
 		return context
 
