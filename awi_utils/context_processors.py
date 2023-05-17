@@ -46,4 +46,5 @@ def sitemeta(request):
 		'sitemeta_author_twitter':settings.DEFAULT_AUTHOR_TWITTER,
 		'sitemeta_page_type':'website',
 		'sitemeta_is_image':False,
+		'sitemeta_desc':'',
 	}
