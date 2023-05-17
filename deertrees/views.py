@@ -184,6 +184,9 @@ class homepage(leaf_parent, generic.TemplateView):
 		if blocks[0]:
 			context.update(blocks[1])
 		
+		context['title_site'] = '' # This will force default to the full homepage title
+		context['title_page'] = '' # This will force default to the full homepage title
+		
 		return context
 
 
@@ -263,6 +266,8 @@ class category_list(leaf_parent, generic.DetailView):
 			
 			context['highlight_featured'] = self.highlight_featured
 			context['body_text'] = sunset_embed(context['object'].body_html, self.request)
+			
+			context['title_page'] = str(context['object'])
 		
 		return context
 
@@ -294,6 +299,7 @@ class tag_list(leaf_parent, generic.DetailView):
 		
 		context['body_text'] = sunset_embed(context['object'].body_html, self.request)
 		
+		context['title_page'] = str(context['object'])
 		return context
 
 
@@ -594,6 +600,10 @@ class all_cats(generic.TemplateView, special_feature_view):
 		
 		if self.request.GET.get('return_to') and self.request.user.has_perm('deertrees.change_leaf'):
 			context['return_to'] = self.request.GET.get('return_to')
+			context['title_page'] = "Select a Category"
+		else:
+			context['title_page'] = "All Categories"
+
 		
 		return context
 
@@ -606,6 +616,7 @@ class sitemap(all_cats):
 		context['view'] = 'sitemap'
 		context['cats'] = context['cats'].filter(sitemap_include=True)
 		context['tags'] = tag.objects.filter(sitemap_include=True).annotate(num_leaves=Count('leaves'))
+		context['title_page'] = "Site Map"
 		return context
 
 
@@ -638,5 +649,8 @@ class all_tags(generic.ListView):
 		
 		if self.request.GET.get('return_to',False) and self.request.user.has_perm('deertrees.change_leaf'):
 			context['return_to'] = self.request.GET.get('return_to',False)
+			context['title_page'] = "Select a Tag"
+		else:
+			context['title_page'] = "All Tags"
 		
 		return context

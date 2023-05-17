@@ -1,10 +1,9 @@
 {% extends "base.html" %}
-{% block title %}{{block.super}} - {% if view == 'sitemap' %}Site Map{% elif return_to %}Select a Category{% elif view == 'catlist' %}All Categories{% endif %}{% endblock %}
 {% load mptt_tags %}
 
 {% block content_left %}
 	<div class="left_sidebar">
-		<h2>{% if view == 'sitemap' %}Site Map{% elif return_to %}Select a Category{% elif view == 'catlist' %}All Categories{% endif %}</h2>
+		<h2>{{title_page}}</h2>
 		{% if view == 'catlist' %}
 			<p>This is a list of all categories defined in the system.  {% if return_to %}Click a category to select it.{% endif %}</p>
 		{% endif %}

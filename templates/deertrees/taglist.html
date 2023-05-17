@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% block title %}{{block.super}} - {% if return_to %}Select a Tag{% else %}All Tags{% endif %}{% endblock %}
 
 {% block content_left %}
 	<div class="left_sidebar">
@@ -10,7 +9,7 @@
 				</div>
 			</div>
 		{% endif %}
-		<h2>{% if return_to %}Select a Tag{% else %}All Tags{% endif %}</h2>
+		<h2>{{title_page}}</h2>
 		<div class="clearfix clear_left"></div>
 		<p>This is a list of all tags defined in the system.{% if return_to %}  Click a tag to select it.{% endif %}</p>
 		{% if error %}
