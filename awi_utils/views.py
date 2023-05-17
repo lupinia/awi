@@ -33,6 +33,8 @@ class plate_generator(TemplateView):
 	
 	def get_context_data(self, **kwargs):
 		context=super(plate_generator,self).get_context_data(**kwargs)
+		context['title_page'] = "License Plate Generator"
+		
 		context['generated'] = False
 		
 		slug = kwargs.get('slug', '').lower()
@@ -65,6 +67,7 @@ class newtab_view(TemplateView):
 	
 	def get_context_data(self, **kwargs):
 		context=super(newtab_view,self).get_context_data(**kwargs)
+		context['title_page'] = "New Tab"
 		context['newtab'] = True
 		context['time_local'] = timezone.now()
 		context['clock_sync'] = (60 - context['time_local'].second) * 1000
