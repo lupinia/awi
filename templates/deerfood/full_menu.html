@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load humanize %}
-{% block title %}{{block.super}} - Natasha's Kitchen - Menu{% if cur_filter %} - {{cur_filter.name}}{% endif %}{% endblock %}
 {% block bg_image %}{% include 'sunset/bg_image.html' with bg_tag='personal' %}{% endblock %}
 
 {% block content_left %}
@@ -14,7 +13,7 @@
 				</div>
 			{% endif %}
 			<div id="page_title_main">
-				<h2>Natasha's Kitchen - Menu{% if cur_filter %} - {{cur_filter.name}}{% endif %}</h2>
+				<h2>{{title_page}}</h2>
 			</div>
 		</div>
 		<p>I love to cook, and I love to cook for other people, but sometimes it can be difficult to list and describe everything I can make.  So, this is the list of everything I currently know how to cook, from the simple to the complex (excluding things that require no effort at all, like hot dogs).  This will continually expand as I learn new recipes!  I'm happy to make things outside this list too, that's how I learn, this is simply the list of everything I've tried and already know how to do well, including some recipes of my own design.</p>
