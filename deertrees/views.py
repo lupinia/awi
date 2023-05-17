@@ -268,6 +268,11 @@ class category_list(leaf_parent, generic.DetailView):
 			context['body_text'] = sunset_embed(context['object'].body_html, self.request)
 			
 			context['title_page'] = str(context['object'])
+			
+			if context['object'].summary_short:
+				context['sitemeta_desc'] = context['object'].summary_short
+			else:
+				context['sitemeta_desc'] = "Directory:  %s" % (str(context['object']))
 		
 		return context
 
@@ -300,6 +305,11 @@ class tag_list(leaf_parent, generic.DetailView):
 		context['body_text'] = sunset_embed(context['object'].body_html, self.request)
 		
 		context['title_page'] = str(context['object'])
+		if context['object'].summary_short:
+			context['sitemeta_desc'] = context['object'].summary_short
+		else:
+			context['sitemeta_desc'] = "Tag:  %s" % (str(context['object']))
+		
 		return context
 
 
