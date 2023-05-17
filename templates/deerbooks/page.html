@@ -1,5 +1,4 @@
 {% extends "content_page.html" %}
-{% block desc %}{% if object %}{{object.body_summary}}{% else %}{{block.super}}{% endif %}{% endblock %}
 
 {% block content_body %}
 	{% if object and not error %}
