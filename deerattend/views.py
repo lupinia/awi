@@ -109,6 +109,7 @@ class event_list(special_feature_view, generic.ListView):
 		context = super(event_list, self).get_context_data(**kwargs)
 		context['filters'] = self.get_filters()
 		context['can_edit'] = self.can_edit()
+		context['title_page'] = "Events Attended"
 		
 		if context['event_instances']:
 			last_update = context['event_instances'].values('timestamp_mod').latest('timestamp_mod')
@@ -165,6 +166,7 @@ class event_instances(event_list):
 		context['cur_filter'] = cur_filter
 		context['cur_filter_type'] = 'event'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'event')
+		context['title_page'] = "%s - %s" % (context['title_page'], cur_filter.name)
 		
 		if cur_filter.mature and not self.get_mature_check()[0]:
 			context['event_instances'] = []
@@ -201,6 +203,7 @@ class events_by_type(event_list):
 		context['cur_filter'] = cur_filter
 		context['cur_filter_type'] = 'type'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'type')
+		context['title_page'] = "%s - %s" % (context['title_page'], cur_filter.name)
 		
 		return context
 
@@ -216,6 +219,7 @@ class events_by_venue(event_list):
 		context['cur_filter'] = cur_filter
 		context['cur_filter_type'] = 'venue'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'venue')
+		context['title_page'] = "%s - %s" % (context['title_page'], cur_filter.name)
 		
 		return context
 
@@ -235,6 +239,7 @@ class events_by_flag(event_list):
 		context['cur_filter'] = cur_filter
 		context['cur_filter_type'] = 'flag'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'flag')
+		context['title_page'] = "%s - %s" % (context['title_page'], cur_filter.name)
 		return context
 
 
@@ -253,6 +258,7 @@ class events_by_special(event_list):
 		context['cur_filter'] = self.special_filters.get(self.kwargs['slug'], False)
 		context['cur_filter_type'] = 'special'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'special')
+		context['title_page'] = "%s - %s" % (context['title_page'], context['cur_filter']['name'])
 		
 		if self.special_filters.get(self.kwargs['slug'], {}).get('is_mature', False) and not self.get_mature_check()[0]:
 			context['event_instances'] = []
