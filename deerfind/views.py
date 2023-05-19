@@ -16,7 +16,7 @@ import os
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponsePermanentRedirect, HttpResponseNotFound
-from django.template import Context, loader
+from django.template import loader
 from django.utils.module_loading import import_string
 
 from haystack.generic_views import FacetedSearchView
@@ -126,7 +126,7 @@ def not_found(request):
 		context['search_query'] = search_path.replace(' ', '+')
 		
 		#	Here's the 404 template.  Sorry we couldn't find what you were looking for!
-		return HttpResponseNotFound(content=template.render(context), content_type='text/html; charset=utf-8')
+		return HttpResponseNotFound(content=template.render(context, request), content_type='text/html; charset=utf-8')
 
 
 #	Finder:  Gallery2 Legacy Compatibility

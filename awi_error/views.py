@@ -11,7 +11,6 @@
 import sys
 
 from django.http import HttpResponseServerError, HttpResponseForbidden
-from django.shortcuts import render
 from django.template import loader
 
 def system_error(request):
@@ -21,7 +20,7 @@ def system_error(request):
 		value = 'No exception info found'
 	context={'error_value':value,}
 	
-	return HttpResponseServerError(content=template.render(context), content_type='text/html; charset=utf-8')
+	return HttpResponseServerError(content=template.render(context, request), content_type='text/html; charset=utf-8')
 
 def denied_error(request):
 	template=loader.get_template('awi_error/403.html')
@@ -31,4 +30,4 @@ def denied_error(request):
 		context_path=request.path
 	context={'bad_url':context_path}
 	
-	return HttpResponseForbidden(content=template.render(context), content_type='text/html; charset=utf-8')
+	return HttpResponseForbidden(content=template.render(context, request), content_type='text/html; charset=utf-8')
