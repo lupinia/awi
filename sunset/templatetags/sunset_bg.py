@@ -24,7 +24,7 @@ blank_bg = {
 	'url':'%ssunset/blank.png' % settings.STATIC_URL,
 	'display_footer_info':False,
 }
-global bg_data
+bg_data = {}
 
 def check_cache(prefix):
 	check = cache.get('sunsetbg_%s' % prefix)
@@ -39,19 +39,19 @@ def store_cache(prefix, data, timeout=300):
 	cache.set('sunsetbg_%s' % prefix, value, timeout)
 
 def set_bg(image_obj, display_footer_info, cache_key="", cache_timeout=0):
-	bg_data = {}
+	new_bg_data = {}
 	cur_bg_asset = image_obj.assets.get(type='bg')
 	if cur_bg_asset:
-		bg_data['url'] = cur_bg_asset.get_url()
-		bg_data['display_footer_info'] = display_footer_info
+		new_bg_data['url'] = cur_bg_asset.get_url()
+		new_bg_data['display_footer_info'] = display_footer_info
 		if display_footer_info:
-			bg_data['title'] = str(image_obj)
-			bg_data['info_url'] = image_obj.get_absolute_url()
+			new_bg_data['title'] = str(image_obj)
+			new_bg_data['info_url'] = image_obj.get_absolute_url()
 		
 		if cache_key and cache_timeout:
-			store_cache(cache_key, bg_data, cache_timeout)
+			store_cache(cache_key, new_bg_data, cache_timeout)
 	
-	return bg_data
+	return new_bg_data
 
 
 @register.simple_tag(takes_context=True)
