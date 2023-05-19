@@ -569,7 +569,7 @@ class leaf_view(generic.DetailView):
 			# Metadata
 			context['sitemeta_page_type'] = 'article'
 			context['title_page'] = str(context['object'])
-			context['permalink'] = context['object'].get_absolute_url()
+			context['permalink'] = context['object'].get_complete_url(self.request)
 			context['sitemeta_category'] = str(context['object'].cat)
 			context['sitemeta_timestamp_pub'] = context['object'].timestamp_post
 			context['sitemeta_timestamp_mod'] = context['object'].timestamp_mod
