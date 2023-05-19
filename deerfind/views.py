@@ -187,9 +187,20 @@ class search_view(FacetedSearchView):
 	def get_context_data(self, *args, **kwargs):
 		context = super(search_view, self).get_context_data(*args, **kwargs)
 		context['highlight_featured'] = True
+		context['title_page'] = "Search"
 		
 		if context.get('query',False):
 			context['paginator_vars'] = [('q', context.get('query',False)), ]
+			context['title_page'] += ": " + context.get('query','')
+			
+			if context.get('is_paginated',False) and context.get('object_list',False):
+				try:
+					page_cur = context['page_obj'].number
+					page_total = context['page_obj'].paginator.num_pages
+					context['title_page'] += " (Page %d of %d)" % (page_cur, page_total)
+				except KeyError:
+					# Something went wrong, and this isn't that important anyway, so do nothing
+					pass
 		
 		if not context.get('breadcrumbs',False):
 			context['breadcrumbs'] = []
