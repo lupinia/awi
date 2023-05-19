@@ -18,7 +18,7 @@ def system_error(request):
 	type, value, tb = sys.exc_info()
 	if value is None:
 		value = 'No exception info found'
-	context={'error_value':value,}
+	context = {'error_value':value, 'title_page':"System Error (500)",}
 	
 	return HttpResponseServerError(content=template.render(context, request), content_type='text/html; charset=utf-8')
 
@@ -28,6 +28,6 @@ def denied_error(request):
 		context_path=request.path+'?'+request.META.get('QUERY_STRING','')
 	else:
 		context_path=request.path
-	context={'bad_url':context_path}
+	context = {'bad_url':context_path, 'title_page':"Access Denied (403)",}
 	
 	return HttpResponseForbidden(content=template.render(context, request), content_type='text/html; charset=utf-8')
