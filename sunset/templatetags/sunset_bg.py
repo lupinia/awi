@@ -40,13 +40,21 @@ def store_cache(prefix, data, timeout=300):
 
 def set_bg(image_obj, display_footer_info, cache_key="", cache_timeout=0):
 	new_bg_data = {}
-	cur_bg_asset = image_obj.assets.get(type='bg')
-	if cur_bg_asset:
-		new_bg_data['url'] = cur_bg_asset.get_url()
+	url_key_map = {'bg':'url', 'og':'og_url', 'twitter':'twitter_url'}
+	cur_bg_assets = image_obj.assets.filter(type__in=['bg', 'og', 'twitter'])
+	if cur_bg_assets:
+		for cur_bg_asset in cur_bg_assets:
+			new_bg_data[url_key_map[cur_bg_asset.type]] = cur_bg_asset.get_url()
+			if cur_bg_asset.type == 'og':
+				new_bg_data['mime'] = cur_bg_asset.img_mimetype
+				new_bg_data['og_height'] = cur_bg_asset.img_height
+				new_bg_data['og_width'] = cur_bg_asset.img_width
+		
 		new_bg_data['display_footer_info'] = display_footer_info
 		if display_footer_info:
 			new_bg_data['title'] = str(image_obj)
 			new_bg_data['info_url'] = image_obj.get_absolute_url()
+			new_bg_data['alt_text'] = image_obj.summary_short
 		
 		if cache_key and cache_timeout:
 			store_cache(cache_key, new_bg_data, cache_timeout)
