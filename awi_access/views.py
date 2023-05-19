@@ -66,6 +66,9 @@ class age_verify(generic.edit.FormView):
 			self.request.session['awi_age_form_complete'] = False
 			context['success'] = True
 		
+		# Metadata
+		context['title_page'] = "Age Verification Form"
+		
 		return context
 
 
@@ -124,6 +127,9 @@ class settings_page(generic.TemplateView):
 			
 			if changed:
 				cache.clear()
+		
+		# Metadata
+		context['title_page'] = "Settings"
 		
 		return context
 
