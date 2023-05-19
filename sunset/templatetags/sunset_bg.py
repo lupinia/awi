@@ -54,7 +54,8 @@ def set_bg(image_obj, display_footer_info, cache_key="", cache_timeout=0):
 		if display_footer_info:
 			new_bg_data['title'] = str(image_obj)
 			new_bg_data['info_url'] = image_obj.get_absolute_url()
-			new_bg_data['alt_text'] = image_obj.summary_short
+		
+		new_bg_data['alt_text'] = image_obj.alt_text
 		
 		if cache_key and cache_timeout:
 			store_cache(cache_key, new_bg_data, cache_timeout)

@@ -109,6 +109,12 @@ class image(leaf):
 	def summary_long(self):
 		return self.get_summary(512)
 	
+	@property
+	def alt_text(self):
+		# This is a situation where we MUST return a value of some sort, so it may take a few tries
+		return summarize(body=self.body, summary=self.summary, fallback=str(self), length=255)
+		
+	
 	# ALIAS
 	@property
 	def rss_description(self):
