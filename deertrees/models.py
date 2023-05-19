@@ -7,6 +7,7 @@
 #	=================
 
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
@@ -242,6 +243,21 @@ class leaf(access_control):
 	
 	def __unicode__(self):
 		return '%s:  %d' % (self.type.capitalize(), self.pk)
+	
+	# An extension of get_absolute_url() to include the domain
+	def get_complete_url(self, request=None):
+		if request:
+			domain = request.get_host()
+		else:
+			primary_site = self.sites.all().order_by('pk').first()
+			if not primary_site:
+				primary_site = Site.objects.get(pk=settings.SITE_ID)
+			
+			domain = primary_site.domain
+			if 'www' not in domain:
+				domain = 'www.%s' % domain
+		
+		return 'https://%s%s' % (domain, self.get_absolute_url())
 	
 	def save(self, *args, **kwargs):
 		if not self.pk:
