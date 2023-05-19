@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}{{block.super}} - Age Verification Form{% endblock %}
-{% block bg_image %}{% include 'sunset/bg_image.html' with bg_tag='personal' %}{% endblock %}
+{% block bg_image %}{% with bg_tag='personal' %}{{block.super}}{% endwith %}{% endblock %}
 {% load honeypot %}
 {% load errors %}
 

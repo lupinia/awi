@@ -1,9 +1,5 @@
 {% extends "base_core.html" %}
-{% load sunset_bg %}
 {% load errors %}
-
-{% block body_tag %}{% block bg_image %}{% include 'sunset/bg_image.html' %}{% endblock %}{% endblock %}
-{% block bginfo %}{% if showcase_mode %}&nbsp;{% else %}{% bg_info %}{% endif %}{% endblock %}
 
 {% block content_area %}
 	<div id="content_area">

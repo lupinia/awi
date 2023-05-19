@@ -1,7 +1,9 @@
 {% extends "base_blank.html" %}
 {% load static %}
 {% load cookielaw_tags %}
+{% load sunset_bg %}
 {% get_static_prefix as STATIC_PREFIX %}
+{% get_bg_data as bg %}
 
 {% block page_structure %}
 {% block cookiebanner %}{% if cookie_banner %}{% cookielaw_banner %}{% endif %}{% endblock %}
@@ -51,7 +53,7 @@
 	<footer role="contentinfo">
 		{% block footer %}
 			<div id="footer-right">
-				<div class="bg_info">{% block bginfo %}&nbsp;{% endblock %}</div>
+				<div class="bg_info">{% block bginfo %}{% if bg and bg.display_footer_info and not showcase_mode %}Background Photo:  <a href="{{bg.info_url}}">{{bg.title}}</a>{% else %}&nbsp;{% endif %}{% endblock %}</div>
 				<div class="lower">&copy;2000-{{curyear}} {{sitemeta_author_name}} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a></div>
 			</div>
 			

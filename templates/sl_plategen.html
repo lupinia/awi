@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block bg_image %}{% include 'sunset/bg_image.html' with bg_tag='sl' %}{% endblock %}
+{% block bg_image %}{% with bg_tag='sl' %}{{block.super}}{% endwith %}{% endblock %}
 
 {% block content_left %}
 	{% if generated %}

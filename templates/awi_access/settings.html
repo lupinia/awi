@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}{{block.super}} - Settings{% endblock %}
-{% block bg_image %}{% include 'sunset/bg_image.html' with bg_tag='pro' %}{% endblock %}
+{% block bg_image %}{% with bg_tag='pro' %}{{block.super}}{% endwith %}{% endblock %}
 {% load honeypot %}
 {% load errors %}
 

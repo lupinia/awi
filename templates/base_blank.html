@@ -2,8 +2,10 @@
 <html prefix="og: https://ogp.me/ns#{% if sitemeta_page_type %}{{sitemeta_page_type}}{% else %}website{% endif %}"{% if debug_white_bg %} class="debug_white_bg"{% endif %}>
 <head>
 	{% load static %}
+	{% load sunset_bg %}
 	{% get_static_prefix as STATIC_PREFIX %}
 	{% now "Y" as curyear %}
+	{% block bg_image %}{% bg_select bg_tag %}{% endblock %}
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
@@ -35,6 +37,8 @@
 	{% if sitemeta_twitter %}<meta name="twitter:site" content="{{sitemeta_twitter}}" />
 	{% if not sitemeta_article_author_name %}<meta name="twitter:creator" content="{{sitemeta_twitter}}" />{% endif %}{% endif %}
 	
+	{% get_bg_data as bg %}
+	
 	<title>{% block title %}{% if title_site and title_page %}{{title_site}} - {{title_page}}{% elif title_site %}{{title_site}}{% else %}Lupinia Studios - Photography, Writing, and Creative Works by {% if sitemeta_author_name %}{{sitemeta_author_name}}{% else %}Natasha L.{% endif %}{% endif %}{% endblock %}</title>
 	
 	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase.css" type="text/css" rel="stylesheet" id="main_css" />
@@ -50,7 +54,7 @@
 	{% endif %}
 </head>
 
-{% block body_tag %}<body>{% endblock %}
+{% block body_tag %}<body style="background-image:url({{bg.url}});" {% if showcase_mode %}class="showcase_mode"{% elif newtab %}class="newtab_page"{% endif %}>{% endblock %}
 {% block page_structure %}{% endblock %}
 {% block after_content %}{% endblock %}
 
