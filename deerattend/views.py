@@ -173,6 +173,8 @@ class event_instances(event_list):
 			context['error'] = self.get_mature_check()[1]
 			if self.get_mature_check()[1] == 'access_mature_prompt':
 				context['embed_mature_form'] = True
+				context['title_page'] += " (Mature Content)"
+				context['sitemeta_desc'] = "Viewing this content requires verifying your age, which will not be stored on our server in any way.  More details on the form, or in our Privacy Policy."
 		
 		if context['event_instances']:
 			venue_count = context['event_instances'].aggregate(Count('venue', distinct=True))
@@ -265,6 +267,8 @@ class events_by_special(event_list):
 			context['error'] = self.get_mature_check()[1]
 			if self.get_mature_check()[1] == 'access_mature_prompt':
 				context['embed_mature_form'] = True
+				context['title_page'] += " (Mature Content)"
+				context['sitemeta_desc'] = "Viewing this content requires verifying your age, which will not be stored on our server in any way.  More details on the form, or in our Privacy Policy."
 		
 		if not context['event_instances'] and not context.get('error', False):
 			context['error'] = 'filter_empty'
