@@ -57,6 +57,16 @@ class image(leaf):
 		'XMP:Subject':'tags', 
 		'XMP:Title':'title', 
 	}
+	CENTER_CHOICES_H = (
+		('l', 'Left'),
+		('c', 'Center'),
+		('r', 'Right'),
+	)
+	CENTER_CHOICES_V = (
+		('t', 'Top'),
+		('c', 'Center'),
+		('b', 'Bottom'),
+	)
 	
 	slug = models.SlugField(unique=True)
 	title = models.CharField(max_length=100, null=True, blank=True)
@@ -70,6 +80,8 @@ class image(leaf):
 	
 	geo_lat = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
 	geo_long = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='longitude', help_text='Positive numbers are eastern hemisphere, negative numbers are western.')
+	crop_horizontal = models.CharField(max_length=1, default='c', choices=CENTER_CHOICES_H, verbose_name='crop alignment (horizontal)')
+	crop_vertical = models.CharField(max_length=1, default='c', choices=CENTER_CHOICES_V, verbose_name='crop alignment (vertical)')
 	
 	# Page backgrounds
 	bg_tags = models.ManyToManyField(background_tag, blank=True, related_name='images', verbose_name='background tags', help_text='To use this image as a sitewide background, select the background tag(s) it should be associated with.')
@@ -113,7 +125,23 @@ class image(leaf):
 	def alt_text(self):
 		# This is a situation where we MUST return a value of some sort, so it may take a few tries
 		return summarize(body=self.body, summary=self.summary, fallback=str(self), length=255)
+	
+	@property
+	def crop_center(self):
+		center_h = 0.5
+		center_v = 0.5
 		
+		if self.crop_horizontal == 'l':
+			center_h = 0.0
+		elif self.crop_horizontal == 'r':
+			center_h = 1.0
+		
+		if self.crop_vertical == 't':
+			center_v = 0.0
+		elif self.crop_vertical == 'b':
+			center_v = 1.0
+		
+		return (center_h, center_v)
 	
 	# ALIAS
 	@property
@@ -284,7 +312,7 @@ class image(leaf):
 			working_copy = original.copy()
 			
 			if type_params.get('exact',False):
-				working_copy = ImageOps.fit(working_copy, type_params.get('size',(100,100)), Image.LANCZOS, centering=(0.5,0.5))
+				working_copy = ImageOps.fit(working_copy, type_params.get('size',(100,100)), Image.LANCZOS, centering=self.crop_center)
 			else:
 				if working_copy.width < type_params.get('size',(100,100))[0] and working_copy.height < type_params.get('size',(100,100))[1]:
 					# We're already within the right size, so just use the original.

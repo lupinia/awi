@@ -42,7 +42,7 @@ class image_admin(leaf_admin):
 	list_select_related = True
 	search_fields = ['body','summary','title','slug'] + leaf_admin.search_fields
 	fieldsets = [
-		(None,{'fields':(('title','slug'),('summary','auto_fields','rebuild_assets'),'body','bg_tags'),},),
+		(None,{'fields':(('title','slug'),('summary','auto_fields','rebuild_assets'),'body','bg_tags',('crop_horizontal','crop_vertical',),),},),
 	] + leaf_admin.fieldsets
 	prepopulated_fields={'slug':('title',)}
 	list_display = ('title','auto_fields','rebuild_assets',) + leaf_admin.list_display
