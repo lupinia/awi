@@ -465,8 +465,11 @@ class leaf_view(generic.DetailView):
 				raise PermissionDenied
 			elif canview[1] == 'access_mature_prompt':
 				context['error'] = canview[1]
+				context['title_page'] = "%s (Mature Content)" % str(context['object'])
+				context['sitemeta_desc'] = "Viewing this content requires verifying your age, which will not be stored on our server in any way.  More details on the form, or in our Privacy Policy."
 				context['object'] = ''
 				context['embed_mature_form'] = True
+				
 			else:
 				context['object'] = ''
 				context['error'] = canview[1]
