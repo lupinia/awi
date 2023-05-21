@@ -259,19 +259,23 @@ class events_by_special(event_list):
 		context=super(events_by_special,self).get_context_data(**kwargs)
 		context['cur_filter'] = self.special_filters.get(self.kwargs['slug'], False)
 		context['cur_filter_type'] = 'special'
-		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'special')
-		context['title_page'] = "%s - %s" % (context['title_page'], context['cur_filter']['name'])
 		
-		if self.special_filters.get(self.kwargs['slug'], {}).get('is_mature', False) and not self.get_mature_check()[0]:
-			context['event_instances'] = []
-			context['error'] = self.get_mature_check()[1]
-			if self.get_mature_check()[1] == 'access_mature_prompt':
-				context['embed_mature_form'] = True
-				context['title_page'] += " (Mature Content)"
-				context['sitemeta_desc'] = "Viewing this content requires verifying your age, which will not be stored on our server in any way.  More details on the form, or in our Privacy Policy."
-		
-		if not context['event_instances'] and not context.get('error', False):
-			context['error'] = 'filter_empty'
+		if context['cur_filter']:
+			context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'special')
+			context['title_page'] = "%s - %s" % (context['title_page'], context['cur_filter']['name'])
+			
+			if self.special_filters.get(self.kwargs['slug'], {}).get('is_mature', False) and not self.get_mature_check()[0]:
+				context['event_instances'] = []
+				context['error'] = self.get_mature_check()[1]
+				if self.get_mature_check()[1] == 'access_mature_prompt':
+					context['embed_mature_form'] = True
+					context['title_page'] += " (Mature Content)"
+					context['sitemeta_desc'] = "Viewing this content requires verifying your age, which will not be stored on our server in any way.  More details on the form, or in our Privacy Policy."
+			
+			if not context['event_instances'] and not context.get('error', False):
+				context['error'] = 'filter_empty'
+		else:
+			raise Http404
 		
 		return context
 
