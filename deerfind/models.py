@@ -29,7 +29,7 @@ class pointer(models.Model):
 	old_url = models.CharField(max_length=255, unique=True)
 	new_url = models.CharField(max_length=255)
 	category = models.ForeignKey(category, on_delete=models.PROTECT, verbose_name='type')
-	log_hits = models.BooleanField(default=True, blank=True, verbose_name='log hits')
+	log_hits = models.BooleanField(default=False, blank=True, verbose_name='log hits')
 	
 	def __unicode__(self):
 		return '%s -> %s' % (self.old_url, self.new_url)
