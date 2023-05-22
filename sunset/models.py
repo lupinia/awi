@@ -666,6 +666,8 @@ class batch_import(access_control):
 			for img_filename in file_list:
 				if os.path.isdir('%s/%s' % (self.folder, img_filename)):
 					continue
+				if img_filename.lower() == 'thumbs.db' or img_filename.lower() == 'desktop.ini':
+					continue
 				
 				img_PIL_obj = Image.open('%s/%s' % (self.folder, img_filename))
 				img_filename_raw = img_filename.split('.')
