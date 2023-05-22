@@ -59,12 +59,16 @@ class image(leaf):
 	}
 	CENTER_CHOICES_H = (
 		('l', 'Left'),
+		('cl', 'Center-Left'),
 		('c', 'Center'),
+		('cr', 'Center-Right'),
 		('r', 'Right'),
 	)
 	CENTER_CHOICES_V = (
 		('t', 'Top'),
+		('ct', 'Center-Top'),
 		('c', 'Center'),
+		('cb', 'Center-Bottom'),
 		('b', 'Bottom'),
 	)
 	
@@ -80,8 +84,8 @@ class image(leaf):
 	
 	geo_lat = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
 	geo_long = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='longitude', help_text='Positive numbers are eastern hemisphere, negative numbers are western.')
-	crop_horizontal = models.CharField(max_length=1, default='c', choices=CENTER_CHOICES_H, verbose_name='crop alignment (horizontal)')
-	crop_vertical = models.CharField(max_length=1, default='c', choices=CENTER_CHOICES_V, verbose_name='crop alignment (vertical)')
+	crop_horizontal = models.CharField(max_length=2, default='c', choices=CENTER_CHOICES_H, verbose_name='crop alignment (horizontal)')
+	crop_vertical = models.CharField(max_length=2, default='c', choices=CENTER_CHOICES_V, verbose_name='crop alignment (vertical)')
 	
 	# Page backgrounds
 	bg_tags = models.ManyToManyField(background_tag, blank=True, related_name='images', verbose_name='background tags', help_text='To use this image as a sitewide background, select the background tag(s) it should be associated with.')
@@ -133,11 +137,19 @@ class image(leaf):
 		
 		if self.crop_horizontal == 'l':
 			center_h = 0.0
+		elif self.crop_horizontal == 'cl':
+			center_h = 0.25
+		elif self.crop_horizontal == 'cr':
+			center_h = 0.75
 		elif self.crop_horizontal == 'r':
 			center_h = 1.0
 		
 		if self.crop_vertical == 't':
 			center_v = 0.0
+		elif self.crop_horizontal == 'ct':
+			center_v = 0.25
+		elif self.crop_horizontal == 'cb':
+			center_v = 0.75
 		elif self.crop_vertical == 'b':
 			center_v = 1.0
 		
