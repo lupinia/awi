@@ -60,6 +60,8 @@ class single_page(leaf_view):
 			context['sitemeta_desc'] = context['object'].summary_short
 			if context['object'].revised:
 				context['sitemeta_timestamp_mod'] = context['object'].timestamp_revised
+			
+			context['source_url'] =  context['object'].get_complete_url(self.request)
 		
 		return context
 
@@ -121,7 +123,7 @@ class book(generic.DetailView):
 				
 				# source_url should be the url for the first visible page
 				if not context['source_url']:
-					context['source_url'] = 'http://%s%s' % (site_domain, reverse('page_htm', kwargs={'cached_url':page.cat.cached_url,'slug':page.slug,}))
+					context['source_url'] =  page.get_complete_url(self.request)
 				
 				# timestamp should be the displayed timestamp of whichever page is newest
 				cur_page_timestamp = page.display_times()

@@ -25,5 +25,5 @@
 \section*{% templatetag openbrace %}About the Author, and Contact Information{% templatetag closebrace %}
 {{sitemeta_author_name}} is a web application developer, and avid photographer and writer, living in the DC metro area.  Visit \url{% templatetag openbrace %}{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}{% templatetag closebrace %} to learn more.  Contact information, including an email form and links to other websites, can be found at \url{% templatetag openbrace %}{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}/contact{% templatetag closebrace %}.
 
-\copyright {{page.display_times.0.timestamp|date:'Y'}} by {{sitemeta_author_name}}, and is free for distribution, but may not be modified or used for monetary gain.  Original version and further downloads available at \url{% templatetag openbrace %}http://{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}{% url 'page_htm' page.cat.cached_url page.slug %}{% templatetag closebrace %}
+\copyright {{page.display_times.0.timestamp|date:'Y'}} by {{sitemeta_author_name}}, and is free for distribution, but may not be modified or used for monetary gain.  Original version and further downloads available at \url{% templatetag openbrace %}{{source_url}}{% templatetag closebrace %}
 \end{% templatetag openbrace %}document{% templatetag closebrace %}

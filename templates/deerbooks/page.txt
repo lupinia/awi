@@ -7,4 +7,4 @@ By {{sitemeta_author_name}} - http://{% if 'www' not in site.domain %}www.{% end
 
 ========================
 (c) {{page.display_times.0.timestamp|date:'Y'}} {{sitemeta_author_name}}
-Original version and further downloads available at http://{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}{% url 'page_htm' page.cat.cached_url page.slug %}
+Original version and further downloads available at {{source_url}}
