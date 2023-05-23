@@ -26,7 +26,7 @@
 					{% endif %}
 					
 					<div id="page_title_main"><h2>{{object}} {% if object.restriction and object.restriction != 'unknown' %}&nbsp;<img src="{{STATIC_PREFIX}}images/icons/restriction-{{object.restriction}}16.png" alt="{{object.restriction|title}}" title="{{object.restriction|title}}" />{% endif %}</h2>
-					<div id="byline">{{object.display_times.0.label}}:  {{object.display_times.0.timestamp|date:'F j, Y  G:i:s'}} &bull; {% if object.author %}By {% if object.admin_owned %}{{sitemeta_author_name}}{% else %}{{object.author}}{% endif %} &bull; {% endif %}{{body_text|wordcount}} words</div>
+					<div id="byline">{{object.display_times.0.label}}:  {{object.display_times.0.timestamp|date:'F j, Y  G:i:s'}}{% if object.author %} &bull; By {% if object.admin_owned %}{{sitemeta_author_name}}{% else %}{{object.author}}{% endif %}{% endif %}{% if body_text %} &bull; {{body_text|wordcount}} words{% endif %}</div>
 					</div>
 				</div>
 			{% endif %}
