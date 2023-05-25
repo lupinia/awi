@@ -18,10 +18,12 @@
 		align-items: center;
 		justify-content: center;
 		height: 100%;
+		
+		.center_time_wrapper { position:relative; }
 	}
 	
 	.timestamp {
-		border:none !important;
+		border:none;
 		text-shadow: 0px 0px 5px #000000;
 		background-color: $color_bgtrans_subtle;
 		
@@ -33,7 +35,32 @@
 		
 		div { text-align: center; }
 		
-		.timestamp_time {
+		button {
+			background: none;
+			border: none;
+			height: 20px;
+			width: 20px;
+			margin: 5px;
+			padding: 2px;
+			border-radius: 4px;
+			
+			&:hover, &:focus { background-color: $color_bg_hover; }
+			&:active { background-color: $color_bgtrans_solid; }
+			&.disabled {
+				cursor: not-allowed;
+				opacity: 50%;
+				background-color: none !important;
+			}
+			
+			img#timer_startstop_pause_icon { display:none; }
+			img#timer_startstop_play_icon { display:inline-block; }
+			&.timer_status_running {
+				img#timer_startstop_pause_icon { display:inline-block; }
+				img#timer_startstop_play_icon { display:none; }
+			}
+		}
+		
+		.timestamp_time, .timer_time {
 			font-size: 24pt;
 			font-weight: bold;
 		}
@@ -43,9 +70,60 @@
 			font-weight: bold;
 		}
 		
+		&.timer {
+			display:none;
+			position:absolute;
+			width:100%;
+			box-shadow: 0px 6px 3px -3px $color_shadow inset;
+			background-color: rgba(59,49,107,0.5);
+			
+			&.timer_active { display: block !important; }
+			
+			.timer_time {
+				font-size:70pt;
+				color: #aa90cc;
+				&.timer_running { color: $color_breadcrumbs; }
+				&.timer_complete { color: $color_red; }
+			}
+			
+			.timer_buttons {
+				position: absolute;
+				top: 0px;
+				height: 100%;
+				width: 30px;
+				display: flex;
+				align-items: center;
+				align-content: center;
+				justify-items: center;
+				flex-wrap: wrap;
+				
+				&#timer_buttons_left { left:0px; }
+				&#timer_buttons_right { right:0px; }
+			}
+			
+			.timer_label {
+				position: absolute;
+				top: 2px;
+				font-variant: small-caps;
+				font-size: small;
+				text-align: center;
+				width: 100%;
+			}
+		}
+		
 		&#timestamp_main {
+			position: relative;
+			margin:0px !important;
+			
 			.timestamp_time { font-size: 100pt; text-shadow: 0px 0px 10px #000000; }
 			.timestamp_date { font-size: 25pt; }
+			
+			button#timer_open {
+				display: block;
+				position: absolute;
+				bottom: 0px;
+				right: 0px;
+			}
 		}
 	}
 	
