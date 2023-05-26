@@ -40,7 +40,8 @@
 		{% comment %}<!-- Alternate views and exported document files -->{% endcomment %}
 		<div class="right_sidebar_section">
 			<h3>Download/Print</h3>
-			<div class="page_icons hovericons32">
+			<div class="leaf_external_links hovericons32">
+				{% if can_edit and has_reading_mode %}<a href="{{showcase_mode|yesno:'?mode=normal,?mode=read'}}"{% if showcase_mode %} class="red"{% endif %}><img src="{{ STATIC_PREFIX }}images/icons/{{showcase_mode|yesno:'webpage,book'}}-32.png" alt="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" title="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" /></a>{% endif %}
 				{% if 'txt' not in alt_version_exclude %}<a href="{% if toc %}{% url 'book_txt' object.cat.cached_url object.book_title.slug %}{% else %}{% url 'page_txt' object.cat.cached_url object.slug %}{% endif %}"><img src="{{ STATIC_PREFIX }}images/icons/page-txt.png" alt="Plain Text" title="Plain Text" /></a>{% endif %}
 				{% if 'md' not in alt_version_exclude %}<a href="{% if toc %}{% url 'book_md' object.cat.cached_url object.book_title.slug %}{% else %}{% url 'page_md' object.cat.cached_url object.slug %}{% endif %}"><img src="{{ STATIC_PREFIX }}images/icons/page-md.png" alt="Markdown" title="Markdown" /></a>{% endif %}
 				{% if object.auto_export and 'tex' not in alt_version_exclude %}<a href="{% if toc %}{% url 'book_tex' object.cat.cached_url object.book_title.slug %}{% else %}{% url 'page_tex' object.cat.cached_url object.slug %}{% endif %}"><img src="{{ STATIC_PREFIX }}images/icons/page-tex.png" alt="LaTeX Source (.tex)" title="LaTeX Source (.tex)" /></a>{% endif %}
@@ -56,8 +57,7 @@
 		{% if object.is_public.0 %}
 			<div class="right_sidebar_section">
 				<h3>External</h3>
-				<div class="page_icons hovericons32">
-					{% if can_edit and has_reading_mode %}<a href="{{showcase_mode|yesno:'?mode=normal,?mode=read'}}"{% if showcase_mode %} class="red"{% endif %}><img src="{{ STATIC_PREFIX }}images/icons/{{showcase_mode|yesno:'webpage,book'}}-32.png" alt="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" title="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" /></a>{% endif %}
+				<div class="leaf_external_links hovericons32">
 					<a class="red" href="https://getpocket.com/save?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-pocket.png" alt="Pocket" title="Pocket (External service)" /></a>
 					<a class="grey" href="https://www.instapaper.com/hello2?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-instapaper.png" alt="Readability" title="Instapaper (External service)" /></a>
 				</div>
