@@ -66,6 +66,9 @@
 			background: $active_bg;
 		}
 		
+		&.featured:link, &.featured:visited { background: $color_blue_dark; }
+		&.featured:hover, &.featured:active, &.featured:focus { background: $color_blue; }
+		
 		&.blue:hover, &.blue:active, &.blue:focus { background: $color_blue; }
 		&.red:hover, &.red:active, &.red:focus { background: $color_red; }
 		&.grey:hover, &.grey:active, &.grey:focus { background: $color_grey; }
