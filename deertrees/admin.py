@@ -16,6 +16,33 @@ from deerfind.admin import g2_inline
 
 from deertrees.models import *
 
+class external_link_type_admin(admin.ModelAdmin):
+	list_select_related = True
+	fieldsets = [
+		(None, {'fields':(('name', 'label',), 'url_format', 'icon', 'notes'),},),
+		("Options", {'fields':(('featured', 'public',), 'sites',),},),
+	]
+	search_fields = ('name', 'label', 'notes', 'url_format',)
+	list_display = ('name', 'public', 'featured',)
+	list_filter = ['public', 'featured',]
+
+class external_link_admin(admin.ModelAdmin):
+	list_select_related = True
+	fieldsets = [
+		(None, {'fields':('full_url', 'remote_id', 'parent', 'notes'),},),
+		("Options", {'fields':('link_type', ('published', 'automated',), ('timestamp_post', 'timestamp_mod',), ),},),
+	]
+	readonly_fields = ['timestamp_mod','automated',]
+	search_fields = ('full_url', 'remote_id', 'notes',)
+	list_display = ('link_type', 'parent', 'full_url', 'published',)
+	list_filter = ['link_type', 'published', 'link_type__public', 'link_type__featured',]
+
+class ext_link_inline(admin.TabularInline):
+	model = external_link
+	extra = 0
+	fields = ['link_type', 'full_url', 'remote_id', 'published', 'timestamp_post', 'timestamp_mod',]
+	readonly_fields = ['timestamp_mod',]
+
 class cat_admin(DjangoMpttAdmin,access_admin):
 	list_select_related = True
 	fieldsets = [
@@ -63,6 +90,7 @@ class leaf_admin(access_admin):
 	search_fields = ['cat__title','cat__slug','tags__title','tags__slug']
 	filter_horizontal = ['tags',]
 	actions = ['recycle',] + access_admin.actions
+	inlines = [ext_link_inline,]
 	
 	def recycle(self, request, queryset):
 		recycle_bin = category.objects.filter(trash=True).first()
@@ -91,3 +119,5 @@ class special_feature_admin(leaf_admin):
 admin.site.register(category,cat_admin)
 admin.site.register(tag,tag_admin)
 admin.site.register(special_feature,special_feature_admin)
+admin.site.register(external_link_type,external_link_type_admin)
+admin.site.register(external_link,external_link_admin)

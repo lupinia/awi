@@ -11,7 +11,7 @@ from django.contrib.syndication.views import Feed
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
-from django.db.models import Count
+from django.db.models import Case, Count, IntegerField, Sum, When
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -579,6 +579,13 @@ class leaf_view(generic.DetailView):
 			
 			if not context['object'].admin_owned:
 				context['sitemeta_article_author_name'] = context['object'].author
+			
+			# External links
+			context['external_links'] = context['object'].get_links(self.request)
+			# This really should be easier
+			normal_link_count = context['external_links'].aggregate(c=Sum(Case(When(link_type__featured=False, then=1), output_field=IntegerField())))['c']
+			if normal_link_count < 3:
+				context['external_links_wide'] = True
 		
 		return context
 

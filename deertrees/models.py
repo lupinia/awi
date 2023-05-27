@@ -225,6 +225,53 @@ class tag_synonym(models.Model):
 	class Meta:
 		ordering = ['slug',]
 
+class external_link_type(models.Model):
+	name = models.CharField(max_length=200, verbose_name='site name')
+	label = models.CharField(max_length=200, verbose_name='link label')
+	icon = models.ImageField(upload_to='linkicons_ext', null=True, blank=True)
+	url_format = models.CharField(max_length=250, blank=True, null=True, verbose_name='URL format')
+	
+	featured = models.BooleanField(db_index=True, blank=True, default=False)
+	public = models.BooleanField(db_index=True, blank=True, default=True)
+	notes = models.TextField(null=True, blank=True)
+	sites = models.ManyToManyField(Site, db_index=True, help_text='Sites/domains on which this item will appear.')
+	
+	def __unicode__(self):
+		return self.name
+	
+	@property
+	def icon_url(self):
+		if self.icon:
+			return "%s%s" % (settings.MEDIA_URL,self.icon.name)
+		else:
+			return "%simages/icons/default-link-128.png" % settings.STATIC_URL
+	
+	class Meta:
+		verbose_name = 'external platform'
+
+class external_link(models.Model):
+	link_type = models.ForeignKey(external_link_type, on_delete=models.CASCADE, related_name='links')
+	parent = models.ForeignKey('leaf', on_delete=models.CASCADE, related_name='external_links')
+	full_url = models.URLField(max_length=250, verbose_name='URL')
+	remote_id = models.CharField(max_length=250, blank=True, null=True, verbose_name='remote object ID')
+	
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
+	published = models.BooleanField(db_index=True, blank=True, default=False)
+	automated = models.BooleanField(db_index=True, blank=True, default=False)
+	notes = models.TextField(null=True, blank=True)
+	
+	def __unicode__(self):
+		return '%s: %s' % (self.link_type.name, unicode(self.parent))
+	
+	def get_absolute_url(self):
+		return self.full_url
+	
+	class Meta:
+		verbose_name = 'external platform link'
+		ordering = ['-link_type__featured']
+
+
 #	This model has been modified for the Awi website, and requires the Awi Access app
 #	This is a single categorized node; everything else that belongs to a category should extend this class
 class leaf(access_control):
@@ -360,6 +407,16 @@ class leaf(access_control):
 		return_times[return_mod]['label'] = 'Updated'
 		
 		return return_times
+	
+	def get_links(self, request=False):
+		link_query = self.external_links.select_related('link_type')
+		if request:
+			if self.can_edit(request)[0]:
+				return link_query.all()
+			elif request.user.is_authenticated():
+				return link_query.filter(link_type__sites__id=settings.SITE_ID, published=True)
+		
+		return link_query.filter(link_type__sites__id=settings.SITE_ID, published=True, link_type__public=True)
 	
 	@property
 	def timestamp(self):

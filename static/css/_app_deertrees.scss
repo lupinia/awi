@@ -24,6 +24,27 @@
 	margin-bottom:5px;
 	width:130px;
 	line-height:28px;
+	
+	a .wide_link_label {
+		display:none;
+		width: 72px;
+		margin-left: 4px;
+		height: 32px;
+		font-size: 8pt;
+		font-weight: bold;
+		padding: 0px;
+		vertical-align: top;
+		align-items: center;
+		text-align: center;
+		overflow: hidden;
+		color: $color_afocus;
+		line-height: normal;
+	}
+	
+	.wide_link {
+		width: 112px !important;
+		.wide_link_label { display: inline-flex; }
+	}
 }
 
 .leaf_links_wrapper {

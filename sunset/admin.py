@@ -46,7 +46,7 @@ class image_admin(leaf_admin):
 	] + leaf_admin.fieldsets
 	prepopulated_fields={'slug':('title',)}
 	list_display = ('title','auto_fields','rebuild_assets',) + leaf_admin.list_display
-	inlines = [g2_inline, asset_inline_admin, meta_inline_admin]
+	inlines = leaf_admin.inlines + [g2_inline, asset_inline_admin, meta_inline_admin]
 	list_filter = ['bg_tags',] + leaf_admin.list_filter
 	
 	def view_on_site(self, obj):

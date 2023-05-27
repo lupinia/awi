@@ -53,6 +53,7 @@ class single_image(leaf_view):
 			
 			if context['can_edit']:
 				context['edit_url'] = 'admin:sunset_image_change'
+			
 		else:
 			context['image'] = ''
 		

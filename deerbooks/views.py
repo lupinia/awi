@@ -56,6 +56,7 @@ class single_page(leaf_view):
 				context['edit_url'] = 'admin:deerbooks_page_change'
 			
 			context['extra_classes'] = 'writing_page'
+			context['external_links_wide'] = False
 			
 			context['sitemeta_desc'] = context['object'].summary_short
 			if context['object'].revised:
