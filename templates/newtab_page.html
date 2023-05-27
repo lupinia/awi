@@ -72,6 +72,10 @@
 			if(!timer_cur) {
 				set_timer();
 			}
+			timer_up_button.disabled = false;
+			timer_down_button.disabled = false;
+			timer_up_button.classList.remove("disabled");
+			timer_down_button.classList.remove("disabled");
 		}
 	}
 	
@@ -93,6 +97,10 @@
 				stop_timer();
 			}
 			timer_display.classList.remove("timer_complete");
+			timer_up_button.disabled = false;
+			timer_down_button.disabled = false;
+			timer_up_button.classList.remove("disabled");
+			timer_down_button.classList.remove("disabled");
 			set_timer();
 		}
 	}
