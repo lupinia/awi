@@ -59,7 +59,7 @@
 				<h3>External</h3>
 				<div class="leaf_external_links hovericons32">
 					{% if external_links %}{% for link in external_links %}
-					<a href="{{link.get_absolute_url}}"{% if link.link_type.featured %} class="wide_link featured"{% elif external_links_wide %} class="wide_link"{% endif %}><img src="{{link.link_type.icon_url}}" alt="{{link.link_type.name}}" title="{{link.link_type.label}}" />{% if link.link_type.featured or external_links_wide %}<div class="wide_link_label">{{link.link_type.label}}</div>{% endif %}</a>
+					<a href="{{link.get_absolute_url}}"{% if link.link_type.featured %} class="wide_link featured"{% elif external_links_wide %} class="wide_link"{% endif %} target="_BLANK"><img src="{{link.link_type.icon_url}}" alt="{{link.link_type.name}}" title="{{link.link_type.label}}" />{% if link.link_type.featured or external_links_wide %}<div class="wide_link_label">{{link.link_type.label}}</div>{% endif %}</a>
 					{% endfor %}{% endif %}
 					<a class="red" href="https://getpocket.com/save?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-pocket.png" alt="Pocket" title="Pocket (External service)" /></a>
 					<a class="grey" href="https://www.instapaper.com/hello2?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-instapaper.png" alt="Readability" title="Instapaper (External service)" /></a>
