@@ -8,6 +8,7 @@
 
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
@@ -229,7 +230,7 @@ class external_link_type(models.Model):
 	name = models.CharField(max_length=200, verbose_name='site name')
 	label = models.CharField(max_length=200, verbose_name='link label')
 	icon = models.ImageField(upload_to='linkicons_ext', null=True, blank=True)
-	url_format = models.CharField(max_length=250, blank=True, null=True, verbose_name='URL format')
+	url_format = models.CharField(max_length=250, blank=True, null=True, verbose_name='URL format', help_text='Use &lt;id&gt; to create a placeholder for remote_id on links of this type.')
 	
 	featured = models.BooleanField(db_index=True, blank=True, default=False)
 	public = models.BooleanField(db_index=True, blank=True, default=True)
@@ -250,9 +251,9 @@ class external_link_type(models.Model):
 		verbose_name = 'external platform'
 
 class external_link(models.Model):
-	link_type = models.ForeignKey(external_link_type, on_delete=models.CASCADE, related_name='links')
+	link_type = models.ForeignKey(external_link_type, on_delete=models.CASCADE, related_name='links', verbose_name='platform')
 	parent = models.ForeignKey('leaf', on_delete=models.CASCADE, related_name='external_links')
-	full_url = models.URLField(max_length=250, verbose_name='URL')
+	full_url = models.URLField(max_length=250, blank=True, null=True, verbose_name='URL')
 	remote_id = models.CharField(max_length=250, blank=True, null=True, verbose_name='remote object ID')
 	
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
@@ -265,7 +266,23 @@ class external_link(models.Model):
 		return '%s: %s' % (self.link_type.name, unicode(self.parent))
 	
 	def get_absolute_url(self):
-		return self.full_url
+		return self.url
+	
+	@property
+	def url(self):
+		if self.full_url:
+			return self.full_url
+		elif self.remote_id and self.link_type.url_format:
+			return self.link_type.url_format.replace('<id>', self.remote_id)
+		else:
+			return ''
+	
+	def clean(self):
+		if not self.full_url and not self.remote_id:
+			raise ValidationError('Either a full URL or a remote ID are required.')
+		if not self.link_type.url_format and not self.full_url:
+			raise ValidationError('A full URL is required for this link type')
+		return super(external_link,self).clean()
 	
 	class Meta:
 		verbose_name = 'external platform link'

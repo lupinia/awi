@@ -34,7 +34,7 @@ class external_link_admin(admin.ModelAdmin):
 	]
 	readonly_fields = ['timestamp_mod','automated',]
 	search_fields = ('full_url', 'remote_id', 'notes',)
-	list_display = ('link_type', 'parent', 'full_url', 'published',)
+	list_display = ('link_type', 'parent', 'url', 'published',)
 	list_filter = ['link_type', 'published', 'link_type__public', 'link_type__featured',]
 
 class ext_link_inline(admin.TabularInline):
