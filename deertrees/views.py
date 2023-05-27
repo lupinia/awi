@@ -12,14 +12,13 @@ from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db.models import Count
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.module_loading import import_string
 from django.views import generic
 
 from awi_access.models import access_query
-from deerconnect.models import contact_link
 from deertrees.models import category, tag, leaf, special_feature
 from sunset.utils import sunset_embed
 
