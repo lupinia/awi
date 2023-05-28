@@ -417,10 +417,16 @@ def finder(request):
 		return_data = (True, reverse(feature_check.url_reverse))
 	
 	if not return_data[0]:
-		if '.' in basename:
+		if '.' in basename and basename.lower() != 'index.php' and basename.lower() != 'index.htm' and basename.lower() != 'index.html':
 			# Categories don't have dots in the slug
 			return return_data
 		else:
+			if '/index.htm' in request.path.lower() or '/index.php' in request.path.lower():
+				urlpath = request.path.lower()
+				urlpath = urlpath.replace('/index.html', '')
+				urlpath = urlpath.replace('/index.htm', '')
+				urlpath = urlpath.replace('/index.php', '')
+				basename = os.path.basename(urlpath)
 			cat_check = category.objects.filter(slug__iexact=basename).filter(access_query(request)).select_related().first()
 			if cat_check:
 				return_data = (True, reverse('category',kwargs={'cached_url':cat_check.cached_url,}))
