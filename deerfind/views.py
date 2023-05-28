@@ -160,7 +160,7 @@ def g2_finder(request):
 					if gallery_check.category:
 						return_obj = gallery_check.category
 					elif gallery_check.image:
-						return_obj = gallery_check.category
+						return_obj = gallery_check.image
 					
 					# Just need to check your credentials and we'll be all set!
 					if return_obj:
