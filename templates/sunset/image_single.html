@@ -25,18 +25,6 @@
 
 {% block sidebar_modules %}
 	{% if object %}
-		{% comment %}<!-- External Links -->{% endcomment %}
-		{% if external_links %}
-			<div class="right_sidebar_section">
-				<h3>External</h3>
-				<div class="leaf_external_links hovericons32">
-					{% for link in external_links %}
-						<a href="{{link.get_absolute_url}}"{% if link.link_type.featured %} class="wide_link featured"{% elif external_links_wide %} class="wide_link"{% endif %} target="_BLANK"><img src="{{link.link_type.icon_url}}" alt="{{link.link_type.name}}" title="{{link.link_type.label}}" />{% if link.link_type.featured or external_links_wide %}<div class="wide_link_label">{{link.link_type.label}}</div>{% endif %}</a>
-					{% endfor %}
-				</div>
-			</div>
-		{% endif %}
-		
 		{% comment %}<!-- Image Info -->{% endcomment %}
 		{% if not object.body %}
 			<div class="right_sidebar_section content_summary">
@@ -50,6 +38,18 @@
 					{% endif %}
 				</div>
 				{% if object.summary %}<p>{{object.summary|safe}}</p>{% endif %}
+			</div>
+		{% endif %}
+		
+		{% comment %}<!-- External Links -->{% endcomment %}
+		{% if external_links %}
+			<div class="right_sidebar_section">
+				<h3>External</h3>
+				<div class="leaf_external_links hovericons32">
+					{% for link in external_links %}
+						<a href="{{link.get_absolute_url}}"{% if link.link_type.featured %} class="wide_link featured"{% elif external_links_wide %} class="wide_link"{% endif %} target="_BLANK"><img src="{{link.link_type.icon_url}}" alt="{{link.label}}" title="{{link.label}}" />{% if link.link_type.featured or external_links_wide %}<div class="wide_link_label">{{link.label}}</div>{% endif %}</a>
+					{% endfor %}
+				</div>
 			</div>
 		{% endif %}
 		

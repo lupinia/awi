@@ -245,7 +245,7 @@ class external_link_type(models.Model):
 		if self.icon:
 			return "%s%s" % (settings.MEDIA_URL,self.icon.name)
 		else:
-			return "%simages/icons/default-link-128.png" % settings.STATIC_URL
+			return "%simages/icons/default-link-32.png" % settings.STATIC_URL
 	
 	class Meta:
 		verbose_name = 'external platform'
@@ -253,8 +253,9 @@ class external_link_type(models.Model):
 class external_link(models.Model):
 	link_type = models.ForeignKey(external_link_type, on_delete=models.CASCADE, related_name='links', verbose_name='platform')
 	parent = models.ForeignKey('leaf', on_delete=models.CASCADE, related_name='external_links')
-	full_url = models.URLField(max_length=250, blank=True, null=True, verbose_name='URL')
+	full_url = models.URLField(max_length=500, blank=True, null=True, verbose_name='URL')
 	remote_id = models.CharField(max_length=250, blank=True, null=True, verbose_name='remote object ID')
+	label_override = models.CharField(max_length=250, blank=True, null=True, verbose_name='label override')
 	
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
@@ -276,6 +277,13 @@ class external_link(models.Model):
 			return self.link_type.url_format.replace('<id>', self.remote_id)
 		else:
 			return ''
+	
+	@property
+	def label(self):
+		if self.label_override:
+			return self.label_override
+		else:
+			return self.link_type.label
 	
 	def clean(self):
 		if not self.full_url and not self.remote_id:

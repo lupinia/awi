@@ -30,7 +30,7 @@ class external_link_admin(admin.ModelAdmin):
 	list_select_related = True
 	fieldsets = [
 		(None, {'fields':('full_url', 'remote_id', 'parent', 'notes'),},),
-		("Options", {'fields':('link_type', ('published', 'automated',), ('timestamp_post', 'timestamp_mod',), ),},),
+		("Options", {'fields':(('link_type', 'label_override',), ('published', 'automated',), ('timestamp_post', 'timestamp_mod',), ),},),
 	]
 	readonly_fields = ['timestamp_mod','automated',]
 	search_fields = ('full_url', 'remote_id', 'notes',)
