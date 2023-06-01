@@ -111,6 +111,22 @@ class batch_import_admin(access_admin):
 	inlines = [batch_meta_inline_admin, batch_image_inline_admin]
 	readonly_fields = ['timestamp_mod',]
 	filter_horizontal = ['tags',]
+	
+	def activate(self, request, queryset):
+		rows_updated = queryset.update(active=True)
+		if rows_updated == 1:
+			message_bit = "1 folder"
+		else:
+			message_bit = "%s folders" % rows_updated
+		self.message_user(request, "Synchronization was successfully activated for %s" % message_bit)
+	
+	def deactivate(self, request, queryset):
+		rows_updated = queryset.update(active=False)
+		if rows_updated == 1:
+			message_bit = "1 folder"
+		else:
+			message_bit = "%s folders" % rows_updated
+		self.message_user(request, "Synchronization was successfully deactivated for %s" % message_bit)
 
 # Register admin objects
 admin.site.register(image,image_admin)

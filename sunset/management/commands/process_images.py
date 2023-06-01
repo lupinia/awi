@@ -33,7 +33,7 @@ class Command(BaseCommand):
 		try:
 			# Priority 1:  Process assets for an image (new images first, then existing images).
 			# Priority 2:  Process the oldest folder that hasn't sync'ed in the last X hours (set on next line (TODO: Move this to settings))
-			folder_resync_time = timedelta(hours=24)
+			folder_resync_time = timedelta(hours=settings.SUNSET_RESYNC_TIME)
 			
 			# Let's begin!
 			complete = False
