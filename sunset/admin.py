@@ -111,6 +111,7 @@ class batch_import_admin(access_admin):
 	inlines = [batch_meta_inline_admin, batch_image_inline_admin]
 	readonly_fields = ['timestamp_mod',]
 	filter_horizontal = ['tags',]
+	actions = ['activate', 'deactivate'] + access_admin.actions
 	
 	def activate(self, request, queryset):
 		rows_updated = queryset.update(active=True)
@@ -127,6 +128,9 @@ class batch_import_admin(access_admin):
 		else:
 			message_bit = "%s folders" % rows_updated
 		self.message_user(request, "Synchronization was successfully deactivated for %s" % message_bit)
+	
+	activate.short_description = "Activate selected folders"
+	deactivate.short_description = "Deactivate selected folders"
 
 # Register admin objects
 admin.site.register(image,image_admin)
