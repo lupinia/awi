@@ -101,17 +101,17 @@ class image_meta_key_admin(admin.ModelAdmin):
 class batch_import_admin(access_admin):
 	list_select_related = True
 	search_fields = ['folder','title','slug','desc','cat__title','cat__slug','tags__title','tags__slug']
-	list_display = ('folder_shortname','cat','active','timestamp_mod',) + access_admin.list_display
+	list_display = ('folder_shortname','cat','active','sync_now','timestamp_mod',) + access_admin.list_display
 	list_filter = access_admin.list_filter + ['timestamp_post','timestamp_mod','cat','tags','active']
 	fieldsets = [
-		('Batch Processor Options',{'fields': (('folder'),('active','next_sequence_number'),),},),
+		('Batch Processor Options',{'fields': (('folder','next_sequence_number'),('active','sync_now',),),},),
 		('Imported Image Options',{'fields': ('cat',('title','slug'),'desc','tags',),},),
 		('Time Options',{'fields': (('timestamp_post','timestamp_mod',),),},),
 	] + access_admin.fieldsets
 	inlines = [batch_meta_inline_admin, batch_image_inline_admin]
 	readonly_fields = ['timestamp_mod',]
 	filter_horizontal = ['tags',]
-	actions = ['activate', 'deactivate'] + access_admin.actions
+	actions = ['activate', 'deactivate', 'sync_now'] + access_admin.actions
 	
 	def activate(self, request, queryset):
 		rows_updated = queryset.update(active=True)
@@ -129,8 +129,17 @@ class batch_import_admin(access_admin):
 			message_bit = "%s folders" % rows_updated
 		self.message_user(request, "Synchronization was successfully deactivated for %s" % message_bit)
 	
+	def sync_now(self, request, queryset):
+		rows_updated = queryset.update(sync_now=True)
+		if rows_updated == 1:
+			message_bit = "1 folder"
+		else:
+			message_bit = "%s folders" % rows_updated
+		self.message_user(request, "%s prioritized to sync immediately" % message_bit)
+	
 	activate.short_description = "Activate selected folders"
 	deactivate.short_description = "Deactivate selected folders"
+	sync_now.short_description = "Sync selected folders immediately"
 
 # Register admin objects
 admin.site.register(image,image_admin)

@@ -53,7 +53,7 @@ class Command(BaseCommand):
 			# If we don't do this, it doesn't take long for a lot of folders to become unsustainable.
 			if not complete:
 				self.log("Checking for batch folders to sync.")
-				import_list = batch_import.objects.filter(Q(timestamp_sync__lt=timezone.now()-folder_resync_time) | Q(timestamp_sync=None)).filter(active=True).order_by('-timestamp_mod','timestamp_sync').prefetch_related('meta', 'images')
+				import_list = batch_import.objects.filter(Q(sync_now=True) | Q(timestamp_sync__lt=timezone.now()-folder_resync_time) | Q(timestamp_sync=None)).filter(active=True).order_by('-sync_now','timestamp_sync').prefetch_related('meta', 'images')
 				if import_list:
 					for to_import in import_list:
 						self.log("Checking folder %s." % to_import, batch=to_import)

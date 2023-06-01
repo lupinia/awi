@@ -623,8 +623,9 @@ class batch_import(access_control):
 	cat = models.ForeignKey(category, verbose_name='category', help_text="This must be set manually.", on_delete=models.PROTECT)
 	
 	next_sequence_number = models.IntegerField(blank=True, default=1)
-	active = models.BooleanField(default=True, db_index=True)
+	active = models.BooleanField(default=True, blank=True, db_index=True)
 	sync_success = models.BooleanField(default=False, help_text='System field:  Indicates whether the last sync attempt was successful.')
+	sync_now = models.BooleanField(default=False, blank=True, db_index=True)
 	
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
@@ -765,11 +766,13 @@ class batch_import(access_control):
 			
 			self.timestamp_sync = timezone.now()
 			self.sync_success=True
+			self.sync_now = False
 			self.save()
 			return success_count
 		else:
 			self.timestamp_sync = timezone.now()
 			self.sync_success=True
+			self.sync_now = False
 			self.save()
 			import_log.objects.create(command='batch_import.process_folder', message='batch_import.check_folder() returned False; nothing to do.', batch=self)
 			return False
