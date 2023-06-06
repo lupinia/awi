@@ -732,6 +732,8 @@ class batch_import(access_control):
 						new_img.slug = cur_slug
 					else:
 						new_img.slug = slugify(img_file_slug)
+						if new_img.slug.endswith('-') or new_img.slug.endswith('_'):
+							new_img.slug = new_img.slug[0:-1]
 					
 					exist_check = image.objects.filter(slug=new_img.slug)
 					if exist_check.exists():
