@@ -112,7 +112,7 @@ SECONDLIFE_GRIDSLUG = 'sl'
 #				prefetch: List; if present, this adds fields to prefetch_related,
 #				related: List; if present, this adds fields to select_related, }
 DEERTREES_BLOCKS = {
-	'image' : {'title':'Photography/Artwork', 'template':'sunset/leaf_image.html', 'is_leaf':True, 'count':50, 'prefetch':['assets',]},
+	'image' : {'title':'Photography/Artwork', 'template':'sunset/leaf_image.html', 'is_leaf':True, 'count':100, 'prefetch':['assets',]},
 	'page': {'title':'Writing', 'template':'deerbooks/leaf_page.html', 'is_leaf':True, 'count':50, 'related':['book_title',]},
 	'link': {'title':'Links', 'template':'deerconnect/leaf_link.html', 'is_leaf':True, 'count':0,},
 	'special_feature': {'title':'Special Features', 'template':'deertrees/leaf_feature.html', 'is_leaf':True, 'count':0,},
