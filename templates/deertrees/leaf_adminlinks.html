@@ -15,5 +15,9 @@
 		{% if edit_url %}
 			<a href="{% url edit_url object.pk %}"><img src="{{ STATIC_PREFIX }}images/icons/edit.png" alt="Edit" title="Edit" /></a>
 		{% endif %}
+		{% if not external_links and not no_link_add %}
+			<a id="admin_add_ext_link" href="{% url 'admin:deertrees_external_link_add' %}?parent={{object.pk}}&_popup=1" title="Add External Platform Link" onclick="window.open('{% url 'admin:deertrees_external_link_add' %}?parent={{object.pk}}&_popup=1', 'add_ext_link', 'height=500,width=800,resizable=yes,scrollbars=yes')"><img src="{{STATIC_PREFIX}}images/icons/add-link.png" alt="Add an external platform link" title="Add an external platform link" /></a>
+			<script>document.getElementById('admin_add_ext_link').href = "#";</script>
+		{% endif %}
 	</div>
 {% endif %}
