@@ -45,9 +45,9 @@ class image_admin(leaf_admin):
 		(None,{'fields':(('title','slug'),('summary','auto_fields','rebuild_assets'),'body','bg_tags',('crop_horizontal','crop_vertical',),),},),
 	] + leaf_admin.fieldsets
 	prepopulated_fields={'slug':('title',)}
-	list_display = ('title','auto_fields','rebuild_assets',) + leaf_admin.list_display
+	list_display = ('title','rebuild_assets','public_domain',) + leaf_admin.list_display
 	inlines = leaf_admin.inlines + [g2_inline, asset_inline_admin, meta_inline_admin]
-	list_filter = ['bg_tags',] + leaf_admin.list_filter
+	list_filter = ['bg_tags','rebuild_assets','public_domain','auto_fields',] + leaf_admin.list_filter
 	
 	def view_on_site(self, obj):
 		return reverse('image_single',kwargs={'cached_url':obj.cat.cached_url, 'slug':obj.slug,})
