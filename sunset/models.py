@@ -86,6 +86,7 @@ class image(leaf):
 	geo_long = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='longitude', help_text='Positive numbers are eastern hemisphere, negative numbers are western.')
 	crop_horizontal = models.CharField(max_length=2, default='c', choices=CENTER_CHOICES_H, verbose_name='crop alignment (horizontal)')
 	crop_vertical = models.CharField(max_length=2, default='c', choices=CENTER_CHOICES_V, verbose_name='crop alignment (vertical)')
+	public_domain = models.BooleanField(default=False, db_index=True, help_text='If this is checked, this image will be treated as a public-domain release.')
 	
 	# Page backgrounds
 	bg_tags = models.ManyToManyField(background_tag, blank=True, related_name='images', verbose_name='background tags', help_text='To use this image as a sitewide background, select the background tag(s) it should be associated with.')
@@ -332,7 +333,7 @@ class image(leaf):
 				else:
 					working_copy.thumbnail(type_params.get('size',(100,100)), Image.LANCZOS)
 			
-			if type_params.get('watermark',False):
+			if type_params.get('watermark',False) and not self.public_domain:
 				# Watermark this image after performing operations.
 				working_copy = watermark(working_copy)
 			
