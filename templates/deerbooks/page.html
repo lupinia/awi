@@ -41,13 +41,13 @@
 		<div class="right_sidebar_section">
 			<h3>Download/Print</h3>
 			<div class="leaf_external_links hovericons32">
-				{% if can_edit and has_reading_mode %}<a href="{{showcase_mode|yesno:'?mode=normal,?mode=read'}}"{% if showcase_mode %} class="red"{% endif %}><img src="{{ STATIC_PREFIX }}images/icons/{{showcase_mode|yesno:'webpage,book'}}-32.png" alt="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" title="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" /></a>{% endif %}
-				{% if 'txt' not in alt_version_exclude %}<a href="{% if toc %}{% url 'book_txt' object.cat.cached_url object.book_title.slug %}{% else %}{% url 'page_txt' object.cat.cached_url object.slug %}{% endif %}"><img src="{{ STATIC_PREFIX }}images/icons/page-txt.png" alt="Plain Text" title="Plain Text" /></a>{% endif %}
-				{% if 'md' not in alt_version_exclude %}<a href="{% if toc %}{% url 'book_md' object.cat.cached_url object.book_title.slug %}{% else %}{% url 'page_md' object.cat.cached_url object.slug %}{% endif %}"><img src="{{ STATIC_PREFIX }}images/icons/page-md.png" alt="Markdown" title="Markdown" /></a>{% endif %}
-				{% if object.auto_export and 'tex' not in alt_version_exclude %}<a href="{% if toc %}{% url 'book_tex' object.cat.cached_url object.book_title.slug %}{% else %}{% url 'page_tex' object.cat.cached_url object.slug %}{% endif %}"><img src="{{ STATIC_PREFIX }}images/icons/page-tex.png" alt="LaTeX Source (.tex)" title="LaTeX Source (.tex)" /></a>{% endif %}
+				{% if can_edit and has_reading_mode %}<a href="{{showcase_mode|yesno:'?mode=normal,?mode=read'}}"{% if showcase_mode %} class="red"{% endif %} rel="alternate"><img src="{{ STATIC_PREFIX }}images/icons/{{showcase_mode|yesno:'webpage,book'}}-32.png" alt="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" title="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" /></a>{% endif %}
+				{% if 'txt' not in alt_version_exclude %}<a href="{% if toc %}{% url 'book_txt' object.cat.cached_url object.book_title.slug %}{% else %}{% url 'page_txt' object.cat.cached_url object.slug %}{% endif %}" rel="alternate" type="text/plain"><img src="{{ STATIC_PREFIX }}images/icons/page-txt.png" alt="Plain Text" title="Plain Text" /></a>{% endif %}
+				{% if 'md' not in alt_version_exclude %}<a href="{% if toc %}{% url 'book_md' object.cat.cached_url object.book_title.slug %}{% else %}{% url 'page_md' object.cat.cached_url object.slug %}{% endif %}" rel="alternate" type="text/markdown"><img src="{{ STATIC_PREFIX }}images/icons/page-md.png" alt="Markdown" title="Markdown" /></a>{% endif %}
+				{% if object.auto_export and 'tex' not in alt_version_exclude %}<a href="{% if toc %}{% url 'book_tex' object.cat.cached_url object.book_title.slug %}{% else %}{% url 'page_tex' object.cat.cached_url object.slug %}{% endif %}" rel="alternate" type="application/x-tex"><img src="{{ STATIC_PREFIX }}images/icons/page-tex.png" alt="LaTeX Source (.tex)" title="LaTeX Source (.tex)" /></a>{% endif %}
 				{% if docfiles %}
 					{% for file in docfiles %}
-						<a href="{{file.get_url}}"><img src="{{ STATIC_PREFIX }}images/icons/page-{{file.filetype}}.png" alt="{{file.get_filetype_display}}" title="{{file.get_filetype_display}}" /></a>
+						<a href="{{file.get_url}}"><img src="{{ STATIC_PREFIX }}images/icons/page-{{file.filetype}}.png" alt="{{file.get_filetype_display}}" title="{{file.get_filetype_display}}" rel="alternate" /></a>
 					{% endfor %}
 				{% endif %}
 			</div>

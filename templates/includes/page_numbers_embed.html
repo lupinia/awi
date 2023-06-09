@@ -4,7 +4,7 @@
 		{% spaceless %}
 			{% if page_obj.has_previous %}
 				<div class="page_numbers_component navbutton nav_left">
-					<a href="?{% if paginator_vars %}{% for var in paginator_vars %}{{var.0}}={{var.1}}&amp;{% endfor %}{% endif %}page={{page_obj.previous_page_number}}" title="Previous Page"><img src="{{STATIC_PREFIX}}images/icons/arrow-left-16.png" alt="Previous Page" title="Previous Page" /></a>
+					<a href="?{% if paginator_vars %}{% for var in paginator_vars %}{{var.0}}={{var.1}}&amp;{% endfor %}{% endif %}page={{page_obj.previous_page_number}}" title="Previous Page" rel="prev"><img src="{{STATIC_PREFIX}}images/icons/arrow-left-16.png" alt="Previous Page" title="Previous Page" /></a>
 				</div>
 			{% endif %}
 			
@@ -20,7 +20,7 @@
 			
 			{% if page_obj.has_next %}
 				<div class="page_numbers_component navbutton nav_right">
-					<a href="?{% if paginator_vars %}{% for var in paginator_vars %}{{var.0}}={{var.1}}&amp;{% endfor %}{% endif %}page={{page_obj.next_page_number}}" title="Next Page"><img src="{{STATIC_PREFIX}}images/icons/arrow-right-16.png" alt="Next Page" title="Next Page" /></a>
+					<a href="?{% if paginator_vars %}{% for var in paginator_vars %}{{var.0}}={{var.1}}&amp;{% endfor %}{% endif %}page={{page_obj.next_page_number}}" title="Next Page" rel="next"><img src="{{STATIC_PREFIX}}images/icons/arrow-right-16.png" alt="Next Page" title="Next Page" /></a>
 				</div>
 			{% endif %}
 		{% endspaceless %}

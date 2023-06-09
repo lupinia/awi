@@ -50,7 +50,7 @@
 	
 	<title>{% block title %}{% if title_site and title_page %}{{title_site}} - {{title_page}}{% elif title_site %}{{title_site}}{% else %}Lupinia Studios - Photography, Writing, and Creative Works by {% if sitemeta_author_name %}{{sitemeta_author_name}}{% else %}Natasha L.{% endif %}{% endif %}{% endblock %}</title>
 	
-	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase.css" type="text/css" rel="stylesheet" id="main_css" />
+	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase.css" type="text/css" rel="stylesheet" id="main_css" title="Purple" />
 	{% block cookielaw_js %}<script src="{{STATIC_PREFIX}}cookielaw/js/cookielaw.js" type="text/javascript"></script>{% endblock %}
 	{% if rss_feed %}
 		<link rel="alternate" type="application/rss+xml" title="RSS Feed" href="{{request.build_absolute_uri}}feed.rss" />

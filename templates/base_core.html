@@ -13,7 +13,7 @@
 			<a href="/" id="large_logo"><img src="{{ STATIC_PREFIX }}images/text/title{% if debug_check %}-beta{% endif %}.png" title="Lupinia Studios{% if debug_check %} (Beta){% endif %}" alt="Lupinia Studios{% if debug_check %} (Beta){% endif %}" /><br /></a>
 			<a href="/" id="small_logo"><img src="{{ STATIC_PREFIX }}images/text/admin-title.png" title="Lupinia Studios{% if debug_check %} (Beta){% endif %}" alt="Lupinia Studios{% if debug_check %} (Beta){% endif %}" /><br /></a>
 			
-			<a id="sig_image" href="/about/"><img src="{{ STATIC_PREFIX }}images/text/name-{% if title_img %}{{title_img}}{% else %}fr{% endif %}.png" title="By {{sitemeta_author_name}}" alt="By {{sitemeta_author_name}}" /></a>
+			<a id="sig_image" href="/about/" rel="help"><img src="{{ STATIC_PREFIX }}images/text/name-{% if title_img %}{{title_img}}{% else %}fr{% endif %}.png" title="By {{sitemeta_author_name}}" alt="By {{sitemeta_author_name}}" /></a>
 			
 			{% block social_icons %}
 				{% if rss_feed or header_icons %}
