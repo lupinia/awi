@@ -54,7 +54,7 @@
 		{% block footer %}
 			<div id="footer-right">
 				<div class="bg_info">{% block bginfo %}{% if bg and bg.display_footer_info and not showcase_mode %}Background Photo:  <a href="{{bg.info_url}}">{{bg.title}}</a>{% else %}&nbsp;{% endif %}{% endblock %}</div>
-				<div class="lower">&copy;2000-{{curyear}} {{sitemeta_author_name}} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a></div>
+				<div class="lower">{% if public_domain_content %}Site and other content {% endif %}&copy;2000-{{curyear}} {{sitemeta_author_name}} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a></div>
 			</div>
 			
 			<nav role="navigation" aria-label="Footer Links">
