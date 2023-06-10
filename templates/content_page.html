@@ -23,6 +23,11 @@
 								<a href="{{showcase_mode|yesno:'?mode=normal,?mode=read'}}"{% if showcase_mode %} class="red"{% endif %}><img src="{{ STATIC_PREFIX }}images/icons/{{showcase_mode|yesno:'webpage,book'}}-32.png" alt="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" title="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" /></a>
 							</div>
 						</div>
+					{% elif public_domain_content %}
+						<div id="page_title_extra">
+							<h3><img src="{{ STATIC_PREFIX }}images/icons/public-domain-16.png" alt="Public Domain" title="This content has been released into the public domain" style="vertical-align:middle;" /> Public Domain</h3>
+							<span class="secondary_time">See description for details</span>
+						</div>
 					{% endif %}
 					
 					<div id="page_title_main"><h2>{{object}} {% if object.restriction and object.restriction != 'unknown' %}&nbsp;<img src="{{STATIC_PREFIX}}images/icons/restriction-{{object.restriction}}16.png" alt="{{object.restriction|title}}" title="{{object.restriction|title}}" />{% endif %}</h2>

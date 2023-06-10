@@ -8,10 +8,13 @@
 		</div>
 		{% endif %}
 		
-		{% if object.body %}
+		{% if object.body or object.public_domain %}
 			<div class="page_body_text">
 				{% autoescape off %}
-					{{object.body}}
+					{% if object.body %}{{object.body}}{% elif object.summary %}<p>{{object.summary}}</p>{% endif %}
+					{% if object.public_domain %}{% if object.body or object.summary %}<hr />{% endif %}
+					<p><em>This image has been released into the public domain, and may be freely used by all.</em></p>
+					{% endif %}
 				{% endautoescape %}
 			</div>
 		{% endif %}
@@ -26,7 +29,7 @@
 {% block sidebar_modules %}
 	{% if object %}
 		{% comment %}<!-- Image Info -->{% endcomment %}
-		{% if not object.body %}
+		{% if title_in_sidebar %}
 			<div class="right_sidebar_section content_summary">
 				<div id="page_title">
 					<div id="page_title_main"><h2>{{object}} {% if object.restriction and object.restriction != 'unknown' %}&nbsp;<img src="{{STATIC_PREFIX}}images/icons/restriction-{{object.restriction}}16.png" alt="{{object.restriction|title}}" title="{{object.restriction|title}}" />{% endif %}</h2></div>
@@ -60,7 +63,7 @@
 		{% endif %}
 		
 		{% comment %}<!-- Non-Public -->{% endcomment %}
-		{% if not error and non_public %}
+		{% if not error and non_public and title_in_sidebar %}
 			<div class="right_sidebar_section non_public_info">
 				<h3>Not Public Content</h3>
 				<div class="error error_warning_nobg">
