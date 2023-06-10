@@ -246,6 +246,7 @@ class image(leaf):
 					new_self_attrs = {}
 					new_meta_objs = []
 					meta_keys = {}
+					public_domain_check = {'flag':False, 'text':False,}
 					
 					# Now let's grab all the existing meta keys, to save some database queries.
 					if not meta_keys:
@@ -262,8 +263,14 @@ class image(leaf):
 						
 						if not cur_key.ignore:
 							# Check whether this is a special key.
-							if self.auto_fields and self.META_MAP.get(key,False):
-								new_self_attrs[self.META_MAP[key]] = value
+							if self.auto_fields:
+								if self.META_MAP.get(key,False):
+									new_self_attrs[self.META_MAP[key]] = value
+								# Special case: Public domain image releases
+								elif key == 'Photoshop:CopyrightFlag' and not value:
+									public_domain_check['flag'] = True
+								elif key == 'EXIF:Copyright' and value == 'Public Domain':
+									public_domain_check['text'] = True
 							
 							# Check whether we already have this meta value in the database for this image.
 							meta_check = self.meta.filter(key=cur_key)
@@ -276,6 +283,12 @@ class image(leaf):
 								new_meta_objs.append(image_meta(image=self, key=cur_key, data=value))
 					
 					# Done with this loop!  Time to clean up a bit.
+					if public_domain_check['flag'] and public_domain_check['text']:
+						# We have double-confirmation that this is a public-domain release
+						new_self_attrs['public_domain'] = True
+					else:
+						new_self_attrs['public_domain'] = False
+					
 					if new_meta_objs:
 						image_meta.objects.bulk_create(new_meta_objs)
 						import_log.objects.create(command='image.build_meta', message='Successfully created %d new meta entries' % len(new_meta_objs), image=self)
