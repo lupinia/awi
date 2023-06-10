@@ -22,10 +22,10 @@
 		</ul>
 	</li>
 	<li role="menuitem"><a tabindex="14" href="/contact/" style="background-image:url({{ STATIC_PREFIX }}images/nav/contact-off.png)" title="Contact"><img src="{{ STATIC_PREFIX }}images/nav/contact-on.png" alt="Contact" /></a></li>
-	<li role="menuitem" class="menu_header_icon"><a tabindex="15" href="/search/" style="background-image:url({{ STATIC_PREFIX }}images/nav/search-off.png)" title="Search/Filter"><img src="{{ STATIC_PREFIX }}images/nav/search-on.png" alt="Search/Filter" /></a></li>
+	<li role="menuitem" class="menu_header_icon"><a tabindex="15" href="/search/" style="background-image:url({{ STATIC_PREFIX }}images/nav/search-off.png)" title="Search/Filter" rel="search"><img src="{{ STATIC_PREFIX }}images/nav/search-on.png" alt="Search/Filter" /></a></li>
 	<li role="menuitem" class="menu_header_icon"><a tabindex="16" href="/settings/" style="background-image:url({{ STATIC_PREFIX }}images/nav/settings-off.png)" title="Settings"><img src="{{ STATIC_PREFIX }}images/nav/settings-on.png" alt="Settings" /></a>
 		<ul class="submenu_icons" role="menu">
-			<li role="menuitem" class="menu_header_icon"><a tabindex="16" href="/about/" style="background-image:url({{ STATIC_PREFIX }}images/nav/info-off.png)" title="About"><img src="{{ STATIC_PREFIX }}images/nav/info-on.png" alt="About" /></a></li>
+			<li role="menuitem" class="menu_header_icon"><a tabindex="16" href="/about/" style="background-image:url({{ STATIC_PREFIX }}images/nav/info-off.png)" title="About" rel="help"><img src="{{ STATIC_PREFIX }}images/nav/info-on.png" alt="About" /></a></li>
 			<li role="menuitem" class="menu_header_icon"><a tabindex="16" href="/settings/" style="background-image:url({{ STATIC_PREFIX }}images/nav/settings-off.png)" title="Settings"><img src="{{ STATIC_PREFIX }}images/nav/settings-on.png" alt="Settings" /></a></li>
 			{% if user.is_authenticated %}
 				{% if user.is_superuser %}
@@ -54,8 +54,8 @@
 			<li role="menuitem"><a href="/personal/radio/" style="background-image:url({{ STATIC_PREFIX }}images/nav/radio-off.png)" title="Amateur (Ham) Radio"><img src="{{ STATIC_PREFIX }}images/nav/radio-on.png" alt="Amateur (Ham) Radio" /></a></li>
 			<li role="menuitem"><a href="/contact/" style="background-image:url({{ STATIC_PREFIX }}images/nav/contact-off.png)" title="Contact"><img src="{{ STATIC_PREFIX }}images/nav/contact-on.png" alt="Contact" /></a></li>
 			<!-- Begin icons -->
-			<li role="menuitem" class="menu_header_icon"><a href="/search/" style="background-image:url({{ STATIC_PREFIX }}images/nav/search-off.png)" title="Search/Filter"><img src="{{ STATIC_PREFIX }}images/nav/search-on.png" alt="Search/Filter" /></a></li>
-			<li role="menuitem" class="menu_header_icon"><a href="/about/" style="background-image:url({{ STATIC_PREFIX }}images/nav/info-off.png)" title="About"><img src="{{ STATIC_PREFIX }}images/nav/info-on.png" alt="About" /></a></li>
+			<li role="menuitem" class="menu_header_icon"><a href="/search/" style="background-image:url({{ STATIC_PREFIX }}images/nav/search-off.png)" title="Search/Filter" rel="search"><img src="{{ STATIC_PREFIX }}images/nav/search-on.png" alt="Search/Filter" /></a></li>
+			<li role="menuitem" class="menu_header_icon"><a href="/about/" style="background-image:url({{ STATIC_PREFIX }}images/nav/info-off.png)" title="About" rel="help"><img src="{{ STATIC_PREFIX }}images/nav/info-on.png" alt="About" /></a></li>
 			<li role="menuitem" class="menu_header_icon"><a href="/settings/" style="background-image:url({{ STATIC_PREFIX }}images/nav/settings-off.png)" title="Settings"><img src="{{ STATIC_PREFIX }}images/nav/settings-on.png" alt="Settings" /></a></li>
 			{% if user.is_authenticated %}
 				{% if user.is_superuser %}
@@ -70,8 +70,8 @@
 </ul>
 {% else %}
 <a href="/">Home</a> &bull; 
-<a href="/search/">Search</a> &bull; 
-<a href="/about/">About</a> &bull; 
+<a href="/search/" rel="search">Search</a> &bull; 
+<a href="/about/" rel="help">About</a> &bull; 
 <a href="/photo/">Photography</a> &bull; 
 <a href="/code/">Software</a> &bull; 
 <a href="/writing/">Writing</a> &bull; 
