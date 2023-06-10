@@ -319,6 +319,7 @@ class image(leaf):
 			params = {}
 			type_params = settings.SUNSET_IMAGE_ASSET_SIZES[type]
 			original = self.get_working_original(True)
+			original_path = self.get_working_original()
 			if original.format == 'JPEG':
 				params['quality'] = 100
 			
@@ -337,10 +338,19 @@ class image(leaf):
 				# Watermark this image after performing operations.
 				working_copy = watermark(working_copy)
 			
-			working_copy.save(fp='%s/%s_%s.%s' % (settings.SUNSET_CACHE_DIR, self.slug, type, self.orig_type), **params)
+			working_copy_path = '%s/%s_%s.%s' % (settings.SUNSET_CACHE_DIR, self.slug, type, self.orig_type)
+			working_copy.save(fp=working_copy_path, **params)
+			working_copy.close()
+			
+			# There is no reason for preserving the metadata to be this complicated
+			metareader = exiftool.ExifTool(settings.SUNSET_EXIFTOOL_CMD)
+			metareader.start()
+			if metareader.running:
+				metareader.execute('-TagsFromFile', original_path, ' "-all:all>all:all" ', working_copy_path)
+				metareader.terminate()
 			
 			# Save new image to database
-			img_obj = File(open('%s/%s_%s.%s' % (settings.SUNSET_CACHE_DIR, self.slug, type, self.orig_type),'rb'))
+			img_obj = File(open(working_copy_path,'rb'))
 			
 			asset_check = self.assets.filter(type=type)
 			if asset_check.exists():
