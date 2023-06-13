@@ -54,12 +54,12 @@
 		</div>
 		
 		{% comment %}<!-- External services -->{% endcomment %}
-		{% if object.is_public.0 %}
+		{% if object.is_public.0 or external_links %}
 			<div class="right_sidebar_section">
 				{% if can_edit %}
 					<div class="admin_buttons"><div class="hovericons16">
-						<a id="admin_add_ext_link" href="{% url 'admin:deertrees_external_link_add' %}?parent={{object.pk}}&_popup=1" title="Add a Tag" onclick="window.open('{% url 'admin:deertrees_external_link_add' %}?parent={{object.pk}}&_popup=1', 'add_ext_link', 'height=500,width=800,resizable=yes,scrollbars=yes')"><img src="{{STATIC_PREFIX}}images/icons/add.png" alt="Add an external platform link" title="Add an external platform link" /></a>
-						<script>document.getElementById('admin_add_ext_link').href = "#";</script>
+						<a id="admin_add_ext_link" href="{% url 'admin:deertrees_external_link_add' %}?parent={{object.pk}}&published=1&_popup=1" title="Add a Tag" onclick="window.open('{% url 'admin:deertrees_external_link_add' %}?parent={{object.pk}}&published=1&_popup=1', 'add_ext_link', 'height=500,width=800,resizable=yes,scrollbars=yes')"><img src="{{STATIC_PREFIX}}images/icons/add.png" alt="Add an external platform link" title="Add an external platform link" /></a>
+						<script>document.getElementById('admin_add_ext_link').href = "javascript:void(0);";</script>
 					</div></div>
 				{% endif %}
 				<h3>External</h3>
@@ -67,8 +67,10 @@
 					{% if external_links %}{% for link in external_links %}
 					<a href="{{link.get_absolute_url}}"{% if link.link_type.featured %} class="wide_link featured"{% elif external_links_wide %} class="wide_link"{% endif %} target="_BLANK"><img src="{{link.link_type.icon_url}}" alt="{{link.label}}" title="{{link.label}}" />{% if link.link_type.featured or external_links_wide %}<div class="wide_link_label">{{link.label}}</div>{% endif %}</a>
 					{% endfor %}{% endif %}
+					{% if object.is_public.0 %}
 					<a class="red" href="https://getpocket.com/save?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-pocket.png" alt="Pocket" title="Pocket (External service)" /></a>
 					<a class="grey" href="https://www.instapaper.com/hello2?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-instapaper.png" alt="Readability" title="Instapaper (External service)" /></a>
+					{% endif %}
 				</div>
 			</div>
 		{% endif %}
