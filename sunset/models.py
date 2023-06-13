@@ -129,7 +129,10 @@ class image(leaf):
 	@property
 	def alt_text(self):
 		# This is a situation where we MUST return a value of some sort, so it may take a few tries
-		return summarize(body=self.body, summary=self.summary, fallback=str(self), length=255)
+		summary = summarize(body=self.body, summary=self.summary, fallback=str(self), length=255)
+		if not summary:
+			summary = self.title
+		return summary
 	
 	@property
 	def crop_center(self):
