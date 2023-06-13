@@ -135,6 +135,38 @@ class image(leaf):
 		return summary
 	
 	@property
+	def body_text(self):
+		if self.body and self.summary:
+			if len(self.body) > len(self.summary):
+				return self.body
+			else:
+				return self.summary
+		elif self.body and not self.summary:
+			return self.body
+		elif self.summary:
+			return self.summary
+		else:
+			return None
+	
+	@property
+	def body_html(self):
+		if self.body_text:
+			return format_html(self.body_text)
+		else:
+			return None
+	
+	# Helper for display: Returns True if body text is long, False otherwise
+	@property
+	def long_body(self):
+		if self.body_text:
+			if len(self.body_text) > 255:
+				return True
+			else:
+				return False
+		else:
+			return False
+	
+	@property
 	def crop_center(self):
 		center_h = 0.5
 		center_v = 0.5
@@ -167,15 +199,6 @@ class image(leaf):
 	# DEPRECATED - Use .get_summary()
 	def body_summary(self,length=255):
 		return self.get_summary(length)
-	
-	@property
-	def body_html(self):
-		if self.body:
-			return format_html(self.body)
-		elif self.summary:
-			return format_html(self.summary)
-		else:
-			return None
 	
 	@property
 	def rss_enclosure_obj(self):

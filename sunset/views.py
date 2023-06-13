@@ -48,7 +48,7 @@ class single_image(leaf_view):
 			if context['assets'].get('display', False):
 				context['extra_style'] = 'max-width:%dpx;' % context['assets'].get('display', False).img_width
 			
-			if not context['object'].body and not context['object'].public_domain:
+			if not context['object'].long_body and not context['object'].public_domain:
 				context['title_in_sidebar'] = True
 			
 			if context['object'].public_domain:

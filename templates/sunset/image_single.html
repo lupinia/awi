@@ -8,11 +8,11 @@
 		</div>
 		{% endif %}
 		
-		{% if object.body or object.public_domain %}
+		{% if object.public_domain or not title_in_sidebar %}
 			<div class="page_body_text">
 				{% autoescape off %}
-					{% if object.body %}{{object.body}}{% elif object.summary %}<p>{{object.summary}}</p>{% endif %}
-					{% if object.public_domain %}{% if object.body or object.summary %}<hr />{% endif %}
+					{% if object.body_text and not title_in_sidebar %}{{object.body_html}}{% if object.public_domain %}<hr />{% endif %}{% endif %}
+					{% if object.public_domain %}
 					<p><em>This image has been released into the public domain, and may be freely used by all.</em></p>
 					{% endif %}
 				{% endautoescape %}
@@ -40,7 +40,7 @@
 						</div>
 					{% endif %}
 				</div>
-				{% if object.summary %}<p>{{object.summary|safe}}</p>{% endif %}
+				{% if object.body_text %}{{object.body_html|safe}}{% endif %}
 			</div>
 		{% endif %}
 		
