@@ -94,6 +94,7 @@ class contact_page(FormView):
 			context['reply_form'] = getattr(self, 'reply_form', False)
 			context['reply_title'] = getattr(self, 'reply_title', '')
 			context['reply_path'] = getattr(self, 'reply_path', '')
+			context['title_page'] += ' - Reply to: %s' % context['reply_title']
 		
 		contactinfo = contact_link.objects.filter(access_query(self.request)).order_by('-im','-timestamp_mod')
 		if contactinfo:
