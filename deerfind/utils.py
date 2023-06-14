@@ -19,6 +19,9 @@ def shortcode_lookup(type, pk):
 		label, model = settings.DEERFIND_SHORTCODE_TYPES[type].split('.')
 		try:
 			model_obj = apps.get_model(app_label=label, model_name=model)
+			pk = int(pk)
+		except ValueError:
+			error = 'invalid_pk'
 		except:
 			error - 'invalid_model'
 		else:
