@@ -79,6 +79,13 @@ class g2map(models.Model):
 	def __unicode__(self):
 		return str(self.g2id)
 	
+	@property
+	def retracted(self):
+		if not self.category and not self.image:
+			return True
+		else:
+			return False
+	
 	class Meta:
 		verbose_name = 'Gallery2 URL redirect pointer'
 
@@ -89,6 +96,10 @@ class g2raw(MPTTModel):
 	parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
 	title = models.CharField(max_length=255, null=True, blank=True)
 	matched = models.BooleanField(default=False)
+	filename = models.CharField(max_length=255, null=True, blank=True)
+	desc = models.TextField(null=True, blank=True)
+	creation_timestamp = models.DateTimeField(null=True, blank=True)
+	origination_timestamp = models.DateTimeField(null=True, blank=True)
 	
 	def __unicode__(self):
 		return str(self.g2id)

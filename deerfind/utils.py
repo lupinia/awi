@@ -97,4 +97,12 @@ def map_children():
 							new_g2maps.append(g2map(category=dest_obj, g2id=child.g2id))
 							child.matched=True
 							child.save()
+			else:
+				children = item.get_descendants()
+				if children.exists():
+					for child in children:
+						if not dest_map.get(child.g2id, False):
+							new_g2maps.append(g2map(g2id=child.g2id))
+							child.matched=True
+							child.save()
 	return g2map.objects.bulk_create(new_g2maps)
