@@ -21,6 +21,7 @@ class contact_form(forms.Form):
 	email = forms.EmailField(label='Email Address', max_length=150)
 	name = forms.CharField(label='Your Name', max_length=150)
 	subject = forms.CharField(label='Subject', max_length=150)
+	reply_to = forms.CharField(label='reply_path', max_length=250, required=False, widget=forms.HiddenInput)
 	body = forms.CharField(label='Message Body', max_length=10000, widget=forms.Textarea)
 	
 	def send_email(self, request):
@@ -49,6 +50,9 @@ class contact_form(forms.Form):
 			'email': sender_addr, 
 			'subject': msg.subject,
 		}
+		
+		if self.cleaned_data.get('reply_to', None):
+			message_context['reply_path'] = self.cleaned_data['reply_to']
 		
 		msg.body = message_template.render(message_context)
 		msg.to = [settings.DEERCONNECT_TO_EMAIL,]

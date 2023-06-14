@@ -1,7 +1,8 @@
 Sender IP:  {{IP}}  
 Sender:  {{name}} ({{email}})  
 Domain:  {{domain}}  
-Subject:  {{subject}}  
+Subject:  {{subject}}  {% if reply_path %}
+Reply To:  {{reply_path}}{% endif %}
 
 ===================================  
 {{message}}  
