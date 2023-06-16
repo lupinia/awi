@@ -353,9 +353,9 @@ class main_rssfeed(leaf_parent, Feed):
 	
 	def items(self, obj=None):
 		if obj:
-			return self.get_leaves(parent=obj, parent_type = self.parent_type, is_feed=True)[:50]
+			return self.get_leaves(parent=obj, parent_type = self.parent_type, is_feed=True)[:100]
 		else:
-			return self.get_leaves(parent_type = 'main_feed', is_feed=True)[:50]
+			return self.get_leaves(parent_type = 'main_feed', is_feed=True)[:100]
 	
 	def item_title(self, item):
 		leaf_item = getattr(item, item.type, None)
