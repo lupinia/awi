@@ -19,6 +19,7 @@ from django.utils.module_loading import import_string
 from django.views import generic
 
 from awi_access.models import access_query
+from deerfind.utils import g2_lookup
 from deertrees.models import category, tag, leaf, special_feature
 from sunset.utils import sunset_embed
 
@@ -190,24 +191,38 @@ class homepage(leaf_parent, generic.TemplateView):
 
 
 class category_list(leaf_parent, generic.DetailView):
-	model=category
-	slug_field='cached_url'
-	slug_url_kwarg='cached_url'
+	model = category
+	slug_field = 'cached_url'
+	slug_url_kwarg = 'cached_url'
+	g2redir = None
 	
 	def dispatch(self, *args, **kwargs):
 		#	This handles the edge case of a multiroot G2 URL that's not rewritten
 		#	For example, /photo/?g2_itemId=2289
 		#	All other contingencies (full ".php?g2_itemId=" URL, shortened .g2 URL) are handled elsewhere.
 		if 'g2_itemId' in self.request.META.get('QUERY_STRING',''):
-			raise Http404
-		else:
-			return super(category_list,self).dispatch(*args, **kwargs)
+			g2url, g2results = g2_lookup(self.request.GET.get('g2_itemId', 0), self.request)
+			if g2url:
+				if g2results == 'found_cat':
+					# Corner case: If the G2 ID points here, avoid a circular redirect
+					self.g2redir = g2url
+				else:
+					self.request.session['deerfind_path'] = g2url
+					raise Http404
+			elif g2results == 'retracted' or g2results == 'access_404':
+				self.request.session['deerfind_norecover'] = True
+				raise Http404
+		
+		return super(category_list,self).dispatch(*args, **kwargs)
 	
 	def get_queryset(self, *args, **kwargs):
 		return super(category_list, self).get_queryset(*args, **kwargs).select_related('background_tag', 'access_code')
 	
 	def get_context_data(self, **kwargs):
 		context = super(category_list,self).get_context_data(**kwargs)
+		if self.g2redir and context['object'].get_absolute_url() != self.g2redir:
+			self.request.session['deerfind_path'] = g2url
+			raise Http404
 		
 		canview = context['object'].can_view(self.request)
 		if not canview[0]:

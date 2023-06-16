@@ -32,6 +32,41 @@ def shortcode_lookup(type, pk):
 	
 	return (obj, error)
 
+def g2_lookup(g2id=0, request=None):
+	obj = None
+	url = ''
+	error = 'unknown'
+	
+	if g2id:
+		try:
+			g2id = int(g2id)
+		except ValueError:
+			error = 'invalid'
+		else:
+			mapcheck = g2map.objects.filter(g2id=g2id).select_related('image', 'image__cat', 'category')
+			if mapcheck.exists():
+				mapobj = mapcheck.first()
+				if mapobj.retracted:
+					error = 'retracted'
+				elif mapobj.image:
+					obj = mapobj.image
+					error = 'found_image'
+				elif mapobj.category:
+					obj = mapobj.category
+					error = 'found_cat'
+				
+				if obj:
+					access_check, access_status = obj.can_view(request)
+					if access_check:
+						url = obj.get_absolute_url()
+					else:
+						error = access_status
+			else:
+				error = 'no_g2map'
+	else:
+		error = 'invalid'
+	
+	return (url, error)
 
 #	Temporary tools for building the G2 object map
 

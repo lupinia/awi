@@ -26,7 +26,7 @@ from haystack.inputs import AutoQuery
 from awi_access.models import check_mature, access_search
 from deerfind.forms import simple_search_form
 from deerfind.models import pointer, hitlog
-from deerfind.utils import shortcode_lookup
+from deerfind.utils import g2_lookup, shortcode_lookup
 
 #	404 Handler
 def not_found(request):
@@ -36,11 +36,27 @@ def not_found(request):
 	if request.session.get('deerfind_norecover',False):
 		return_url=False
 		request.session['deerfind_norecover'] = False
+	elif request.session.get('deerfind_path',False):
+		# Looks like the work's already been done for us!  Thanks!
+		return_url = request.session['deerfind_path']
+		request.session['deerfind_norecover'] = False
+		request.session['deerfind_path'] = None
 	else:
 		request.session['deerfind_norecover'] = False		# Always reset, just in case.
+		intentional_404 = False
+		
+		#	Gallery2 continues to make things complicated:
+		#		If the URL contains a g2_itemId in the GET query, prioritize that.
+		if request.GET.get('g2_itemId',False):
+			return_url, g2results = g2_lookup(request.GET.get('g2_itemId', 0), request)
+			if g2results == 'retracted' or g2results == 'access_404':
+				return_url = False
+				intentional_404 = True
 		
 		#	Simple at first, check a list of known-bad URLs for redirects.
-		pointer_obj = pointer.objects.filter(old_url__iexact=request.path).first()
+		pointer_obj = None
+		if not return_url and not intentional_404:
+			pointer_obj = pointer.objects.filter(old_url__iexact=request.path).first()
 		
 		if pointer_obj:
 			return_url = pointer_obj.new_url
@@ -67,7 +83,7 @@ def not_found(request):
 				
 				hitlog_obj = hitlog.objects.create(**hitlog_fields)
 		
-		else:
+		elif not return_url and not intentional_404:
 			#	Time to go digging.  The plan here is to check each known finder function.
 			#	Finder functions should receive request as a parameter, and return a tuple;
 			#		first value boolean (match found)
@@ -136,41 +152,17 @@ def g2_finder(request):
 	gallery_id = False
 	
 	# Step 1:  Try to find a valid Gallery2 item ID
-	# Start by handling the corner case of one of the old non-rewritten Gallery2 URLs
-	if request.GET.get('g2_itemId',False):
-		gallery_id = request.GET.get('g2_itemId','')
-	else:
-		# No GET parameter, so this could be a rewritten URL with a .g2 file extension
-		basename = os.path.basename(request.path)
-		if '.g2' in basename:
-			search_slug_list = basename.split('.')
-			gallery_id = search_slug_list[0]
+	# No GET parameter, so this could be a rewritten URL with a .g2 file extension
+	basename = os.path.basename(request.path)
+	if '.g2' in basename:
+		search_slug_list = basename.split('.')
+		gallery_id = search_slug_list[0]
 	
 	# If we're here, we have a valid Gallery2 ID
-	# Let's make sure it's an integer first
 	if gallery_id:
-		try:
-			gallery_id = int(gallery_id)
-			
-			if gallery_id:
-				gallery_check = g2map.objects.filter(g2id=gallery_id).select_related('category', 'image').first()
-				if gallery_check:
-					# Yay!  We found it!  Now let's figure out what type of content it is
-					return_obj = False
-					if gallery_check.category:
-						return_obj = gallery_check.category
-					elif gallery_check.image:
-						return_obj = gallery_check.image
-					
-					# Just need to check your credentials and we'll be all set!
-					if return_obj:
-						access_check = return_obj.can_view(request)
-						if access_check[0]:
-							return_data = (True, return_obj.get_absolute_url())
-		
-		except ValueError:
-			# gallery_id is not an integer, nothing to do here
-			pass
+		return_url, g2results = g2_lookup(gallery_id, request)
+		if return_url:
+			return_data = (True, return_url)
 	
 	return return_data
 
