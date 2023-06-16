@@ -38,13 +38,13 @@ class pointer_admin(admin.ModelAdmin):
 
 class g2_admin(admin.ModelAdmin):
 	list_display = ('g2id', 'category',)
+	list_select_related = True
 	ordering = ('g2id',)
 	search_fields = ('g2id', 'category__title', 'category__slug',)
-	list_select_related = True
 
 class g2_inline(admin.TabularInline):
 	model=g2map
-	extra=1
+	extra=0
 
 class g2raw_admin(DjangoMpttAdmin):
 	list_select_related = True

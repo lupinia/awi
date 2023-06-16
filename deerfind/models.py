@@ -86,6 +86,15 @@ class g2map(models.Model):
 		else:
 			return False
 	
+	@property
+	def dest_type(self):
+		if self.image:
+			return 'image'
+		elif self.category:
+			return 'category'
+		else:
+			return 'retracted'
+	
 	class Meta:
 		verbose_name = 'Gallery2 URL redirect pointer'
 
