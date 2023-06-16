@@ -209,7 +209,7 @@ class image(leaf):
 	
 	@property
 	def rss_enclosure_obj(self):
-		return self.assets.filter(type="icon").first()
+		return self.assets.filter(type="display").first()
 	
 	def is_public(self):
 		public, restrictions = super(image, self).is_public()
