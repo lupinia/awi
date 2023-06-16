@@ -297,12 +297,12 @@ DEERBOOKS_LATEX_CMD = ['/usr/bin/rubber','--ps','--pdf','--inplace']	# Command f
 #	watermark=True means that assets of this type will be watermarked.
 #	exact=True means that assets of this type will be fitted to these exact dimensions.
 SUNSET_IMAGE_ASSET_SIZES = {
-	'icon':{'size':(1500,250),'watermark':False,'exact':False,},
-	'display':{'size':(1280,960),'watermark':True,'exact':False,},
-	'full':{'size':(1920,1300),'watermark':True,'exact':False,},
-	'bg':{'size':(1700,1000),'watermark':False,'exact':True,},
-	'og':{'size':(1200,630),'watermark':True,'exact':True,},
-	'twitter':{'size':(1200,600),'watermark':True,'exact':True,},
+	'icon':{'label':'Icon','size':(1500,250),'watermark':False,'exact':False,},
+	'display':{'label':'Display-Resized Copy','size':(1280,960),'watermark':True,'exact':False,},
+	'full':{'label':'Public Full-Size Image','size':(1920,1300),'watermark':True,'exact':False,},
+	'bg':{'label':'Site Background','size':(1700,1000),'watermark':False,'exact':True,},
+	'og':{'label':'OpenGraph Card Image','size':(1200,630),'watermark':True,'exact':True,},
+	'twitter':{'label':'Twitter Card Image','size':(1200,600),'watermark':True,'exact':True,},
 }
 
 SUNSET_IMPORT_DIR = os.path.abspath(os.path.join(IMPORT_DIR,'sunset/'))

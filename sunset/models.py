@@ -32,6 +32,13 @@ def image_asset_uploadto(instance, filename):
 	original = filename.split('.')
 	return 'gallery/%s_%s.%s' % (instance.parent.slug, instance.type, original[-1])
 
+def image_asset_type_choices():
+	type_choices = [('original','Original Upload'),]
+	for key, data in settings.SUNSET_IMAGE_ASSET_SIZES.items():
+		type_choices.append((key, data.get('label', key)))
+	type_choices.append(('unknown','Unknown'))
+	return type_choices
+
 class background_tag(models.Model):
 	tag = models.SlugField(max_length=50, unique=True)
 	default = models.BooleanField(default=False, blank=True, help_text="Check this box if this tag should be considered a default option for pages/views that don't specify any other background info, such as the home/site root view.")
@@ -440,18 +447,7 @@ class image(leaf):
 			return False
 
 class image_asset(models.Model):
-	TYPE_OPTIONS=(
-		('original','Original Upload'),
-		('icon','Icon'),
-		('display','Display-Resized Copy'),
-		('full','Public Full-Size Image'),
-		('bg','Site Background'),
-		('og','OpenGraph Card Image'),
-		('twitter','Twitter Card Image'),
-		('unknown','Unknown')
-	)
-	
-	type = models.CharField(max_length=16, db_index=True, choices=TYPE_OPTIONS, default='unknown')
+	type = models.CharField(max_length=16, db_index=True, choices=image_asset_type_choices(), default='unknown')
 	parent = models.ForeignKey(image, related_name='assets', on_delete=models.CASCADE)
 	
 	img_width = models.IntegerField(null=True, blank=True, verbose_name='image width')
