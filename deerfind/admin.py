@@ -37,8 +37,8 @@ class pointer_admin(admin.ModelAdmin):
 	inlines = [log_list,]
 
 class g2_admin(admin.ModelAdmin):
-	list_display = ('g2id', 'category',)
 	list_select_related = True
+	list_display = ('g2id', 'retracted', 'category', 'image', 'asset',)
 	ordering = ('g2id',)
 	search_fields = ('g2id', 'category__title', 'category__slug',)
 

@@ -14,6 +14,8 @@ from django.db import models
 
 from mptt.models import MPTTModel, TreeForeignKey
 
+from sunset.models import image_asset_type_choices
+
 class category(models.Model):
 	title = models.CharField(max_length=200)
 	
@@ -75,6 +77,7 @@ class g2map(models.Model):
 	g2id = models.IntegerField(unique=True, verbose_name='G2 item ID')
 	category = models.ForeignKey('deertrees.category', null=True, blank=True, on_delete=models.SET_NULL)
 	image = models.ForeignKey('sunset.image', null=True, blank=True, on_delete=models.SET_NULL)
+	asset = models.CharField(max_length=16, null=True, blank=True, choices=image_asset_type_choices())
 	
 	def __unicode__(self):
 		return str(self.g2id)
@@ -109,6 +112,8 @@ class g2raw(MPTTModel):
 	desc = models.TextField(null=True, blank=True)
 	creation_timestamp = models.DateTimeField(null=True, blank=True)
 	origination_timestamp = models.DateTimeField(null=True, blank=True)
+	asset = models.CharField(max_length=16, null=True, blank=True, choices=image_asset_type_choices())
+	derivative_params = models.TextField(null=True, blank=True)
 	
 	def __unicode__(self):
 		return str(self.g2id)
