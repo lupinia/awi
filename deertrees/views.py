@@ -60,7 +60,10 @@ class leaf_parent():
 			leaf_ordering = ['-timestamp_post',]
 		# 
 		elif parent_type == 'category' and parent:
-			leaf_filters['cat'] = parent
+			if is_feed:
+				leaf_filters['cat__in'] = parent.get_descendants()
+			else:
+				leaf_filters['cat'] = parent
 		elif parent_type == 'tag' and parent:
 			leaf_filters['tags'] = parent
 		elif parent_type == 'root' and parent:
