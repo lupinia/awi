@@ -120,6 +120,4 @@ a { @include default_links; }
 .error_critical_nobg { @include error($color_border_err_crit, $color_bg_err_crit, $color_text_err_crit); padding-left:5px; }
 .error_warning_nobg { @include error($color_border_err_warn, $color_bg_err_warn, $color_text_err_warn); padding-left:5px; }
 .error_notice_nobg { @include error($color_border_err_info, $color_bg_err_info, $color_text_err_info); padding-left:5px; }
-
-#error_css_20170214, #error_css_20170216, #error_css_20171204 { display:none !important; }
 /*	=====	*/
