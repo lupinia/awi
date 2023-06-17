@@ -39,6 +39,17 @@
 }
 
 .left_content .left_full.photo_page {
+	&.title_in_sidebar #page_title {
+		display: none;
+		@media #{$scr_mobile} { display: block; }
+	}
+	
+	#page_title .mobile_jump_link {
+		display: none;
+		font-weight: bold;
+		@media #{$scr_mobile} { display: inline; }
+	}
+
 	.page_body_text { font-size: 0.9em; }
 	
 	.photo_image {

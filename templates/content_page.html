@@ -9,32 +9,30 @@
 				{% include 'awi_access/age_form_iframe.html' %}
 			{% endif %}
 	{% elif object %}
-		<div class="left_full {{extra_classes}}"{% if extra_style %} style="{{extra_style}}"{% endif %}>
-			{% if not title_in_sidebar %}
-				<div id="page_title">
-					{% if can_edit %}
-						<div id="page_title_extra">
-							{% include 'deertrees/leaf_adminlinks.html' %}
-							<span class="secondary_time">{{object.display_times.1.label}}:  {{object.display_times.1.timestamp|date:'F j, Y  G:i:s'}}</span>
-						</div>
-					{% elif has_reading_mode %}
-						<div id="page_title_extra">
-							<div class="hovericons32 hovericons-wide">
-								<a href="{{showcase_mode|yesno:'?mode=normal,?mode=read'}}"{% if showcase_mode %} class="red"{% endif %}><img src="{{ STATIC_PREFIX }}images/icons/{{showcase_mode|yesno:'webpage,book'}}-32.png" alt="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" title="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" /></a>
-							</div>
-						</div>
-					{% elif public_domain_content %}
-						<div id="page_title_extra">
-							<h3><img src="{{ STATIC_PREFIX }}images/icons/public-domain-16.png" alt="Public Domain" title="This content has been released into the public domain" style="vertical-align:middle;" /> Public Domain</h3>
-							<span class="secondary_time">See description for details</span>
-						</div>
-					{% endif %}
-					
-					<div id="page_title_main"><h2>{{object}} {% if object.restriction and object.restriction != 'unknown' %}&nbsp;<img src="{{STATIC_PREFIX}}images/icons/restriction-{{object.restriction}}16.png" alt="{{object.restriction|title}}" title="{{object.restriction|title}}" />{% endif %}</h2>
-					<div id="byline">{{object.display_times.0.label}}:  {{object.display_times.0.timestamp|date:'F j, Y  G:i:s'}}{% if object.author %} &bull; By {% if object.admin_owned %}{{sitemeta_author_name}}{% else %}{{object.author}}{% endif %}{% endif %}{% if body_text %} &bull; {{body_text|wordcount}} words{% endif %}</div>
+		<div class="left_full {{extra_classes}}{% if title_in_sidebar %} title_in_sidebar{% endif %}"{% if extra_style %} style="{{extra_style}}"{% endif %}>
+			<div id="page_title">
+				{% if can_edit and not title_in_sidebar %}
+					<div id="page_title_extra">
+						{% include 'deertrees/leaf_adminlinks.html' %}
+						<span class="secondary_time">{{object.display_times.1.label}}:  {{object.display_times.1.timestamp|date:'F j, Y  G:i:s'}}</span>
 					</div>
+				{% elif has_reading_mode and not title_in_sidebar %}
+					<div id="page_title_extra">
+						<div class="hovericons32 hovericons-wide">
+							<a href="{{showcase_mode|yesno:'?mode=normal,?mode=read'}}"{% if showcase_mode %} class="red"{% endif %}><img src="{{ STATIC_PREFIX }}images/icons/{{showcase_mode|yesno:'webpage,book'}}-32.png" alt="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" title="Switch to {{showcase_mode|yesno:'Normal,Reading'}} Mode" /></a>
+						</div>
+					</div>
+				{% elif public_domain_content %}
+					<div id="page_title_extra">
+						<h3><img src="{{ STATIC_PREFIX }}images/icons/public-domain-16.png" alt="Public Domain" title="This content has been released into the public domain" style="vertical-align:middle;" /> Public Domain</h3>
+						<span class="secondary_time">See description for details</span>
+					</div>
+				{% endif %}
+				
+				<div id="page_title_main"><h2>{{object}} {% if object.restriction and object.restriction != 'unknown' %}&nbsp;<img src="{{STATIC_PREFIX}}images/icons/restriction-{{object.restriction}}16.png" alt="{{object.restriction|title}}" title="{{object.restriction|title}}" />{% endif %}</h2>
+				<div id="byline">{{object.display_times.0.label}}:  {{object.display_times.0.timestamp|date:'F j, Y  G:i:s'}}{% if object.author %} &bull; By {% if object.admin_owned %}{{sitemeta_author_name}}{% else %}{{object.author}}{% endif %}{% endif %}{% if body_text %} &bull; {{body_text|wordcount}} words{% endif %}{% if extra_classes == 'photo_page' and object.body_text %}<span class="mobile_jump_link"> &bull; <a href="#img-desc">View Description</a></span>{% endif %}</div>
 				</div>
-			{% endif %}
+			</div>
 	{% endif %}
 	
 	{% block content_body %}{% endblock %}

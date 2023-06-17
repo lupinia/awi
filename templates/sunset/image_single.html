@@ -9,7 +9,7 @@
 		{% endif %}
 		
 		{% if object.public_domain or not title_in_sidebar %}
-			<div class="page_body_text">
+			<div class="page_body_text"{% if not title_in_sidebar %} id="img-desc"{% endif %}>
 				{% autoescape off %}
 					{% if object.body_text and not title_in_sidebar %}{{object.body_html}}{% if object.public_domain %}<hr />{% endif %}{% endif %}
 					{% if object.public_domain %}
@@ -30,7 +30,7 @@
 	{% if object %}
 		{% comment %}<!-- Image Info -->{% endcomment %}
 		{% if title_in_sidebar %}
-			<div class="right_sidebar_section content_summary">
+			<div class="right_sidebar_section content_summary"{% if title_in_sidebar %} id="img-desc"{% endif %}>
 				<div id="page_title">
 					<div id="page_title_main"><h2>{{object}} {% if object.restriction and object.restriction != 'unknown' %}&nbsp;<img src="{{STATIC_PREFIX}}images/icons/restriction-{{object.restriction}}16.png" alt="{{object.restriction|title}}" title="{{object.restriction|title}}" />{% endif %}</h2></div>
 					<div id="byline">{{object.display_times.0.label}}:  {{object.display_times.0.timestamp|date:'F j, Y  G:i:s'}}</div>
