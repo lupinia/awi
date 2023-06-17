@@ -64,11 +64,11 @@ urlpatterns = [
 	
 	# DeerTrees and DeerBooks are special cases for this site.
 	url(r'^$', deertrees_views.homepage.as_view(), name='home'),
-	url(r'^feed\.rss$', deertrees_views.main_rssfeed(), name='home_rss'),
+	url(r'^feed\.rss$', cache_control(max_age=60*60*12)(deertrees_views.main_rssfeed()), name='home_rss'),
 	
 	url(r'^tags/$', deertrees_views.all_tags.as_view(), name='all_tags'),
 	url(r'^tags/(?P<slug>.*)/$', deertrees_views.tag_list.as_view(), name='tag'),
-	url(r'^tags/(?P<slug>.*)/feed\.rss$', deertrees_views.tag_rssfeed(), name='tag_rss'),
+	url(r'^tags/(?P<slug>.*)/feed\.rss$', cache_control(max_age=60*60*6)(deertrees_views.tag_rssfeed()), name='tag_rss'),
 	
 	url(r'^about/sitemap\.htm$', cache_control(max_age=60*60*48)(deertrees_views.sitemap.as_view()), name='sitemap_htm', kwargs={'special_feature_slug':'sitemap.htm'}),
 	
@@ -83,7 +83,7 @@ urlpatterns = [
 	
 	url(r'^(?P<cached_url>[\w\d_/-]+)/(?P<slug>.*)\.ihtm', sunset_views.single_image.as_view(), name='image_single'),
 	
-	url(r'^(?P<cached_url>[\w\d_/-]+)/feed\.rss$', deertrees_views.cat_rssfeed(), name='category_rss'),
+	url(r'^(?P<cached_url>[\w\d_/-]+)/feed\.rss$', cache_control(max_age=60*60*6)(deertrees_views.cat_rssfeed()), name='category_rss'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/$', deertrees_views.category_list.as_view(), name='category'),
 ]
 

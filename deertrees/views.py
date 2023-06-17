@@ -61,13 +61,13 @@ class leaf_parent():
 		# 
 		elif parent_type == 'category' and parent:
 			if is_feed:
-				leaf_filters['cat__in'] = parent.get_descendants(include_self=True)
+				leaf_filters['cat__in'] = parent.get_descendants(include_self=True).filter(access_query(getattr(self, 'request', False)))
 			else:
 				leaf_filters['cat'] = parent
 		elif parent_type == 'tag' and parent:
 			leaf_filters['tags'] = parent
 		elif parent_type == 'root' and parent:
-			descendants = parent.get_descendants()
+			descendants = parent.get_descendants().filter(access_query(getattr(self, 'request', False)))
 			self.highlight_featured = False
 			leaf_ordering = ['-timestamp_post',]
 			leaf_filters['featured'] = True
