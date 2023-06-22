@@ -46,5 +46,36 @@ class contact_admin(access_admin):
 	def view_on_site(self, obj):
 		return obj.url
 
+class spam_admin(admin.ModelAdmin):
+	search_fields = ['word', 'notes']
+	list_filter = ['active', 'case_sensitive', 'timestamp_post', 'timestamp_mod',]
+	list_display = ['word', 'active', 'case_sensitive', 'timestamp_post', 'timestamp_mod',]
+	readonly_fields = ['timestamp_mod',]
+	fieldsets = [
+		(None,{'fields':('word',('case_sensitive','active',),'notes',),},),
+		('Time Options',{'fields':(('timestamp_post','timestamp_mod',),),},),
+	]
+	actions = ['case_on', 'case_off',]
+	
+	def case_on(self, request, queryset):
+		rows_updated = queryset.update(case_sensitive=True)
+		if rows_updated == 1:
+			message_bit = "1 item"
+		else:
+			message_bit = "%s items" % rows_updated
+		self.message_user(request, "Enabled case sensitivity for %s" % message_bit)
+	
+	def case_off(self, request, queryset):
+		rows_updated = queryset.update(case_sensitive=False)
+		if rows_updated == 1:
+			message_bit = "1 item"
+		else:
+			message_bit = "%s items" % rows_updated
+		self.message_user(request, "Disabled case sensitivity for %s" % message_bit)
+	
+	case_on.short_description = "Mark items case-sensitive"
+	case_off.short_description = "Mark items case-insensitive"
+
 admin.site.register(link, link_admin)
 admin.site.register(contact_link, contact_admin)
+admin.site.register(spam_word, spam_admin)

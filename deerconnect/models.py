@@ -103,3 +103,15 @@ class contact_link(link_base, access_control):
 	
 	class Meta:
 		verbose_name = 'contact link'
+
+#	Keywords to scan for in contact form submissions
+class spam_word(models.Model):
+	word = models.CharField(max_length=512, unique=True)
+	active = models.BooleanField(default=True, blank=True, db_index=True)
+	case_sensitive = models.BooleanField(default=False, blank=True, db_index=True)
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
+	notes = models.TextField(blank=True, null=True)
+	
+	def __unicode__(self):
+		return self.word
