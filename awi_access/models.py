@@ -29,8 +29,9 @@ from awi_utils.utils import hash_sha256
 def check_mature(request=False):
 	if request:
 		if request.user.is_authenticated():
-			meta, meta_status = user_settings.objects.get_or_create(user=request.user)
-			mature_auth_check = meta.check_mature()
+			if not hasattr(request.user, 'user_settings'):
+				user_settings.objects.create(user=request.user)
+			mature_auth_check = request.user.user_settings.check_mature()
 			if mature_auth_check[0]:
 				return (True, '')
 			else:
