@@ -48,6 +48,8 @@ class g2_inline(admin.TabularInline):
 
 class g2raw_admin(DjangoMpttAdmin):
 	list_select_related = True
+	list_display = ('g2id', 'matched', 'type', 'title', 'creation_timestamp', 'origination_timestamp')
+	list_filter = ('matched', 'creation_timestamp', 'origination_timestamp', 'type')
 
 
 admin.site.register(category)

@@ -104,16 +104,23 @@ class g2map(models.Model):
 # Temporary object for managing the migration from Gallery2 to Sunset
 class g2raw(MPTTModel):
 	g2id = models.IntegerField(unique=True, verbose_name='G2 item ID')
-	type = models.CharField(max_length=255, default='Unknown')
+	type = models.CharField(max_length=255, default='Unknown', db_index=True)
 	parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
 	title = models.CharField(max_length=255, null=True, blank=True)
-	matched = models.BooleanField(default=False)
+	matched = models.BooleanField(default=False, db_index=True)
 	filename = models.CharField(max_length=255, null=True, blank=True)
+	
 	desc = models.TextField(null=True, blank=True)
-	creation_timestamp = models.DateTimeField(null=True, blank=True)
-	origination_timestamp = models.DateTimeField(null=True, blank=True)
+	summary = models.TextField(null=True, blank=True)
+	owner_id = models.IntegerField(default=0, blank=True)
+	creation_timestamp = models.DateTimeField(null=True, blank=True, db_index=True, verbose_name='upload time')
+	origination_timestamp = models.DateTimeField(null=True, blank=True, verbose_name='capture time')
 	asset = models.CharField(max_length=16, null=True, blank=True, choices=image_asset_type_choices())
+	derivative_type = models.IntegerField(default=-1, blank=True)
+	derivative_ops = models.TextField(null=True, blank=True)
 	derivative_params = models.TextField(null=True, blank=True)
+	derivative_width = models.IntegerField(default=0, blank=True)
+	derivative_height = models.IntegerField(default=0, blank=True)
 	
 	def __unicode__(self):
 		return str(self.g2id)

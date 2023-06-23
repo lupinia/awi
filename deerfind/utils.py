@@ -116,6 +116,8 @@ def map_children():
 			dest_obj = False
 			if dest_map[item.g2id].image:
 				dest_obj = dest_map[item.g2id].image
+				if item.creation_timestamp:
+					image.objects.filter(pk=dest_obj.pk).update(timestamp_upload=item.creation_timestamp)
 				children = item.get_descendants()
 				if children.exists():
 					for child in children:
