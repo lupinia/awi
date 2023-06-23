@@ -76,6 +76,18 @@ class spam_admin(admin.ModelAdmin):
 	case_on.short_description = "Mark items case-sensitive"
 	case_off.short_description = "Mark items case-insensitive"
 
+class spammers_admin(admin.ModelAdmin):
+	search_fields = ['email', 'name', 'notes']
+	list_filter = ['timestamp_post', 'timestamp_mod',]
+	list_display = ['email', 'name', 'timestamp_post', 'timestamp_mod',]
+	readonly_fields = ['timestamp_mod',]
+	fieldsets = [
+		(None,{'fields':(('email','name',),'notes',),},),
+		('Time Options',{'fields':(('timestamp_post','timestamp_mod',),),},),
+		('Words Used',{'fields':('word_used',),},),
+	]
+
 admin.site.register(link, link_admin)
 admin.site.register(contact_link, contact_admin)
 admin.site.register(spam_word, spam_admin)
+admin.site.register(spam_sender, spammers_admin)

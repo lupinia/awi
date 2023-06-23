@@ -115,3 +115,25 @@ class spam_word(models.Model):
 	
 	def __unicode__(self):
 		return self.word
+	
+	class Meta:
+		verbose_name = 'spam keyword'
+
+class spam_sender(models.Model):
+	email = models.EmailField(max_length=255, unique=True)
+	name = models.CharField(max_length=255, null=True, blank=True)
+	word_used = models.ManyToManyField(spam_word, blank=True, related_name='used_by')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
+	notes = models.TextField(blank=True, null=True)
+	
+	def __unicode__(self):
+		return self.email
+	
+	def save(self, *args, **kwargs):
+		from deerconnect.utils import fix_email
+		self.email = fix_email(self.email)
+		super(spam_sender, self).save(*args, **kwargs)
+	
+	class Meta:
+		verbose_name = 'spam sender'

@@ -39,6 +39,8 @@ itemlist_system = (
 	'awi_access.*',
 	'awi_error.*',
 	'deerfind.*',
+	'deerconnect.models.spam_word',
+	'deerconnect.models.spam_sender',
 )
 
 itemlist_misc_exclude = itemlist_content + itemlist_structure + itemlist_system + itemlist_sl
