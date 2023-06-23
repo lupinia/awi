@@ -75,6 +75,7 @@ class leaf_parent():
 		
 		if is_feed:
 			leaf_ordering = ['-timestamp_post',]
+			prefetch_list.append('tags')
 		
 		leaves = leaf.objects.select_related(*related_list).prefetch_related(*prefetch_list).filter(**leaf_filters).filter(access_query(getattr(self, 'request', False))).order_by(*leaf_ordering)
 		
