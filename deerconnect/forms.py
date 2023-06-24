@@ -34,6 +34,9 @@ class contact_form(forms.Form):
 		sender_name = bleach.clean(self.cleaned_data['name'], tags=[], strip=True)
 		sender_addr = bleach.clean(self.cleaned_data['email'], tags=[], strip=True)
 		
+		if '@' in sender_name:
+			sender_name = sender_name.replace('@', '_')
+		
 		msg = EmailMessage()
 		msg.subject = '%s%s' % (settings.EMAIL_SUBJECT_PREFIX, bleach.clean(self.cleaned_data['subject'], tags=[], strip=True))
 		msg.reply_to = [sender_addr,]
