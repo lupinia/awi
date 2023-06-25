@@ -9,6 +9,17 @@
 
 from django.contrib import admin
 
+from awi_access.models import blocked_ip
+
+class ipblock_admin(admin.ModelAdmin):
+	search_fields = ['address', 'notes', 'user_agent']
+	list_display = ['address', 'active', 'timestamp_post', 'timestamp_mod']
+	list_filter = ['active', 'timestamp_post', 'timestamp_mod']
+	readonly_fields = ['timestamp_mod',]
+	fieldsets = [
+		(None,{'fields':(('address','active',),'user_agent','notes',),},),
+		('Time Options',{'fields':(('timestamp_post','timestamp_mod',),),},),
+	]
 
 class access_admin(admin.ModelAdmin):
 	fieldsets = [('Security Options',{'fields': (('published','featured','mature','sites','security'),), 'classes':('security',),},),]
@@ -61,3 +72,5 @@ class access_admin(admin.ModelAdmin):
 	class Media:
 		js=['js/foldable-list-filter.js',]
 		css={'all':['css/foldable-list-filter.css',],}
+
+admin.site.register(blocked_ip, ipblock_admin)

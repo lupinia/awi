@@ -19,6 +19,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from django.core.cache import cache
 from django.utils import dateparse
 from django.utils import timezone
 from django.utils.text import slugify
@@ -323,3 +324,20 @@ class access_control(models.Model):
 		abstract = True
 
 
+class blocked_ip(models.Model):
+	address = models.GenericIPAddressField(db_index=True)
+	user_agent = models.TextField(null=True, blank=True)
+	active = models.BooleanField(default=True, blank=True, db_index=True)
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
+	notes = models.TextField(blank=True, null=True)
+	
+	def __unicode__(self):
+		return self.address
+	
+	def save(self, *args, **kwargs):
+		cache.set('blocked_ip_%s' % self.address, None, 0)
+		return super(blocked_ip, self).save(*args, **kwargs)
+	
+	class Meta:
+		verbose_name = 'blocked IP'
