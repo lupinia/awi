@@ -6,6 +6,11 @@
 #	Utility Functions/Objects
 #	=================
 
+import datetime
+
+from django.core.cache import cache
+from django.utils import dateparse, timezone
+
 from deerconnect.models import spam_sender, spam_word
 
 #	Check a string for spam words
@@ -53,3 +58,21 @@ def is_spammer(sender):
 		return True
 	else:
 		return False
+
+#	Check whether the contact form has already been submitted
+def form_too_soon(request):
+	if request.META.get('REMOTE_ADDR', '') and request.META.get('HTTP_USER_AGENT', False):
+		cache_check = cache.get('deerconnect_formsent_%s' % request.META['REMOTE_ADDR'])
+		if cache_check is not None:
+			if cache_check == request.META.get('HTTP_USER_AGENT', 'Unknown'):
+				return True
+	
+	if request.session.get('deerconnect_mailsent',False):
+		last_message = dateparse.parse_datetime(request.session['deerconnect_mailsent'])
+		expiration = datetime.timedelta(hours=8)
+		if last_message > timezone.now() - expiration:
+			return True
+		else:
+			request.session['deerconnect_mailsent'] = None
+	
+	return False

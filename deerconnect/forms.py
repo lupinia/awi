@@ -11,10 +11,15 @@ import datetime
 
 from django import forms
 from django.conf import settings
+from django.core.cache import cache
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.utils import timezone
 from django.utils import dateparse
+
+from awi_access.utils import add_new_block
+from deerconnect.models import spam_sender, spam_word
+from deerconnect.utils import is_spam, is_spammer, form_too_soon
 
 class contact_form(forms.Form):
 	error_css_class = 'has_error';
@@ -26,14 +31,16 @@ class contact_form(forms.Form):
 	body = forms.CharField(label='Message Body', max_length=10000, widget=forms.Textarea)
 	
 	def send_email(self, request):
-		if request.session.get('deerconnect_mailsent',False):
-			last_message = dateparse.parse_datetime(request.session.get('deerconnect_mailsent',False))
-			expiration = datetime.timedelta(days=1)
-			if last_message > timezone.now() - expiration:
-				return False
+		if form_too_soon(request):
+			return (False, 'mailform_toosoon')
 		
 		sender_name = bleach.clean(self.cleaned_data['name'], tags=[], strip=True)
 		sender_addr = bleach.clean(self.cleaned_data['email'], tags=[], strip=True)
+		spam_check_sender = is_spammer(sender_addr)
+		if spam_check_sender:
+			if request.META.get('REMOTE_ADDR', False):
+				add_new_block(request.META['REMOTE_ADDR'], unicode(request.META.get('HTTP_USER_AGENT', '')))
+			return (False, 'mailform_spamaddr')
 		
 		if '@' in sender_name:
 			sender_name = sender_name.replace('@', '_')
@@ -45,6 +52,14 @@ class contact_form(forms.Form):
 		
 		message_template = get_template('deerconnect/email.txt')
 		message_body = bleach.clean(self.cleaned_data['body'], tags=[], strip=True)
+		
+		spam_check_message, w = is_spam(message_body)
+		if spam_check_message:
+			spammer = spam_sender.objects.create(email=sender_addr, name=sender_name)
+			spammer.word_used.add(spam_word.objects.filter(word__iexact=w).first())
+			if request.META.get('REMOTE_ADDR', False):
+				add_new_block(request.META['REMOTE_ADDR'], unicode(request.META.get('HTTP_USER_AGENT', '')))
+			return (False, 'mailform_spamword')
 		
 		message_context = {
 			'message': message_body, 
@@ -64,7 +79,7 @@ class contact_form(forms.Form):
 		success = msg.send()
 		if success:
 			request.session['deerconnect_mailsent'] = str(timezone.now())
-			request.session['deerconnect_success_msg'] = True
-			return True
+			cache.set('deerconnect_formsent_%s' % request.META['REMOTE_ADDR'], request.META.get('HTTP_USER_AGENT', None), 60*60*8)
+			return (True, 'mailform_success')
 		else:
-			return False
+			return (False, 'mailform_sendfail')

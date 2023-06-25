@@ -8,13 +8,16 @@
 
 import datetime
 
+from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.utils import dateparse, timezone
 from django.views.generic.edit import FormView
 
 from awi_access.models import access_query
+from awi_access.utils import is_blocked
 from deerconnect.forms import contact_form
 from deerconnect.models import contact_link
+from deerconnect.utils import form_too_soon
 from deerfind.utils import shortcode_lookup
 
 class contact_page(FormView):
@@ -25,6 +28,12 @@ class contact_page(FormView):
 	reply_obj = None
 	reply_title = None
 	reply_path = None
+	send_status = None
+	
+	def dispatch(self, *args, **kwargs):
+		# Check whether the IP address is blocked
+		is_blocked(self.request.META.get('REMOTE_ADDR', ''), raise_403=True)
+		return super(contact_page,self).dispatch(*args, **kwargs)
 	
 	def get(self, request, *args, **kwargs):
 		if request.GET.get('reply_to', False):
@@ -64,8 +73,9 @@ class contact_page(FormView):
 		return initial
 	
 	def form_valid(self, form):
-		success = form.send_email(self.request)
+		success, self.send_status = form.send_email(self.request)
 		if success:
+			self.request.session['deerconnect_contact_form_success'] = True
 			return super(contact_page, self).form_valid(form)
 		else:
 			return super(contact_page, self).form_invalid(form)
@@ -79,16 +89,18 @@ class contact_page(FormView):
 		
 		context['breadcrumbs'].append({'url':reverse('contact'), 'title':'Contact'})
 		
-		if self.request.session.get('deerconnect_success_msg', False):
+		# Apparently there's no way around using a session variable for this, so we still have to handle that.
+		if self.request.session.get('deerconnect_contact_form_success', False):
 			context['form'] = ''
 			context['error'] = 'mailform_success'
-			self.request.session['deerconnect_success_msg'] = False
-		elif self.request.session.get('deerconnect_mailsent', False):
-			last_message = dateparse.parse_datetime(self.request.session.get('deerconnect_mailsent',False))
-			expiration = datetime.timedelta(days=1)
-			if last_message > timezone.now() - expiration:
+			self.request.session['deerconnect_contact_form_success'] = False
+		elif self.send_status:
+			context['error'] = self.send_status
+			if self.send_status in ['mailform_success', 'mailform_spamaddr', 'mailform_spamword', 'mailform_toosoon']:
 				context['form'] = ''
-				context['error'] = 'mailform_toosoon'
+		elif form_too_soon(self.request):
+			context['form'] = ''
+			context['error'] = 'mailform_toosoon'
 		
 		if self.reply_form and self.reply_obj:
 			context['reply_form'] = getattr(self, 'reply_form', False)
