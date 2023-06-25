@@ -9,8 +9,7 @@
 import datetime
 
 from django.core.urlresolvers import reverse
-from django.utils import dateparse
-from django.utils import timezone
+from django.utils import dateparse, timezone
 from django.views.generic.edit import FormView
 
 from awi_access.models import access_query
@@ -59,7 +58,8 @@ class contact_page(FormView):
 		initial = super(contact_page, self).get_initial()
 		if self.reply_form and self.reply_path:
 			initial['reply_to'] = self.reply_path
-			initial['subject'] = 'RE: %s' % self.reply_title
+			if not initial.get('subject', False):
+				initial['subject'] = 'RE: %s' % self.reply_title
 		
 		return initial
 	

@@ -6,14 +6,15 @@
 #	Forms
 #	=================
 
+import bleach
+import datetime
+
 from django import forms
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.utils import timezone
 from django.utils import dateparse
-import bleach
-import datetime
 
 class contact_form(forms.Form):
 	error_css_class = 'has_error';
@@ -47,8 +48,8 @@ class contact_form(forms.Form):
 		
 		message_context = {
 			'message': message_body, 
-			'IP': request.META.get('REMOTE_ADDR'), 
-			'domain': request.META.get('HTTP_HOST'), 
+			'IP': request.META.get('REMOTE_ADDR', 'Unknown'), 
+			'domain': request.META.get('HTTP_HOST', 'Unknown'), 
 			'name': sender_name, 
 			'email': sender_addr, 
 			'subject': msg.subject,

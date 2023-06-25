@@ -7,12 +7,10 @@
 #	Extend admin_access to gain admin features specific to this app.
 #	=================
 
-from django.contrib.admin import ModelAdmin
-from django.db.models import ManyToManyField
+from django.contrib import admin
 
-from awi_access.models import access_control
 
-class access_admin(ModelAdmin):
+class access_admin(admin.ModelAdmin):
 	fieldsets = [('Security Options',{'fields': (('published','featured','mature','sites','security'),), 'classes':('security',),},),]
 	list_filter=['published','featured','mature','sites','security','owner']
 	list_display = ('published','featured','mature','security',)
