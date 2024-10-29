@@ -23,7 +23,8 @@ class state(models.Model):
 
 class party(models.Model):
 	name = models.CharField(max_length=128)
-	abbr = models.CharField(max_length=8, unique=True)
+	name_short = models.CharField(max_length=8, unique=True)
+	abbr = models.CharField(max_length=1, unique=True)
 	color_name = models.CharField(max_length=8, unique=True)
 	color_hex = models.CharField(max_length=6, unique=True)
 	
@@ -74,14 +75,14 @@ class results(models.Model):
 	source = models.ForeignKey(data_source, on_delete=models.CASCADE, related_name='%(class)s')
 	source_note = models.CharField(max_length=128, null=True, blank=True)
 	
-	is_projected = models.BooleanField(default=False, blank=True, db_index=True)
+	projected = models.BooleanField(default=False, blank=True, db_index=True)
 	certified = models.BooleanField(default=False, blank=True, db_index=True)
 	
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	@property
-	def projected(self):
+	def is_projected(self):
 		if certified:
 			return False
 		else:
