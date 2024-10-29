@@ -67,6 +67,7 @@ INSTALLED_APPS = (
 	'gridutils',	# Base models and tools for virtual world data management
 	'deerguard_sl',	# Access control for Second Life objects/scripts
 	#'deerland',		# Virtual world estate/property management
+	'electionmap',	# Election results data tracking and visualization
 	
 	#	My Apps - Other
 	'deerattend',	# Convention/event database

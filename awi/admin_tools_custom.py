@@ -32,6 +32,7 @@ itemlist_sl = (
 	'deerguard_sl.*',
 	'deerland.*',
 	'gridutils.*',
+	'electionmap.*',
 )
 
 itemlist_system = (

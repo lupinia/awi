@@ -19,6 +19,7 @@ Apps/Modules Included
 - **Second Life Systems/Content**
 	- **GridUtils**:  Standard models, views, and utility functions for common data types and structures used in Second Life and other virtual worlds.
 	- **DeerGuard SL**:  Security/authentication system for LSL scripted systems in Second Life and other virtual worlds.
+	- **ElectionMap**:  Interactive election results tracking and display system for Second Life.
 - **Other**
 	- **Awi Utils**:  Miscellaneous core components used by multiple other modules/apps.
 	- **DeerAttend**:  Event attendance history tracker/display.
