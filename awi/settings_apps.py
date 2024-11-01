@@ -101,6 +101,17 @@ SECONDLIFE_API_RATELIMIT_CACHE_PREFIX = 'gudvcapi_slapi_open'
 SECONDLIFE_GRIDSLUG = 'sl'
 
 
+#	electionmap
+ELECTION_PARTIES = (
+	('I', 'Other/Independent'),
+	('D', 'Democratic'),
+	('R', 'Republican'),
+	('d', 'Ind. (Dem Caucus)'),
+	('r', 'Ind. (GOP Caucus)'),
+	('X', 'Runoff'),
+)
+
+
 #	deertrees
 #	This stores a list of known models that can be attached to a category, their hierarchy when displayed, and a template file's path
 #	Model Name { 

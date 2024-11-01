@@ -10,7 +10,6 @@ from django.contrib import admin
 
 from electionmap.models import (
 	state,
-	party,
 	election,
 	election_seats,
 	data_source,
@@ -20,7 +19,6 @@ from electionmap.models import (
 )
 
 admin.site.register(state)
-admin.site.register(party)
 admin.site.register(election)
 admin.site.register(election_seats)
 admin.site.register(data_source)

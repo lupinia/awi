@@ -18,15 +18,6 @@ class state(models.Model):
 	abbr = models.CharField(max_length=2, unique=True)
 	split_presidential = models.BooleanField(default=False, blank=True)
 	
-	def __unicode__(self):
-		return self.name
-
-class party(models.Model):
-	name = models.CharField(max_length=128)
-	name_short = models.CharField(max_length=8, unique=True)
-	abbr = models.CharField(max_length=1, unique=True)
-	color_name = models.CharField(max_length=8, unique=True)
-	color_hex = models.CharField(max_length=6, unique=True)
 	
 	def __unicode__(self):
 		return self.name
@@ -71,7 +62,7 @@ class data_source(models.Model):
 class results(models.Model):
 	state = models.ForeignKey(state, on_delete=models.CASCADE, related_name='%(class)s')
 	election_year = models.ForeignKey(election, on_delete=models.CASCADE, related_name='%(class)s')
-	party = models.ForeignKey(party, on_delete=models.CASCADE, related_name='%(class)s')
+	party = models.CharField(max_length=1, choices=settings.ELECTION_PARTIES, default='I')
 	source = models.ForeignKey(data_source, on_delete=models.CASCADE, related_name='%(class)s')
 	source_note = models.CharField(max_length=128, null=True, blank=True)
 	
