@@ -18,6 +18,8 @@ class state(models.Model):
 	abbr = models.CharField(max_length=2, unique=True)
 	split_presidential = models.BooleanField(default=False, blank=True)
 	
+	senate1_class = models.PositiveSmallIntegerField(choices=settings.SENATE_CLASSES, default=0, blank=True)
+	senate2_class = models.PositiveSmallIntegerField(choices=settings.SENATE_CLASSES, default=0, blank=True)
 	
 	def __unicode__(self):
 		return self.name
@@ -26,17 +28,30 @@ class election(models.Model):
 	year = models.PositiveSmallIntegerField(unique=True)
 	past = models.BooleanField(default=False, blank=True, db_index=True)
 	
+	house_cycle = models.BooleanField(default=False, blank=True, db_index=True)
+	presidential_cycle = models.BooleanField(default=False, blank=True, db_index=True)
+	senate_class = models.PositiveSmallIntegerField(choices=settings.SENATE_CLASSES, default=0, blank=True, db_index=True)
+	
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
+	
+	@property
+	def senate_cycle(self):
+		if self.senate_class > 0:
+			return True
+		else:
+			return False
 	
 	def __unicode__(self):
 		return unicode(self.year)
 
 class election_seats(models.Model):
 	state = models.ForeignKey(state, on_delete=models.CASCADE, related_name='election_seats')
-	election_year = models.ForeignKey(election, on_delete=models.CASCADE, related_name='election_seats')
-	house_seats = models.PositiveSmallIntegerField()
-	electoral_votes = models.PositiveSmallIntegerField()
+	election_year = models.ForeignKey(election, on_delete=models.CASCADE, related_name='state_config')
+	
+	house_seats = models.PositiveSmallIntegerField(blank=True)
+	electoral_votes = models.PositiveSmallIntegerField(blank=True)
+	senate_special = models.BooleanField(default=False, blank=True, db_index=True)
 	
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
@@ -89,6 +104,8 @@ class results_house(results):
 		return '%s-%d' % (self.state.abbr, self.district)
 
 class results_senate(results):
+	senate_class = models.PositiveSmallIntegerField(choices=settings.SENATE_CLASSES, default=0, blank=True, db_index=True)
+	
 	def __unicode__(self):
 		return '%s-%d' % (self.state.abbr, self.district)
 

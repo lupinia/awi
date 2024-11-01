@@ -111,6 +111,13 @@ ELECTION_PARTIES = (
 	('X', 'Runoff'),
 )
 
+SENATE_CLASSES = (
+	(0, 'None'),
+	(1, 'Class 1'),
+	(2, 'Class 2'),
+	(3, 'Class 3'),
+)
+
 
 #	deertrees
 #	This stores a list of known models that can be attached to a category, their hierarchy when displayed, and a template file's path
