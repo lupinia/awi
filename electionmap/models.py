@@ -120,23 +120,47 @@ class results(models.Model):
 		else:
 			return self.is_projected
 	
+	@property
+	def status(self):
+		if self.certified:
+			return 'certified'
+		elif self.is_projected:
+			return 'projected'
+		else:
+			return ''
+	
+	def append_status_label(self, input):
+		if self.status:
+			return '%s (%s)' % (input, self.status.capitalize())
+		else:
+			return input
+		
 	class Meta:
 		abstract = True
 
 class results_house(results):
 	district = models.PositiveSmallIntegerField(default=1)
 	
-	def __unicode__(self):
+	@property
+	def district_name(self):
 		return '%s-%d' % (self.state.abbr, self.district)
+	
+	def __unicode__(self):
+		return '%s: %s' % (self.district_name, self.append_status_label(self.party))
 
 class results_senate(results):
 	senate_class = models.PositiveSmallIntegerField(choices=settings.SENATE_CLASSES, default=0, blank=True, db_index=True)
 	
 	def __unicode__(self):
-		return '%s-%d' % (self.state.abbr, self.district)
+		return '%s: %s' % (self.state.abbr, self.append_status_label(self.party))
 
 class results_president(results):
 	electoral_votes = models.PositiveSmallIntegerField(default=1)
+	district = models.PositiveSmallIntegerField(default=0)
+	
+	@property
+	def district_name(self):
+		return '%s-%d' % (self.state.abbr, self.district)
 	
 	def __unicode__(self):
-		return '%s-%d' % (self.state.abbr, self.district)
+		return '%s: %s' % (self.district_name, self.append_status_label(self.party))
