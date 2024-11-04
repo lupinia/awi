@@ -29,8 +29,16 @@ class state(models.Model):
 	polls_close = models.TimeField(default=default_closing_time)
 	
 	house_seats = models.PositiveSmallIntegerField(blank=True)
+	presidential_votes_override = models.PositiveSmallIntegerField(blank=True, default=0)
 	senate1_class = models.PositiveSmallIntegerField(choices=settings.SENATE_CLASSES, default=0, blank=True)
 	senate2_class = models.PositiveSmallIntegerField(choices=settings.SENATE_CLASSES, default=0, blank=True)
+	
+	@property
+	def presidential_votes(self):
+		if self.presidential_votes_override:
+			return self.presidential_votes_override
+		else:
+			return self.house_seats + 2
 	
 	@property
 	def polls_open(self):
