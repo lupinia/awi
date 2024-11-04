@@ -27,6 +27,7 @@ class state(models.Model):
 	split_presidential = models.BooleanField(default=False, blank=True)
 	polls_close = models.TimeField(default=default_closing_time)
 	
+	house_seats = models.PositiveSmallIntegerField(blank=True)
 	senate1_class = models.PositiveSmallIntegerField(choices=settings.SENATE_CLASSES, default=0, blank=True)
 	senate2_class = models.PositiveSmallIntegerField(choices=settings.SENATE_CLASSES, default=0, blank=True)
 	
