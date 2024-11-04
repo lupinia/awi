@@ -11,6 +11,7 @@ import math
 
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone
 
@@ -80,6 +81,11 @@ class election_seats(models.Model):
 	electoral_votes = models.PositiveSmallIntegerField(blank=True)
 	senate_special = models.BooleanField(default=False, blank=True, db_index=True)
 	
+	last_party_president = models.CharField(max_length=1, choices=settings.ELECTION_PARTIES, null=True, blank=True)
+	last_party_senate = models.CharField(max_length=1, choices=settings.ELECTION_PARTIES, null=True, blank=True)
+	last_party_senate_special = models.CharField(max_length=1, choices=settings.ELECTION_PARTIES, null=True, blank=True)
+	last_party_house_data = JSONField(null=True, blank=True)
+	
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
@@ -114,6 +120,7 @@ class results(models.Model):
 	
 	projected = models.BooleanField(default=False, blank=True, db_index=True)
 	certified = models.BooleanField(default=False, blank=True, db_index=True)
+	flipped = models.BooleanField(default=False, blank=True, db_index=True)
 	
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
