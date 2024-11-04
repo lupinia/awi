@@ -83,7 +83,11 @@ class election_seats(models.Model):
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def __unicode__(self):
-		return '%s - %s' % (self.state.abbr, unicode(self.election_year))
+		return '%s - %d' % (self.state.abbr, self.election_year.year)
+	
+	class Meta:
+		unique_together = (('state', 'election_year'),)
+		ordering = ['-election_year','state']
 
 class data_source(models.Model):
 	name = models.CharField(max_length=128)
@@ -137,6 +141,7 @@ class results(models.Model):
 		
 	class Meta:
 		abstract = True
+		ordering = ['state', '-certified', 'projected']
 
 class results_house(results):
 	district = models.PositiveSmallIntegerField(default=1)
@@ -147,12 +152,19 @@ class results_house(results):
 	
 	def __unicode__(self):
 		return '%s: %s' % (self.district_name, self.append_status_label(self.party))
+	
+	class Meta(results.Meta):
+		unique_together = (('state', 'election_year', 'source', 'district'),)
+		ordering = ['state', 'district', '-certified', 'projected']
 
 class results_senate(results):
 	senate_class = models.PositiveSmallIntegerField(choices=settings.SENATE_CLASSES, default=0, blank=True, db_index=True)
 	
 	def __unicode__(self):
 		return '%s: %s' % (self.state.abbr, self.append_status_label(self.party))
+	
+	class Meta(results.Meta):
+		unique_together = (('state', 'election_year', 'source', 'senate_class'),)
 
 class results_president(results):
 	electoral_votes = models.PositiveSmallIntegerField(default=1)
@@ -164,3 +176,6 @@ class results_president(results):
 	
 	def __unicode__(self):
 		return '%s: %s' % (self.district_name, self.append_status_label(self.party))
+	
+	class Meta(results.Meta):
+		unique_together = (('state', 'election_year', 'source', 'district'),)
