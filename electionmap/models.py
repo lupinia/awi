@@ -49,6 +49,9 @@ class state(models.Model):
 	
 	def __unicode__(self):
 		return self.name
+	
+	class Meta:
+		ordering = ['name']
 
 class election(models.Model):
 	year = models.PositiveSmallIntegerField(unique=True, db_index=True)
@@ -135,10 +138,10 @@ class results(models.Model):
 	
 	@property
 	def is_projected(self):
-		if certified:
+		if self.certified:
 			return False
 		else:
-			return self.is_projected
+			return self.projected
 	
 	@property
 	def status(self):
