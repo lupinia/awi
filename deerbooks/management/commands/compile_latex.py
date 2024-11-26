@@ -162,9 +162,9 @@ class Command(BaseCommand):
 						self.cur_page.docfiles.add(*new_docfiles)
 						self.log("Successfully attached new docfiles to page %d (%s)." % (self.cur_page.pk, self.cur_page.slug))
 						if tex_custom:
-							related_pages = tex_custom.page_set.all()
+							related_pages = tex_custom.pages.all()
 						elif self.cur_page.book_title:
-							related_pages = self.cur_page.book_title.page_set.all()
+							related_pages = self.cur_page.book_title.pages.all()
 						else:
 							related_pages = False
 						
