@@ -52,7 +52,14 @@
 
 	<footer role="contentinfo">
 		{% block footer %}
-			<div id="footer-right">
+			<div id="footer-right"{% if not hide_noai_footer %} class="noai"{% endif %}>
+				{% if not hide_noai_footer %}
+					<div class="noai-icon">
+						<a href="/about/ai-policy.htm" title="No AI used in this site.  Click here for AI policy.">
+							<img src="{{ STATIC_PREFIX }}images/icons/no-ai-lup32.png" alt="No AI Icon" width="32" height="32" />
+						</a>
+					</div>
+				{% endif %}
 				<div class="bg_info">{% block bginfo %}{% if bg and bg.display_footer_info and not showcase_mode %}Background Photo:  <a href="{{bg.info_url}}">{{bg.title}}</a>{% else %}&nbsp;{% endif %}{% endblock %}</div>
 				<div class="lower">{% if public_domain_content %}Site and other content {% endif %}&copy;2000-{{curyear}} {{sitemeta_author_name}} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a></div>
 			</div>

@@ -4,6 +4,8 @@ Full website for Lupinia Studios, built with Django.  The site can be viewed at 
 
 Built by Natasha L. (@lupinia)
 
+*This site, its code, and all content hosted on it are 100% AI-free.  More information in my [AI Policy](https://www.lupinia.net/about/ai-policy.htm).*
+
 Apps/Modules Included
 ---------------------
 
