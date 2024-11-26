@@ -4,7 +4,7 @@
 {% if can_edit %}
 	<div class="hovericons16">
 		{% if object.public_domain %}
-			<a href="{% url edit_url object.pk %}"><img src="{{ STATIC_PREFIX }}images/icons/public-domain-16.png" alt="Public Domain" title="This content has been released into the public domain" /></a> 
+			<a href="/about/photo-license.htm"><img src="{{ STATIC_PREFIX }}images/icons/public-domain-16.png" alt="Public Domain" title="This content has been released into the public domain" /></a> 
 		{% endif %}
 		<a href="?{{object.featured|yesno:'unfeature,feature'}}=1" title="{{object.featured|yesno:'Unfeature,Feature'}} this item"><img src="{{ STATIC_PREFIX }}images/icons/{{object.featured|yesno:',un'}}featured16.png" alt="{{object.featured|yesno:',Not '}}Featured" title="{{object.featured|yesno:',Not '}}Featured" /></a> 
 		{% if object.scheduled %}

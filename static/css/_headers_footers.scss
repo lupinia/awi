@@ -431,7 +431,7 @@ footer {
 	}
 	
 	@media #{$scr_mobile} {
-		nav, .footer_username, .footer_settings, .footer_renderinfo { display:none; }
+		nav, .footer_username, .footer_settings { display:none; }
 	}
 	
 	@media #{$scr_micro} {
