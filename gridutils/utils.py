@@ -171,7 +171,7 @@ def device_type_choices():
 def dict_to_apipsv(input={}):
 	output_list = []
 	for key, value in input:
-		output_list.append(u'%s|%s' % (key, unicode(value)))
+		output_list.append(u'%s|%s' % (key, unicode(value))) # type: ignore
 	
 	return '$$'.join(output_list)
 

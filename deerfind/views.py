@@ -65,17 +65,17 @@ def not_found(request):
 			if pointer_obj.log_hits:
 				hitlog_fields = {
 					'pointer': pointer_obj, 
-					'user_agent': unicode(request.META.get('HTTP_USER_AGENT','')), 
-					'accept': unicode(request.META.get('HTTP_ACCEPT','')), 
-					'accept_encoding': unicode(request.META.get('HTTP_ACCEPT_ENCODING','')), 
-					'accept_language': unicode(request.META.get('HTTP_ACCEPT_LANGUAGE','')), 
-					'host': unicode(request.META.get('HTTP_HOST','')), 
-					'query_string': unicode(request.META.get('QUERY_STRING','')), 
-					'remote_addr': unicode(request.META.get('REMOTE_ADDR','')), 
+					'user_agent': unicode(request.META.get('HTTP_USER_AGENT','')),  # type: ignore
+					'accept': unicode(request.META.get('HTTP_ACCEPT','')),  # type: ignore
+					'accept_encoding': unicode(request.META.get('HTTP_ACCEPT_ENCODING','')),  # type: ignore
+					'accept_language': unicode(request.META.get('HTTP_ACCEPT_LANGUAGE','')),  # type: ignore
+					'host': unicode(request.META.get('HTTP_HOST','')),  # type: ignore
+					'query_string': unicode(request.META.get('QUERY_STRING','')),  # type: ignore
+					'remote_addr': unicode(request.META.get('REMOTE_ADDR','')),  # type: ignore
 				}
 				
 				if request.META.get('HTTP_REFERER','').startswith('http'):
-					hitlog_fields['referer'] = unicode(request.META.get('HTTP_REFERER',''))
+					hitlog_fields['referer'] = unicode(request.META.get('HTTP_REFERER','')) # type: ignore
 				elif request.META.get('HTTP_REFERER',''):
 					hitlog_fields['referer'] = '(Redacted - Possibly Malicious)'
 				else:

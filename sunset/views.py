@@ -103,8 +103,8 @@ def geojson_image(request, slug, **kwargs):
 			'properties': {
 				'marker-color':marker_color,
 				'marker-size':'small', 
-				'title':unicode(item),
-				'description':unicode(item),
+				'title':unicode(item), # type: ignore
+				'description':unicode(item), # type: ignore
 			},
 		})
 	

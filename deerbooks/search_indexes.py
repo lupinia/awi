@@ -49,7 +49,7 @@ class page_index(indexes.SearchIndex, indexes.Indexable):
 	
 	# Per-field methods
 	def prepare_title(self, obj):
-		return unicode(obj)
+		return unicode(obj) # type: ignore
 	
 	def prepare_sites(self, obj):
 		return [site.pk for site in obj.sites.all()]

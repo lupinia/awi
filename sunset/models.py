@@ -105,9 +105,9 @@ class image(leaf):
 	
 	def __unicode__(self):
 		if self.title:
-			return unicode(self.title)
+			return unicode(self.title) # type: ignore
 		else:
-			return unicode(self.slug)
+			return unicode(self.slug) # type: ignore
 	
 	def save(self, *args, **kwargs):
 		if self.body and not self.summary:
@@ -654,7 +654,7 @@ class image_meta(models.Model):
 	manual_entry = models.BooleanField(default=False, help_text="Check this box to prevent this metadata item from being overwritten by data embedded in the image file.")
 	
 	def __unicode__(self):
-		return u'%s - %s: %s' % (self.image, self.key, unicode(self.data))
+		return u'%s - %s: %s' % (self.image, self.key, unicode(self.data)) # type: ignore
 	
 	def format_data(self):
 		return self.key.format(self.data)
@@ -835,7 +835,7 @@ class batch_meta(models.Model):
 	data = models.TextField(blank=True, help_text="Added to file meta; overrides data already in file, in the event of a conflict.")
 	
 	def __unicode__(self):
-		return '%s - %s: %s' % (self.parent, self.key, unicode(self.data))
+		return '%s - %s: %s' % (self.parent, self.key, unicode(self.data)) # type: ignore
 	
 	class Meta:
 		verbose_name = 'batch import metadata'
@@ -851,7 +851,7 @@ class batch_image(models.Model):
 	hash = models.CharField(max_length=255, null=True, blank=True, editable=False, db_index=True)
 	
 	def __unicode__(self):
-		return '%s - %s' % (unicode(self.parent), self.img_filename)
+		return '%s - %s' % (unicode(self.parent), self.img_filename) # type: ignore
 	
 	class Meta:
 		verbose_name = 'batch import image'

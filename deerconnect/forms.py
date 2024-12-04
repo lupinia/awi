@@ -39,7 +39,7 @@ class contact_form(forms.Form):
 		spam_check_sender = is_spammer(sender_addr)
 		if spam_check_sender:
 			if request.META.get('REMOTE_ADDR', False):
-				add_new_block(request.META['REMOTE_ADDR'], unicode(request.META.get('HTTP_USER_AGENT', '')))
+				add_new_block(request.META['REMOTE_ADDR'], unicode(request.META.get('HTTP_USER_AGENT', ''))) # type: ignore
 			return (False, 'mailform_spamaddr')
 		
 		if '@' in sender_name:
@@ -58,7 +58,7 @@ class contact_form(forms.Form):
 			spammer = spam_sender.objects.create(email=sender_addr, name=sender_name)
 			spammer.word_used.add(spam_word.objects.filter(word__iexact=w).first())
 			if request.META.get('REMOTE_ADDR', False):
-				add_new_block(request.META['REMOTE_ADDR'], unicode(request.META.get('HTTP_USER_AGENT', '')))
+				add_new_block(request.META['REMOTE_ADDR'], unicode(request.META.get('HTTP_USER_AGENT', ''))) # type: ignore
 			return (False, 'mailform_spamword')
 		
 		message_context = {

@@ -318,7 +318,7 @@ class tag_list(leaf_parent, generic.DetailView):
 			context['breadcrumbs'] = []
 		
 		context['breadcrumbs'].append({'url':reverse('all_tags'), 'title':'Tags'})
-		context['breadcrumbs'].append({'url':reverse('tag',kwargs={'slug':context['object'].slug,}), 'title':unicode(context['object'])})
+		context['breadcrumbs'].append({'url':reverse('tag',kwargs={'slug':context['object'].slug,}), 'title':unicode(context['object'])}) # type: ignore
 		
 		context['body_text'] = sunset_embed(context['object'].body_html, self.request)
 		
@@ -342,7 +342,7 @@ class main_rssfeed(leaf_parent, Feed):
 	
 	def title(self, obj=None):
 		if obj:
-			return '%s - %s' % (self.title_text, unicode(obj))
+			return '%s - %s' % (self.title_text, unicode(obj)) # type: ignore
 		else:
 			return self.title_text
 	
@@ -360,7 +360,7 @@ class main_rssfeed(leaf_parent, Feed):
 	
 	def item_title(self, item):
 		leaf_item = getattr(item, item.type, None)
-		return u'%s - %s' % (item.type.capitalize(), unicode(leaf_item))
+		return u'%s - %s' % (item.type.capitalize(), unicode(leaf_item)) # type: ignore
 	
 	def item_link(self, item):
 		leaf_item = getattr(item, item.type, None)

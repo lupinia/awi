@@ -93,7 +93,7 @@ class venue_index(indexes.SearchIndex, indexes.Indexable):
 	
 	# Per-field methods
 	def prepare_title(self, obj):
-		return unicode(obj)
+		return unicode(obj) # type: ignore
 	
 	def prepare_item_count(self, obj):
 		return obj.events.all().count()

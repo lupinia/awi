@@ -264,7 +264,7 @@ class external_link(models.Model):
 	notes = models.TextField(null=True, blank=True)
 	
 	def __unicode__(self):
-		return '%s: %s' % (self.link_type.name, unicode(self.parent))
+		return '%s: %s' % (self.link_type.name, unicode(self.parent)) # type: ignore
 	
 	def get_absolute_url(self):
 		return self.url

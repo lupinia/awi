@@ -54,7 +54,7 @@ class contact_page(FormView):
 						if reply_view_check:
 							self.reply_form = True
 							self.reply_obj = reply_obj
-							self.reply_title = unicode(reply_obj)
+							self.reply_title = unicode(reply_obj) # type: ignore
 							
 							if hasattr(reply_obj, 'get_absolute_url'):
 								self.reply_path = reply_obj.get_absolute_url()

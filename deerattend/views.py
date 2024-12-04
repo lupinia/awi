@@ -185,7 +185,7 @@ class event_instances(event_list):
 				context['map_data_url'] = reverse('deerattend:geojson', kwargs={'slug':context['geojson_slug'],})
 			else:
 				single_location = context['event_instances'].first()
-				context['single_location'] = '%s (%s)' % (unicode(single_location.venue), single_location.venue.get_city())
+				context['single_location'] = '%s (%s)' % (unicode(single_location.venue), single_location.venue.get_city()) # type: ignore
 		
 		return context
 

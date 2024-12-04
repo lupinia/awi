@@ -101,7 +101,7 @@ def sunset_embed(body, request=False):
 			else:
 				imgtag.replaceWith(new_tag)
 		
-		return unicode(body_raw)
+		return unicode(body_raw) # type: ignore
 	
 	else:
 		# Nothing to do.

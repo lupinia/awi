@@ -73,7 +73,7 @@ class election(models.Model):
 			return False
 	
 	def __unicode__(self):
-		return unicode(self.year)
+		return unicode(self.year) # type: ignore
 	
 	def save(self, *args, **kwargs):
 		if not self.day:

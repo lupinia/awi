@@ -24,7 +24,7 @@ def result_type(value):
 	return get_cur_type(value).get('display_name', '')
 
 def text_item_width(value, min=135):
-	calculated = len(unicode(value)) * 7
+	calculated = len(unicode(value)) * 7 # type: ignore
 	min_default = 135
 	try:
 		min_width = int(min)
