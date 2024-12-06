@@ -11,7 +11,7 @@ import datetime
 from django.core.cache import cache
 from django.utils import dateparse, timezone
 
-from deerconnect.models import spam_sender, spam_word
+from deerconnect.models import spam_sender, spam_word, spam_domain
 
 #	Check a string for spam words
 def is_spam(message):
@@ -31,6 +31,13 @@ def is_spam(message):
 	
 	return (False, '')
 
+#	Basic, just split an email address into username and domain
+def split_email(address):
+	if '@' not in address or address.count('@') > 1:
+		return (address, '')
+	
+	return address.split('@')
+
 #	Strip extraneous characters from an email address
 #	This is merely a formatting filter, so if it fails, it should just return its input unaltered
 def fix_email(address, strip_dots=True, strip_plus=True):
@@ -38,7 +45,7 @@ def fix_email(address, strip_dots=True, strip_plus=True):
 		return address
 	
 	address = address.lower()
-	uname, domain = address.split('@')
+	uname, domain = split_email(address)
 	if '.' in uname and strip_dots:
 		# Gmail has kinda broken email with their handling of dots in addresses
 		# But it's also incredibly easy for a spammer to evade a block by just messing with the dots
@@ -53,11 +60,29 @@ def fix_email(address, strip_dots=True, strip_plus=True):
 #	Not doing a direct DB query for security reasons
 def is_spammer(sender):
 	sender = fix_email(sender)
-	spammers = spam_sender.objects.all().values_list('email', flat=True)
-	if sender in spammers:
+	uname, domain = split_email(sender)
+	domain_list = spam_domain.objects.filter(whitelist=False).values_list('domain', flat=True)
+	whitelist = spam_domain.objects.filter(whitelist=True).values_list('domain', flat=True)
+	if domain in domain_list:
 		return True
 	else:
-		return False
+		if domain in whitelist:
+			spammers = spam_sender.objects.all().values_list('email', flat=True)
+			if sender in spammers:
+				return True
+			else:
+				return False
+		else:
+			return False
+
+def record_spammer(sender, name, word):
+	sender_uname, sender_domain = split_email(sender)
+	whitelist = spam_domain.objects.filter(whitelist=True).values_list('domain', flat=True)
+	if sender_domain in whitelist:
+		spammer = spam_sender.objects.create(email=sender, name=name)
+		spammer.word_used.add(spam_word.objects.filter(word__iexact=word).first())
+	else:
+		spam_domain.objects.create(domain=sender_domain, whitelist=False)
 
 #	Check whether the contact form has already been submitted
 def form_too_soon(request):

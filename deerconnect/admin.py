@@ -87,7 +87,18 @@ class spammers_admin(admin.ModelAdmin):
 		('Words Used',{'fields':('word_used',),},),
 	]
 
+class spam_domain_admin(admin.ModelAdmin):
+	search_fields = ['domain', 'notes']
+	list_filter = ['whitelist', 'timestamp_post', 'timestamp_mod',]
+	list_display = ['domain', 'whitelist', 'timestamp_post', 'timestamp_mod',]
+	readonly_fields = ['timestamp_mod',]
+	fieldsets = [
+		(None,{'fields':(('domain','whitelist',),'notes',),},),
+		('Time Options',{'fields':(('timestamp_post','timestamp_mod',),),},),
+	]
+
 admin.site.register(link, link_admin)
 admin.site.register(contact_link, contact_admin)
 admin.site.register(spam_word, spam_admin)
 admin.site.register(spam_sender, spammers_admin)
+admin.site.register(spam_domain, spam_domain_admin)

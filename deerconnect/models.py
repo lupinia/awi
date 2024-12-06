@@ -137,3 +137,20 @@ class spam_sender(models.Model):
 	
 	class Meta:
 		verbose_name = 'spam sender'
+
+class spam_domain(models.Model):
+	domain = models.CharField(max_length=255, unique=True)
+	whitelist = models.BooleanField(default=False, blank=True, db_index=True)
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
+	notes = models.TextField(blank=True, null=True)
+	
+	def __unicode__(self):
+		return self.domain
+	
+	def save(self, *args, **kwargs):
+		self.domain = self.domain.lower()
+		super(spam_domain, self).save(*args, **kwargs)
+	
+	class Meta:
+		verbose_name = 'spam domain'

@@ -19,7 +19,7 @@ from django.utils import dateparse
 
 from awi_access.utils import add_new_block
 from deerconnect.models import spam_sender, spam_word
-from deerconnect.utils import is_spam, is_spammer, form_too_soon
+from deerconnect.utils import is_spam, is_spammer, record_spammer, form_too_soon
 
 class contact_form(forms.Form):
 	error_css_class = 'has_error';
@@ -31,16 +31,19 @@ class contact_form(forms.Form):
 	body = forms.CharField(label='Message Body', max_length=10000, widget=forms.Textarea)
 	
 	def send_email(self, request):
-		if form_too_soon(request):
+		if form_too_soon(request) and not request.user.is_authenticated():
 			return (False, 'mailform_toosoon')
 		
 		sender_name = bleach.clean(self.cleaned_data['name'], tags=[], strip=True)
 		sender_addr = bleach.clean(self.cleaned_data['email'], tags=[], strip=True)
-		spam_check_sender = is_spammer(sender_addr)
-		if spam_check_sender:
-			if request.META.get('REMOTE_ADDR', False):
-				add_new_block(request.META['REMOTE_ADDR'], unicode(request.META.get('HTTP_USER_AGENT', ''))) # type: ignore
-			return (False, 'mailform_spamaddr')
+		
+		# Only do spam checks for anonymous users
+		if not request.user.is_authenticated():
+			spam_check_sender = is_spammer(sender_addr)
+			if spam_check_sender:
+				if request.META.get('REMOTE_ADDR', False):
+					add_new_block(request.META['REMOTE_ADDR'], unicode(request.META.get('HTTP_USER_AGENT', ''))) # type: ignore
+				return (False, 'mailform_spamaddr')
 		
 		if '@' in sender_name:
 			sender_name = sender_name.replace('@', '_')
@@ -53,13 +56,14 @@ class contact_form(forms.Form):
 		message_template = get_template('deerconnect/email.txt')
 		message_body = bleach.clean(self.cleaned_data['body'], tags=[], strip=True)
 		
-		spam_check_message, w = is_spam(message_body)
-		if spam_check_message:
-			spammer = spam_sender.objects.create(email=sender_addr, name=sender_name)
-			spammer.word_used.add(spam_word.objects.filter(word__iexact=w).first())
-			if request.META.get('REMOTE_ADDR', False):
-				add_new_block(request.META['REMOTE_ADDR'], unicode(request.META.get('HTTP_USER_AGENT', ''))) # type: ignore
-			return (False, 'mailform_spamword')
+		# Only do spam checks for anonymous users
+		if not request.user.is_authenticated():
+			spam_check_message, w = is_spam(message_body)
+			if spam_check_message:
+				record_spammer(sender_addr, sender_name, w)
+				if request.META.get('REMOTE_ADDR', False):
+					add_new_block(request.META['REMOTE_ADDR'], unicode(request.META.get('HTTP_USER_AGENT', ''))) # type: ignore
+				return (False, 'mailform_spamword')
 		
 		message_context = {
 			'message': message_body, 

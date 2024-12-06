@@ -41,6 +41,7 @@ itemlist_system = (
 	'awi_error.*',
 	'deerfind.*',
 	'deerconnect.models.spam_word',
+	'deerconnect.models.spam_domain',
 	'deerconnect.models.spam_sender',
 )
 
