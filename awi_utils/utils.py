@@ -281,3 +281,23 @@ def dict_key_choices(source_dict):
 		tuple_list.append((key, key))
 	
 	return tuple_list
+
+
+#	Normally, I'm all for duck typing, but sometimes that's just not good enough.
+def is_iterable(test_obj):
+	try:
+		test_obj_iterator = iter(test_obj)
+	except TypeError:
+		return False
+	else:
+		return True
+
+def is_int(test_obj):
+	try:
+		test_obj_iterator = int(test_obj)
+	except ValueError:
+		return False
+	except TypeError:
+		return False
+	else:
+		return True

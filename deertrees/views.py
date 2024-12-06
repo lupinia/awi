@@ -19,6 +19,7 @@ from django.utils.module_loading import import_string
 from django.views import generic
 
 from awi_access.models import access_query
+from awi_utils.utils import is_int
 from deerfind.utils import g2_lookup
 from deertrees.models import category, tag, leaf, special_feature
 from sunset.utils import sunset_embed
@@ -469,13 +470,6 @@ class leaf_view(generic.DetailView):
 	def get_queryset(self, *args, **kwargs):
 		return super(leaf_view, self).get_queryset(*args, **kwargs).select_related('access_code','cat').prefetch_related('tags')
 	
-	def check_int(self, check):
-		try:
-			int_test = int(check)
-			return True
-		except ValueError:
-			return False
-	
 	def get_context_data(self, **kwargs):
 		context = super(leaf_view,self).get_context_data(**kwargs)
 		
@@ -514,19 +508,19 @@ class leaf_view(generic.DetailView):
 				
 				# DeerTrees Leaf commands
 				if self.request.GET.get('add_tag', False):
-					if self.check_int(self.request.GET.get('add_tag', False)):
+					if is_int(self.request.GET.get('add_tag', False)):
 						new_tag = get_object_or_404(tag, pk=self.request.GET.get('add_tag'))
 						context['object'].tags.add(new_tag)
 						context['object'].save()
 						changed = True
 				elif self.request.GET.get('remove_tag', False):
-					if self.check_int(self.request.GET.get('remove_tag', False)):
+					if is_int(self.request.GET.get('remove_tag', False)):
 						old_tag = get_object_or_404(tag, pk=self.request.GET.get('remove_tag'))
 						context['object'].tags.remove(old_tag)
 						context['object'].save()
 						changed = True
 				elif self.request.GET.get('change_cat', False):
-					if self.check_int(self.request.GET.get('change_cat', False)):
+					if is_int(self.request.GET.get('change_cat', False)):
 						new_cat = get_object_or_404(category, pk=self.request.GET.get('change_cat'))
 						context['object'].cat = new_cat
 						context['object'].save()
@@ -552,7 +546,7 @@ class leaf_view(generic.DetailView):
 				
 				# Awi Access access code commands
 				elif self.request.GET.get('revoke_code', False) and context['object'].access_code:
-					if self.check_int(self.request.GET.get('revoke_code', False)) and int(self.request.GET.get('revoke_code', False)) == context['object'].access_code.pk:
+					if is_int(self.request.GET.get('revoke_code', False)) and int(self.request.GET.get('revoke_code', False)) == context['object'].access_code.pk:
 						context['object'].access_code.is_valid = False
 						context['object'].access_code.save()
 						changed = True
@@ -562,10 +556,10 @@ class leaf_view(generic.DetailView):
 					else:
 						new_age = self.request.GET.get('new_access_code', False)
 					
-					if self.check_int(new_age):
+					if is_int(new_age):
 						new_age = int(new_age)
 						
-						if context['object'].access_code and context['object'].access_code.valid() and self.check_int(self.request.GET.get('replace', False)) and int(self.request.GET.get('replace', False)) == context['object'].access_code.pk:
+						if context['object'].access_code and context['object'].access_code.valid() and is_int(self.request.GET.get('replace', False)) and int(self.request.GET.get('replace', False)) == context['object'].access_code.pk:
 							context['object'].access_code.is_valid = False
 							context['object'].access_code.save()
 							context['object'].create_code(age=new_age, request=self.request)
