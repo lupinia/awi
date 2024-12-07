@@ -17,6 +17,15 @@ from django import template
 from django.utils.safestring import mark_safe
 
 def html_md(input_string, promote=True):
+	"""
+	Django template tag for converting HTML to Markdown.
+	Returns a string that has already been marked "safe" due to special formatting.
+	Sanitize before calling this!
+	
+	Parameters:
+		input_string (str): The HTML content to be converted
+		promote (bool): Optional, increments headers if True (H3 -> H2, etc)
+	"""
 	md_maker = html2text.HTML2Text()
 	md_maker.unicode_snob = True
 	md_maker.bypass_tables = False
@@ -36,6 +45,15 @@ def html_md(input_string, promote=True):
 	return mark_safe(md)
 
 def html_txt(input_string, promote=True):
+	"""
+	Template tag for converting HTML to plain text
+	Returns a string that has already been marked "safe" due to special formatting.
+	Sanitize before calling this!
+	
+	Parameters:
+		input_string (str): The HTML content to be converted
+		promote (bool): Optional, increments headers if True (H3 -> H2, etc)
+	"""
 	md = html_md(input_string, promote)
 	txt = md.replace('* * *','---')
 	txt = txt.replace(' * ',' - ')
@@ -46,6 +64,15 @@ def html_txt(input_string, promote=True):
 	return mark_safe(txt)
 
 def html_tex(input_string, promote=True):
+	"""
+	Template tag for converting HTML to LaTeX
+	Returns a string that has already been marked "safe" due to special formatting.
+	Sanitize before calling this!
+	
+	Parameters:
+		input_string (str): The HTML content to be converted
+		promote (bool): Optional, increments headers if True (H3 -> H2, etc)
+	"""
 	md = html_md(input_string, promote)
 	md = re.sub(r'\((/.*?)\)',r'(http://www.lupinia.net\1)',md)	
 	md = re.sub(r'!\[.*?\]\((.*?)\)',r'(Image:  \1)',md)
@@ -63,6 +90,14 @@ def html_tex(input_string, promote=True):
 	return mark_safe(tex)
 
 def field_tex(input_string):
+	"""
+	Template tag for converting a single string to LaTeX
+	Returns a string that has already been marked "safe" due to special formatting.
+	Sanitize before calling this!
+	
+	Parameters:
+		input_string (str): The HTML content to be converted
+	"""
 	tex = input_string.replace('_','\\_')
 	tex = tex.replace('#','\\#')
 	tex = tex.replace('$','\\$')
