@@ -89,11 +89,11 @@ class spammers_admin(admin.ModelAdmin):
 
 class spam_domain_admin(admin.ModelAdmin):
 	search_fields = ['domain', 'notes']
-	list_filter = ['whitelist', 'timestamp_post', 'timestamp_mod',]
-	list_display = ['domain', 'whitelist', 'timestamp_post', 'timestamp_mod',]
+	list_filter = ['manual_entry', 'whitelist', 'timestamp_post', 'timestamp_mod',]
+	list_display = ['domain', 'manual_entry', 'whitelist', 'timestamp_post', 'timestamp_mod',]
 	readonly_fields = ['timestamp_mod',]
 	fieldsets = [
-		(None,{'fields':(('domain','whitelist',),'notes',),},),
+		(None,{'fields':('domain',('whitelist','manual_entry'),'notes',),},),
 		('Time Options',{'fields':(('timestamp_post','timestamp_mod',),),},),
 	]
 
