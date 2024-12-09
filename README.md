@@ -73,6 +73,7 @@ Custom Management Commands
 - **set_cat_thumb (DeerTrees):**  Set the thumbnail for categories containing images.
 - **cleanup_working_dir (Awi Utils):**  Delete unused files from the local working directories for background processes that need to perform file manipulation (compile_latex, process_images).
 - **health_check (DeerConnect)**:  Performs a HEAD request to every external link in the system, and notifies the administrator(s) if any links return a status other than 200.
+- **spam_stats (DeerConnect)**:  Recalculates cached usage stats for spam filter keywords, and de-activates unnecessary email address blocks when the domain is blocked.
 - **promote_seasonal (Awi Utils):**  Selectively feature/unfeature certain categories based on the current month.
 - **clearcache (Awi Utils):**  Clear Django's cache, something that Django really should have a built-in management command for.
 - **no_export_deleted (DeerBooks):**  Sets auto_export to False on pages that have been moved to the "Trash" category, in case this wasn't already handled.
