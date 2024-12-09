@@ -78,11 +78,13 @@ def is_spammer(sender):
 def record_spammer(sender, name, word):
 	sender_uname, sender_domain = split_email(sender)
 	whitelist = spam_domain.objects.filter(whitelist=True).values_list('domain', flat=True)
-	if sender_domain in whitelist:
-		spammer = spam_sender.objects.create(email=sender, name=name)
-		spammer.word_used.add(spam_word.objects.filter(word__iexact=word).first())
-	else:
-		spam_domain.objects.create(domain=sender_domain, whitelist=False)
+	to_update = {'name':name,}
+	if sender_domain not in whitelist:
+		spam_domain.objects.get_or_create(domain=sender_domain, whitelist=False)
+		to_update['active'] = False
+	
+	spammer, created = spam_sender.objects.get_or_create(defaults=to_update, email=fix_email(sender))
+	spammer.word_used.add(spam_word.objects.filter(word__iexact=word).first())
 
 #	Check whether the contact form has already been submitted
 def form_too_soon(request):
