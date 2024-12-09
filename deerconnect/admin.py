@@ -60,17 +60,17 @@ class spam_admin(admin.ModelAdmin):
 	def case_on(self, request, queryset):
 		rows_updated = queryset.update(case_sensitive=True)
 		if rows_updated == 1:
-			message_bit = "1 item"
+			message_bit = "1 word"
 		else:
-			message_bit = "%s items" % rows_updated
+			message_bit = "%s words" % rows_updated
 		self.message_user(request, "Enabled case sensitivity for %s" % message_bit)
 	
 	def case_off(self, request, queryset):
 		rows_updated = queryset.update(case_sensitive=False)
 		if rows_updated == 1:
-			message_bit = "1 item"
+			message_bit = "1 word"
 		else:
-			message_bit = "%s items" % rows_updated
+			message_bit = "%s words" % rows_updated
 		self.message_user(request, "Disabled case sensitivity for %s" % message_bit)
 	
 	case_on.short_description = "Mark items case-sensitive"
