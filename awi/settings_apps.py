@@ -100,6 +100,9 @@ SECONDLIFE_API_URL_N2A = 'https://api.secondlife.com/get_agent_id'
 SECONDLIFE_API_RATELIMIT_CACHE_PREFIX = 'gudvcapi_slapi_open'
 SECONDLIFE_GRIDSLUG = 'sl'
 
+#	Vector type settings
+VECTORTYPE_COORD_SPACING = True	# If True, vectors presented as strings will have a space after each comma
+
 
 #	electionmap
 ELECTION_PARTIES = (
