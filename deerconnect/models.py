@@ -122,6 +122,7 @@ class spam_word(models.Model):
 class spam_sender(models.Model):
 	email = models.EmailField(max_length=255, unique=True)
 	name = models.CharField(max_length=255, null=True, blank=True)
+	active = models.BooleanField(default=True, blank=True, db_index=True)
 	word_used = models.ManyToManyField(spam_word, blank=True, related_name='used_by')
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')

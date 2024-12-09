@@ -86,6 +86,26 @@ class spammers_admin(admin.ModelAdmin):
 		('Time Options',{'fields':(('timestamp_post','timestamp_mod',),),},),
 		('Words Used',{'fields':('word_used',),},),
 	]
+	actions = ['set_active', 'set_inactive',]
+	
+	def set_active(self, request, queryset):
+		rows_updated = queryset.update(active=True)
+		if rows_updated == 1:
+			message_bit = "1 sender"
+		else:
+			message_bit = "%s senders" % rows_updated
+		self.message_user(request, "Set %s active" % message_bit)
+	
+	def set_inactive(self, request, queryset):
+		rows_updated = queryset.update(active=False)
+		if rows_updated == 1:
+			message_bit = "1 sender"
+		else:
+			message_bit = "%s senders" % rows_updated
+		self.message_user(request, "Set %s inactive" % message_bit)
+	
+	set_active.short_description = "Mark senders active"
+	set_inactive.short_description = "Mark senders inactive"
 
 class spam_domain_admin(admin.ModelAdmin):
 	search_fields = ['domain', 'notes']

@@ -67,7 +67,7 @@ def is_spammer(sender):
 		return True
 	else:
 		if domain in whitelist:
-			spammers = spam_sender.objects.all().values_list('email', flat=True)
+			spammers = spam_sender.objects.filter(active=True).values_list('email', flat=True)
 			if sender in spammers:
 				return True
 			else:
