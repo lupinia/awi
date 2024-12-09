@@ -7,7 +7,6 @@
 #	=================
 
 import bleach
-import datetime
 
 from django import forms
 from django.conf import settings
@@ -15,10 +14,8 @@ from django.core.cache import cache
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
 from django.utils import timezone
-from django.utils import dateparse
 
 from awi_access.utils import add_new_block
-from deerconnect.models import spam_sender, spam_word
 from deerconnect.utils import is_spam, is_spammer, record_spammer, form_too_soon
 
 class contact_form(forms.Form):
