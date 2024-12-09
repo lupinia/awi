@@ -109,12 +109,20 @@ class spam_word(models.Model):
 	word = models.CharField(max_length=512, unique=True)
 	active = models.BooleanField(default=True, blank=True, db_index=True)
 	case_sensitive = models.BooleanField(default=False, blank=True, db_index=True)
+	notes = models.TextField(blank=True, null=True)
+	
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
-	notes = models.TextField(blank=True, null=True)
+	
+	used_count = models.PositiveSmallIntegerField(default=0, blank=True, verbose_name='used')
+	merged = models.BooleanField(default=False, blank=True, verbose_name='has been merged')
 	
 	def __unicode__(self):
 		return self.word
+	
+	def update_used_count(self):
+		"""Recalculate the cached value for used_count based on number of spam_senders referencing this word."""
+		spam_word.objects.filter(pk=self.pk).update(used_count=self.used_by.all().count())
 	
 	class Meta:
 		verbose_name = 'spam keyword'

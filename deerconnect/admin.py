@@ -49,10 +49,10 @@ class contact_admin(access_admin):
 class spam_admin(admin.ModelAdmin):
 	search_fields = ['word', 'notes']
 	list_filter = ['active', 'case_sensitive', 'timestamp_post', 'timestamp_mod',]
-	list_display = ['word', 'active', 'case_sensitive', 'timestamp_post', 'timestamp_mod',]
-	readonly_fields = ['timestamp_mod',]
+	list_display = ['word', 'active', 'case_sensitive', 'used_count', 'timestamp_post', 'timestamp_mod',]
+	readonly_fields = ['timestamp_mod', 'used_count','merged',]
 	fieldsets = [
-		(None,{'fields':('word',('case_sensitive','active',),'notes',),},),
+		(None,{'fields':('word',('case_sensitive','active',),('used_count','merged',),'notes',),},),
 		('Time Options',{'fields':(('timestamp_post','timestamp_mod',),),},),
 	]
 	actions = ['case_on', 'case_off', 'set_active', 'set_inactive',]
