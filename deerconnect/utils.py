@@ -14,22 +14,32 @@ from django.utils import dateparse, timezone
 from deerconnect.models import spam_sender, spam_word, spam_domain
 
 #	Check a string for spam words
-def is_spam(message):
+def is_spam(message, find_all=True):
+	detected = False
+	words = []
 	sensitive = spam_word.objects.filter(case_sensitive=True, active=True).values_list('word', flat=True)
 	insensitive = spam_word.objects.filter(case_sensitive=False, active=True).values_list('word', flat=True)
 	
 	if sensitive.exists():
 		for w in sensitive:
 			if w in message:
-				return (True, w)
+				if find_all:
+					detected = True
+					words.append(w)
+				else:
+					return (True, [w])
 	
 	if insensitive.exists():
 		message_lower = message.lower()
 		for w in insensitive:
 			if w.lower() in message_lower:
-				return (True, w)
+				if find_all:
+					detected = True
+					words.append(w)
+				else:
+					return (True, [w])
 	
-	return (False, '')
+	return (detected, words)
 
 #	Basic, just split an email address into username and domain
 def split_email(address):
@@ -75,7 +85,7 @@ def is_spammer(sender):
 		else:
 			return False
 
-def record_spammer(sender, name, word):
+def record_spammer(sender, name, words=[]):
 	sender_uname, sender_domain = split_email(sender)
 	whitelist = spam_domain.objects.filter(whitelist=True).values_list('domain', flat=True)
 	to_update = {'name':name,}
@@ -84,7 +94,9 @@ def record_spammer(sender, name, word):
 		to_update['active'] = False
 	
 	spammer, created = spam_sender.objects.get_or_create(defaults=to_update, email=fix_email(sender))
-	spammer.word_used.add(spam_word.objects.filter(word__iexact=word).first())
+	tripped_words = spam_word.objects.filter(word__in=words)
+	if tripped_words.exists():
+		spammer.word_used.add(*tripped_words)
 
 #	Check whether the contact form has already been submitted
 def form_too_soon(request):
