@@ -110,7 +110,16 @@ merge_note_delimiter = '\n=======\n'
 
 #	Keywords to scan for in contact form submissions
 class spam_word(models.Model):
+	TYPE_CHOICES = (
+		('keyword','Keyword'),
+		('domain','Domain Name'),
+		('url','Full URL'),
+		('contact','Contact Info'),
+		('name','Org Name'),
+	)
+	
 	word = models.CharField(max_length=512, unique=True)
+	wordtype = models.CharField(max_length=32, choices=TYPE_CHOICES, default='keyword', verbose_name='type', db_index=True)
 	active = models.BooleanField(default=True, blank=True, db_index=True)
 	case_sensitive = models.BooleanField(default=False, blank=True, db_index=True)
 	notes = models.TextField(blank=True, null=True)
@@ -122,7 +131,7 @@ class spam_word(models.Model):
 	merged = models.BooleanField(default=False, blank=True, verbose_name='has been merged')
 	
 	def __unicode__(self):
-		return self.word
+		return '%s: %s' % (self.get_wordtype_display(), self.word)
 	
 	def update_used_count(self):
 		"""Recalculate the cached value for used_count based on number of spam_senders referencing this word."""
