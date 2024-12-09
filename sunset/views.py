@@ -13,6 +13,7 @@ from django.shortcuts import get_object_or_404
 
 from awi_access.models import access_query
 from awi_utils.views import json_response
+from deertrees.models import category, tag
 from deertrees.views import leaf_view
 from sunset.models import *
 
@@ -63,9 +64,8 @@ class single_image(leaf_view):
 		return context
 
 
-def geojson_image(request, slug, **kwargs):
-	from deertrees.models import category, tag
 	
+def geojson_image(request, slug, **kwargs):
 	return_data = []
 	query = image.objects.filter(access_query(request)).exclude(rebuild_assets=True, is_new=True).exclude(Q(geo_lat__isnull=True) | Q(geo_long__isnull=True)).order_by('-timestamp_post').select_related('cat').prefetch_related('assets')
 	
