@@ -61,8 +61,8 @@ def fix_email(address, strip_dots=True, strip_plus=True):
 def is_spammer(sender):
 	sender = fix_email(sender)
 	uname, domain = split_email(sender)
-	domain_list = spam_domain.objects.filter(whitelist=False).values_list('domain', flat=True)
-	whitelist = spam_domain.objects.filter(whitelist=True).values_list('domain', flat=True)
+	domain_list = spam_domain.objects.filter(active=True, whitelist=False).values_list('domain', flat=True)
+	whitelist = spam_domain.objects.filter(active=True, whitelist=True).values_list('domain', flat=True)
 	if domain in domain_list:
 		return True
 	else:

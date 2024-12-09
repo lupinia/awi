@@ -116,6 +116,26 @@ class spam_domain_admin(admin.ModelAdmin):
 		(None,{'fields':('domain',('whitelist','manual_entry'),'notes',),},),
 		('Time Options',{'fields':(('timestamp_post','timestamp_mod',),),},),
 	]
+	actions = ['set_active', 'set_inactive',]
+	
+	def set_active(self, request, queryset):
+		rows_updated = queryset.update(active=True)
+		if rows_updated == 1:
+			message_bit = "1 domain"
+		else:
+			message_bit = "%s domains" % rows_updated
+		self.message_user(request, "Set %s active" % message_bit)
+	
+	def set_inactive(self, request, queryset):
+		rows_updated = queryset.update(active=False)
+		if rows_updated == 1:
+			message_bit = "1 domain"
+		else:
+			message_bit = "%s domains" % rows_updated
+		self.message_user(request, "Set %s inactive" % message_bit)
+	
+	set_active.short_description = "Mark domains active"
+	set_inactive.short_description = "Mark domains inactive"
 
 admin.site.register(link, link_admin)
 admin.site.register(contact_link, contact_admin)
