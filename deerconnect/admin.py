@@ -55,7 +55,7 @@ class spam_admin(admin.ModelAdmin):
 		(None,{'fields':('word',('case_sensitive','active',),'notes',),},),
 		('Time Options',{'fields':(('timestamp_post','timestamp_mod',),),},),
 	]
-	actions = ['case_on', 'case_off',]
+	actions = ['case_on', 'case_off', 'set_active', 'set_inactive',]
 	
 	def case_on(self, request, queryset):
 		rows_updated = queryset.update(case_sensitive=True)
@@ -73,8 +73,26 @@ class spam_admin(admin.ModelAdmin):
 			message_bit = "%s words" % rows_updated
 		self.message_user(request, "Disabled case sensitivity for %s" % message_bit)
 	
-	case_on.short_description = "Mark items case-sensitive"
-	case_off.short_description = "Mark items case-insensitive"
+	def set_active(self, request, queryset):
+		rows_updated = queryset.update(active=True)
+		if rows_updated == 1:
+			message_bit = "1 word"
+		else:
+			message_bit = "%s words" % rows_updated
+		self.message_user(request, "Set %s active" % message_bit)
+	
+	def set_inactive(self, request, queryset):
+		rows_updated = queryset.update(active=False)
+		if rows_updated == 1:
+			message_bit = "1 word"
+		else:
+			message_bit = "%s words" % rows_updated
+		self.message_user(request, "Set %s inactive" % message_bit)
+	
+	set_active.short_description = "Mark words active"
+	set_inactive.short_description = "Mark words inactive"
+	case_on.short_description = "Mark words case-sensitive"
+	case_off.short_description = "Mark words case-insensitive"
 
 class spammers_admin(admin.ModelAdmin):
 	search_fields = ['email', 'name', 'notes']
