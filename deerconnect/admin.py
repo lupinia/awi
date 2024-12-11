@@ -97,14 +97,15 @@ class spam_admin(admin.ModelAdmin):
 
 class spammers_admin(admin.ModelAdmin):
 	search_fields = ['email', 'name', 'notes']
-	list_filter = ['timestamp_post', 'timestamp_mod',]
-	list_display = ['email', 'name', 'timestamp_post', 'timestamp_mod',]
+	list_filter = ['active', 'timestamp_post', 'timestamp_mod',]
+	list_display = ['email', 'name', 'active', 'timestamp_post', 'timestamp_mod',]
 	readonly_fields = ['timestamp_mod',]
 	fieldsets = [
-		(None,{'fields':(('email','name',),'notes',),},),
+		(None,{'fields':(('email','name',),'active','notes',),},),
 		('Time Options',{'fields':(('timestamp_post','timestamp_mod',),),},),
 		('Words Used',{'fields':('word_used',),},),
 	]
+	filter_horizontal = ['word_used',]
 	actions = ['set_active', 'set_inactive',]
 	
 	def set_active(self, request, queryset):
@@ -128,11 +129,11 @@ class spammers_admin(admin.ModelAdmin):
 
 class spam_domain_admin(admin.ModelAdmin):
 	search_fields = ['domain', 'notes']
-	list_filter = ['manual_entry', 'whitelist', 'timestamp_post', 'timestamp_mod',]
-	list_display = ['domain', 'manual_entry', 'whitelist', 'timestamp_post', 'timestamp_mod',]
+	list_filter = ['active', 'manual_entry', 'whitelist', 'timestamp_post', 'timestamp_mod',]
+	list_display = ['domain', 'active', 'manual_entry', 'whitelist', 'timestamp_post', 'timestamp_mod',]
 	readonly_fields = ['timestamp_mod',]
 	fieldsets = [
-		(None,{'fields':('domain',('whitelist','manual_entry'),'notes',),},),
+		(None,{'fields':(('domain','active',),('whitelist','manual_entry'),'notes',),},),
 		('Time Options',{'fields':(('timestamp_post','timestamp_mod',),),},),
 	]
 	actions = ['set_active', 'set_inactive',]
