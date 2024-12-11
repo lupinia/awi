@@ -62,20 +62,20 @@ class contact_form(forms.Form):
 			'subject': msg.subject,
 		}
 		
-		# Only do spam checks for anonymous users
-		if not request.user.is_authenticated():
-			spam_check_message, w = is_spam(message_context)
-			if spam_check_message:
-				record_spammer(sender_addr, sender_name, w)
-				if request.META.get('REMOTE_ADDR', False):
-					add_new_block(request.META['REMOTE_ADDR'], unicode(request.META.get('HTTP_USER_AGENT', ''))) # type: ignore
-				return (False, 'mailform_spamword')
-		
 		if self.cleaned_data.get('reply_to', None):
 			message_context['reply_path'] = self.cleaned_data['reply_to']
 		
 		msg.body = message_template.render(message_context)
 		msg.to = [settings.DEERCONNECT_TO_EMAIL,]
+		
+		# Only do spam checks for anonymous users
+		if not request.user.is_authenticated():
+			spam_check_message, w = is_spam(msg.body)
+			if spam_check_message:
+				record_spammer(sender_addr, sender_name, w)
+				if request.META.get('REMOTE_ADDR', False):
+					add_new_block(request.META['REMOTE_ADDR'], unicode(request.META.get('HTTP_USER_AGENT', ''))) # type: ignore
+				return (False, 'mailform_spamword')
 		
 		success = msg.send()
 		if success:
