@@ -53,15 +53,6 @@ class contact_form(forms.Form):
 		message_template = get_template('deerconnect/email.txt')
 		message_body = bleach.clean(self.cleaned_data['body'], tags=[], strip=True)
 		
-		# Only do spam checks for anonymous users
-		if not request.user.is_authenticated():
-			spam_check_message, w = is_spam(message_body)
-			if spam_check_message:
-				record_spammer(sender_addr, sender_name, w)
-				if request.META.get('REMOTE_ADDR', False):
-					add_new_block(request.META['REMOTE_ADDR'], unicode(request.META.get('HTTP_USER_AGENT', ''))) # type: ignore
-				return (False, 'mailform_spamword')
-		
 		message_context = {
 			'message': message_body, 
 			'IP': request.META.get('REMOTE_ADDR', 'Unknown'), 
@@ -70,6 +61,15 @@ class contact_form(forms.Form):
 			'email': sender_addr, 
 			'subject': msg.subject,
 		}
+		
+		# Only do spam checks for anonymous users
+		if not request.user.is_authenticated():
+			spam_check_message, w = is_spam(message_context)
+			if spam_check_message:
+				record_spammer(sender_addr, sender_name, w)
+				if request.META.get('REMOTE_ADDR', False):
+					add_new_block(request.META['REMOTE_ADDR'], unicode(request.META.get('HTTP_USER_AGENT', ''))) # type: ignore
+				return (False, 'mailform_spamword')
 		
 		if self.cleaned_data.get('reply_to', None):
 			message_context['reply_path'] = self.cleaned_data['reply_to']
