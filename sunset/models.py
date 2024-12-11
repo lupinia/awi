@@ -16,6 +16,7 @@ from django.conf import settings
 from django.core.files import File
 from django.core.urlresolvers import reverse
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.html import strip_tags
 from django.utils.text import slugify
 
@@ -39,16 +40,18 @@ def image_asset_type_choices():
 	type_choices.append(('unknown','Unknown'))
 	return type_choices
 
+@python_2_unicode_compatible
 class background_tag(models.Model):
 	tag = models.SlugField(max_length=50, unique=True)
 	default = models.BooleanField(default=False, blank=True, help_text="Check this box if this tag should be considered a default option for pages/views that don't specify any other background info, such as the home/site root view.")
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.tag
 	
 	class Meta:
 		verbose_name = 'background tag'
 
+@python_2_unicode_compatible
 class image(leaf):
 	# Map EXIF/IPTC keys to attributes on this model.
 	# All others will be created as image_meta objects.
@@ -103,7 +106,7 @@ class image(leaf):
 	orig_path = False
 	orig_type = False
 	
-	def __unicode__(self):
+	def __str__(self):
 		if self.title:
 			return unicode(self.title) # type: ignore
 		else:
@@ -446,6 +449,7 @@ class image(leaf):
 			import_log.objects.create(command='image.build_assets', message='Image not marked for asset rebuild.', image=self)
 			return False
 
+@python_2_unicode_compatible
 class image_asset(models.Model):
 	type = models.CharField(max_length=16, db_index=True, choices=image_asset_type_choices(), default='unknown')
 	parent = models.ForeignKey(image, related_name='assets', on_delete=models.CASCADE)
@@ -459,7 +463,7 @@ class image_asset(models.Model):
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	hash = models.CharField(max_length=255, null=True, blank=True, editable=False, help_text='SHA hash of the image file, to assist in detecting duplicates and changes.')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.image_file.name
 	
 	def get_url(self):
@@ -493,6 +497,7 @@ class image_asset(models.Model):
 	class Meta:
 		verbose_name = 'image asset'
 
+@python_2_unicode_compatible
 class image_meta_key(models.Model):
 	FORMAT_OPTIONS = (
 		('text','Plain Text'),
@@ -514,7 +519,7 @@ class image_meta_key(models.Model):
 	public = models.BooleanField(default=False, db_index=True, help_text='If this box is checked, metadata using this key will be collected and stored in the database, but not displayed publicly.')
 	ignore = models.BooleanField(default=False, db_index=True, help_text='If this box is checked, metadata using this key will not be collected or stored in the database, and existing metadata using this key may be deleted.')
 	
-	def __unicode__(self):
+	def __str__(self):
 		if self.display_name:
 			return self.display_name
 		else:
@@ -647,13 +652,14 @@ class image_meta_key(models.Model):
 		verbose_name_plural = 'image metadata keys/labels'
 
 
+@python_2_unicode_compatible
 class image_meta(models.Model):
 	key = models.ForeignKey(image_meta_key, on_delete=models.PROTECT)
 	image = models.ForeignKey(image, related_name='meta', on_delete=models.CASCADE)
 	data = models.TextField(blank=True)
 	manual_entry = models.BooleanField(default=False, help_text="Check this box to prevent this metadata item from being overwritten by data embedded in the image file.")
 	
-	def __unicode__(self):
+	def __str__(self):
 		return u'%s - %s: %s' % (self.image, self.key, unicode(self.data)) # type: ignore
 	
 	def format_data(self):
@@ -664,6 +670,7 @@ class image_meta(models.Model):
 		verbose_name_plural = 'image metadata'
 
 
+@python_2_unicode_compatible
 class batch_import(access_control):
 	folder = models.FilePathField(path=settings.SUNSET_IMPORT_DIR, recursive=True, allow_files=False, allow_folders=True)
 	cat = models.ForeignKey(category, verbose_name='category', help_text="This must be set manually.", on_delete=models.PROTECT)
@@ -687,7 +694,7 @@ class batch_import(access_control):
 		return self.folder.replace(settings.SUNSET_IMPORT_DIR, '')
 	folder_shortname.short_description = 'filesystem folder'
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.folder_shortname()
 	
 	def check_folder(self):
@@ -829,12 +836,13 @@ class batch_import(access_control):
 		verbose_name = 'batch import folder'
 
 
+@python_2_unicode_compatible
 class batch_meta(models.Model):
 	key = models.ForeignKey(image_meta_key, on_delete=models.PROTECT)
 	parent = models.ForeignKey(batch_import, related_name='meta', on_delete=models.CASCADE)
 	data = models.TextField(blank=True, help_text="Added to file meta; overrides data already in file, in the event of a conflict.")
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s - %s: %s' % (self.parent, self.key, unicode(self.data)) # type: ignore
 	
 	class Meta:
@@ -842,6 +850,7 @@ class batch_meta(models.Model):
 		verbose_name_plural = 'batch import metadata'
 
 
+@python_2_unicode_compatible
 class batch_image(models.Model):
 	parent = models.ForeignKey(batch_import, related_name='images', on_delete=models.CASCADE)
 	img_filename = models.CharField(max_length=255, verbose_name='source image filename')
@@ -850,7 +859,7 @@ class batch_image(models.Model):
 	status = models.CharField(max_length=255, null=True, blank=True)
 	hash = models.CharField(max_length=255, null=True, blank=True, editable=False, db_index=True)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s - %s' % (unicode(self.parent), self.img_filename) # type: ignore
 	
 	class Meta:

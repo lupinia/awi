@@ -11,15 +11,17 @@
 #	=================
 
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 
 from mptt.models import MPTTModel, TreeForeignKey
 
 from sunset.models import image_asset_type_choices
 
+@python_2_unicode_compatible
 class category(models.Model):
 	title = models.CharField(max_length=200)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.title
 	
 	class Meta:
@@ -27,13 +29,14 @@ class category(models.Model):
 		ordering = ['title',]
 
 
+@python_2_unicode_compatible
 class pointer(models.Model):
 	old_url = models.CharField(max_length=255, unique=True)
 	new_url = models.CharField(max_length=255)
 	category = models.ForeignKey(category, on_delete=models.PROTECT, verbose_name='type')
 	log_hits = models.BooleanField(default=False, blank=True, verbose_name='log hits')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s -> %s' % (self.old_url, self.new_url)
 	
 	@property
@@ -47,6 +50,7 @@ class pointer(models.Model):
 		verbose_name = 'URL redirect pointer'
 
 
+@python_2_unicode_compatible
 class hitlog(models.Model):
 	pointer = models.ForeignKey(pointer, on_delete=models.CASCADE)
 	time = models.DateTimeField(auto_now=True)
@@ -65,7 +69,7 @@ class hitlog(models.Model):
 	def timestamp_str(self):
 		return self.time.strftime('%b %-d, %Y %H:%M:%S')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s - %s' % (self.pointer.old_url, self.timestamp_str)
 	
 	class Meta:
@@ -73,13 +77,14 @@ class hitlog(models.Model):
 		verbose_name_plural = 'pointer hit log entries'
 
 
+@python_2_unicode_compatible
 class g2map(models.Model):
 	g2id = models.IntegerField(unique=True, verbose_name='G2 item ID')
 	category = models.ForeignKey('deertrees.category', null=True, blank=True, on_delete=models.SET_NULL)
 	image = models.ForeignKey('sunset.image', null=True, blank=True, on_delete=models.SET_NULL)
 	asset = models.CharField(max_length=16, null=True, blank=True, choices=image_asset_type_choices())
 	
-	def __unicode__(self):
+	def __str__(self):
 		return str(self.g2id)
 	
 	@property
@@ -102,6 +107,7 @@ class g2map(models.Model):
 		verbose_name = 'Gallery2 URL redirect pointer'
 
 # Temporary object for managing the migration from Gallery2 to Sunset
+@python_2_unicode_compatible
 class g2raw(MPTTModel):
 	g2id = models.IntegerField(unique=True, verbose_name='G2 item ID')
 	type = models.CharField(max_length=255, default='Unknown', db_index=True)
@@ -122,7 +128,7 @@ class g2raw(MPTTModel):
 	derivative_width = models.IntegerField(default=0, blank=True)
 	derivative_height = models.IntegerField(default=0, blank=True)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return str(self.g2id)
 	
 	class MPTTMeta:

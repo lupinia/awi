@@ -12,6 +12,7 @@ from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.html import strip_tags
 from django.utils.text import slugify
 
@@ -29,6 +30,7 @@ def viewtype_options():
 			viewtypes.append((map_name, map.get('meta',{}).get('option_name',map_name),))
 	return viewtypes
 
+@python_2_unicode_compatible
 class category(MPTTModel, access_control):
 	CONTENT_SUMMARY_CHOICES = (
 		('misc', 'Miscellaneous'),
@@ -57,7 +59,7 @@ class category(MPTTModel, access_control):
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.title
 	
 	def get_absolute_url(self):
@@ -143,6 +145,7 @@ class category(MPTTModel, access_control):
 	class Meta:
 		verbose_name_plural = 'categories'
 
+@python_2_unicode_compatible
 class tag(models.Model):
 	title = models.CharField(max_length=200,null=True,blank=True)
 	slug = models.SlugField(max_length=200,unique=True)
@@ -160,7 +163,7 @@ class tag(models.Model):
 		else:
 			return self.slug
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.display_title
 	
 	def get_absolute_url(self):
@@ -211,6 +214,7 @@ class tag(models.Model):
 	class Meta:
 		ordering = ['slug',]
 
+@python_2_unicode_compatible
 class tag_synonym(models.Model):
 	parent = models.ForeignKey(tag, on_delete=models.CASCADE, related_name='synonyms')
 	slug = models.SlugField(max_length=200,unique=True)
@@ -220,12 +224,13 @@ class tag_synonym(models.Model):
 	def get_absolute_url(self):
 		return reverse('tag', kwargs={'slug':self.parent.slug,})
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.slug
 	
 	class Meta:
 		ordering = ['slug',]
 
+@python_2_unicode_compatible
 class external_link_type(models.Model):
 	name = models.CharField(max_length=200, verbose_name='site name')
 	label = models.CharField(max_length=200, verbose_name='link label')
@@ -237,7 +242,7 @@ class external_link_type(models.Model):
 	notes = models.TextField(null=True, blank=True)
 	sites = models.ManyToManyField(Site, db_index=True, help_text='Sites/domains on which this item will appear.')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 	
 	@property
@@ -250,6 +255,7 @@ class external_link_type(models.Model):
 	class Meta:
 		verbose_name = 'external platform'
 
+@python_2_unicode_compatible
 class external_link(models.Model):
 	link_type = models.ForeignKey(external_link_type, on_delete=models.CASCADE, related_name='links', verbose_name='platform')
 	parent = models.ForeignKey('leaf', on_delete=models.CASCADE, related_name='external_links')
@@ -263,7 +269,7 @@ class external_link(models.Model):
 	automated = models.BooleanField(db_index=True, blank=True, default=False)
 	notes = models.TextField(null=True, blank=True)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s: %s' % (self.link_type.name, unicode(self.parent)) # type: ignore
 	
 	def get_absolute_url(self):
@@ -299,6 +305,7 @@ class external_link(models.Model):
 
 #	This model has been modified for the Awi website, and requires the Awi Access app
 #	This is a single categorized node; everything else that belongs to a category should extend this class
+@python_2_unicode_compatible
 class leaf(access_control):
 	TIMEDISP_OPTIONS = (('post','Posted'),('mod','Modified'))
 	
@@ -313,7 +320,7 @@ class leaf(access_control):
 	
 	type = models.CharField(max_length=20, default='unknown', db_index=True, help_text='System field:  Indicates which model this leaf is.')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s:  %d' % (self.type.capitalize(), self.pk)
 	
 	# An extension of get_absolute_url() to include the domain
@@ -500,6 +507,7 @@ class leaf(access_control):
 
 #	Create a leaf that links to something else that isn't part of this category system.
 #	Handy for things like third-party apps, or self-contained apps with their own organizational structure.
+@python_2_unicode_compatible
 class special_feature(leaf):
 	url = models.CharField(max_length=60, unique=True, verbose_name='URL', help_text='Similar to a Slug field, but can accept any character, to make it easier to link to non-DeerTrees URLs.')
 	url_reverse = models.CharField(max_length=250, null=True, blank=True, help_text='Enter the keyword used by Django to look up this special feature in urls.py.')
@@ -509,7 +517,7 @@ class special_feature(leaf):
 	def get_absolute_url(self):
 		return '%s%s' % (reverse('category', kwargs={'cached_url':self.cat.cached_url,}), self.url)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.title
 	
 	def get_summary(self,length=255):

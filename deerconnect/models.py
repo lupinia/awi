@@ -9,11 +9,13 @@
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 
 from awi_access.models import access_control
 from awi_utils.utils import summarize
 from deertrees.models import leaf, category
 
+@python_2_unicode_compatible
 class link_base(models.Model):
 	label = models.CharField(max_length=140)
 	url = models.CharField(max_length=250, verbose_name='URL')
@@ -21,7 +23,7 @@ class link_base(models.Model):
 	icon = models.ImageField(upload_to='linkicons', null=True, blank=True)
 	icon_large = models.ImageField(upload_to='linkicons_large', null=True, blank=True)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.label
 	
 	def get_absolute_url(self):
@@ -81,7 +83,7 @@ class contact_link(link_base, access_control):
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s - %s' % (self.label, self.name)
 	
 	def get_absolute_url(self):
@@ -109,6 +111,7 @@ class contact_link(link_base, access_control):
 merge_note_delimiter = '\n=======\n'
 
 #	Keywords to scan for in contact form submissions
+@python_2_unicode_compatible
 class spam_word(models.Model):
 	TYPE_CHOICES = (
 		('keyword','Keyword'),
@@ -130,7 +133,7 @@ class spam_word(models.Model):
 	used_count = models.PositiveSmallIntegerField(default=0, blank=True, verbose_name='used')
 	merged = models.BooleanField(default=False, blank=True, verbose_name='has been merged')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s: %s' % (self.get_wordtype_display(), self.word)
 	
 	def update_used_count(self):
@@ -241,6 +244,7 @@ class spam_word(models.Model):
 	class Meta:
 		verbose_name = 'spam keyword'
 
+@python_2_unicode_compatible
 class spam_sender(models.Model):
 	email = models.EmailField(max_length=255, unique=True)
 	name = models.CharField(max_length=255, null=True, blank=True)
@@ -250,7 +254,7 @@ class spam_sender(models.Model):
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	notes = models.TextField(blank=True, null=True)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.email
 	
 	def save(self, *args, **kwargs):
@@ -261,6 +265,7 @@ class spam_sender(models.Model):
 	class Meta:
 		verbose_name = 'spam sender'
 
+@python_2_unicode_compatible
 class spam_domain(models.Model):
 	domain = models.CharField(max_length=255, unique=True)
 	whitelist = models.BooleanField(default=False, blank=True, db_index=True)
@@ -270,7 +275,7 @@ class spam_domain(models.Model):
 	notes = models.TextField(blank=True, null=True)
 	manual_entry = models.BooleanField(default=False, blank=True, db_index=True)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.domain
 	
 	def save(self, *args, **kwargs):

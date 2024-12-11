@@ -12,6 +12,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import slugify
 
 from awi_utils.utils import format_html, hash_md5, summarize
@@ -23,6 +24,7 @@ def attachment_path(instance, filename):
 	return join('misc', filename)
 
 
+@python_2_unicode_compatible
 class export_file(models.Model):
 	FILETYPE_OPTIONS = (
 		('tex','TeX'),
@@ -40,7 +42,7 @@ class export_file(models.Model):
 	docfile = models.FileField(upload_to='writing', verbose_name='file')
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.filename()
 	
 	def filename(self):
@@ -59,11 +61,12 @@ class export_file(models.Model):
 
 
 #	Table of Contents (aka Book)
+@python_2_unicode_compatible
 class toc(models.Model):
 	title = models.CharField(max_length=60, help_text="Will be appended to the title of all Pages ({Book Title}: {Page Title}).")
 	slug = models.SlugField(unique=True)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.title
 	
 	@property
@@ -74,6 +77,7 @@ class toc(models.Model):
 		verbose_name = 'book'
 
 
+@python_2_unicode_compatible
 class page(leaf):
 	slug = models.SlugField(unique=True)
 	title = models.CharField(max_length=100)
@@ -110,7 +114,7 @@ class page(leaf):
 		else:
 			return self.title
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.get_title()
 	
 	def get_absolute_url(self):
@@ -189,6 +193,7 @@ class page(leaf):
 		super(page, self).save(*args, **kwargs)
 
 
+@python_2_unicode_compatible
 class export_log(models.Model):
 	CMD_OPTIONS = (
 		('compile_latex','compile_latex'),
@@ -201,7 +206,7 @@ class export_log(models.Model):
 	timestamp = models.DateTimeField(auto_now_add=True, verbose_name='event date/time')
 	message = models.TextField()
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s (%d): %s' % (self.page.slug, self.page.pk, self.command)
 	
 	class Meta:
@@ -209,13 +214,14 @@ class export_log(models.Model):
 		verbose_name_plural = 'automatic document file build log entries'
 
 
+@python_2_unicode_compatible
 class attachment(models.Model):
 	name = models.CharField(max_length=100)
 	file = models.FileField(upload_to=attachment_path)
 	timestamp_mod=models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post=models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 	
 	def get_url(self):

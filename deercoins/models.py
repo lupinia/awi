@@ -12,38 +12,43 @@ import decimal
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 
+@python_2_unicode_compatible
 class currency(models.Model):
 	code = models.SlugField(max_length=1, unique=True, verbose_name='filing code')
 	name = models.CharField(max_length=100)
 	symbol = models.CharField(max_length=6, null=True, blank=True, help_text='Enter the symbol (such as $) used to represent this currency in shorthand writing.')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 	
 	class Meta:
 		verbose_name_plural = 'currencies'
 
+@python_2_unicode_compatible
 class country(models.Model):
 	code = models.SlugField(max_length=2, unique=True, verbose_name='filing code')
 	name = models.CharField(max_length=255)
 	flag = models.ImageField(upload_to='flags', null=True, blank=True, verbose_name='flag icon (24px)')
 	flag_large = models.ImageField(upload_to='flags-large', null=True, blank=True, verbose_name='flag icon (96px)')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 	
 	class Meta:
 		verbose_name_plural = 'countries'
 
+@python_2_unicode_compatible
 class gifter(models.Model):
 	name = models.CharField(max_length=255)
 	slug = models.SlugField(unique=True)
 	homepage = models.URLField(max_length=255, blank=True, null=True, verbose_name='personal URL', help_text="A link to this person's website or social media account.")
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 
+@python_2_unicode_compatible
 class coin(models.Model):
 	code = models.SlugField(unique=True, verbose_name='filing code')
 	country = models.ForeignKey(country, on_delete=models.PROTECT)
@@ -73,7 +78,7 @@ class coin(models.Model):
 	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.code
 	
 	@property
@@ -158,11 +163,12 @@ class coin(models.Model):
 		return new_code
 
 #	In case a sort code for a coin changes, the old one will still work.
+@python_2_unicode_compatible
 class code_alias(models.Model):
 	code = models.SlugField(unique=True, verbose_name='old filing code')
 	coin = models.ForeignKey(coin, on_delete=models.CASCADE)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.code
 	
 	class Meta:

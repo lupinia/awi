@@ -10,16 +10,18 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 
 from awi_utils.utils import summarize
 
+@python_2_unicode_compatible
 class menu_section(models.Model):
 	name = models.CharField(max_length=150)
 	slug = models.SlugField(unique=True)
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 	
 	def get_absolute_url(self):
@@ -29,6 +31,7 @@ class menu_section(models.Model):
 		verbose_name = 'menu section'
 
 
+@python_2_unicode_compatible
 class menu_flag(models.Model):
 	name = models.CharField(max_length=250)
 	slug = models.SlugField(unique=True)
@@ -37,7 +40,7 @@ class menu_flag(models.Model):
 	icon = models.ImageField(upload_to='menu_icons',height_field='img_height',width_field='img_width')
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 	
 	def get_absolute_url(self):
@@ -50,6 +53,7 @@ class menu_flag(models.Model):
 		verbose_name = 'menu item flag'
 
 
+@python_2_unicode_compatible
 class menu_item(models.Model):
 	name = models.CharField(max_length=150)
 	desc = models.TextField(verbose_name='description')
@@ -59,7 +63,7 @@ class menu_item(models.Model):
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 	
 	def get_summary(self,length=255):

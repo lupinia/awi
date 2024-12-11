@@ -4,12 +4,12 @@
 #	
 #	=================
 #	Models
-#	
-#	TODO:	Multilingual support
 #	=================
 
 from django.db import models
+from django.utils.encoding import python_2_unicode_compatible
 
+@python_2_unicode_compatible
 class error(models.Model):
 	SEVERITY_OPTIONS=(
 		('critical','Critical (Red)'),
@@ -22,7 +22,7 @@ class error(models.Model):
 	message = models.TextField()
 	js_error = models.BooleanField(blank=True, verbose_name='Javascript error?', help_text='Check this box if this error should only be displayed if Javascript is disabled (uses a noscript tag instead of a div).')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.error_key
 	
 	@property

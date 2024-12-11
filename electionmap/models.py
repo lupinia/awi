@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 
 # Stupidest function ever
 # This exact code directly in the default attribute throws an exception during makemigrations:
@@ -22,6 +23,7 @@ from django.utils import timezone
 def default_closing_time():
 	return datetime.time(hour=19, tzinfo=timezone.get_current_timezone())
 
+@python_2_unicode_compatible
 class state(models.Model):
 	name = models.CharField(max_length=128)
 	abbr = models.CharField(max_length=2, unique=True)
@@ -47,12 +49,13 @@ class state(models.Model):
 		else:
 			return True
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 	
 	class Meta:
 		ordering = ['name']
 
+@python_2_unicode_compatible
 class election(models.Model):
 	year = models.PositiveSmallIntegerField(unique=True, db_index=True)
 	past = models.BooleanField(default=False, blank=True, db_index=True)
@@ -72,7 +75,7 @@ class election(models.Model):
 		else:
 			return False
 	
-	def __unicode__(self):
+	def __str__(self):
 		return unicode(self.year) # type: ignore
 	
 	def save(self, *args, **kwargs):
@@ -84,6 +87,7 @@ class election(models.Model):
 			
 		super(election, self).save(*args, **kwargs)
 
+@python_2_unicode_compatible
 class election_seats(models.Model):
 	state = models.ForeignKey(state, on_delete=models.CASCADE, related_name='election_seats')
 	election_year = models.ForeignKey(election, on_delete=models.CASCADE, related_name='state_config')
@@ -100,13 +104,14 @@ class election_seats(models.Model):
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s - %d' % (self.state.abbr, self.election_year.year)
 	
 	class Meta:
 		unique_together = (('state', 'election_year'),)
 		ordering = ['-election_year','state']
 
+@python_2_unicode_compatible
 class data_source(models.Model):
 	name = models.CharField(max_length=128)
 	slug = models.SlugField(max_length=64, unique=True, db_index=True)
@@ -119,7 +124,7 @@ class data_source(models.Model):
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 
 class results(models.Model):
@@ -162,6 +167,7 @@ class results(models.Model):
 		abstract = True
 		ordering = ['state', '-certified', 'projected']
 
+@python_2_unicode_compatible
 class results_house(results):
 	district = models.PositiveSmallIntegerField(default=1)
 	
@@ -169,22 +175,24 @@ class results_house(results):
 	def district_name(self):
 		return '%s-%d' % (self.state.abbr, self.district)
 	
-	def __unicode__(self):
 		return '%s: %s' % (self.district_name, self.append_status_label(self.party))
+	def __str__(self):
 	
 	class Meta(results.Meta):
 		unique_together = (('state', 'election_year', 'source', 'district'),)
 		ordering = ['state', 'district', '-certified', 'projected']
 
+@python_2_unicode_compatible
 class results_senate(results):
 	senate_class = models.PositiveSmallIntegerField(choices=settings.SENATE_CLASSES, default=0, blank=True, db_index=True)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s: %s' % (self.state.abbr, self.append_status_label(self.party))
 	
 	class Meta(results.Meta):
 		unique_together = (('state', 'election_year', 'source', 'senate_class'),)
 
+@python_2_unicode_compatible
 class results_president(results):
 	electoral_votes = models.PositiveSmallIntegerField(default=1)
 	district = models.PositiveSmallIntegerField(default=0)
@@ -193,7 +201,7 @@ class results_president(results):
 	def district_name(self):
 		return '%s-%d' % (self.state.abbr, self.district)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s: %s' % (self.district_name, self.append_status_label(self.party))
 	
 	class Meta(results.Meta):

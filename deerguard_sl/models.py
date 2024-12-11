@@ -9,9 +9,11 @@
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 
 from gridutils.models import device
 
+@python_2_unicode_compatible
 class security_system(models.Model):
 	name = models.CharField(max_length=200)
 	slug = models.SlugField(unique=True)
@@ -27,12 +29,13 @@ class security_system(models.Model):
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s (%s)' % (self.name, self.grid.name)
 
 class security_server(device):
 	system = models.ForeignKey(security_system, related_name='servers', on_delete=models.CASCADE)
 
+@python_2_unicode_compatible
 class security_zone(models.Model):
 	system = models.ForeignKey(security_system, related_name='zones', on_delete=models.CASCADE)
 	name = models.CharField(max_length=200)
@@ -94,9 +97,10 @@ class security_zone(models.Model):
 		
 		return (action, action_code)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 
+@python_2_unicode_compatible
 class auth_log(models.Model):
 	zone = models.ForeignKey(security_zone, related_name='logs', on_delete=models.CASCADE)
 	user = models.ForeignKey('gridutils.avatar', related_name='auth_logs', on_delete=models.CASCADE)
@@ -104,5 +108,5 @@ class auth_log(models.Model):
 	action_code = models.CharField(max_length=20, default='UNKNOWN')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return 'Auth Log %d' % self.pk

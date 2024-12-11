@@ -12,10 +12,12 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.safestring import mark_safe
 
 from awi_utils.utils import summarize
 
+@python_2_unicode_compatible
 class venue(models.Model):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
@@ -30,7 +32,7 @@ class venue(models.Model):
 	geo_lat = models.DecimalField(decimal_places=15, max_digits=20, blank=True, null=True, db_index=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
 	geo_long = models.DecimalField(decimal_places=15, max_digits=20, blank=True, null=True, db_index=True, verbose_name='longitude', help_text='Positive numbers are eastern hemisphere, negative numbers are western.')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 	
 	def get_absolute_url(self):
@@ -42,6 +44,7 @@ class venue(models.Model):
 		else:
 			return "%s, %s" % (self.city, self.country)
 
+@python_2_unicode_compatible
 class attendance_flag(models.Model):
 	name = models.CharField(max_length=250)
 	slug = models.SlugField(unique=True)
@@ -50,7 +53,7 @@ class attendance_flag(models.Model):
 	icon = models.ImageField(upload_to='attend_icons', height_field='img_height', width_field='img_width')
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 	
 	def get_absolute_url(self):
@@ -62,6 +65,7 @@ class attendance_flag(models.Model):
 	class Meta:
 		verbose_name = 'flag'
 
+@python_2_unicode_compatible
 class event_type(models.Model):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
@@ -72,7 +76,7 @@ class event_type(models.Model):
 	# Annoyingly, Mapbox appears to have no way to actually USE the newest Maki icons in a map, so this field is a bit pointless at the moment.  But, hopefully someday it can be used to create more interesting markers.
 	symbol = models.CharField(max_length=40, blank=True, null=True, verbose_name='Maki icon', help_text=mark_safe('Icon to use from the <a href="https://www.mapbox.com/maki-icons/">Mapbox Maki</a> set.  Leave blank to use the number of items of this type as the symbol.'))
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 	
 	def get_absolute_url(self):
@@ -95,6 +99,7 @@ class event_type(models.Model):
 	class Meta:
 		verbose_name = 'type'
 
+@python_2_unicode_compatible
 class event(models.Model):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
@@ -104,7 +109,7 @@ class event(models.Model):
 	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
 	mature = models.BooleanField(help_text='Check this box to indicate a mature/18+ event.', db_index=True)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 	
 	def get_absolute_url(self):
@@ -124,6 +129,7 @@ class event(models.Model):
 	def summary_long(self):
 		return self.get_summary(512)
 
+@python_2_unicode_compatible
 class event_instance(models.Model):
 	event = models.ForeignKey(event, on_delete=models.PROTECT)
 	instance = models.CharField(max_length=15, verbose_name='instance label', help_text="Label for the specific instance of an event.  Ideally a year, but not necessarily.  For example, 'Jan 2012', or '3'.")
@@ -167,7 +173,7 @@ class event_instance(models.Model):
 		else:
 			return False
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.get_name()
 	
 	def get_summary(self,length=255):

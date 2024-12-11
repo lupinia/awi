@@ -22,6 +22,7 @@ from django.contrib.sites.models import Site
 from django.core.cache import cache
 from django.utils import dateparse
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import slugify
 
 from awi_utils.utils import hash_sha256
@@ -114,6 +115,7 @@ def access_search(sqs, request=False):
 
 
 #	Models
+@python_2_unicode_compatible
 class access_code(models.Model):
 	code = models.SlugField(max_length=255, editable=False, unique=True)
 	item_type = models.CharField(max_length=40, default='unknown', editable=False)
@@ -127,7 +129,7 @@ class access_code(models.Model):
 	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
 	hits = models.IntegerField(default=0, help_text='Number of times this code has been used.')
 	
-	def __unicode__(self):
+	def __str__(self):
 		if self.allowed_age:
 			return '%d-day code for %s' % (self.allowed_age, self.item_type)
 		else:
@@ -171,6 +173,7 @@ class access_code(models.Model):
 		super(access_code, self).save(*args, **kwargs)
 
 
+@python_2_unicode_compatible
 class user_settings(models.Model):
 	user = models.OneToOneField(User)
 	
@@ -192,7 +195,7 @@ class user_settings(models.Model):
 			else:
 				return (False, 'prompt')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.user.username
 
 
@@ -324,6 +327,7 @@ class access_control(models.Model):
 		abstract = True
 
 
+@python_2_unicode_compatible
 class blocked_ip(models.Model):
 	address = models.GenericIPAddressField(db_index=True)
 	user_agent = models.TextField(null=True, blank=True)
@@ -332,7 +336,7 @@ class blocked_ip(models.Model):
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	notes = models.TextField(blank=True, null=True)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.address
 	
 	def save(self, *args, **kwargs):
