@@ -24,6 +24,7 @@
 		&.timer_active {
 			.center_time_wrapper { bottom: 60px; }
 			.timestamp.timer { display: block !important; }
+			button#timer_open img { opacity: 100% !important; }
 		}
 	}
 	
@@ -56,6 +57,9 @@
 				opacity: 50%;
 				background-color: none !important;
 			}
+			
+			&#timer_open img { opacity: 50%; }
+			&#timer_open:hover img, &#timer_open:focus img, &#timer_open:active img { opacity: 100%; }
 			
 			img#timer_startstop_pause_icon { display:none; }
 			img#timer_startstop_play_icon { display:inline-block; }
