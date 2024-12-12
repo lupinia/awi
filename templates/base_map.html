@@ -1,5 +1,4 @@
 {% extends "base_core.html" %}
-{% load errors %}
 
 {% block extra_head %}
 	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase_mapbox.css" type="text/css" rel="stylesheet" id="map_css" />
@@ -11,7 +10,7 @@
 
 {% block content_area %}
 	<div id="awi_map" class="map_obj" role="main">
-		{% error_display 'nojs_map' %}
+		{% include 'includes/errors.html' with error='nojs_map' only %}
 	</div>
 	
 	<div class="right_sidebar" role="complementary" aria-label="Sidebar">

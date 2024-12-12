@@ -1,0 +1,41 @@
+{% if error %}
+	{% if error == 'nojs_map' %}
+		<noscript class="error error_warning" id="{{error}}">To display the map, enable Javascript for the current site, as well as "mapbox.com" (or "api.mapbox.com").</noscript>
+	{% elif error == 'filter_empty' %}
+		<div class="error error_warning" id="{{error}}">No items were found for your requested filter criteria.</div>
+	{% elif error == 'mailform_spamaddr' %}
+		<div class="error error_critical" id="{{error}}">Your email address has been used to send spam through this form in the past, so further usage of this contact form is not permitted. If you believe you have received this message in error, or if you need to report a technical issue, you may <a href="https://github.com/lupinia/awi/issues">open a support ticket</a>.</div>
+	{% elif error == 'mailform_spamword' %}
+		<div class="error error_critical" id="{{error}}">Your message contains terms flagged as spam keywords, and has been blocked. Further communication through this form will not be permitted. If you believe you have received this message in error, or if you need to report a technical issue, you may <a href="https://github.com/lupinia/awi/issues">open a support ticket</a>.</div>
+	{% elif error == 'mailform_success' %}
+		<div class="error error_notice" id="{{error}}">Your form submission was successful. Thank you for reaching out! I read every message, and try to respond when I can.</div>
+	{% elif error == 'mailform_toosoon' %}
+		<div class="error error_warning" id="{{error}}">Your last form submission was successful. If you need to send another message, please try again later. If you believe you've received this message incorrectly, or if you need to report a technical issue, you may <a href="https://github.com/lupinia/awi/issues">open a support ticket</a>.</div>
+	{% elif error == 'mailform_sendfail' %}
+		<div class="error error_critical" id="{{error}}">Unfortunately, your message failed to send due to a server error. You may try again, but if this issue persists, please <a href="https://github.com/lupinia/awi/issues">open a support ticket</a> so I can try to fix it, because I might not be notified of this error otherwise.</div>
+	{% elif error == 'access_mature_prompt' %}
+		<div class="error error_notice" id="{{error}}">This page contains mature content that may not be suitable for all viewers. Please enter your birthdate to access it. Your birthdate will not be stored in any way; more information about this is available in the <a href="/about/privacy.htm">Privacy Policy</a>.</div>
+	{% elif error == 'access_mature_denied' %}
+		<div class="error error_critical" id="{{error}}">Your provided age is not old enough to view mature content. <a href="/">Return home?</a></div>
+	{% elif error == 'access_mature_voluntary' %}
+		<div class="error error_warning" id="{{error}}">This page contains mature content, which you have elected not to view. To view it, you may change your content filter settings.</div>
+	{% elif error == 'access_mature_granted' %}
+		<div class="error error_notice" id="{{error}}">You have access to mature content.</div>
+	{% elif error == 'access_mature_badsettings' %}
+		<div class="error error_critical" id="{{error}}">The site encountered an error while attempting to load your personal settings. Please go to the <a href="/settings/">Settings page</a> to fix this.</div>
+	{% elif error == 'access_404' %}
+		<div class="error error_warning" id="{{error}}">Sorry, this item does not exist. <a href="/">Return home?</a></div>
+	{% elif error == 'cat_empty' %}
+		<div class="error error_notice" id="{{error}}">Sorry, this directory appears to be empty. <a href="/">Return home?</a></div>
+	{% elif error == 'tag_empty' %}
+		<div class="error error_notice" id="{{error}}">Sorry, it seems this tag has not yet been used on anything visible. <a href="/">Return home?</a></div>
+	{% elif error == 'access_notowner' %}
+		<div class="error error_critical" id="{{error}}">Only the owner of this content item can perform that action.</div>
+	{% elif error == 'access_perms' %}
+		<div class="error error_critical" id="{{error}}">Sorry, you do not have permissions for this page or operation.</div>
+	{% elif error == 'no_tags' %}
+		<div class="error error_warning" id="{{error}}">No tags have been created. <a href="/">Return home?</a></div>
+	{% else %}
+		<div class="error error_critical" id="{{error}}">An unspecified/undefined error has occurred.  Error code was "{{error}}".</div>
+	{% endif %}
+{% endif %}

@@ -3,8 +3,7 @@
 {% block content_left %}
 	{% if error %}
 		<div class="left_sidebar">
-			{% load errors %}
-			{% error_display error %}
+			{% include 'includes/errors.html' %}
 			{% if embed_mature_form %}
 				{% include 'awi_access/age_form_iframe.html' %}
 			{% endif %}

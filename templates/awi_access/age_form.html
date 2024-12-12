@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block bg_image %}{% with bg_tag='personal' %}{{block.super}}{% endwith %}{% endblock %}
 {% load honeypot %}
-{% load errors %}
 
 {% block content_left %}
 	{% if form %}
@@ -11,7 +10,7 @@
 
 			{% if error %}
 				<br /><hr /><br />
-				{% error_display error %}
+				{% include 'includes/errors.html' %}
 			{% endif %}
 			<br /><hr /><br />
 			<form action="" method="post">{% csrf_token %}
@@ -23,7 +22,7 @@
 		</div>
 	{% else %}
 		<div class="left_sidebar">
-			{% error_display error %}
+			{% include 'includes/errors.html' %}
 		</div>
 	{% endif %}
 {% endblock %}

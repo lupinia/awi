@@ -13,9 +13,8 @@
 		<div class="clearfix clear_left"></div>
 		<p>This is a list of all tags defined in the system.{% if return_to %}  Click a tag to select it.{% endif %}</p>
 		{% if error %}
-			{% load errors %}
 			<br /><hr /><br />
-			{% error_display error %}
+			{% include 'includes/errors.html' %}
 		{% endif %}
 	</div>
 

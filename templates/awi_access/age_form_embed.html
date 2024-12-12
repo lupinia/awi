@@ -1,6 +1,5 @@
 {% extends "base_embed.html" %}
 {% load honeypot %}
-{% load errors %}
 
 {% block extra_head %}
 	{% if success %}
@@ -16,7 +15,7 @@
 	{% elif form %}
 		<div class="form_wrapper" role="form" aria-label="Age Verification Form">
 			{% if error %}
-				{% error_display error %}
+				{% include 'includes/errors.html' %}
 				<br /><hr /><br />
 			{% endif %}
 			<form action="" method="post">{% csrf_token %}
@@ -27,6 +26,6 @@
 			</form>
 		</div>
 	{% else %}
-		{% error_display error %}
+		{% include 'includes/errors.html' %}
 	{% endif %}
 {% endblock %}

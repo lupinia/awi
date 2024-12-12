@@ -9,8 +9,7 @@
 		{% endif %}
 	</div>
 	{% if error %}
-		{% load errors %}
-		<div class="left_sidebar">{% error_display error %}</div>
+		<div class="left_sidebar">{% include 'includes/errors.html' %}</div>
 	{% endif %}
 	
 	<div class="left_full">
