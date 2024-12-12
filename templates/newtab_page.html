@@ -54,6 +54,7 @@
 	var timer_started = false;
 	var timer_display = document.getElementById("timer_main_time");
 	var timer_obj = document.getElementById("timer_main");
+	var timer_container = document.getElementById("center_info");
 	var timer_up_button = document.getElementById("timer_adj_up");
 	var timer_down_button = document.getElementById("timer_adj_down");
 	var timer_startstop_button = document.getElementById("timer_start");
@@ -61,13 +62,13 @@
 	
 	function toggle_timer() {
 		if(timer_open) {
-			timer_obj.classList.remove("timer_active");
+			timer_container.classList.remove("timer_active");
 			stop_timer();
 			timer_display.classList.remove("timer_complete");
 			timer_open = false;
 		}
 		else {
-			timer_obj.classList.add("timer_active");
+			timer_container.classList.add("timer_active");
 			timer_open = true;
 			if(!timer_cur) {
 				set_timer();

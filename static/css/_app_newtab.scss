@@ -20,6 +20,11 @@
 		height: 100%;
 		
 		.center_time_wrapper { position:relative; }
+		
+		&.timer_active {
+			.center_time_wrapper { bottom: 60px; }
+			.timestamp.timer { display: block !important; }
+		}
 	}
 	
 	.timestamp {
@@ -76,8 +81,6 @@
 			width:100%;
 			box-shadow: 0px 6px 3px -3px $color_shadow inset;
 			background-color: rgba(59,49,107,0.5);
-			
-			&.timer_active { display: block !important; }
 			
 			.timer_time {
 				font-size:70pt;
