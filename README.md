@@ -15,7 +15,7 @@ Apps/Modules Included
 
 - **System/Structure**
 	- **Awi Access**:  Unified access control, permissions, and ownership settings for any object.
-	- **Awi Error**:  Unified error text handling/template tags.
+	- **Awi Utils**:  Miscellaneous core components used by multiple other modules/apps.
 	- **DeerFind**:  Intelligent 404 handler.
 - **Main Content**
 	- **[DeerTrees](http://www.lupinia.net/code/projects/django/deertrees.htm)**:  Multi-level object-agnostic category system.
@@ -27,7 +27,6 @@ Apps/Modules Included
 	- **DeerGuard SL**:  Security/authentication system for LSL scripted systems in Second Life and other virtual worlds.
 	- **ElectionMap**:  Interactive election results tracking and display system for Second Life.
 - **Other**
-	- **Awi Utils**:  Miscellaneous core components used by multiple other modules/apps.
 	- **DeerAttend**:  Event attendance history tracker/display.
 	- **DeerFood**:  Restaurant-style menu system.
 	- **DeerCoins**:  Coin collection (numismatic) database and tools.

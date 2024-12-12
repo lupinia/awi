@@ -53,7 +53,6 @@ INSTALLED_APPS = (
 	
 	#	My Apps - System/Core
 	'awi_access',	# Access Control
-	'awi_error',	# Error Handling
 	'awi_utils',	# Miscellaneous Utility Modules
 	'deerfind',		# Intelligent 404 Recovery
 	

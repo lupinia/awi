@@ -38,7 +38,6 @@ itemlist_sl = (
 itemlist_system = (
 	'django.contrib.*',
 	'awi_access.*',
-	'awi_error.*',
 	'deerfind.*',
 	'deerconnect.models.spam_word',
 	'deerconnect.models.spam_domain',
