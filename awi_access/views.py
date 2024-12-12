@@ -11,6 +11,8 @@ import datetime
 from django.conf import settings
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseForbidden
+from django.template import loader
 from django.utils import dateparse
 from django.utils import timezone
 from django.views import generic
@@ -133,3 +135,13 @@ class settings_page(generic.TemplateView):
 		
 		return context
 
+def denied_error(request):
+	"""Custom error page for 403 errors"""
+	template=loader.get_template('awi_access/403.html')
+	if request.META.get('QUERY_STRING',False):
+		context_path=request.path+'?'+request.META.get('QUERY_STRING','')
+	else:
+		context_path=request.path
+	context = {'bad_url':context_path, 'title_page':"Access Denied (403)",}
+	
+	return HttpResponseForbidden(content=template.render(context, request), content_type='text/html; charset=utf-8')

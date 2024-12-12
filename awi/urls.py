@@ -30,7 +30,7 @@ from sunset import views as sunset_views
 admin.autodiscover()
 handler404 = not_found
 handler500 = system_error
-handler403 = denied_error
+handler403 = access_views.denied_error
 
 urlpatterns = [
 	url(r'^s/(?P<type>.)(?P<pk>[0-9]+)', shortcode_redirect, name='shortcode'),
@@ -96,6 +96,6 @@ if settings.DEBUG:
 		url(r'^__debug__/', include(debug_toolbar.urls)),
 		url(r'^intentional500/', system_error, name='intentional500'),
 		url(r'^intentional404/', not_found, name='intentional404'),
-		url(r'^intentional403/', denied_error, name='intentional403'),
+		url(r'^intentional403/', access_views.denied_error, name='intentional403'),
 	]
 	urlpatterns = urlpatterns_debug + urlpatterns
