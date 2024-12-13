@@ -13,6 +13,7 @@
 	<meta name="designer" content="Lupinia Studios - www.lupinia.net" />
 	<meta name="description" property="og:description" content="{% block desc %}{% if sitemeta_desc %}{{sitemeta_desc}}{% else %}Lupinia Studios is {% if sitemeta_author_name %}{{sitemeta_author_name}}{% else %}Natasha L.{% endif %}'s personal portfolio, featuring her written works, digital photography, and digital graphics.{% endif %}{% endblock %}" />
 	<meta name="copyright" content="{% if public_domain_content %}This page contains content released into the public domain.  Unless otherwise specified, all other content is {% else %}Unless otherwise specified, all content is {% endif %}(c) 2000-{{curyear}} by {% if sitemeta_author_name %}{{sitemeta_author_name}}{% else %}Natasha L.{% endif %}" />
+	<meta name="pinterest" content="nopin" />
 
 	<meta name="twitter:card" content="{% if sitemeta_is_image %}summary_large_image{% else %}summary{% endif %}" />
 	<meta property="og:type" content="{% if sitemeta_page_type %}{{sitemeta_page_type}}{% else %}website{% endif %}" />
