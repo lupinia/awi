@@ -68,8 +68,8 @@
 					<a href="{{link.get_absolute_url}}"{% if link.link_type.featured %} class="wide_link featured"{% elif external_links_wide %} class="wide_link"{% endif %} target="_BLANK"><img src="{{link.link_type.icon_url}}" alt="{{link.label}}" title="{{link.label}}" />{% if link.link_type.featured or external_links_wide %}<div class="wide_link_label">{{link.label}}</div>{% endif %}</a>
 					{% endfor %}{% endif %}
 					{% if object.is_public.0 %}
-					<a class="red" href="https://getpocket.com/save?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-pocket.png" alt="Pocket" title="Pocket (External service)" /></a>
-					<a class="grey" href="https://www.instapaper.com/hello2?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-instapaper.png" alt="Readability" title="Instapaper (External service)" /></a>
+					<a class="red" target="_BLANK" rel="nofollow" href="https://getpocket.com/save?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-pocket.png" alt="Pocket" title="Pocket (External service)" /></a>
+					<a class="grey" target="_BLANK" rel="nofollow" href="https://www.instapaper.com/hello2?url={{request.build_absolute_uri}}&title=Lupinia - {{object}}"><img src="{{ STATIC_PREFIX }}images/icons/service-instapaper.png" alt="Readability" title="Instapaper (External service)" /></a>
 					{% endif %}
 				</div>
 			</div>
