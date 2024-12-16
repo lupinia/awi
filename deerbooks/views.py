@@ -115,8 +115,8 @@ class book(generic.DetailView):
 			site_domain = self.request.site.domain
 		
 		for page in context['toc'].pages.filter(access_query()).order_by('book_order'):
-			canview = page.can_view(self.request)
-			if not canview[0]:
+			canview, view_restriction = page.can_view(self.request)
+			if not canview:
 				continue
 			else:
 				page.body = sunset_embed(page.body_html, self.request)

@@ -229,24 +229,25 @@ class category_list(leaf_parent, generic.DetailView):
 			self.request.session['deerfind_path'] = self.g2redir
 			raise Http404
 		
-		canview = context['object'].can_view(self.request)
-		if not canview[0]:
-			if canview[1] == 'access_404':
+		canview, view_restriction = context['object'].can_view(self.request)
+		if not canview:
+			if view_restriction == 'access_404':
 				self.request.session['deerfind_norecover'] = True
 				raise Http404
-			elif canview[1] == 'access_perms':
+			elif view_restriction == 'access_perms':
 				raise PermissionDenied
-			elif canview[1] == 'access_mature_prompt':
-				context['error'] = canview[1]
+			elif view_restriction == 'access_mature_prompt':
+				context['error'] = view_restriction
 				context['object'] = ''
 				context['embed_mature_form'] = True
 			else:
 				context['object'] = ''
-				context['error'] = canview[1]
+				context['error'] = view_restriction
 		else:
 			context['rss_feed'] = True
 			
-			if context['object'].can_edit(self.request)[0]:
+			context['can_edit'], edit_restriction = context['object'].can_edit(self.request)
+			if context['can_edit']:
 				context['return_to'] = context['object'].get_absolute_url()
 				context['can_edit'] = True
 				context['edit_mode'] = 'cat'
@@ -267,8 +268,6 @@ class category_list(leaf_parent, generic.DetailView):
 					new_cat = get_object_or_404(category, pk=self.request.GET.get('change_cat'))
 					context['object'].parent = new_cat
 					context['object'].save()
-			else:
-				context['can_edit'] = False
 			
 			blocks = self.assemble_blocks(context['object'],'category',context['object'].view_type)
 			if blocks[0]:
@@ -474,15 +473,15 @@ class leaf_view(generic.DetailView):
 		context = super(leaf_view,self).get_context_data(**kwargs)
 		
 		# Permissions check
-		canview = context['object'].can_view(self.request)
-		if not canview[0]:
-			if canview[1] == 'access_404':
+		canview, view_restriction = context['object'].can_view(self.request)
+		if not canview:
+			if view_restriction == 'access_404':
 				self.request.session['deerfind_norecover'] = True
 				raise Http404
-			elif canview[1] == 'access_perms':
+			elif view_restriction == 'access_perms':
 				raise PermissionDenied
-			elif canview[1] == 'access_mature_prompt':
-				context['error'] = canview[1]
+			elif view_restriction == 'access_mature_prompt':
+				context['error'] = view_restriction
 				context['title_page'] = "%s (Mature Content)" % str(context['object'])
 				context['sitemeta_desc'] = "Viewing this content requires verifying your age, which will not be stored on our server in any way.  More details on the form, or in our Privacy Policy."
 				context['object'] = ''
@@ -490,20 +489,21 @@ class leaf_view(generic.DetailView):
 				
 			else:
 				context['object'] = ''
-				context['error'] = canview[1]
+				context['error'] = view_restriction
 		else:
 			# Tags
 			context['tags'] = context['object'].tags.all()
 			context['category'] = context['object'].cat
 			
+			is_public, view_restriction = context['object'].is_public()
 			# Info for non-public content
-			if not context['object'].is_public()[0]:
-				context['non_public'] = context['object'].is_public()[1]
+			if not is_public:
+				context['non_public'] = view_restriction
 			
 			# Editing Functions
-			if context['object'].can_edit(self.request)[0]:
+			context['can_edit'], edit_restriction = context['object'].can_edit(self.request)
+			if context['can_edit']:
 				context['return_to'] = context['object'].get_absolute_url()
-				context['can_edit'] = True
 				changed = False
 				
 				# DeerTrees Leaf commands
@@ -575,7 +575,6 @@ class leaf_view(generic.DetailView):
 			
 			else:
 				context['return_to'] = ''
-				context['can_edit'] = False
 			
 			# Breadcrumbs
 			ancestors = context['object'].cat.get_ancestors(include_self=True)
