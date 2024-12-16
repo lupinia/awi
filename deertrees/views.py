@@ -226,7 +226,7 @@ class category_list(leaf_parent, generic.DetailView):
 	def get_context_data(self, **kwargs):
 		context = super(category_list,self).get_context_data(**kwargs)
 		if self.g2redir and context['object'].get_absolute_url() != self.g2redir:
-			self.request.session['deerfind_path'] = g2url
+			self.request.session['deerfind_path'] = self.g2redir
 			raise Http404
 		
 		canview = context['object'].can_view(self.request)
