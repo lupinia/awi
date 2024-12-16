@@ -36,6 +36,18 @@ class link_base(models.Model):
 			return summarize(body=self.desc, length=length)
 	
 	@property
+	def url_domain_name(self):
+		dname = self.url.replace('www.', '')
+		if '://' in dname:
+			discard, dname = dname.split('://')
+		
+		if '/' in dname:
+			name_pieces = dname.split('/')
+			dname = name_pieces[0]
+		
+		return dname
+	
+	@property
 	def summary_short(self):
 		return self.get_summary()
 	
