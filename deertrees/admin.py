@@ -109,9 +109,9 @@ class leaf_admin(access_admin):
 
 class special_feature_admin(leaf_admin):
 	search_fields = ['url','title','desc'] + leaf_admin.search_fields
-	fieldsets = [(None,{'fields':('title',('url','url_reverse',),'desc'),},),] + leaf_admin.fieldsets
+	fieldsets = [(None,{'fields':(('title','directory',),('url','url_reverse',),'desc'),},),] + leaf_admin.fieldsets
 	prepopulated_fields={'url':('title',)}
-	list_display = ('title','url') + leaf_admin.list_display
+	list_display = ('title','url','emulation_mode') + leaf_admin.list_display
 	
 	def view_on_site(self, obj):
 		return '/' + obj.cat.cached_url + '/' + obj.url

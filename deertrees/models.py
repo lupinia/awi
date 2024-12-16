@@ -513,18 +513,26 @@ class special_feature(leaf):
 	url_reverse = models.CharField(max_length=250, null=True, blank=True, help_text='Enter the keyword used by Django to look up this special feature in urls.py.')
 	title = models.CharField(max_length=60)
 	desc = models.CharField(max_length=255, null=True, blank=True, verbose_name='Description')
+	directory = models.BooleanField(blank=True, default=True, help_text='Does this link to content that behaves like a single file, or like a subdirectory?')
 	
 	def get_absolute_url(self):
 		return '%s%s' % (reverse('category', kwargs={'cached_url':self.cat.cached_url,}), self.url)
 	
 	def __str__(self):
-		return self.title
+		return '%s: %s' % (self.emulation_mode.capitalize(), self.title)
 	
 	def get_summary(self,length=255):
 		if length > 255:
 			return summarize(body=self.desc, length=length, prefer_long=True)
 		else:
 			return summarize(body=self.desc, length=length)
+	
+	@property
+	def emulation_mode(self):
+		if self.directory:
+			return 'path'
+		else:
+			return 'file'
 	
 	@property
 	def summary_short(self):
