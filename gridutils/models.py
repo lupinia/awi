@@ -19,7 +19,7 @@ from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 
-from awi_utils.utils import rand_int_list
+from awi.utils.rand import rand_int_list
 from gridutils.utils import (
 	device_type_choices,
 	location_model,

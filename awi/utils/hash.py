@@ -3,7 +3,7 @@
 #	www.lupinia.net | github.com/lupinia
 #	
 #	=================
-#	Utility functions/objects for string/text operations
+#	Utility functions/objects for hash operations
 #	=================
 
 import hashlib
