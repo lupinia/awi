@@ -25,6 +25,7 @@ Apps/Modules Included
 	- **[Sunset](http://www.lupinia.net/code/projects/django/sunset.htm)**:  Advanced image gallery, with built-in watermarking, metadata parsing, hash-based de-duplication, and batch imports from server-side directories.  Also provides dynamic background images for page body site-wide.
 - **Second Life Systems/Content**
 	- **GridUtils**:  Standard models, views, and utility functions for common data types and structures used in Second Life and other virtual worlds.
+	- **DeerBuild**:  Creator tools and project support scripts/APIs for Second Life projects.
 	- **DeerGuard SL**:  Security/authentication system for LSL scripted systems in Second Life and other virtual worlds.
 	- **ElectionMap**:  Interactive election results tracking and display system for Second Life.
 - **Other**
