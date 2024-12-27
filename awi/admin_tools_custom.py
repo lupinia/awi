@@ -33,6 +33,7 @@ itemlist_sl = (
 	'deerland.*',
 	'gridutils.*',
 	'electionmap.*',
+	'deerbuild.*',
 )
 
 itemlist_system = (
