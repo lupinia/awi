@@ -17,6 +17,7 @@ Apps/Modules Included
 	- **Awi Access**:  Unified access control, permissions, and ownership settings for any object.
 	- **Awi Utils**:  Miscellaneous core components used by multiple other modules/apps.
 	- **DeerFind**:  Intelligent 404 handler.
+	- **WatchDeer**:  Unified logging and notifications for background processes.
 - **Main Content**
 	- **[DeerTrees](http://www.lupinia.net/code/projects/django/deertrees.htm)**:  Multi-level object-agnostic category system.
 	- **[DeerBooks](http://www.lupinia.net/code/projects/django/deerbooks.htm)**:  Enhanced text/writing management, with multi-format display (HTML, Markdown, Plain Text, LaTeX), and automatic generation of PDF, DVI, and PostScript files from dynamically-generated LaTeX source.

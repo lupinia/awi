@@ -43,6 +43,7 @@ itemlist_system = (
 	'deerconnect.models.spam_word',
 	'deerconnect.models.spam_domain',
 	'deerconnect.models.spam_sender',
+	'watchdeer.*',
 )
 
 itemlist_misc_exclude = itemlist_content + itemlist_structure + itemlist_system + itemlist_sl

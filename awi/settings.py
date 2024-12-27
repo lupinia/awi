@@ -55,6 +55,7 @@ INSTALLED_APPS = (
 	'awi_access',	# Access Control
 	'awi_utils',	# Miscellaneous Utility Modules
 	'deerfind',		# Intelligent 404 Recovery
+	'watchdeer',	# Unified logging and notifications
 	
 	#	My Apps - Primary Content Objects
 	'deerbooks',	# Text-based content
