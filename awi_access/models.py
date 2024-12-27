@@ -25,7 +25,7 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import slugify
 
-from awi_utils.utils import hash_sha256
+from awi.utils.hash import hash_sha256
 
 #	Helper Functions
 def check_mature(request=False):
