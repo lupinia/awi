@@ -16,7 +16,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.module_loading import import_string
-from django.views import generic
+from django.views.generic import DetailView, ListView, TemplateView
 
 from awi.utils.types import is_int
 from awi_access.models import access_query
@@ -176,7 +176,7 @@ class leaf_parent():
 		return returned_data
 
 
-class homepage(leaf_parent, generic.TemplateView):
+class homepage(leaf_parent, TemplateView):
 	highlight_featured = False
 	
 	def get_context_data(self, **kwargs):
@@ -195,7 +195,7 @@ class homepage(leaf_parent, generic.TemplateView):
 		return context
 
 
-class category_list(leaf_parent, generic.DetailView):
+class category_list(leaf_parent, DetailView):
 	model = category
 	slug_field = 'cached_url'
 	slug_url_kwarg = 'cached_url'
@@ -295,7 +295,7 @@ class category_list(leaf_parent, generic.DetailView):
 		return context
 
 
-class tag_list(leaf_parent, generic.DetailView):
+class tag_list(leaf_parent, DetailView):
 	model = tag
 	
 	def get_context_data(self, **kwargs):
@@ -465,7 +465,7 @@ def subcats(parent=False, parent_type=False, request=False):
 		return False
 
 
-class leaf_view(generic.DetailView):
+class leaf_view(DetailView):
 	def get_queryset(self, *args, **kwargs):
 		return super(leaf_view, self).get_queryset(*args, **kwargs).select_related('access_code','cat').prefetch_related('tags')
 	
@@ -638,7 +638,7 @@ class special_feature_view():
 
 
 #	Views that don't use the leaf system.
-class all_cats(generic.TemplateView, special_feature_view):
+class all_cats(TemplateView, special_feature_view):
 	template_name = 'deertrees/sitemap.html'
 	
 	def get_context_data(self, **kwargs):
@@ -669,7 +669,7 @@ class sitemap(all_cats):
 		return context
 
 
-class all_tags(generic.ListView):
+class all_tags(ListView):
 	template_name = 'deertrees/taglist.html'
 	model = tag
 	context_object_name = 'tags'

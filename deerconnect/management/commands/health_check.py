@@ -16,7 +16,7 @@ from django.core.mail import mail_admins
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Q
 
-from deerconnect.models import link, contact_link
+from deerconnect.models import link
 
 class Command(BaseCommand):
 	help = "Checks the validity of external links."

@@ -15,7 +15,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 from awi_utils.utils import notify
-from sunset.models import *
+from sunset.models import image, batch_import, import_log
 
 class Command(BaseCommand):
 	help = "Rebuilds image assets for new/changed gallery images."

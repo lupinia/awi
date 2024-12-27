@@ -11,7 +11,7 @@ from django.db.models import Count, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from django.views import generic
+from django.views.generic import ListView
 
 from awi_access.models import check_mature
 from awi_utils.views import json_response
@@ -28,7 +28,7 @@ special_filter_list = {
 }
 
 # Base class for all of the other event list views
-class event_list(special_feature_view, generic.ListView):
+class event_list(special_feature_view, ListView):
 	model = event_instance
 	context_object_name = 'event_instances'
 	template_name = 'deerattend/event_list.html'

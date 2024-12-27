@@ -6,7 +6,6 @@
 #	Search Index Objects
 #	=================
 
-from django.contrib.sites.models import Site
 from django.utils import timezone
 
 from haystack import indexes

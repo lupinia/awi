@@ -15,12 +15,13 @@ from django.http import HttpResponseForbidden
 from django.template import loader
 from django.utils import dateparse
 from django.utils import timezone
-from django.views import generic
+from django.views.generic import TemplateView
+from django.views.generic.edit import FormView
 
 from awi_access.forms import age_verify_form
 from awi_access.models import check_mature, user_settings
 
-class age_verify(generic.edit.FormView):
+class age_verify(FormView):
 	template_name = 'awi_access/age_form_embed.html'
 	form_class = age_verify_form
 	success_url = '/accounts/age_form_embed/'
@@ -88,7 +89,7 @@ class age_verify_full(age_verify):
 		return context
 
 
-class settings_page(generic.TemplateView):
+class settings_page(TemplateView):
 	template_name='awi_access/settings.html'
 	
 	def get_context_data(self, **kwargs):

@@ -6,8 +6,6 @@
 #	Context Processors
 #	=================
 
-from django.contrib.sites.models import Site
-
 from deerconnect.models import contact_link
 from awi_access.models import access_query
 

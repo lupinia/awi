@@ -6,11 +6,8 @@
 #	Views
 #	=================
 
-import datetime
-
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
-from django.utils import dateparse, timezone
 from django.views.generic.edit import FormView
 
 from awi_access.models import access_query

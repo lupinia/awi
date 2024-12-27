@@ -6,7 +6,7 @@
 #	Views
 #	=================
 
-from django.views import generic
+from django.views.generic import ListView
 from django.core.urlresolvers import reverse
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404
 from deerfood.models import menu_item, menu_section, menu_flag
 from deertrees.views import special_feature_view
 
-class menu_item_list(special_feature_view, generic.ListView):
+class menu_item_list(special_feature_view, ListView):
 	model=menu_item
 	context_object_name='menu_items'
 	template_name='deerfood/full_menu.html'
@@ -62,7 +62,7 @@ class full_menu(menu_item_list):
 		return context
 
 
-class menu_by_section(menu_item_list, generic.ListView):
+class menu_by_section(menu_item_list, ListView):
 	def get_queryset(self, *args, **kwargs):
 		return menu_item.objects.filter(section__slug=self.kwargs['slug']).order_by('name').prefetch_related('flags').select_related('section')
 	
@@ -75,7 +75,7 @@ class menu_by_section(menu_item_list, generic.ListView):
 		return context
 
 
-class menu_by_flag(menu_item_list, generic.ListView):
+class menu_by_flag(menu_item_list, ListView):
 	def get_queryset(self, *args, **kwargs):
 		return menu_item.objects.filter(flags__slug=self.kwargs['slug']).order_by('name').prefetch_related('flags').select_related('section')
 	
