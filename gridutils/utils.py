@@ -14,7 +14,7 @@ from django.core.cache import cache
 from django.db import models
 
 from awi.utils.hash import hash_sha1, hash_sha256
-from awi_utils.utils import dict_key_choices
+from awi.utils.models import dict_key_choices
 
 # Use the Second Life Name-To-Agent API to validate a new username
 # http://wiki.secondlife.com/wiki/Name_to_agent_ID_API
