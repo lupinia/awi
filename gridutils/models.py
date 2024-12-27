@@ -16,6 +16,7 @@ from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 
@@ -32,18 +33,20 @@ from gridutils.utils import (
 
 #	===========
 #	Basics
+@python_2_unicode_compatible
 class grid(models.Model):
 	name = models.CharField(max_length=64)
 	slug = models.SlugField(max_length=64, unique=True)
 	active = models.BooleanField(default=True, blank=True)
 	shard = models.CharField(max_length=250, null=True, blank=True, help_text='Used for source validation on the device API')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 
 
 #	===========
 #	Users and Accounts
+@python_2_unicode_compatible
 class name_history(models.Model):
 	profile = models.ForeignKey('avatar', related_name='past_names')
 	
@@ -58,10 +61,11 @@ class name_history(models.Model):
 	def grid_name(self):
 		return '%s %s' % (self.grid_name_first, self.grid_name_last)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.grid_username
 		#return '%s (Profile: %d)' % (self.grid_name, self.profile.pk)
 
+@python_2_unicode_compatible
 class avatar(models.Model):
 	account = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='grid_avatars')
 	key = models.UUIDField(db_index=True, help_text=mark_safe('The unique identifier for this user.  <a href="http://wiki.secondlife.com/wiki/Category:LSL_Key" target="_BLANK">More info</a>.'))
@@ -207,7 +211,7 @@ class avatar(models.Model):
 		
 		super(avatar, self).save(*args, **kwargs)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s (%s)' % (self.display_name, self.grid_username)
 	
 	class Meta:
@@ -216,6 +220,7 @@ class avatar(models.Model):
 
 #	===========
 #	Groups
+@python_2_unicode_compatible
 class group(models.Model):
 	name = models.CharField(max_length=40)
 	slug = models.SlugField(max_length=60, unique=True)
@@ -250,7 +255,7 @@ class group(models.Model):
 		else:
 			return None
 	
-	def __unicode__(self):
+	def __str__(self):
 		return 'Group: %s (%s)' % (self.name, self.grid.name)
 	
 	def save(self, *args, **kwargs):
@@ -270,6 +275,7 @@ class group(models.Model):
 	class Meta:
 		unique_together = (('key', 'grid'),)
 
+@python_2_unicode_compatible
 class group_role(models.Model):
 	role_name = models.CharField(max_length=40, blank=True, null=True, verbose_name='name')
 	role_title = models.CharField(max_length=40, blank=True, null=True, verbose_name='title')
@@ -309,7 +315,7 @@ class group_role(models.Model):
 		else:
 			return "Unnamed Role"
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s: %s' % (self.parent.name, self.name)
 	
 	@property
@@ -319,6 +325,7 @@ class group_role(models.Model):
 
 #	===========
 #	Land
+@python_2_unicode_compatible
 class estate(models.Model):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
@@ -336,12 +343,13 @@ class estate(models.Model):
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	timestamp_sync = models.DateTimeField(blank=True, null=True, editable=False, verbose_name='date/time of last sync')
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s (%s)' % (self.name, self.grid.name)
 	
 	class Meta:
 		unique_together = (('grid_estate_id', 'grid'),)
 
+@python_2_unicode_compatible
 class region(location_model):
 	SIM_STATUS_OPTIONS = (
 		('up','Running'),
@@ -387,7 +395,7 @@ class region(location_model):
 	def slurl(self):
 		return self.location_slurl(self)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 	
 	def save(self, *args, **kwargs):
@@ -401,6 +409,7 @@ class region(location_model):
 	class Meta:
 		unique_together = (('name', 'estate'),)
 
+@python_2_unicode_compatible
 class parcel(location_model):
 	TELEPORT_OPTIONS = (
 		('None', 'Blocked'),
@@ -488,9 +497,10 @@ class parcel(location_model):
 	def owner_type(self):
 		return self.get_owner()[0]
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.name
 
+@python_2_unicode_compatible
 class parcel_stream(models.Model):
 	name = models.CharField(max_length=255, blank=True, null=True)
 	url = models.URLField(max_length=1024)
@@ -511,9 +521,10 @@ class parcel_stream(models.Model):
 		else:
 			return 'Untitled Stream %d' % self.pk
 	
-	def __unicode__(self):
+	def __str__(self):
 		return self.title
 
+@python_2_unicode_compatible
 class parcel_borders(models.Model):
 	region = models.ForeignKey(region, on_delete=models.CASCADE, related_name='parcel_borders')
 	parcel = models.OneToOneField(parcel, on_delete=models.CASCADE, related_name='borders')
@@ -556,9 +567,10 @@ class parcel_borders(models.Model):
 		target = coords_to_square(x, y)
 		return self.contains_square(target)
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s Borders (Parcel %d)' % (self.region.name, self.parcel.pk)
 
+@python_2_unicode_compatible
 class location(location_model):
 	name = models.CharField(max_length=200, blank=True, null=True)
 	slug = models.SlugField(max_length=100, unique=True)
@@ -579,7 +591,7 @@ class location(location_model):
 		else:
 			return False
 	
-	def __unicode__(self):
+	def __str__(self):
 		if self.name:
 			return self.name
 		else:
@@ -598,6 +610,7 @@ class location(location_model):
 #	Parent class for in-world objects that need to communicate with the server's API
 #	All other models representing different types of objects should subclass this model.
 #	Be sure to also add them to settings.DEVICE_SETTINGS
+@python_2_unicode_compatible
 class device(location_model):
 	name = models.CharField(max_length=64)
 	key = models.UUIDField(db_index=True)
@@ -875,7 +888,7 @@ class device(location_model):
 		else:
 			return False
 	
-	def __unicode__(self):
+	def __str__(self):
 		return '%s (%s)' % (self.name, self.type)
 	
 	def save(self, *args, **kwargs):
