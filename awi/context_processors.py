@@ -6,22 +6,55 @@
 #	Custom context processors for entire project
 #	=================
 
+import os
+
 from django.conf import settings
 from django.contrib.sites.models import Site
 
 def site(request):
-	domain_name = request.get_host()
-	if '.eu' in domain_name:
-		show_cookie_banner = True
-	else:
-		show_cookie_banner = False
+	"""
+	Context processor to add values related to the current site and request.
 	
-	return {
-		'site':Site.objects.get_current(), 
-		'domain_name':domain_name, 
-		'cookie_banner':show_cookie_banner,
-		'permalink':'%s://%s%s' % (request.scheme, domain_name, request.path),
-	}
+	Values:
+		site:  The entire current django.contrib.sites.Site object
+		cookie_banner:  Boolean, True if the current domain is European
+		ssl:  Boolean, True if this is an SSL connection
+		domain_name:  Just the current domain name
+		site_root:  Current domain name plus scheme, with a trailing slash
+		permalink:  Full URL to the current page, minus any query arguments
+		cwd:  Current Working Directory, minus any filename, with leading and trailing slashes
+		cwd_absolute:  CWD plus domain and scheme, to reference files in the same directory
+	"""
+	
+	site_data = {'site':Site.objects.get_current(), 'cookie_banner':False, 'ssl':False,}
+	
+	site_data['domain_name'] = request.get_host()
+	if '.eu' in site_data['domain_name']:
+		site_data['cookie_banner'] = True
+	
+	if request.scheme.lower() == 'https':
+		site_data['ssl'] = True
+	
+	site_data['site_root'] = '%s://%s/' % (request.scheme, site_data['domain_name'])
+	site_data['permalink'] = '%s://%s%s' % (request.scheme, site_data['domain_name'], request.path)
+	
+	site_data['cwd'] = request.get_full_path()
+	
+	if '?' in site_data['cwd']:
+		site_data['cwd'], discard = site_data['cwd'].split('?', 1)
+	
+	if os.path.basename(site_data['cwd']):
+		# We need to parse out a directory from this
+		if '.' in os.path.basename(site_data['cwd']):
+			# This has a filename, so we want its parent directory
+			site_data['cwd'] = os.path.dirname(site_data['cwd'])
+		
+		# Append a trailing slash to fix it
+		site_data['cwd'] = '%s/' % site_data['cwd']
+	
+	site_data['cwd_absolute'] = '%s://%s%s' % (request.scheme, site_data['domain_name'], site_data['cwd'])
+	
+	return site_data
 
 def settings_vars(request):
 	"""
