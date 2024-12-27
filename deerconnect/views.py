@@ -6,6 +6,7 @@
 #	Views
 #	=================
 
+from django.conf import settings
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.views.generic.edit import FormView
@@ -56,7 +57,7 @@ class contact_page(FormView):
 							if hasattr(reply_obj, 'get_absolute_url'):
 								self.reply_path = reply_obj.get_absolute_url()
 							else:
-								self.reply_path = '%s (%s, pk %d)' % (context['reply_title'], settings.DEERFIND_SHORTCODE_TYPES[reply_type], reply_pk)
+								self.reply_path = '%s (%s, pk %d)' % (self.reply_title, settings.DEERFIND_SHORTCODE_TYPES[reply_type], reply_pk)
 		
 		return super(contact_page, self).get(request, *args, **kwargs)
 	
