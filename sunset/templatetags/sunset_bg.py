@@ -16,8 +16,8 @@ from django.conf import settings
 from django.core.cache import cache
 
 from awi_access.models import access_query
-from awi_utils.utils import notify
 from sunset.models import image
+from watchdeer.utils import notify
 
 register = template.Library()
 blank_bg = {
