@@ -19,7 +19,7 @@ from django.utils.text import slugify
 from datetime import timedelta
 from mptt.models import MPTTModel, TreeForeignKey
 
-from awi_utils.utils import format_html, summarize
+from awi.utils.text import format_html, summarize
 from awi_access.models import access_control
 
 def viewtype_options():

@@ -15,7 +15,7 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.safestring import mark_safe
 
-from awi_utils.utils import summarize
+from awi.utils.text import summarize
 
 @python_2_unicode_compatible
 class venue(models.Model):

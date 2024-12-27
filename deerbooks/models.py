@@ -15,7 +15,8 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import slugify
 
-from awi_utils.utils import format_html, hash_md5, summarize
+from awi.utils.text import format_html, summarize
+from awi_utils.utils import hash_md5
 from deertrees.models import leaf
 
 def attachment_path(instance, filename):

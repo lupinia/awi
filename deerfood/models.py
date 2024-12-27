@@ -12,7 +12,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 
-from awi_utils.utils import summarize
+from awi.utils.text import summarize
 
 @python_2_unicode_compatible
 class menu_section(models.Model):
