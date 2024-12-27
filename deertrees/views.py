@@ -18,8 +18,8 @@ from django.utils import timezone
 from django.utils.module_loading import import_string
 from django.views import generic
 
+from awi.utils.types import is_int
 from awi_access.models import access_query
-from awi_utils.utils import is_int
 from deerfind.utils import g2_lookup
 from deertrees.models import category, tag, leaf, special_feature
 from sunset.utils import sunset_embed
