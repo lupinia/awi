@@ -37,7 +37,7 @@ def settings_vars(request):
 		'locale':settings.LANGUAGE_CODE,
 	}
 
-def sitemeta(request):
+def meta(request):
 	return {
 		'title_site':settings.SITE_TITLE,
 		'title_page':'',

@@ -92,7 +92,7 @@ TEMPLATES = [{
 			'django.template.context_processors.request',
 			'awi.context_processors.site',
 			'awi.context_processors.settings_vars',
-			'awi.context_processors.sitemeta',
+			'awi.context_processors.meta',
 			'awi_access.context_processors.mature_check',
 			'deerconnect.context_processors.social_icons',
 		],
