@@ -27,6 +27,10 @@ class license_plate_region_group(models.Model):
 	def __str__(self):
 		return self.name
 	
+	@property
+	def is_active(self):
+		return self.active
+	
 	class Meta:
 		verbose_name = 'plate region group'
 		ordering = ['slug',]
@@ -49,6 +53,13 @@ class license_plate_region(models.Model):
 	def save(self, *args, **kwargs):
 		self.code = self.code.upper()
 		super(license_plate_region, self).save(*args, **kwargs)
+	
+	@property
+	def is_active(self):
+		if self.active:
+			return self.group.active
+		else:
+			return self.active
 	
 	class Meta:
 		verbose_name = 'plate region'
@@ -82,6 +93,16 @@ class license_plate(models.Model):
 	def save(self, *args, **kwargs):
 		self.design_code = self.design_code.upper()
 		super(license_plate, self).save(*args, **kwargs)
+	
+	@property
+	def is_active(self):
+		if self.active:
+			if self.territory.active:
+				return self.territory.group.active
+			else:
+				return self.territory.active
+		else:
+			return self.active
 	
 	@property
 	def sample(self):
