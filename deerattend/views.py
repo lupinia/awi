@@ -13,8 +13,8 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView
 
+from awi.utils.views import json_response
 from awi_access.models import check_mature
-from awi_utils.views import json_response
 from deerattend.models import *
 from deertrees.views import special_feature_view
 

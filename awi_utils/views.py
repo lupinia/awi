@@ -7,22 +7,12 @@
 #	=================
 
 import pytz
-import simplejson
 
 from datetime import datetime
 
 from django.conf import settings
-from django.http import HttpResponse
 from django.views.generic import TemplateView
 from django.utils import timezone
-
-def json_response(request, data=''):
-	return HttpResponse(simplejson.dumps(data), content_type='application/json')
-
-class placeholder(TemplateView):
-	def get_context_data(self, **kwargs):
-		context=super(placeholder,self).get_context_data(**kwargs)
-		return context
 
 
 #	A homepage for new tabs, to just show a photo background, plus some helpful extra data

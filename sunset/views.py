@@ -11,8 +11,8 @@ from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
+from awi.utils.views import json_response
 from awi_access.models import access_query
-from awi_utils.views import json_response
 from deertrees.models import category, tag
 from deertrees.views import leaf_view
 from sunset.models import *
