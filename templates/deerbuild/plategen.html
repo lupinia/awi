@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block bg_image %}{% with bg_tag='sl' %}{{block.super}}{% endwith %}{% endblock %}
+
+{% block content_left %}
+	<div class="left_sidebar">
+		<h2>{{title_page}}</h2>
+		{% if object.can_generate %}
+			<p>Your randomly-generated license plate number is:</p>
+		{% else %}
+			<p>This license plate cannot be randomly generated.  Sample sequence:</p>
+		{% endif %}
+		<h1>{{object.generate}}</h1>
+		{% if object.notes %}
+			<p><strong>Note:</strong>  {{object.notes}}</p>
+		{% endif %}
+		<p><strong><a href="{{permalink}}">Regenerate?</a></strong> &bull; <a href="{{cwd}}">Back to list</a></p>
+	</div>
+{% endblock %}

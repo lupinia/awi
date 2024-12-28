@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block bg_image %}{% with bg_tag='sl' %}{{block.super}}{% endwith %}{% endblock %}
+
+{% block content_left %}
+	<div class="left_sidebar">
+		<h2>{{title_page}}</h2>
+		<p>This is a tool for generating random license plate numbers for use with Lupinia Studios towns in Apex.  Select the plate you wish to generate from the list below.</p>
+		<ul>
+			{% for region in object.plate_regions.all %}
+				<li>{{region.name}}<ul>{% for plate in region.plates.all %}
+					<li><a href="{% url 'deerbuild:plategen' object.slug region.code plate.design_code %}">{{plate.design_name}} ({{plate.code}})</a></li>
+				{% endfor %}</ul></li>
+			{% endfor %}
+		</ul>
+	</div>
+{% endblock %}
