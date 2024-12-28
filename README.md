@@ -15,7 +15,6 @@ Apps/Modules Included
 
 - **System/Structure**
 	- **Awi Access**:  Unified access control, permissions, and ownership settings for any object.
-	- **Awi Utils**:  Miscellaneous core components used by multiple other modules/apps.
 	- **DeerFind**:  Intelligent 404 handler.
 	- **WatchDeer**:  Unified logging and notifications for background processes.
 - **Main Content**
