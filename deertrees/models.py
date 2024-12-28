@@ -311,6 +311,7 @@ class leaf(access_control):
 	
 	author_override = models.CharField(max_length=100, null=True, blank=True, help_text="If this was written by a guest author, enter their name here.  Enter 'none' to hide the author info from display (only use this for things like system directories and site policies where authorship is irrelevant).")
 	
+	basename = models.SlugField(max_length=127)
 	cat = models.ForeignKey(category, null=True, blank=True, on_delete=models.PROTECT, verbose_name='category', related_name='leaves')
 	tags = models.ManyToManyField(tag, blank=True, related_name='leaves')
 	
@@ -503,6 +504,9 @@ class leaf(access_control):
 	@property
 	def tags_list(self):
 		return self.tags.all().values_list('slug', flat=True)
+	
+	class Meta:
+		unique_together = ('basename', 'cat')
 
 
 #	Create a leaf that links to something else that isn't part of this category system.
