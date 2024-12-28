@@ -20,7 +20,7 @@ from honeypot.decorators import check_honeypot
 from awi.errors import system_error
 from awi.sitemaps import SITEMAP_OBJECTS
 from awi_access import views as access_views
-from awi_utils.views import plate_generator, newtab_view
+from awi_utils.views import newtab_view
 from deerbooks import views as deerbooks_views
 from deerconnect.views import contact_page
 from deerfind.views import not_found, search_view, shortcode_redirect
@@ -51,8 +51,7 @@ urlpatterns = [
 	# APIs and utility views
 	url(r'^tools/category_list/$', permission_required('deertrees.change_leaf')(deertrees_views.all_cats.as_view()), name='all_cats'),
 	url(r'^tools/sunset/(?P<slug>.*)\.json', sunset_views.geojson_image, name='sunset_geojson'),
-	url(r'^tools/plate_generator/$', never_cache(plate_generator.as_view()), name='sl_plategen_root'),
-	url(r'^tools/plate_generator/(?P<slug>.*)\.html', never_cache(plate_generator.as_view()), name='sl_plategen'),
+	url(r'^tools/plate_generator/', include('deerbuild.urls', namespace='deerbuild')),
 	url(r'^tools/newtab\.html$', never_cache(newtab_view.as_view()), name='newtab_page'),
 	
 	# Special Features
