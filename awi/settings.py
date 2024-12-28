@@ -74,6 +74,7 @@ INSTALLED_APPS = (
 	'deerattend',	# Convention/event database
 	'deercoins',	# Coin collection database
 	'deerfood',		# Restaurant-style menu
+	'deersky',		# Digital almanac and weather/timezone data aggregation
 )
 
 #	System Settings

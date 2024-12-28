@@ -32,6 +32,7 @@ Apps/Modules Included
 	- **DeerAttend**:  Event attendance history tracker/display.
 	- **DeerFood**:  Restaurant-style menu system.
 	- **DeerCoins**:  Coin collection (numismatic) database and tools.
+	- **DeerSky**:  Digital almanac and weather/timezone data aggregation.
 
 Third-Party Apps/Modules Used
 -----------------------------
