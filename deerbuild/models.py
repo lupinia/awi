@@ -6,6 +6,7 @@
 #	Models
 #	=================
 
+from django.core.urlresolvers import reverse
 from django.core.validators import MinLengthValidator
 from django.db import models
 from django.utils import timezone
@@ -26,6 +27,9 @@ class license_plate_region_group(models.Model):
 	
 	def __str__(self):
 		return self.name
+	
+	def get_absolute_url(self):
+		return reverse('deerbuild:plategen_list', kwargs={'group':self.slug})
 	
 	@property
 	def is_active(self):
@@ -86,6 +90,9 @@ class license_plate(models.Model):
 	@property
 	def name(self):
 		return '%s - %s' % (self.territory.name, self.design_name)
+	
+	def get_absolute_url(self):
+		return reverse('deerbuild:plategen', kwargs={'group':self.territory.group.slug, 'territory':self.territory.code, 'code':self.design_code})
 	
 	def __str__(self):
 		return self.name
