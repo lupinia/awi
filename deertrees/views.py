@@ -466,6 +466,9 @@ def subcats(parent=False, parent_type=False, request=False):
 
 
 class leaf_view(DetailView):
+	slug_field = 'basename'
+	slug_url_kwarg = 'slug'
+	
 	def get_queryset(self, *args, **kwargs):
 		return super(leaf_view, self).get_queryset(*args, **kwargs).select_related('access_code','cat').prefetch_related('tags')
 	
