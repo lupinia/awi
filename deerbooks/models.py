@@ -123,7 +123,7 @@ class page(leaf):
 		return self.get_title()
 	
 	def get_absolute_url(self):
-		return reverse('page_htm', kwargs={'cached_url':self.cat.cached_url, 'slug':self.slug})
+		return reverse('page_htm', kwargs={'cached_url':self.cat.cached_url, 'slug':self.basename})
 	
 	def get_summary(self,length=255):
 		if length > 255:
@@ -212,7 +212,7 @@ class export_log(models.Model):
 	message = models.TextField()
 	
 	def __str__(self):
-		return '%s (%d): %s' % (self.page.slug, self.page.pk, self.command)
+		return '%s (%d): %s' % (self.page.basename, self.page.pk, self.command)
 	
 	class Meta:
 		verbose_name = 'automatic document file build log entry'

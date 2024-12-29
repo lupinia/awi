@@ -4,7 +4,7 @@
 {% if 'sidebar' in blockname %}
 	<h4>Featured Writing</h4>
 	{% for page in leaves.featured %}
-	<a href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}} - {{page.body_summary}}" class="sidebar_link {% if page.restriction and page.restriction != 'unknown' %}restricted{% elif page.featured and highlight_featured %}featured{% elif page.mature %}mature{% endif %}">
+	<a href="{% url 'page_htm' page.cat.cached_url page.basename %}" title="{{page.get_title}} - {{page.body_summary}}" class="sidebar_link {% if page.restriction and page.restriction != 'unknown' %}restricted{% elif page.featured and highlight_featured %}featured{% elif page.mature %}mature{% endif %}">
 		<span class="sidebar_link_title">{{page.get_title}}</span>
 		{% if page.restriction and page.restriction != 'unknown' %}
 			<br />
@@ -25,7 +25,7 @@
 	</div><div class="transbox right_sidebar_section">
 	<h4>Recent Writing</h4>
 	{% for page in leaves.recent %}
-	<a href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}} - {{page.body_summary}}" class="sidebar_link {% if page.restriction and page.restriction != 'unknown' %}restricted{% elif page.featured and highlight_featured %}featured{% elif page.mature %}mature{% endif %}">
+	<a href="{% url 'page_htm' page.cat.cached_url page.basename %}" title="{{page.get_title}} - {{page.body_summary}}" class="sidebar_link {% if page.restriction and page.restriction != 'unknown' %}restricted{% elif page.featured and highlight_featured %}featured{% elif page.mature %}mature{% endif %}">
 		<span class="sidebar_link_title">{{page.get_title}}</span>
 		{% if page.restriction and page.restriction != 'unknown' %}
 			<br />
@@ -50,7 +50,7 @@
 			{% comment %}<!-- Do nothing.  -->{% endcomment %}
 		{% else %}
 			<div class="leaf_link tall">
-				<a class="leaf_a {% if page.restriction and page.restriction != 'unknown' %}restricted{% elif page.featured and highlight_featured %}featured{% elif page.mature %}mature{% endif %}" href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}}">
+				<a class="leaf_a {% if page.restriction and page.restriction != 'unknown' %}restricted{% elif page.featured and highlight_featured %}featured{% elif page.mature %}mature{% endif %}" href="{% url 'page_htm' page.cat.cached_url page.basename %}" title="{{page.get_title}}">
 					{% if page.restriction and page.restriction != 'unknown' %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/restriction-{{page.restriction}}24.png" alt="{{page.restriction|title}}" title="{{page.restriction|title}}" /></span>
 					{% elif page.featured and highlight_featured %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
 					{% elif page.mature %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}
@@ -75,7 +75,7 @@
 			{% comment %}<!-- Do nothing.  -->{% endcomment %}
 		{% else %}
 			<div class="leaf_link tall">
-				<a class="leaf_a {% if page.restriction and page.restriction != 'unknown' %}restricted{% elif page.featured and highlight_featured %}featured{% elif page.mature %}mature{% endif %}" href="{% url 'page_htm' page.cat.cached_url page.slug %}" title="{{page.get_title}}">
+				<a class="leaf_a {% if page.restriction and page.restriction != 'unknown' %}restricted{% elif page.featured and highlight_featured %}featured{% elif page.mature %}mature{% endif %}" href="{% url 'page_htm' page.cat.cached_url page.basename %}" title="{{page.get_title}}">
 					{% if page.restriction and page.restriction != 'unknown' %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/restriction-{{page.restriction}}24.png" alt="{{page.restriction|title}}" title="{{page.restriction|title}}" /></span>
 					{% elif page.featured and highlight_featured %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Featured" title="Featured" /></span>
 					{% elif page.mature %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/mature24.png" alt="Mature" title="Contains Mature Content" /></span>{% endif %}

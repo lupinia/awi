@@ -38,13 +38,13 @@ class Command(BaseCommand):
 		
 		if status is 'success':
 			# Yay!  :D
-			msg['subject'] = 'LaTeX Compilation Succeeded on Page %d (%s)' % (self.cur_page.pk, self.cur_page.slug)
-			msg['message'] = 'LaTeX compilation on page %d ("%s", slug: %s) succeeded.' % (self.cur_page.pk, self.cur_page.get_title(), self.cur_page.slug)
+			msg['subject'] = 'LaTeX Compilation Succeeded on Page %d (%s)' % (self.cur_page.pk, self.cur_page.basename)
+			msg['message'] = 'LaTeX compilation on page %d ("%s", basename: %s) succeeded.' % (self.cur_page.pk, self.cur_page.get_title(), self.cur_page.basename)
 		elif status is 'failure':
 			# Not yay!  :(
 			if self.cur_page:
-				msg['subject'] = 'LaTeX Compilation Failed on Page %d (%s)' % (self.cur_page.pk, self.cur_page.slug)
-				msg['message'] = 'LaTeX compilation failed on page %d ("%s", slug: %s).' % (self.cur_page.pk, self.cur_page.get_title(), self.cur_page.slug)
+				msg['subject'] = 'LaTeX Compilation Failed on Page %d (%s)' % (self.cur_page.pk, self.cur_page.basename)
+				msg['message'] = 'LaTeX compilation failed on page %d ("%s", basename: %s).' % (self.cur_page.pk, self.cur_page.get_title(), self.cur_page.basename)
 			else:
 				msg['subject'] = 'LaTeX Compilation Failed:  Unknown Page'
 				msg['message'] = 'LaTeX compilation failed on an unknown page.'
@@ -100,13 +100,13 @@ class Command(BaseCommand):
 					if old_docfiles:
 						# If we're here, it means that the current page has stale doc files, and no custom tex file.
 						self.cur_page = page_obj
-						self.log('LaTeX will be compiled for page %d (%s)' % (self.cur_page.pk, self.cur_page.slug))
+						self.log('LaTeX will be compiled for page %d (%s)' % (self.cur_page.pk, self.cur_page.basename))
 						break
 				
 				else:
 					# This is the one we're going to work with, it's all shiny and new and stuff.
 					self.cur_page = page_obj
-					self.log('LaTeX will be compiled for new page %d (%s)' % (self.cur_page.pk, self.cur_page.slug))
+					self.log('LaTeX will be compiled for new page %d (%s)' % (self.cur_page.pk, self.cur_page.basename))
 					break
 				
 				if self.cur_page:
@@ -160,7 +160,7 @@ class Command(BaseCommand):
 					
 					if new_docfiles:
 						self.cur_page.docfiles.add(*new_docfiles)
-						self.log("Successfully attached new docfiles to page %d (%s)." % (self.cur_page.pk, self.cur_page.slug))
+						self.log("Successfully attached new docfiles to page %d (%s)." % (self.cur_page.pk, self.cur_page.basename))
 						if tex_custom:
 							related_pages = tex_custom.pages.all()
 						elif self.cur_page.book_title:
@@ -172,10 +172,10 @@ class Command(BaseCommand):
 							for other_page in related_pages:
 								if other_page is not self.cur_page:
 									other_page.docfiles.add(*new_docfiles)
-									self.log("Successfully attached new docfiles to page %d (%s)." % (other_page.pk, other_page.slug), other_page)
+									self.log("Successfully attached new docfiles to page %d (%s)." % (other_page.pk, other_page.basename), other_page)
 				
 				self.log("Compile operation complete!")
-				self.stdout.write('Operation Complete on %d (%s)' % (self.cur_page.pk, self.cur_page.slug))
+				self.stdout.write('Operation Complete on %d (%s)' % (self.cur_page.pk, self.cur_page.basename))
 				self.notify('success')
 			
 			else:

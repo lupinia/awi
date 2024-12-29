@@ -30,7 +30,7 @@
 						{% if child.pk == object.pk %}
 							<li class="current_page">{{child.title}}</li>
 						{% else %}
-							<li><a href="{% url 'page_htm' child.cat.cached_url child.slug %}">{{child.title}}</a></li>
+							<li><a href="{% url 'page_htm' child.cat.cached_url child.basename %}">{{child.title}}</a></li>
 						{% endif %}
 					{% endfor %}
 				</ol>

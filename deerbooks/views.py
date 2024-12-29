@@ -198,6 +198,6 @@ def finder(request):
 				if search_type == 'php' or search_type == 'html':
 					search_type = 'htm'
 				
-				return_data = (True,reverse('page_%s' % search_type, kwargs={'cached_url':page_check.cat.cached_url, 'slug':page_check.slug}))
+				return_data = (True,reverse('page_%s' % search_type, kwargs={'cached_url':page_check.cat.cached_url, 'slug':page_check.basename}))
 	
 	return return_data
