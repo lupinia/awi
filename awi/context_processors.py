@@ -26,7 +26,7 @@ def site(request):
 		cwd_absolute:  CWD plus domain and scheme, to reference files in the same directory
 	"""
 	
-	site_data = {'site':Site.objects.get_current(), 'cookie_banner':False, 'ssl':False,}
+	site_data = {'site':Site.objects.get_current(), 'cookie_banner':False, 'ssl':False, 'certauth':False,}
 	
 	site_data['domain_name'] = request.get_host()
 	if '.eu' in site_data['domain_name']:
@@ -34,6 +34,9 @@ def site(request):
 	
 	if request.scheme.lower() == 'https':
 		site_data['ssl'] = True
+	
+	if request.META.get('HTTP_X_SSL_CLIENT_VERIFY','NONE') == 'SUCCESS':
+		site_data['certauth'] = True
 	
 	site_data['site_root'] = '%s://%s/' % (request.scheme, site_data['domain_name'])
 	site_data['permalink'] = '%s://%s%s' % (request.scheme, site_data['domain_name'], request.path)
