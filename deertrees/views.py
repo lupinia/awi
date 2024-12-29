@@ -470,7 +470,7 @@ class leaf_view(DetailView):
 	slug_url_kwarg = 'slug'
 	
 	def get_queryset(self, *args, **kwargs):
-		return super(leaf_view, self).get_queryset(*args, **kwargs).select_related('access_code','cat').prefetch_related('tags')
+		return super(leaf_view, self).get_queryset(*args, **kwargs).filter(cat__cached_url=self.kwargs.get('cached_url', None)).select_related('access_code','cat').prefetch_related('tags')
 	
 	def get_context_data(self, **kwargs):
 		context = super(leaf_view,self).get_context_data(**kwargs)
