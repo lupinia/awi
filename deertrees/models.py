@@ -525,6 +525,13 @@ class special_feature(leaf):
 	def __str__(self):
 		return '%s: %s' % (self.emulation_mode.capitalize(), self.title)
 	
+	def save(self, *args, **kwargs):
+		if not self.basename:
+			self.basename = slugify(self.url)
+			if leaf.objects.filter(cat=self.cat, basename=self.basename).exists():
+				self.basename = '%s%d' % (self.basename, special_feature.objects.all().count()+1)
+		super(special_feature, self).save(*args, **kwargs)
+	
 	def get_summary(self,length=255):
 		if length > 255:
 			return summarize(body=self.desc, length=length, prefer_long=True)
