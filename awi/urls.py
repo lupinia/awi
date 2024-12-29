@@ -85,6 +85,8 @@ urlpatterns = [
 	url(r'^(?P<cached_url>[\w\d_/-]+)/feed\.rss$', cache_control(max_age=60*60*6)(deertrees_views.cat_rssfeed()), name='category_rss'),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/featured\-images\.cfm$', sunset_views.img_cat_view.as_view(), name='cat_images_featured', kwargs={'viewtype':'featured'}),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/recent\-images\.cfm$', sunset_views.img_cat_view.as_view(), name='cat_images_recent', kwargs={'viewtype':'recent'}),
+	url(r'^(?P<cached_url>[\w\d_/-]+)/featured\-images\.rss$', sunset_views.img_cat_feed(), name='cat_images_featured_feed', kwargs={'viewtype':'featured'}),
+	url(r'^(?P<cached_url>[\w\d_/-]+)/recent\-images\.rss$', sunset_views.img_cat_feed(), name='cat_images_recent_feed', kwargs={'viewtype':'recent'}),
 	url(r'^(?P<cached_url>[\w\d_/-]+)/$', deertrees_views.category_list.as_view(), name='category'),
 ]
 

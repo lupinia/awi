@@ -6,6 +6,7 @@
 #	Views
 #	=================
 
+from django.contrib.syndication.views import Feed
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db.models import Q
@@ -196,7 +197,64 @@ class img_all_view(img_aggregate, ListView):
 		else:
 			self.request.session['deerfind_norecover'] = True
 			raise Http404
+
+class img_cat_feed(img_aggregate_cat, Feed):
+	author_name = "Natasha L."
+	item_author_name = "Natasha L."
+	description = "Photography, writing, and creative works by Natasha L."
+	feed_copyright = timezone.now().strftime('Copyright (c) 2000-%Y Natasha L.')
+	kwargs = {}
 	
+	def get_object(self, request, **kwargs):
+		self.kwargs = kwargs
+		obj = get_object_or_404(category, cached_url=kwargs.get('cached_url',None))
+		if obj.can_view(request)[0]:
+			self.viewtype = kwargs.get('viewtype', 'recent')
+			return obj
+		else:
+			request.session['deerfind_norecover'] = True
+			raise Http404
+	
+	def items(self, obj=None):
+		if obj:
+			return self.build_queryset(**self.kwargs)[:100]
+		else:
+			raise Http404
+	
+	def title(self):
+		return self.view_title()
+	
+	def link(self, obj=None):
+		if obj:
+			return reverse('cat_images_%s' % self.viewtype, kwargs={'cached_url':obj.cached_url,})
+		else:
+			return "/"
+	
+	def item_pubdate(self, item):
+		return item.timestamp_upload
+	
+	def item_updateddate(self, item):
+		return item.timestamp_mod
+	
+	def item_categories(self, item):
+		return item.tags.all().values_list('slug', flat=True)
+	
+	def item_description(self, item):
+		return item.rss_description
+	
+	def item_enclosure_url(self, item):
+		enclosure_obj = getattr(item, 'rss_enclosure_obj', None)
+		return getattr(enclosure_obj, 'rss_enclosure_url', None)
+	
+	def item_enclosure_length(self, item):
+		enclosure_obj = getattr(item, 'rss_enclosure_obj', None)
+		return getattr(enclosure_obj, 'rss_enclosure_length', None)
+	
+	def item_enclosure_mime_type(self, item):
+		enclosure_obj = getattr(item, 'rss_enclosure_obj', None)
+		return getattr(enclosure_obj, 'rss_enclosure_type', None)
+
+
 def geojson_image(request, slug, **kwargs):
 	return_data = []
 	query = image.objects.filter(access_query(request)).exclude(rebuild_assets=True, is_new=True).exclude(Q(geo_lat__isnull=True) | Q(geo_long__isnull=True)).order_by('-timestamp_post').select_related('cat').prefetch_related('assets')
