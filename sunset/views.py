@@ -6,10 +6,12 @@
 #	Views
 #	=================
 
+from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.views.generic import ListView
 
 from awi.utils.views import json_response
 from awi_access.models import access_query
@@ -63,7 +65,137 @@ class single_image(leaf_view):
 		
 		return context
 
+# The purpose of this view is very similar to deertrees.views.category_list
+# However, it doesn't need to be anywhere near as robust or functional
+# And since it's specific to images, we're putting it here to keep things tidy 
+class img_aggregate(object):
+	model = image
+	template_name = 'sunset/image_gallery.html'
+	paginate_by = 50
+	viewtype = 'recent'
+	
+	def view_title_base(self):
+		if self.viewtype:
+			return '%s Images' % self.viewtype.capitalize()
+		else:
+			return 'Images'
+	
+	def build_queryset(self, queryset=None, **kwargs):
+		self.viewtype = kwargs.get('viewtype', 'recent')
+		if queryset is None:
+			queryset = image.objects
+		
+		if self.viewtype == 'featured':
+			queryset = queryset.filter(featured=True).order_by('-timestamp_post')
+		elif self.viewtype == 'recent':
+			queryset = queryset.order_by('-timestamp_upload')
+		
+		return queryset.filter(access_query(getattr(self, 'request', False))).select_related('cat', 'access_code').prefetch_related('assets', 'tags')
 
+class img_aggregate_cat(img_aggregate):
+	slug_field = 'cached_url'
+	slug_url_kwarg = 'cached_url'
+	root = None
+	
+	def view_title(self):
+		title = self.view_title_base()
+		if self.root:
+			title = u'%s - %s' % (unicode(self.root), title) # type: ignore
+		return title
+	
+	def build_queryset(self, queryset=None, **kwargs):
+		if kwargs.get(self.slug_url_kwarg, False):
+			self.root = category.objects.filter(**{self.slug_field: kwargs[self.slug_url_kwarg],}).filter(access_query(getattr(self, 'request', False))).select_related('access_code').first()
+			if self.root and self.root.can_view(getattr(self, 'request', False))[0]:
+				catlist = self.root.get_descendants(include_self=True).filter(access_query(getattr(self, 'request', False))).select_related('access_code').values_list('pk', flat=True)
+				return super(img_aggregate_cat, self).build_queryset(queryset, **kwargs).filter(cat__pk__in=catlist)
+		
+		return super(img_aggregate_cat, self).build_queryset(queryset, **kwargs).none()
+
+class img_aggregate_tag(img_aggregate):
+	slug_field = 'slug'
+	slug_url_kwarg = 'slug'
+	root = None
+	
+	def view_title(self):
+		title = self.view_title_base()
+		if self.root:
+			title = u'%s - %s' % (unicode(self.root), title) # type: ignore
+		return title
+	
+	def build_queryset(self, queryset=None, **kwargs):
+		if kwargs.get(self.slug_url_kwarg, False):
+			self.root = get_object_or_404(tag, **{self.slug_field: kwargs[self.slug_url_kwarg],})
+			return super(img_aggregate_cat, self).build_queryset(queryset, **kwargs).filter(tag=self.root)
+		else:
+			return super(img_aggregate_cat, self).build_queryset(queryset, **kwargs).none()
+
+class img_cat_view(img_aggregate_cat, ListView):
+	def get_queryset(self):
+		queryset = super(img_cat_view, self).get_queryset()
+		queryset = self.build_queryset(queryset, **self.kwargs)
+		if queryset.exists():
+			return queryset
+		else:
+			self.request.session['deerfind_norecover'] = True
+			raise Http404
+	
+	def get_context_data(self, **kwargs):
+		context = super(img_cat_view, self).get_context_data(**kwargs)
+		if not self.root:
+			self.request.session['deerfind_norecover'] = True
+			raise Http404
+		
+		canview, reason = self.root.can_view(self.request)
+		if not canview:
+			if reason == 'access_404':
+				self.request.session['deerfind_norecover'] = True
+				raise Http404
+			else:
+				raise PermissionDenied
+		else:
+			if self.viewtype == 'featured':
+				context['highlight_featured'] = False
+			else:
+				context['highlight_featured'] = True
+			
+			context['title_view'] = self.view_title_base()
+			context['category'] = self.root
+			
+			# Breadcrumbs
+			ancestors = self.root.get_ancestors(include_self=True)
+			if not context.get('breadcrumbs',False):
+				context['breadcrumbs'] = []
+			
+			for crumb in ancestors:
+				context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
+			
+			context['breadcrumbs'].append({'url':reverse('cat_images_%s' % self.viewtype, kwargs={'cached_url':self.root.cached_url,}), 'title':self.view_title_base()})
+			
+			# Metadata
+			context['title_page'] = self.view_title()
+		
+		return context
+
+class img_tag_view(img_aggregate_tag, ListView):
+	def get_queryset(self):
+		queryset = super(img_tag_view, self).get_queryset()
+		queryset = self.build_queryset(queryset, **self.kwargs)
+		if queryset.exists():
+			return queryset
+		else:
+			self.request.session['deerfind_norecover'] = True
+			raise Http404
+
+class img_all_view(img_aggregate, ListView):
+	def get_queryset(self):
+		queryset = super(img_all_view, self).get_queryset()
+		queryset =  self.build_queryset(queryset, **self.kwargs)
+		if queryset.exists():
+			return queryset
+		else:
+			self.request.session['deerfind_norecover'] = True
+			raise Http404
 	
 def geojson_image(request, slug, **kwargs):
 	return_data = []

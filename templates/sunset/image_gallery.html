@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% get_static_prefix as STATIC_PREFIX %}
+
+{% block content_left %}
+	<div class="left_sidebar">
+		<div id="page_title">
+			<div id="page_title_main">
+				<h2>{{title_view}}</h2>
+				{% if category or tag or is_paginated %}
+				<div id="byline">{% if category %}Category: {{category}}{% elif tag %}Tag: {{tag}}{% endif %}{% if is_paginated  %} &bull; Page {{page_obj.number}} of {{page_obj.paginator.num_pages}}{% endif %}</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	
+	<div class="left_full {{extra_classes}}"{% if extra_style %} style="{{extra_style}}"{% endif %}>
+		{% if image_list %}
+			{% include 'sunset/leaf_image.html' with leaves=image_list blockname="main" highlight_featured=highlight_featured homepage=False only %}
+		{% else %}
+			{% include 'includes/errors.html' with error='filter_empty' only %}
+		{% endif %}
+	</div>
+	
+	{% if is_paginated and image_list %}
+		{% include 'includes/page_numbers_embed.html' with pagetype='aggregate' %}
+	{% endif %}
+
+{% endblock %}
