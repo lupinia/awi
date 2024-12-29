@@ -82,6 +82,13 @@ class link(link_base, leaf):
 	involved = models.BooleanField(help_text="Indicates a project the webmaster has involvement with.")
 	healthy = models.BooleanField(default=True, db_index=True, help_text='Indicates whether this link passed its last health check.  Will reset when saved in the admin view.')
 	health_check = models.BooleanField(default=True, db_index=True, verbose_name='enable health check?', help_text='Uncheck this to exclude this URL from routine checks to validate that it is still reachable.')
+	
+	def save(self, *args, **kwargs):
+		if not self.basename:
+			self.basename = self.url_domain_name()
+			if leaf.objects.filter(cat=self.cat, basename=self.basename).exists():
+				self.basename = '%s%d' % (self.basename, link.objects.all().count()+1)
+		super(leaf, self).save(*args, **kwargs)
 
 
 #	This is a special case that won't be part of the usual tree/leaf system, nor will they have tags
