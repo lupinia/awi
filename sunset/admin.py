@@ -40,17 +40,17 @@ class batch_image_inline_admin(admin.TabularInline):
 # End inlines, begin regular admin objects
 class image_admin(leaf_admin):
 	list_select_related = True
-	search_fields = ['body','summary','title','slug'] + leaf_admin.search_fields
+	search_fields = ['body','summary','title','basename'] + leaf_admin.search_fields
 	fieldsets = [
-		(None,{'fields':(('title','slug'),('summary','auto_fields','rebuild_assets'),'body','bg_tags',('crop_horizontal','crop_vertical',),),},),
+		(None,{'fields':(('title','basename'),('summary','auto_fields','rebuild_assets'),'body','bg_tags',('crop_horizontal','crop_vertical',),),},),
 	] + leaf_admin.fieldsets
-	prepopulated_fields={'slug':('title',)}
+	prepopulated_fields={'basename':('title',)}
 	list_display = ('title','rebuild_assets','public_domain',) + leaf_admin.list_display
 	inlines = leaf_admin.inlines + [g2_inline, asset_inline_admin, meta_inline_admin]
 	list_filter = ['bg_tags','rebuild_assets','public_domain','auto_fields',] + leaf_admin.list_filter
 	
 	def view_on_site(self, obj):
-		return reverse('image_single',kwargs={'cached_url':obj.cat.cached_url, 'slug':obj.slug,})
+		return reverse('image_single',kwargs={'cached_url':obj.cat.cached_url, 'slug':obj.basename,})
 
 class image_meta_key_admin(admin.ModelAdmin):
 	list_select_related = True
@@ -100,12 +100,12 @@ class image_meta_key_admin(admin.ModelAdmin):
 
 class batch_import_admin(access_admin):
 	list_select_related = True
-	search_fields = ['folder','title','slug','desc','cat__title','cat__slug','tags__title','tags__slug']
+	search_fields = ['folder','title','basename','desc','cat__title','cat__slug','tags__title','tags__slug']
 	list_display = ('folder_shortname','cat','active','sync_now','timestamp_mod',) + access_admin.list_display
 	list_filter = access_admin.list_filter + ['timestamp_post','timestamp_mod','cat','tags','active']
 	fieldsets = [
 		('Batch Processor Options',{'fields': (('folder','next_sequence_number'),('active','sync_now',),),},),
-		('Imported Image Options',{'fields': ('cat',('title','slug'),'desc','tags',),},),
+		('Imported Image Options',{'fields': ('cat',('title','basename'),'desc','tags',),},),
 		('Time Options',{'fields': (('timestamp_post','timestamp_mod',),),},),
 	] + access_admin.fieldsets
 	inlines = [batch_meta_inline_admin, batch_image_inline_admin]

@@ -82,7 +82,6 @@ class image(leaf):
 		('b', 'Bottom'),
 	)
 	
-	slug = models.SlugField(unique=True)
 	title = models.CharField(max_length=100, null=True, blank=True)
 	body = models.TextField(null=True, blank=True, verbose_name='description')
 	summary = models.CharField(max_length=255, null=True, blank=True, help_text='Short summary used in the description meta tag, and in place of the Description field if Description is empty.')
@@ -105,6 +104,11 @@ class image(leaf):
 	PIL_obj = False
 	orig_path = False
 	orig_type = False
+	
+	@property
+	def slug(self):
+		"""Legacy support after https://github.com/lupinia/awi/issues/171"""
+		return self.basename
 	
 	def __str__(self):
 		if self.title:
@@ -687,7 +691,7 @@ class batch_import(access_control):
 	# The following fields will auto-populate discovered images, in addition to standard data from parsing the original file, if set.
 	tags = models.ManyToManyField(tag, blank=True, help_text="Added to tags embedded in file, if set.")
 	title = models.CharField(max_length=60, null=True, blank=True, help_text="Overrides title embedded in file, if set.  Defaults to null if empty.  Use &lt;seq&gt; to insert a sequential number.")
-	slug = models.CharField(max_length=50, null=True, blank=True, help_text="Overrides slug, if set.  Defaults to filename if empty.  Use &lt;seq&gt; to insert a sequential number.")
+	basename = models.CharField(max_length=50, null=True, blank=True, help_text="Overrides basename, if set.  Defaults to filename if empty.  Use &lt;seq&gt; to insert a sequential number.")
 	desc = models.TextField(null=True, blank=True, verbose_name='description', help_text="Overrides description/summary embedded in file, if set.")
 	
 	def folder_shortname(self):
@@ -777,20 +781,20 @@ class batch_import(access_control):
 					else:
 						new_img.title = img_file_slug
 					
-					if self.slug:
-						if '<seq>' in self.slug:
-							cur_slug = self.slug.replace('<seq>', str(self.next_sequence_number))
+					if self.basename:
+						if '<seq>' in self.basename:
+							cur_slug = self.basename.replace('<seq>', str(self.next_sequence_number))
 						else:
-							cur_slug = self.slug
-						new_img.slug = cur_slug
+							cur_slug = self.basename
+						new_img.basename = cur_slug
 					else:
-						new_img.slug = slugify(img_file_slug)
-						if new_img.slug.endswith('-') or new_img.slug.endswith('_'):
-							new_img.slug = new_img.slug[0:-1]
+						new_img.basename = slugify(img_file_slug)
+						if new_img.basename.endswith('-') or new_img.basename.endswith('_'):
+							new_img.basename = new_img.basename[0:-1]
 					
-					exist_check = image.objects.filter(slug=new_img.slug)
+					exist_check = image.objects.filter(basename=new_img.basename)
 					if exist_check.exists():
-						new_img.slug = '%s-%d' % (new_img.slug, self.next_sequence_number)
+						new_img.basename = '%s-%d' % (new_img.basename, self.next_sequence_number)
 					
 					if self.desc:
 						new_img.body = self.desc
