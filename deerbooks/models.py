@@ -80,7 +80,6 @@ class toc(models.Model):
 
 @python_2_unicode_compatible
 class page(leaf):
-	slug = models.SlugField(unique=True)
 	title = models.CharField(max_length=100)
 	body = models.TextField()
 	body_hash_cur = models.TextField(default='')
@@ -96,6 +95,11 @@ class page(leaf):
 	book_order = models.IntegerField(default=0, blank=True, help_text='Use this field to control the position of this page within its book.  The book order does not need to be incremental; pages will be sorted in ascending order (least to greatest) using this field regardless of its value.')
 	
 	timestamp_revised = models.DateTimeField(null=True, blank=True, db_index=True, verbose_name='date/time revised', help_text='Date/time of last content edit.')
+	
+	@property
+	def slug(self):
+		"""Legacy support after https://github.com/lupinia/awi/issues/171"""
+		return self.basename
 	
 	def display_times(self):
 		return_times = super(page, self).display_times()

@@ -177,7 +177,7 @@ def finder(request):
 		search_slug = search_slug_list[0]
 		search_type = search_slug_list[-1].lower()
 		
-		page_check = page.objects.filter(slug__iexact=search_slug).filter(access_query(request)).select_related().prefetch_related('docfiles').first()
+		page_check = page.objects.filter(basename__iexact=search_slug).filter(access_query(request)).select_related().prefetch_related('docfiles').first()
 		if page_check:
 			# Yay!  We found a match that you're allowed to view!
 			# Now let's figure out what type of URL to send back.
