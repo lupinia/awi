@@ -31,7 +31,7 @@ from sunset.utils import watermark, hash_file
 
 def image_asset_uploadto(instance, filename):
 	original = filename.split('.')
-	return 'gallery/%s_%s.%s' % (instance.parent.slug, instance.type, original[-1])
+	return 'gallery/%s_%s.%s' % (instance.parent.basename, instance.type, original[-1])
 
 def image_asset_type_choices():
 	type_choices = [('original','Original Upload'),]
@@ -114,7 +114,7 @@ class image(leaf):
 		if self.title:
 			return unicode(self.title) # type: ignore
 		else:
-			return unicode(self.slug) # type: ignore
+			return unicode(self.basename) # type: ignore
 	
 	def save(self, *args, **kwargs):
 		if self.body and not self.summary:
@@ -227,7 +227,7 @@ class image(leaf):
 		return (public, restrictions)
 	
 	def get_absolute_url(self):
-		return reverse('image_single', kwargs={'cached_url':self.cat.cached_url, 'slug':self.slug})
+		return reverse('image_single', kwargs={'cached_url':self.cat.cached_url, 'slug':self.basename})
 	
 	# Download a copy of this image's original asset to a working directory.
 	# Set return_PIL_obj=True to get a PIL object.
@@ -391,7 +391,7 @@ class image(leaf):
 				# Watermark this image after performing operations.
 				working_copy = watermark(working_copy)
 			
-			working_copy_path = '%s/%s_%s.%s' % (settings.SUNSET_CACHE_DIR, self.slug, type, self.orig_type)
+			working_copy_path = '%s/%s_%s.%s' % (settings.SUNSET_CACHE_DIR, self.basename, type, self.orig_type)
 			working_copy.save(fp=working_copy_path, **params)
 			working_copy.close()
 			
@@ -410,18 +410,18 @@ class image(leaf):
 				asset = asset_check.first()
 				# If we already have an asset, replace its image file with this one.
 				asset.image_file.delete()
-				asset.image_file.save('%s_%s.%s' % (self.slug, type, self.orig_type), img_obj)
+				asset.image_file.save('%s_%s.%s' % (self.basename, type, self.orig_type), img_obj)
 				asset.save()
 				import_log.objects.create(command='image.build_resize', message='Successfully updated asset %d' % asset.pk, image=self)
 			else:
 				new_asset = image_asset(type=type, parent=self)
-				new_asset.image_file.save('%s_%s.%s' % (self.slug, type, self.orig_type), img_obj)
+				new_asset.image_file.save('%s_%s.%s' % (self.basename, type, self.orig_type), img_obj)
 				new_asset.save()
 				import_log.objects.create(command='image.build_resize', message='Successfully created new asset %d' % new_asset.pk, image=self)
 			
 			# Time to clean up after ourselves.
 			img_obj.close()
-			os.remove('%s/%s_%s.%s' % (settings.SUNSET_CACHE_DIR, self.slug, type, self.orig_type))
+			os.remove('%s/%s_%s.%s' % (settings.SUNSET_CACHE_DIR, self.basename, type, self.orig_type))
 			import_log.objects.create(command='image.build_resize', message='File cleanup complete for %s asset.' % type, image=self)
 			return True
 		else:
@@ -755,7 +755,7 @@ class batch_import(access_control):
 						asset = cur_img_orig_check.first()
 						if asset.hash != img_hash:
 							asset.image_file.delete()
-							asset.image_file.save('%s_original.%s' % (cur_img.img_obj.slug, img_filename_type), img_file_obj)
+							asset.image_file.save('%s_original.%s' % (cur_img.img_obj.basename, img_filename_type), img_file_obj)
 							asset.save()
 							cur_img.save()
 							success_count = success_count + 1
@@ -814,7 +814,7 @@ class batch_import(access_control):
 							image_meta.objects.create(key=meta.key, image=new_img, data=meta.data, manual_entry=True)
 					
 					new_asset = image_asset(type='original', parent=new_img)
-					new_asset.image_file.save('%s_original.%s' % (new_img.slug, img_filename_type), img_file_obj)
+					new_asset.image_file.save('%s_original.%s' % (new_img.basename, img_filename_type), img_file_obj)
 					new_asset.save()
 					
 					batch_image.objects.create(parent=self, img_filename=img_filename, img_obj=new_img, hash=img_hash)

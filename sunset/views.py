@@ -149,6 +149,6 @@ def finder(request):
 		image_check = image.objects.filter(basename__iexact=search_slug).filter(access_query(request)).select_related().first()
 		if image_check:
 			# Yay!  We found a match!  And it's authorized for viewing.
-			return_data = (True, reverse('image_single', kwargs={'cached_url':image_check.cat.cached_url, 'slug':image_check.slug,}))
+			return_data = (True, reverse('image_single', kwargs={'cached_url':image_check.cat.cached_url, 'slug':image_check.basename,}))
 	
 	return return_data
