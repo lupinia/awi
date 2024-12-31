@@ -11,30 +11,34 @@
 
 {% block content_right %}
 	<div class="right_sidebar_section">
+		<h3>Error Details</h3>
+		<p><code>
+			<strong>HTTP 404</strong><br />
+			File Not Found<br />
+			seneca.lupinia.net<br />
+			(Django)
+		</code></p>
+		<hr />
+		<p><sub>
+			<strong>Request:</strong></br />
+			<code>{{bad_url}}</code>
+		</sub></p>
+	</div>
+
+	<div class="right_sidebar_section">
 		<h3>Other Links</h3>
 		<a href="/" title="Home" class="sidebar_link">
 			<span class="sidebar_link_title">Home</span>
 		</a>
-		<a href="/contact" title="Contact" class="sidebar_link">
+		<a href="/contact/" title="Contact" class="sidebar_link">
 			<span class="sidebar_link_title">Contact Info</span>
 		</a>
-		<a href="/about" title="About" class="sidebar_link">
+		<a href="/about/" title="About" class="sidebar_link">
 			<span class="sidebar_link_title">About</span>
 		</a>
-	</div>
-
-	<div class="right_sidebar_section">
-		<h3>Error Details</h3>
-		<p><em>
-			HTTP 404<br />
-			File Not Found<br />
-			seneca.lupinia.net<br />
-			(Django)
-		</em></p>
-		<p><em><sub>
-			<strong>Request:</strong><br />
-			{{old_url}}
-		</sub></em></p>
+		<a href="https://github.com/lupinia/awi/" title="GitHub Repository" class="sidebar_link" target="_BLANK">
+			<span class="sidebar_link_title">GitHub Repository</span>
+		</a>
 	</div>
 
 	<div class="right_sidebar_section">
