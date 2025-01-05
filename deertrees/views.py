@@ -100,7 +100,8 @@ class leaf_parent():
 		leaf_content = {}
 		leaf_count = {}
 		assigned_to_blocks = []
-		returned_data = [False,{}]
+		block_output = {}
+		has_blocks = False
 		
 		map = blocks_map.get(view_type, False)
 		if not map:
@@ -131,13 +132,13 @@ class leaf_parent():
 		
 		for block in blocks_to_assign:
 			if map.get(block,False) == 'desc':
-				returned_data[1][block] = ['desc',]
-				returned_data[1]['desc_in_block'] = True
+				block_output[block] = ['desc',]
+				block_output['desc_in_block'] = True
 			else:
 				# If we're here, we need to put some content in this block.
 				# Check the special cases first, then check the leaves.
 				block_is_complete = False
-				returned_data[1][block] = []
+				block_output[block] = []
 				
 				for type in map.get(block,False):
 					block_contents = False
@@ -165,15 +166,15 @@ class leaf_parent():
 							}
 						
 						if block_contents and block_contents.get('data',False):
-							returned_data[1][block].append(block_contents)
-							returned_data[0] = True
+							block_output[block].append(block_contents)
+							has_blocks = True
 							assigned_to_blocks.append(type)
 							
 							# Sidebar is a special case where we're not limited to just one block.
 							if block != 'sidebar':
 								block_is_complete = True
 		
-		return returned_data
+		return (has_blocks, block_output)
 
 
 class homepage(leaf_parent, TemplateView):
