@@ -212,6 +212,18 @@ class tag(models.Model):
 	def rss_description(self):
 		return self.summary_short
 	
+	def add_synonym(self, new_synonym):
+		new_synonym = slugify(new_synonym)
+		duplicate_check = tag_synonym.objects.filter(slug=new_synonym)
+		if duplicate_check:
+			if duplicate_check.first().parent == self:
+				return True
+			else:
+				return False
+		else:
+			tag_synonym.objects.create(slug=new_synonym, parent=self)
+			return True
+	
 	class Meta:
 		ordering = ['slug',]
 
