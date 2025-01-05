@@ -204,6 +204,7 @@
 	> .entry-visible {
 		opacity: 1;
 		filter: alpha(opacity=100);
+		animation: justified-gallery-show-entry-animation 500ms 0 ease;
 		-webkit-animation: justified-gallery-show-entry-animation 500ms 0 ease;
 		-moz-animation: justified-gallery-show-entry-animation 500ms 0 ease;
 		-ms-animation: justified-gallery-show-entry-animation 500ms 0 ease;
