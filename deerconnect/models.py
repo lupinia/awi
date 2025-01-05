@@ -85,7 +85,7 @@ class link(link_base, leaf):
 	
 	def save(self, *args, **kwargs):
 		if not self.basename:
-			self.basename = self.url_domain_name()
+			self.basename = self.url_domain_name
 			if leaf.objects.filter(cat=self.cat, basename=self.basename).exists():
 				self.basename = '%s%d' % (self.basename, link.objects.all().count()+1)
 		super(leaf, self).save(*args, **kwargs)
