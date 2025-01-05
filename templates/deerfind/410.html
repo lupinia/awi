@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block cookiebanner %}{% endblock %}
+
+{% block content_left %}
+	<div class="errorpage">
+		<h3>I Threw That Away (410)</h3>
+		<p class="errorpage_image"><img src="{{STATIC_PREFIX}}images/fluttershy-cleaning.gif" alt="Fluttershy Cleaning" title="Doing a little spring cleaning!" /></p>
+		<p>Just doing a little cleaning, and "{{old_url}}" has been permanently removed.  You can <a href="/contact/">contact Natasha</a> to discuss this if you have questions.<br /><sub>I hope you can forgive me.</sub></p>
+	</div>
+{% endblock %}
+
+{% block content_right %}
+	<div class="right_sidebar_section">
+		<h3>Error Details</h3>
+		<p><code>
+			<strong>HTTP 410</strong><br />
+			Gone<br />
+			seneca.lupinia.net<br />
+			(Django)
+		</code></p>
+		<hr />
+		<p><sub>
+			<strong>Request:</strong></br />
+			<code>{{bad_url}}</code>
+		</sub></p>
+	</div>
+
+	<div class="right_sidebar_section">
+		<h3>Other Links</h3>
+		<a href="/" title="Home" class="sidebar_link">
+			<span class="sidebar_link_title">Home</span>
+		</a>
+		<a href="/contact/" title="Contact" class="sidebar_link">
+			<span class="sidebar_link_title">Contact Info</span>
+		</a>
+		<a href="/about/" title="About" class="sidebar_link">
+			<span class="sidebar_link_title">About</span>
+		</a>
+		<a href="https://github.com/lupinia/awi/" title="GitHub Repository" class="sidebar_link" target="_BLANK">
+			<span class="sidebar_link_title">GitHub Repository</span>
+		</a>
+	</div>
+
+	<div class="right_sidebar_section">
+		<h4>Image Info</h4>
+		<p><em>
+			Screen capture from "My Little Pony"
+		</em></p>
+	</div>
+{% endblock %}
