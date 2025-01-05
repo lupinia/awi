@@ -152,6 +152,14 @@
 {% endblock %}
 
 {% block content_right %}
+	{% if synonym_list %}
+		<div class="right_sidebar_section tag_synonyms">
+			<h4>Synonyms</h4>
+			<ul>{% for synonym in synonym_list %}
+				<li>{{synonym.slug}}</li>
+			{% endfor %}</ul>
+		</div>
+	{% endif %}
 	{% if sidebar or can_edit %}
 		{% for sidebar_block in sidebar %}
 			<div class="right_sidebar_section">

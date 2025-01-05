@@ -299,10 +299,14 @@ class category_list(leaf_parent, DetailView):
 class tag_list(leaf_parent, DetailView):
 	model = tag
 	
+	def get_queryset(self, *args, **kwargs):
+		return super(tag_list, self).get_queryset(*args, **kwargs).prefetch_related('synonyms')
+	
 	def get_context_data(self, **kwargs):
 		context = super(tag_list,self).get_context_data(**kwargs)
 		context['highlight_featured'] = self.highlight_featured
 		context['no_access_codes'] = True
+		context['synonym_list'] = context['object'].synonyms.all()
 		if context['object'].can_edit(self.request)[0]:
 			context['return_to'] = context['object'].get_absolute_url()
 			context['can_edit'] = True

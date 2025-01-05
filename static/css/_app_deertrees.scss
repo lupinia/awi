@@ -4,15 +4,24 @@
 //	www.lupinia.net | github.com/lupinia
 
 /*	App:  DeerTrees	*/
-.right_sidebar_section .tag_list_item .hovericons16 {
-	float:right;
-	clear:right;
-	@include hovericons(12px,none,$color_bg_hover,2px);
+.right_sidebar_section {
+	&.tag_synonyms ul {
+		padding-left: 20px;
+		margin-top: 7px;
+		margin-bottom: 7px;
+		li { font-size: smaller; }
+	}
 	
-	img {
-		width:12px;
-		height:12px;
-		vertical-align:top;
+	.tag_list_item .hovericons16 {
+		float:right;
+		clear:right;
+		@include hovericons(12px,none,$color_bg_hover,2px);
+		
+		img {
+			width:12px;
+			height:12px;
+			vertical-align:top;
+		}
 	}
 }
 
