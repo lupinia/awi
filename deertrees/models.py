@@ -174,12 +174,13 @@ class tag(models.Model):
 			return (False,'access_norequest')
 		else:
 			return (request.user.has_perm('deertrees.change_tag'), 'access_perms')
-		return (False,'')
 	
 	@property
 	def synonym_list(self):
 		sluglist = []
 		if self.title:
+			# Why did I write this check?  What problem was I trying to solve?
+			# Is this even what I intended?  Or was this a mistake?
 			sluglist.append(self.slug)
 		
 		synonyms = self.synonyms.all().values_list('slug', flat=True)
