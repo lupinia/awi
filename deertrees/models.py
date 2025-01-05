@@ -224,6 +224,66 @@ class tag(models.Model):
 			tag_synonym.objects.create(slug=new_synonym, parent=self)
 			return True
 	
+	def merge(self, target):
+		"""
+		tag.merge(target) -> (success, reason)
+		Merge target tag into this tag, keeping all relationships for both.
+		sitemap_include will be set to True if it's True for either tag. 
+		Oldest timestamp_post value will be kept.
+		Only this tag's value for slug will be kept, intended use is to simplify overlaps.
+		NOTE:  Object provided as target parameter will be deleted!
+		
+		Returns a tuple:
+			success: Boolean, indicates whether the merge succeeded
+			reason:  String, provides a reason for failure if success is False
+		"""
+		success = False
+		reason = ''
+		if type(self) != type(target):
+			success = False
+			reason = 'object type mismatch'
+		else:
+			# Check whether it already exists
+			duplicate_check = tag_synonym.objects.filter(slug=target.slug)
+			synonym_exists = False
+			if duplicate_check:
+				duplicate = duplicate_check.first()
+				if duplicate.parent != self:
+					success = False
+					reason = 'target is synonym of: %s' % duplicate.parent.slug
+				else:
+					synonym_exists = True
+			
+			# Rectify field differences
+			if target.timestamp_post < self.timestamp_post:
+				# Use the oldest timestamp
+				self.timestamp_post = target.timestamp_post
+			
+			if self.view_type == 'default' and target.view_type != 'default':
+				# If the target has a manual view type, apply it here.
+				self.view_type = target.view_type
+			
+			self.sitemap_include = any([self.sitemap_include, target.sitemap_include])
+			
+			if target.desc:
+				if self.desc:
+					self.desc = '%s\n\nDescription from %s:\n%s' % (self.desc, target.slug, target.desc)
+				else:
+					self.desc = target.desc
+			
+			# Time to merge!
+			# Make sure all items tagged with target are also tagged with self
+			self.leaves.add(*target.leaves.all())
+			target.synonyms.all().update(parent=self)
+			if not synonym_exists:
+				self.add_synonym(target.slug)
+			
+			self.save()
+			target.delete()
+			success = True
+		
+		return (success, reason)
+	
 	class Meta:
 		ordering = ['slug',]
 
