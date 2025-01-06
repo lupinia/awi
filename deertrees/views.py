@@ -20,7 +20,7 @@ from django.views.generic import DetailView, ListView, TemplateView
 
 from awi.utils.types import is_int
 from awi_access.models import access_query
-from deerfind.utils import g2_lookup
+from deerfind.utils import g2_lookup, urlpath
 from deertrees.models import category, tag, leaf, special_feature
 from sunset.utils import sunset_embed
 
@@ -426,36 +426,153 @@ class tag_rssfeed(main_rssfeed):
 
 #	Helper functions imported by other views
 def finder(request):
-	import os
-	return_data = (False,'')
+	"""
+	Standard 404 recovery function for all DeerTrees objects.
+	Requires a request to process.
+	If request.path starts with /tags/, will check for tag or tag_synonym
+	Else, second check is for special_feature objects.
+	Else, third check is for category objects.
 	
-	# Fix the trailing slash
-	if request.path.endswith('/'):
-		basename = os.path.basename(request.path[:-1])
-	else:
-		basename = os.path.basename(request.path)
+	Must return a tuple:
+		is_found:  Boolean, indicates whether a match was returned
+		found_url:  String, contains the URL to redirect to
+	"""
+	is_found = False
+	found_url = ''
 	
-	# Check for special features that were improperly categorized
-	feature_check = special_feature.objects.filter(url__iexact=basename).filter(access_query(request)).select_related().first()
-	if feature_check and feature_check.url_reverse:
-		return_data = (True, reverse(feature_check.url_reverse))
+	check_tags = False
+	check_special_features = True
+	check_cats = True
 	
-	if not return_data[0]:
-		if '.' in basename and basename.lower() != 'index.php' and basename.lower() != 'index.htm' and basename.lower() != 'index.html':
-			# Categories don't have dots in the slug
-			return return_data
+	path = urlpath(request.path, force_lower=True)
+	reverse_suffix = ''
+	is_index_file = False
+	
+	# STEP 1:  Figure out what we're going to do
+	if path.root_dir == 'tags':
+		# Only potentially check for tags if we're in the tags folder
+		check_tags = True
+		check_cats = False
+		check_special_features = False
+	
+	if path.is_file:
+		# Only certain types of files can be found by this function
+		if path.filetype in ['rss', 'atom', 'xml']:
+			# This appears to be an RSS feed
+			suffix_matches = {
+				'feed':'_rss',
+				'featured-images':'_rss_images_featured',
+				'recent-images':'_rss_images_recent',
+			}
+			reverse_suffix = suffix_matches.get(path.filename, '')
+			if not reverse_suffix:
+				# Undefined RSS feed
+				check_cats = False
+				check_tags = False
+			else:
+				# We have a match!
+				if check_tags and path.cwd == 'tags':
+					# Corner case:  We're in the tags root directory, so this is invalid
+					is_found = True
+				
+				if path.filetype != 'xml':
+					# Special case:  XML might be a special feature
+					check_special_features = False
+		
+		elif path.filetype == 'cfm':
+			# Special system/aggregate views
+			suffix_matches = {
+				'featured-images':'_images_featured',
+				'recent-images':'_images_recent',
+			}
+			reverse_suffix = suffix_matches.get(path.filename, '')
+			if reverse_suffix:
+				# We have a match!
+				check_special_features = False
+				if check_tags and path.cwd == 'tags':
+					# Corner case:  We're in the tags root directory, so this is invalid
+					is_found = True
+			else:
+				# Undefined aggregate/special view
+				check_cats = False
+				check_tags = False
+		
+		elif path.filename == 'index' or path.filename == 'default':
+			# Someone sniffing around trying to find index files, but I'll allow it
+			is_index_file = True
+			if check_tags and path.cwd == 'tags':
+				# Corner case:  We're in the tags root directory
+				is_found = True
+				found_url = reverse('all_tags')
+			elif not path.root_dir:
+				# Corner case:  This is the root of the site!
+				is_found = True
+				found_url = '/'
+		
 		else:
-			if '/index.htm' in request.path.lower() or '/index.php' in request.path.lower():
-				urlpath = request.path.lower()
-				urlpath = urlpath.replace('/index.html', '')
-				urlpath = urlpath.replace('/index.htm', '')
-				urlpath = urlpath.replace('/index.php', '')
-				basename = os.path.basename(urlpath)
-			cat_check = category.objects.filter(slug__iexact=basename).filter(access_query(request)).select_related().first()
-			if cat_check:
-				return_data = (True, reverse('category',kwargs={'cached_url':cat_check.cached_url,}))
+			# Request is for a file, but this is the view where we mostly look for directories
+			check_cats = False
+			check_tags = False
 	
-	return return_data
+	# STEP 2:  Check tags!
+	if check_tags and not is_found:
+		# Guess we're doin' tags now
+		# First check:  Matching a tag takes priority
+		# It would be more efficient to do this all in one query,
+		# but there's potential for duplication between tags and synonyms.
+		# In this situation, the tag must take precedence,
+		# but I'm not sure how to sort a queryset like that.
+		tag_check = tag.objects.filter(slug__iexact=path.cwd).first()
+		if not tag_check:
+			# Second check: If this isn't a tag, maybe it's a synonym
+			tag_check = tag.objects.filter(synonyms__slug__iexact=path.cwd).first()
+		
+		# Did we get something?
+		if tag_check:
+			# Found it!  Yay!
+			is_found = True
+			found_url = reverse('tag%s' % reverse_suffix, kwargs={'slug':tag_check.slug,})
+		else:
+			# We found nothing, but /tags is a special directory, so nothing else should be checked
+			is_found = True
+			found_url = ''
+	
+	# STEP 3:  Check special features!
+	if check_special_features and not is_found:
+		if is_index_file:
+			# Corner case: Someone tried to look for an index file in a special_feature that behaves like a directory
+			feature_check = special_feature.objects.filter(url__iexact=path.cwd, directory=True).select_related().first()
+		else:
+			feature_check = special_feature.objects.filter(url__iexact=path.basename).select_related().first()
+		
+		if feature_check and feature_check.url_reverse:
+			is_found = True
+			perm_check, reason = feature_check.can_view(request)
+			if perm_check:
+				found_url = reverse(feature_check.url_reverse)
+			else:
+				# We found something, but without permission to view it, so stop looking
+				found_url = ''
+	
+	# STEP 4:  Check categories!
+	# TO DO:  This logic is wrong and needs to be rewritten
+	if check_cats and not is_found:
+		search_slug = path.basename
+		if path.is_file:
+			search_slug = path.cwd
+		
+		cat_check = category.objects.filter(slug__iexact=search_slug).select_related().first()
+		if cat_check:
+			is_found = True
+			perm_check, reason = cat_check.can_view(request)
+			if perm_check:
+				found_url = reverse('category',kwargs={'cached_url':cat_check.cached_url,})
+			else:
+				# We found something, but without permission to view it, so stop looking
+				found_url = ''
+	
+	# STEP 5: All done!  Return whatever we found, if we found anything!
+	return (is_found, found_url)
 
 
 def subcats(parent=False, parent_type=False, request=False):
