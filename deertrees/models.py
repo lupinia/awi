@@ -424,9 +424,6 @@ class leaf(access_control):
 			return False
 	
 	def can_view(self, request=False):
-		if not request:
-			return (False,'access_norequest')
-		
 		public_check = self.is_public()
 		if public_check[0]:
 			return (True, '')
