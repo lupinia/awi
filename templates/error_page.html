@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block cookiebanner %}{% endblock %}
+
+{% block content_left %}
+	<div class="errorpage">
+		<h3>{% block error_flavor_title %}{% endblock %} ({{response_code}})</h3>
+		<p class="errorpage_image"><img src="{{STATIC_PREFIX}}images/{% block error_image %}sad_fluttershy.jpg{% endblock %}" alt="{% block error_image_alt %}Sad Fluttershy{% endblock %}" title="{% block error_image_title %}Fluttershy is really sad that the site is broken!{% endblock %}" /></p>
+		{% block error_flavor_text %}
+		{% endblock %}
+	</div>
+{% endblock %}
+
+{% block content_right %}
+	<div class="right_sidebar_section">
+		<h3>Error Details</h3>
+		<p><code>
+			<strong>HTTP {{response_code}}</strong><br />
+			{{response_code_name}}<br />
+			{{server_canonical_name}}<br />
+			(Django)
+		</code></p>
+	</div>
+
+	<div class="right_sidebar_section">
+		<h3>Other Links</h3>
+		<a href="/" title="Home" class="sidebar_link">
+			<span class="sidebar_link_title">Home</span>
+		</a>
+		<a href="/contact/" title="Contact" class="sidebar_link">
+			<span class="sidebar_link_title">Contact Info</span>
+		</a>
+		<a href="/about/" title="About" class="sidebar_link">
+			<span class="sidebar_link_title">About</span>
+		</a>
+		<a href="https://github.com/lupinia/awi/" title="GitHub Repository" class="sidebar_link" target="_BLANK">
+			<span class="sidebar_link_title">GitHub Repository</span>
+		</a>
+	</div>
+
+	<div class="right_sidebar_section">
+		<h4>Image Info</h4>
+		<p><em>{% block error_image_credit %}
+		{% endblock %}</em></p>
+	</div>
+{% endblock %}
