@@ -14,7 +14,7 @@
 		<div class="tag_list_item">
 			{% for tag in tags %}
 				{% if return_to and can_edit %}<div class="hovericons16"><a href="?remove_tag={{tag.pk}}" title="Remove Tag ({{tag}})"><img src="{{STATIC_PREFIX}}images/icons/delete.png" alt="Remove" title="Remove Tag ({{tag}})" /></a></div>{% endif %}
-				<a class="sidebar_link" href="{% url 'tag' tag.slug %}" rel="tag">{{tag}}</a>
+				<a class="sidebar_link{% if not tag.public %} restricted{% endif %}" href="{% url 'tag' tag.slug %}" rel="tag">{{tag}}</a>
 			{% endfor %}
 		</div>
 	</div>
