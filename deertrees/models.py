@@ -270,6 +270,16 @@ class tag(models.Model):
 				else:
 					self.desc = target.desc
 			
+			if target.title:
+				if self.title:
+					if self.title != target.title:
+						if self.desc:
+							self.desc = 'aka %s\n%s' % (target.title, self.desc)
+						else:
+							self.desc = 'aka %s' % target.title
+				else:
+					self.title = target.title
+			
 			# Time to merge!
 			# Make sure all items tagged with target are also tagged with self
 			self.leaves.add(*target.leaves.all())
