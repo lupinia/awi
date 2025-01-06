@@ -15,6 +15,7 @@ from django.views.generic import DetailView
 
 from awi_access.models import access_query
 from deerbooks.models import page, toc, export_file
+from deerfind.utils import urlpath
 from deertrees.views import leaf_view
 from sunset.utils import sunset_embed
 
@@ -168,36 +169,39 @@ def recent_widget(parent=False, parent_type=False, request=False):
 
 
 def finder(request):
-	import os
-	return_data = (False,'')
+	is_found = False
+	found_url = ''
+	path = urlpath(request.path, force_lower=True)
 	
-	basename=os.path.basename(request.path)
-	if '.' in basename:
-		search_slug_list = basename.split('.')
-		search_slug = search_slug_list[0]
-		search_type = search_slug_list[-1].lower()
-		
-		page_check = page.objects.filter(basename__iexact=search_slug).filter(access_query(request)).select_related().prefetch_related('docfiles').first()
+	if path.is_file:
+		# Only proceed if this path contains a filename
+		page_check = page.objects.filter(basename__iexact=path.filename).select_related().prefetch_related('docfiles').first()
 		if page_check:
-			# Yay!  We found a match that you're allowed to view!
-			# Now let's figure out what type of URL to send back.
-			# php, htm, and html are definitely a page object
-			# pdf, dvi, ps, and epub are definitely an export_file object
-			# txt, md, and tex could be either one
-			is_page = ['php','htm','html','txt','md','tex']
-			is_file = ['pdf','dvi','ps','epub','rtf','docx','txt','md','tex']
-			
-			# Uploaded files take priority
-			if search_type in is_file and not return_data[0]:
-				check_file = page_check.docfiles.filter(filetype=search_type).first()
-				if check_file:
-					return_data = (True, check_file.get_url())
-			
-			# We didn't find it in the uploaded files, so maybe it's a page?
-			if search_type in is_page and not return_data[0]:
-				if search_type == 'php' or search_type == 'html':
-					search_type = 'htm'
+			# Yay!  We found a match!  But can you view it?
+			is_found = True
+			perm_check, reason = page_check.can_view(request)
+			if perm_check or reason == 'access_mature_prompt':
+				# Yay!  We found a match that you're allowed to view!
+				# Now let's figure out what type of URL to send back.
+				# php, htm, and html are definitely a page object
+				# pdf, dvi, ps, and epub are definitely an export_file object
+				# txt, md, and tex could be either one
+				is_page = ['php','htm','html','txt','md','tex']
+				is_file = ['pdf','dvi','ps','epub','rtf','docx','txt','md','tex']
 				
-				return_data = (True,reverse('page_%s' % search_type, kwargs={'cached_url':page_check.cat.cached_url, 'slug':page_check.basename}))
+				# Uploaded files take priority
+				if path.filetype in is_file:
+					check_file = page_check.docfiles.filter(filetype=path.filetype).first()
+					if check_file:
+						found_url = check_file.get_url()
+				
+				# We didn't find it in the uploaded files, so maybe it's a page?
+				if path.filetype in is_page and not found_url:
+					if path.filetype == 'php' or path.filetype == 'html':
+						search_type = 'htm'
+					else:
+						search_type = path.filetype
+					
+					found_url = reverse('page_%s' % search_type, kwargs={'cached_url':page_check.cat.cached_url, 'slug':page_check.basename})
 	
-	return return_data
+	return (is_found, found_url)
