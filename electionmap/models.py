@@ -157,6 +157,10 @@ class results(models.Model):
 		else:
 			return ''
 	
+	@property
+	def name(self):
+		return self.state.abbr
+	
 	def append_status_label(self, input):
 		if self.status:
 			return '%s (%s)' % (input, self.status.capitalize())
@@ -172,11 +176,11 @@ class results_house(results):
 	district = models.PositiveSmallIntegerField(default=1)
 	
 	@property
-	def district_name(self):
+	def name(self):
 		return '%s-%d' % (self.state.abbr, self.district)
 	
-		return '%s: %s' % (self.district_name, self.append_status_label(self.party))
 	def __str__(self):
+		return '%s: %s' % (self.name, self.append_status_label(self.party))
 	
 	class Meta(results.Meta):
 		unique_together = (('state', 'election_year', 'source', 'district'),)
@@ -200,6 +204,13 @@ class results_president(results):
 	@property
 	def district_name(self):
 		return '%s-%d' % (self.state.abbr, self.district)
+	
+	@property
+	def name(self):
+		if self.district:
+			return self.district_name
+		else:
+			return self.state.abbr
 	
 	def __str__(self):
 		return '%s: %s' % (self.district_name, self.append_status_label(self.party))
