@@ -68,6 +68,7 @@ def settings_vars(request):
 		debug_white_bg:  Bool, True if settings.DEBUG is True and ?nobg=1 in URL
 		mapbox_token:  Value of settings.MAPBOX_KEY
 		locale:  Value of settings.LANGUAGE_CODE
+		server_canonical_name:  Value of settings.SERVER_CANONICAL_NAME
 	"""
 	bg_white = False
 	if settings.DEBUG and request.GET.get('nobg',False):
@@ -78,6 +79,7 @@ def settings_vars(request):
 		'debug_white_bg':bg_white,
 		'mapbox_token':settings.MAPBOX_KEY,
 		'locale':settings.LANGUAGE_CODE,
+		'server_canonical_name':settings.SERVER_CANONICAL_NAME,
 	}
 
 def meta(request):
