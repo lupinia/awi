@@ -109,7 +109,12 @@ def not_found(request):
 		if request.META.get('QUERY_STRING',False):
 			context_path = '%s?%s' % (context_path, request.META.get('QUERY_STRING',''))
 		
-		context = {'old_url':context_path, 'title_page':"File Not Found (404)",}
+		context = {
+			'old_url':context_path,
+			'title_page':"File Not Found (HTTP 404)",
+			'response_code':'404',
+			'response_code_name':'File Not Found',
+		}
 		
 		#	Run a search query, in case what they're looking for can be found with search.
 		#	First, let's clean up the URL and turn it into something we can search.

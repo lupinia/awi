@@ -1,50 +1,12 @@
-{% extends "base.html" %}
-{% block cookiebanner %}{% endblock %}
+{% extends "error_page.html" %}
 
-{% block content_left %}
-	<div class="errorpage">
-		<h3>I'm Sorry...I Tried To Find It, I Really Did!  (404)</h3>
-		<p class="errorpage_image"><img src="{{STATIC_PREFIX}}images/scared_fluttershy.gif" alt="Scared Fluttershy" title="Fluttershy is really sorry we couldn't find your file!" /></p>
-		<p>I'm so sorry!  I tried to find "{{old_url}}", but I just don't know where it is.  I looked everywhere!  Please don't be mad!  {% if search_result %}I did find "<a href="{{search_result_url}}">{{search_result_title}}</a>", though, is that what you were looking for?  I wasn't quite sure.</p><p>{% endif %}Would you like to <a href="{% url 'haystack_search' %}?q={{search_query}}">try searching for your request</a>?  Or would you like to <a href="/">return home</a>?  Do you need a hug, or some tea?</p>
-	</div>
+{% block error_flavor_title %}I'm Sorry...I Tried To Find It, I Really Did!{% endblock %}
+{% block error_flavor_text %}
+	<p>I'm so sorry!  I tried to find "{{old_url}}", but I just don't know where it is.  I looked everywhere!  Please don't be mad!  {% if search_result %}I did find "<a href="{{search_result_url}}">{{search_result_title}}</a>", though, is that what you were looking for?  I wasn't quite sure.</p>
+	<p>{% endif %}Would you like to <a href="{% url 'haystack_search' %}?q={{search_query}}">try searching for your request</a>?  Or would you like to <a href="/">return home</a>?  Do you need a hug, or some tea?</p>
 {% endblock %}
 
-{% block content_right %}
-	<div class="right_sidebar_section">
-		<h3>Error Details</h3>
-		<p><code>
-			<strong>HTTP 404</strong><br />
-			File Not Found<br />
-			seneca.lupinia.net<br />
-			(Django)
-		</code></p>
-		<hr />
-		<p><sub>
-			<strong>Request:</strong></br />
-			<code>{{bad_url}}</code>
-		</sub></p>
-	</div>
-
-	<div class="right_sidebar_section">
-		<h3>Other Links</h3>
-		<a href="/" title="Home" class="sidebar_link">
-			<span class="sidebar_link_title">Home</span>
-		</a>
-		<a href="/contact/" title="Contact" class="sidebar_link">
-			<span class="sidebar_link_title">Contact Info</span>
-		</a>
-		<a href="/about/" title="About" class="sidebar_link">
-			<span class="sidebar_link_title">About</span>
-		</a>
-		<a href="https://github.com/lupinia/awi/" title="GitHub Repository" class="sidebar_link" target="_BLANK">
-			<span class="sidebar_link_title">GitHub Repository</span>
-		</a>
-	</div>
-
-	<div class="right_sidebar_section">
-		<h4>Image Info</h4>
-		<p><em>
-			Screen capture from "My Little Pony"
-		</em></p>
-	</div>
-{% endblock %}
+{% block error_image %}scared_fluttershy.gif{% endblock %}
+{% block error_image_alt %}Scared Fluttershy{% endblock %}
+{% block error_image_title %}Fluttershy is really sorry we couldn't find your file!{% endblock %}
+{% block error_image_credit %}Screen capture from "My Little Pony"{% endblock %}

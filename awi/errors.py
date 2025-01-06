@@ -18,6 +18,12 @@ def system_error(request):
 	type, value, tb = sys.exc_info()
 	if value is None:
 		value = 'No exception info found'
-	context = {'error_value':value, 'title_page':"System Error (500)",}
+	
+	context = {
+		'error_value':value,
+		'title_page':"System Error (HTTP 500)",
+		'response_code':'500',
+		'response_code_name':'Internal Server Error',
+	}
 	
 	return HttpResponseServerError(content=template.render(context, request), content_type='text/html; charset=utf-8')

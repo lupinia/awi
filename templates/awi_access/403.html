@@ -1,54 +1,15 @@
-{% extends "base.html" %}
-{% block cookiebanner %}{% endblock %}
+{% extends "error_page.html" %}
 
-{% block content_left %}
-	<div class="errorpage">
-		<h3>And Just Where Do You Think You're Going?  (403)</h3>
-		<p class="errorpage_image"><img src="{{STATIC_PREFIX}}images/angry_fluttershy.gif" alt="Angry Fluttershy" title="How dare you intrude on Fluttershy's privacy!" /></p>
-		<p>Hold it right there!  What do you think you're doing?  You think you can just barge in and do whatever?  You should really be more considerate of other ponies' privacy.  Just because you know where "{{bad_url}}" is, doesn't mean you're supposed to look at it.  You should be ashamed of yourself!</p>
-		<p>Now I want you to <a href="/">go home</a> and think about what you've done.</p>
-		<p><sub>Umm, I mean, if you're not too busy or anything.</sub></p>
-		<p><sub><em>Did you see that?  I was so assertive!  I'm so proud of myself I could scream!</em></sub></p>
-		<p><sub><em>*squeak!*</em></sub></p>
-	</div>
+{% block error_flavor_title %}And Just Where Do You Think You're Going?{% endblock %}
+{% block error_flavor_text %}
+	<p>Hold it right there!  What do you think you're doing?  You think you can just barge in and do whatever?  You should really be more considerate of other ponies' privacy.  Just because you know where "{{bad_url}}" is, doesn't mean you're supposed to look at it.  You should be ashamed of yourself!</p>
+	<p>Now I want you to <a href="/">go home</a> and think about what you've done.</p>
+	<p><sub>Umm, I mean, if you're not too busy or anything.</sub></p>
+	<p><sub><em>Did you see that?  I was so assertive!  I'm so proud of myself I could scream!</em></sub></p>
+	<p><sub><em>*squeak!*</em></sub></p>
 {% endblock %}
 
-{% block content_right %}
-	<div class="right_sidebar_section">
-		<h3>Error Details</h3>
-		<p><code>
-			<strong>HTTP 403</strong><br />
-			Forbidden<br />
-			seneca.lupinia.net<br />
-			(Django)
-		</code></p>
-		<hr />
-		<p><sub>
-			<strong>Request:</strong></br />
-			<code>{{bad_url}}</code>
-		</sub></p>
-	</div>
-
-	<div class="right_sidebar_section">
-		<h3>Other Links</h3>
-		<a href="/" title="Home" class="sidebar_link">
-			<span class="sidebar_link_title">Home</span>
-		</a>
-		<a href="/contact/" title="Contact" class="sidebar_link">
-			<span class="sidebar_link_title">Contact Info</span>
-		</a>
-		<a href="/about/" title="About" class="sidebar_link">
-			<span class="sidebar_link_title">About</span>
-		</a>
-		<a href="https://github.com/lupinia/awi/" title="GitHub Repository" class="sidebar_link" target="_BLANK">
-			<span class="sidebar_link_title">GitHub Repository</span>
-		</a>
-	</div>
-
-	<div class="right_sidebar_section">
-		<h4>Image Info</h4>
-		<p><em>
-			Screen capture from "My Little Pony"
-		</em></p>
-	</div>
-{% endblock %}
+{% block error_image %}angry_fluttershy.gif{% endblock %}
+{% block error_image_alt %}Angry Fluttershy{% endblock %}
+{% block error_image_title %}How dare you intrude on Fluttershy's privacy!{% endblock %}
+{% block error_image_credit %}Screen capture from "My Little Pony"{% endblock %}

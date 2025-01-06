@@ -1,50 +1,18 @@
-{% extends "base.html" %}
-{% block cookiebanner %}{% endblock %}
+{% extends "error_page.html" %}
 
-{% block content_left %}
-	<div class="errorpage">
-		<h3>I'm Sorry...Something's Wrong, and I Couldn't Fix It!  (500)</h3>
-		<p class="errorpage_image"><img src="{{STATIC_PREFIX}}images/sad_fluttershy.jpg" alt="Sad Fluttershy" title="Fluttershy is really sad that the site is broken!" /></p>
-		<p>I'm really sorry, but there's an error in the site.  I tried so hard to get everything right.  Do you need a hug?</p>
-		<p>I notified Natasha to tell her that there's a problem, I'm sure she'll fix it soon.  You can try again in a little while, if that's ok with you, maybe it'll work then.</p>
-		<p><sub>I wish I could fix it for you myself...maybe someday...</sub></p>
-		<p><strong><em>Oh!</em></strong>  I almost forgot, you can also report problems on GitHub!  All you have to do is <a href="https://github.com/lupinia/awi/issues">open an issue about this</a>, it's really easy!  Just make sure you say a little something about what you were doing, and include this part:  <code>{{error_value}}</code>.</p>
-		<p><sub>And, umm, please be nice?  If that's ok with you?</sub></p>
-	</div>
+{% block error_flavor_title %}I'm Sorry...Something's Wrong, and I Couldn't Fix It!{% endblock %}
+{% block error_flavor_text %}
+	<p>I'm really sorry, but there's an error in the site.  I tried so hard to get everything right.  Do you need a hug?</p>
+	<p>I notified Natasha to tell her that there's a problem, I'm sure she'll fix it soon.  You can try again in a little while, if that's ok with you, maybe it'll work then.</p>
+	<p><sub>I wish I could fix it for you myself...maybe someday...</sub></p>
+	<p><strong><em>Oh!</em></strong>  I almost forgot, you can also report problems on GitHub!  All you have to do is <a href="https://github.com/lupinia/awi/issues">open an issue about this</a>, it's really easy!  Just make sure you say a little something about what you were doing, and include this part:  <code>{{error_value}}</code>.</p>
+	<p><sub>And, umm, please be nice?  If that's ok with you?</sub></p>
 {% endblock %}
 
-{% block content_right %}
-	<div class="right_sidebar_section">
-		<h3>Error Details</h3>
-		<p><code>
-			<strong>HTTP 500</strong><br />
-			Internal Server Error<br />
-			seneca.lupinia.net<br />
-			(Django)
-		</code></p>
-	</div>
-
-	<div class="right_sidebar_section">
-		<h3>Other Links</h3>
-		<a href="/" title="Home" class="sidebar_link">
-			<span class="sidebar_link_title">Home</span>
-		</a>
-		<a href="/contact/" title="Contact" class="sidebar_link">
-			<span class="sidebar_link_title">Contact Info</span>
-		</a>
-		<a href="/about/" title="About" class="sidebar_link">
-			<span class="sidebar_link_title">About</span>
-		</a>
-		<a href="https://github.com/lupinia/awi/" title="GitHub Repository" class="sidebar_link" target="_BLANK">
-			<span class="sidebar_link_title">GitHub Repository</span>
-		</a>
-	</div>
-
-	<div class="right_sidebar_section">
-		<h4>Image Info</h4>
-		<p><em>
-			"Rain Won't Wipe Away the Tears"<br />
-			<sub><a href="http://johnjoseco.deviantart.com/art/Rain-Won-t-Wipe-Away-the-Tears-212771889">By John Joseco</a></sub>
-		</em></p>
-	</div>
+{% block error_image %}sad_fluttershy.jpg{% endblock %}
+{% block error_image_alt %}Sad Fluttershy{% endblock %}
+{% block error_image_title %}Fluttershy is really sad that the site is broken!{% endblock %}
+{% block error_image_credit %}
+	"Rain Won't Wipe Away the Tears"<br />
+		<sub><a href="http://johnjoseco.deviantart.com/art/Rain-Won-t-Wipe-Away-the-Tears-212771889">By John Joseco</a></sub>
 {% endblock %}
