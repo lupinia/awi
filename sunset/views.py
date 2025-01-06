@@ -127,9 +127,9 @@ class img_aggregate_tag(img_aggregate):
 	def build_queryset(self, queryset=None, **kwargs):
 		if kwargs.get(self.slug_url_kwarg, False):
 			self.root = get_object_or_404(tag, **{self.slug_field: kwargs[self.slug_url_kwarg],})
-			return super(img_aggregate_cat, self).build_queryset(queryset, **kwargs).filter(tag=self.root)
+			return super(img_aggregate_tag, self).build_queryset(queryset, **kwargs).filter(tags=self.root)
 		else:
-			return super(img_aggregate_cat, self).build_queryset(queryset, **kwargs).none()
+			return super(img_aggregate_tag, self).build_queryset(queryset, **kwargs).none()
 
 class img_cat_view(img_aggregate_cat, ListView):
 	def get_queryset(self):
@@ -171,7 +171,7 @@ class img_cat_view(img_aggregate_cat, ListView):
 			for crumb in ancestors:
 				context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
 			
-			context['breadcrumbs'].append({'url':reverse('cat_images_%s' % self.viewtype, kwargs={'cached_url':self.root.cached_url,}), 'title':self.view_title_base()})
+			context['breadcrumbs'].append({'url':reverse('category_images_%s' % self.viewtype, kwargs={'cached_url':self.root.cached_url,}), 'title':self.view_title_base()})
 			
 			# Metadata
 			context['title_page'] = self.view_title()
