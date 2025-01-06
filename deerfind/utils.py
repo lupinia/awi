@@ -68,6 +68,70 @@ def g2_lookup(g2id=0, request=None):
 	
 	return (url, error)
 
+
+class urlpath(object):
+	raw_path = None
+	path_parts = []
+	dir_separator = '/'
+	to_lower = False
+	
+	basename = ''		# Last portion of the path, whatever it is
+	filename = ''		# Basename without file extension, if it has one
+	filetype = ''		# File extension, if it has one
+	cwd = ''			# Working dir; immediate parent if basename is a filename
+	root_dir = ''		# Highest-level directory other than root
+	is_file = False		# Indicates whether this is a file or directory
+	
+	def __init__(self, url, *args, **kwargs):
+		self.dir_separator = kwargs.pop('separator', self.dir_separator)
+		self.to_lower = kwargs.pop('force_lower', self.to_lower)
+		self.raw_path = self.set_case(url)
+		self.split_path()
+	
+	def set_case(self, input):
+		if self.to_lower:
+			return input.lower()
+		else:
+			return input
+	
+	def split_path(self):
+		self.path_parts = self.raw_path.split(self.dir_separator)
+		self.path_parts = [x for x in self.path_parts if x]	# I will never comprehend list comprehension
+		
+		self.basename = self.last_path_part()
+		if '.' in self.last_path_part():
+			# Only do this if basename is a file
+			self.basename = self.path_parts.pop(-1)
+			self.filename, self.filetype = self.basename.rsplit('.', 1)
+			self.is_file = True
+		
+		self.cwd = self.last_path_part()
+		self.root_dir = self.first_path_part()
+	
+	def last_path_part(self):
+		if self.path_parts:
+			return self.path_parts[-1]
+		else:
+			return ''
+	
+	def first_path_part(self):
+		if self.path_parts:
+			return self.path_parts[0]
+		else:
+			return ''
+	
+	@property
+	def depth(self):
+		return len(self.path_parts)
+	
+	@property
+	def dir_full(self):
+		if self.path_parts:
+			return self.dir_separator.join(self.path_parts)
+		else:
+			return ''
+
+
 #	Temporary tools for building the G2 object map
 
 def map(img, g2):
