@@ -195,22 +195,12 @@ class img_all_view(img_aggregate, ListView):
 			self.request.session['deerfind_norecover'] = True
 			raise Http404
 
-class img_cat_feed(img_aggregate_cat, Feed):
+class img_aggregate_feed(Feed):
 	author_name = "Natasha L."
 	item_author_name = "Natasha L."
 	description = "Photography, writing, and creative works by Natasha L."
 	feed_copyright = timezone.now().strftime('Copyright (c) 2000-%Y Natasha L.')
 	kwargs = {}
-	
-	def get_object(self, request, **kwargs):
-		self.kwargs = kwargs
-		obj = get_object_or_404(category, cached_url=kwargs.get('cached_url',None))
-		if obj.can_view(request)[0]:
-			self.viewtype = kwargs.get('viewtype', 'recent')
-			return obj
-		else:
-			request.session['deerfind_norecover'] = True
-			raise Http404
 	
 	def items(self, obj=None):
 		if obj:
@@ -220,12 +210,6 @@ class img_cat_feed(img_aggregate_cat, Feed):
 	
 	def title(self):
 		return self.view_title()
-	
-	def link(self, obj=None):
-		if obj:
-			return reverse('cat_images_%s' % self.viewtype, kwargs={'cached_url':obj.cached_url,})
-		else:
-			return "/"
 	
 	def item_pubdate(self, item):
 		return item.timestamp_upload
@@ -250,6 +234,23 @@ class img_cat_feed(img_aggregate_cat, Feed):
 	def item_enclosure_mime_type(self, item):
 		enclosure_obj = getattr(item, 'rss_enclosure_obj', None)
 		return getattr(enclosure_obj, 'rss_enclosure_type', None)
+
+class img_cat_feed(img_aggregate_cat, img_aggregate_feed):
+	def get_object(self, request, **kwargs):
+		self.kwargs = kwargs
+		obj = get_object_or_404(category, cached_url=kwargs.get('cached_url',None))
+		if obj.can_view(request)[0]:
+			self.viewtype = kwargs.get('viewtype', 'recent')
+			return obj
+		else:
+			request.session['deerfind_norecover'] = True
+			raise Http404
+	
+	def link(self, obj=None):
+		if obj:
+			return reverse('category_images_%s' % self.viewtype, kwargs={'cached_url':obj.cached_url,})
+		else:
+			return "/"
 
 
 def geojson_image(request, slug, **kwargs):
