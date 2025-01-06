@@ -17,7 +17,7 @@ class tag_map(Sitemap):
 	changefreq = 'monthly'
 	
 	def items(self):
-		return tag.objects.filter(sitemap_include=True)
+		return tag.objects.filter(sitemap_include=True, public=True)
 	
 	def lastmod(self, obj):
 		return obj.timestamp_mod

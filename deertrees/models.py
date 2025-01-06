@@ -152,6 +152,8 @@ class tag(models.Model):
 	
 	view_type = models.CharField(choices=viewtype_options(), max_length=15, default='default', help_text='Determines the placement of content when this tag is displayed.')
 	sitemap_include = models.BooleanField(default=True, verbose_name='include in sitemap', help_text='Check this box to include this tag in sitemap views.')
+	public = models.BooleanField(default=True, blank=True, db_index=True)
+	
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
@@ -173,6 +175,21 @@ class tag(models.Model):
 			return (False,'access_norequest')
 		else:
 			return (request.user.has_perm('deertrees.change_tag'), 'access_perms')
+	
+	def can_view(self, request=False):
+		if self.public:
+			return (True, '')
+		else:
+			if request:
+				if request.user.is_superuser:
+					return (True, '')
+				else:
+					return (False, 'access_404')
+			else:
+				return (False, 'access_norequest')
+	
+	def is_public(self):
+		return self.public
 	
 	@property
 	def synonym_list(self):
@@ -581,7 +598,7 @@ class leaf(access_control):
 	
 	@property
 	def tags_list(self):
-		return self.tags.all().values_list('slug', flat=True)
+		return self.tags.filter(public=True).values_list('slug', flat=True)
 	
 	class Meta:
 		unique_together = ('basename', 'cat')

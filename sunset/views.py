@@ -191,25 +191,31 @@ class img_tag_view(img_aggregate_tag, ListView):
 		if not self.root:
 			raise Http404
 		
-		if self.viewtype == 'featured':
-			context['highlight_featured'] = False
+		canview, reason = self.root.can_view(self.request)
+		if not canview:
+			if reason == 'access_404':
+				self.request.session['deerfind_norecover'] = True
+			raise Http404
 		else:
-			context['highlight_featured'] = True
-		
-		context['title_view'] = self.view_title_base()
-		context['tag'] = self.root
-		
-		# Breadcrumbs
-		if not context.get('breadcrumbs',False):
-			context['breadcrumbs'] = []
-		
-		context['breadcrumbs'].append({'url':reverse('all_tags'), 'title':'Tags'})
-		context['breadcrumbs'].append({'url':reverse('tag',kwargs={'slug':self.root.slug,}), 'title':unicode(self.root)}) # type: ignore
-		context['breadcrumbs'].append({'url':reverse('tag_images_%s' % self.viewtype, kwargs={'slug':self.root.slug,}), 'title':self.view_title_base()})
-		
-		# Metadata
-		context['title_page'] = self.view_title()
-		
+			if self.viewtype == 'featured':
+				context['highlight_featured'] = False
+			else:
+				context['highlight_featured'] = True
+			
+			context['title_view'] = self.view_title_base()
+			context['tag'] = self.root
+			
+			# Breadcrumbs
+			if not context.get('breadcrumbs',False):
+				context['breadcrumbs'] = []
+			
+			context['breadcrumbs'].append({'url':reverse('all_tags'), 'title':'Tags'})
+			context['breadcrumbs'].append({'url':reverse('tag',kwargs={'slug':self.root.slug,}), 'title':unicode(self.root)}) # type: ignore
+			context['breadcrumbs'].append({'url':reverse('tag_images_%s' % self.viewtype, kwargs={'slug':self.root.slug,}), 'title':self.view_title_base()})
+			
+			# Metadata
+			context['title_page'] = self.view_title()
+			
 		return context
 
 class img_all_view(img_aggregate, ListView):
@@ -283,8 +289,12 @@ class img_tag_feed(img_aggregate_tag, img_aggregate_feed):
 	def get_object(self, request, **kwargs):
 		self.kwargs = kwargs
 		obj = get_object_or_404(tag, slug=kwargs.get('slug',None))
-		self.viewtype = kwargs.get('viewtype', 'recent')
-		return obj
+		if obj.can_view(request)[0]:
+			self.viewtype = kwargs.get('viewtype', 'recent')
+			return obj
+		else:
+			request.session['deerfind_norecover'] = True
+			raise Http404
 	
 	def link(self, obj=None):
 		if obj:

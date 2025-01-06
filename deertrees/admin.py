@@ -70,14 +70,15 @@ class synonym_inline(admin.TabularInline):
 class tag_admin(admin.ModelAdmin):
 	fieldsets = [
 		(None,{'fields':(('title','slug'),'desc'),},),
-		("Options",{'fields':(('view_type','sitemap_include'),),},),
+		("Options",{'fields':(('public','sitemap_include'),'view_type',),},),
 		('Time Options',{'fields': (('timestamp_post','timestamp_mod',),),},),
 	]
+	list_filter = ['public', 'sitemap_include', 'timestamp_post', 'timestamp_mod',]
 	
-	list_display=('title','slug')
+	list_display=('display_title','slug')
 	prepopulated_fields={'slug':('title',)}
 	readonly_fields = ['timestamp_mod',]
-	search_fields = ('title','slug')
+	search_fields = ('title','slug','desc',)
 	inlines = [synonym_inline,]
 	
 	def view_on_site(self, obj):

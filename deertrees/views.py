@@ -304,34 +304,44 @@ class tag_list(leaf_parent, DetailView):
 	
 	def get_context_data(self, **kwargs):
 		context = super(tag_list,self).get_context_data(**kwargs)
-		context['highlight_featured'] = self.highlight_featured
-		context['no_access_codes'] = True
-		context['synonym_list'] = context['object'].synonyms.all()
-		if context['object'].can_edit(self.request)[0]:
-			context['return_to'] = context['object'].get_absolute_url()
-			context['can_edit'] = True
-			context['edit_mode'] = 'tags'
+		canview, view_restriction = context['object'].can_view(self.request)
+		if not canview:
+			if view_restriction == 'access_404':
+				self.request.session['deerfind_norecover'] = True
+				raise Http404
+			else:
+				context['object'] = ''
+				context['error'] = view_restriction
 		
-		blocks = self.assemble_blocks(context['object'],'tag',context['object'].view_type)
-		if blocks[0]:
-			context.update(blocks[1])
-			context['rss_feed'] = True
 		else:
-			context['error'] = 'tag_empty'
-		
-		if not context.get('breadcrumbs',False):
-			context['breadcrumbs'] = []
-		
-		context['breadcrumbs'].append({'url':reverse('all_tags'), 'title':'Tags'})
-		context['breadcrumbs'].append({'url':reverse('tag',kwargs={'slug':context['object'].slug,}), 'title':unicode(context['object'])}) # type: ignore
-		
-		context['body_text'] = sunset_embed(context['object'].body_html, self.request)
-		
-		context['title_page'] = str(context['object'])
-		if context['object'].summary_short:
-			context['sitemeta_desc'] = context['object'].summary_short
-		else:
-			context['sitemeta_desc'] = "Tag:  %s" % (str(context['object']))
+			context['highlight_featured'] = self.highlight_featured
+			context['no_access_codes'] = True
+			context['synonym_list'] = context['object'].synonyms.all()
+			if context['object'].can_edit(self.request)[0]:
+				context['return_to'] = context['object'].get_absolute_url()
+				context['can_edit'] = True
+				context['edit_mode'] = 'tags'
+			
+			blocks = self.assemble_blocks(context['object'],'tag',context['object'].view_type)
+			if blocks[0]:
+				context.update(blocks[1])
+				context['rss_feed'] = True
+			else:
+				context['error'] = 'tag_empty'
+			
+			if not context.get('breadcrumbs',False):
+				context['breadcrumbs'] = []
+			
+			context['breadcrumbs'].append({'url':reverse('all_tags'), 'title':'Tags'})
+			context['breadcrumbs'].append({'url':reverse('tag',kwargs={'slug':context['object'].slug,}), 'title':unicode(context['object'])}) # type: ignore
+			
+			context['body_text'] = sunset_embed(context['object'].body_html, self.request)
+			
+			context['title_page'] = str(context['object'])
+			if context['object'].summary_short:
+				context['sitemeta_desc'] = context['object'].summary_short
+			else:
+				context['sitemeta_desc'] = "Tag:  %s" % (str(context['object']))
 		
 		return context
 
@@ -421,7 +431,11 @@ class tag_rssfeed(main_rssfeed):
 	
 	def get_object(self, request, slug):
 		obj = get_object_or_404(tag, slug=slug)
-		return obj
+		if obj.can_view(request)[0]:
+			return obj
+		else:
+			request.session['deerfind_norecover'] = True
+			raise Http404
 
 
 #	Helper functions imported by other views
@@ -531,7 +545,9 @@ def finder(request):
 		if tag_check:
 			# Found it!  Yay!
 			is_found = True
-			found_url = reverse('tag%s' % reverse_suffix, kwargs={'slug':tag_check.slug,})
+			perm_check, reason = tag_check.can_view(request)
+			if perm_check:
+				found_url = reverse('tag%s' % reverse_suffix, kwargs={'slug':tag_check.slug,})
 		else:
 			# We found nothing, but /tags is a special directory, so nothing else should be checked
 			is_found = True
@@ -617,7 +633,10 @@ class leaf_view(DetailView):
 				context['error'] = view_restriction
 		else:
 			# Tags
-			context['tags'] = context['object'].tags.all()
+			if self.request.user.is_superuser:
+				context['tags'] = context['object'].tags.all()
+			else:
+				context['tags'] = context['object'].tags.filter(public=True)
 			context['category'] = context['object'].cat
 			
 			is_public, view_restriction = context['object'].is_public()
@@ -790,6 +809,8 @@ class sitemap(all_cats):
 		context['view'] = 'sitemap'
 		context['cats'] = context['cats'].filter(sitemap_include=True)
 		context['tags'] = tag.objects.filter(sitemap_include=True).annotate(num_leaves=Count('leaves'))
+		if not self.request.user.is_superuser:
+			context['tags'] = context['tags'].filter(public=True)
 		context['title_page'] = "Site Map"
 		return context
 
@@ -806,6 +827,9 @@ class all_tags(ListView):
 			pass
 		else:
 			query = query.filter(sitemap_include=True, leaves__isnull=False)
+		
+		if not self.request.user.is_superuser:
+			query = query.filter(public=True)
 		
 		return query.annotate(num_leaves=Count('leaves')).order_by('-num_leaves','slug')
 	
