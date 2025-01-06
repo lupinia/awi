@@ -14,7 +14,7 @@ from django_mptt_admin.admin import DjangoMpttAdmin
 from awi_access.admin import access_admin
 from deerfind.admin import g2_inline
 
-from deertrees.models import *
+from deertrees.models import category, tag, tag_synonym, external_link, external_link_type, special_feature
 
 class external_link_type_admin(admin.ModelAdmin):
 	list_select_related = True

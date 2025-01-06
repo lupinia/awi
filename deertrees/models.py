@@ -137,7 +137,6 @@ class category(MPTTModel, access_control):
 				return canview
 			else:
 				return super(category, self).can_edit(request, perm_check='deertrees.change_category')
-		return (False,'')
 	
 	class MPTTMeta:
 		order_insertion_by = ['title']
@@ -443,7 +442,6 @@ class leaf(access_control):
 				return canview
 			else:
 				return super(leaf, self).can_edit(request, perm_check='deertrees.change_leaf')
-		return (False,'')
 	
 	def is_public(self):
 		public, restrictions = super(leaf, self).is_public()
