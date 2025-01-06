@@ -75,7 +75,7 @@ class tag_admin(admin.ModelAdmin):
 	]
 	list_filter = ['public', 'sitemap_include', 'timestamp_post', 'timestamp_mod',]
 	
-	list_display=('display_title','slug')
+	list_display=('display_title', 'slug', 'public', 'sitemap_include', 'timestamp_post', 'timestamp_mod',)
 	prepopulated_fields={'slug':('title',)}
 	readonly_fields = ['timestamp_mod',]
 	search_fields = ('title','slug','desc',)
