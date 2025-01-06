@@ -138,13 +138,11 @@ class img_cat_view(img_aggregate_cat, ListView):
 		if queryset.exists():
 			return queryset
 		else:
-			self.request.session['deerfind_norecover'] = True
 			raise Http404
 	
 	def get_context_data(self, **kwargs):
 		context = super(img_cat_view, self).get_context_data(**kwargs)
 		if not self.root:
-			self.request.session['deerfind_norecover'] = True
 			raise Http404
 		
 		canview, reason = self.root.can_view(self.request)
@@ -185,7 +183,6 @@ class img_tag_view(img_aggregate_tag, ListView):
 		if queryset.exists():
 			return queryset
 		else:
-			self.request.session['deerfind_norecover'] = True
 			raise Http404
 
 class img_all_view(img_aggregate, ListView):
