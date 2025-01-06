@@ -67,7 +67,11 @@ urlpatterns = [
 	
 	url(r'^tags/$', deertrees_views.all_tags.as_view(), name='all_tags'),
 	url(r'^tags/(?P<slug>.*)/$', deertrees_views.tag_list.as_view(), name='tag'),
+	url(r'^tags/(?P<slug>.*)/featured\-images\.cfm$', sunset_views.img_tag_view.as_view(), name='tag_images_featured', kwargs={'viewtype':'featured'}),
+	url(r'^tags/(?P<slug>.*)/recent\-images\.cfm$', sunset_views.img_tag_view.as_view(), name='tag_images_recent', kwargs={'viewtype':'recent'}),
 	url(r'^tags/(?P<slug>.*)/feed\.rss$', cache_control(max_age=60*60*6)(deertrees_views.tag_rssfeed()), name='tag_rss'),
+	url(r'^tags/(?P<slug>.*)/featured\-images\.rss$', cache_control(max_age=60*60*6)(sunset_views.img_tag_feed()), name='tag_rss_images_featured', kwargs={'viewtype':'featured'}),
+	url(r'^tags/(?P<slug>.*)/recent\-images\.rss$', cache_control(max_age=60*60*6)(sunset_views.img_tag_feed()), name='tag_rss_images_recent', kwargs={'viewtype':'recent'}),
 	
 	url(r'^about/sitemap\.htm$', cache_control(max_age=60*60*48)(deertrees_views.sitemap.as_view()), name='sitemap_htm', kwargs={'special_feature_slug':'sitemap.htm'}),
 	
