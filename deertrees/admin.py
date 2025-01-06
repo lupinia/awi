@@ -61,6 +61,12 @@ class cat_admin(DjangoMpttAdmin,access_admin):
 	def view_on_site(self, obj):
 		return reverse('category',kwargs={'cached_url':obj.cached_url,})
 
+class synonym_inline(admin.TabularInline):
+	model = tag_synonym
+	extra = 0
+	fields = ['slug', 'timestamp_post', 'timestamp_mod',]
+	readonly_fields = ['timestamp_mod',]
+
 class tag_admin(admin.ModelAdmin):
 	fieldsets = [
 		(None,{'fields':(('title','slug'),'desc'),},),
@@ -72,6 +78,7 @@ class tag_admin(admin.ModelAdmin):
 	prepopulated_fields={'slug':('title',)}
 	readonly_fields = ['timestamp_mod',]
 	search_fields = ('title','slug')
+	inlines = [synonym_inline,]
 	
 	def view_on_site(self, obj):
 		return reverse('tag',kwargs={'slug':obj.slug,})
