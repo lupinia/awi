@@ -16,6 +16,7 @@ from django.views.generic import ListView
 
 from awi.utils.views import json_response
 from awi_access.models import access_query
+from deerfind.utils import urlpath
 from deertrees.models import category, tag
 from deertrees.views import leaf_view
 from sunset.models import *
@@ -365,17 +366,19 @@ def import_folder_widget(parent=False, parent_type=False, request=False):
 
 
 def finder(request):
-	import os
-	return_data = (False,'')
+	is_found = False
+	found_url = ''
+	path = urlpath(request.path, force_lower=True)
 	
-	basename = os.path.basename(request.path)
-	if '.' in basename:
-		search_slug_list = basename.split('.')
-		search_slug = search_slug_list[0]
-		
-		image_check = image.objects.filter(basename__iexact=search_slug).filter(access_query(request)).select_related().first()
+	if path.is_file:
+		# Only proceed if this path contains a filename
+		image_check = image.objects.filter(basename__iexact=path.filename).select_related().first()
 		if image_check:
-			# Yay!  We found a match!  And it's authorized for viewing.
-			return_data = (True, reverse('image_single', kwargs={'cached_url':image_check.cat.cached_url, 'slug':image_check.basename,}))
+			# Yay!  We found a match!  But can you view it?
+			is_found = True
+			perm_check, reason = image_check.can_view(request)
+			if perm_check or reason == 'access_mature_prompt':
+				# Yay!  We found a match that you're allowed to view!
+				found_url = reverse('image_single', kwargs={'cached_url':image_check.cat.cached_url, 'slug':image_check.basename,})
 	
-	return return_data
+	return (is_found, found_url)
