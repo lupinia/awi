@@ -29,7 +29,7 @@ from deerfind.models import pointer, hitlog
 from deerfind.utils import g2_lookup, shortcode_lookup
 
 #	404 Handler
-def not_found(request):
+def not_found(request, exception=None):
 	return_url = False
 	
 	#	First, make sure we're here for an actual 404, instead of "found, but not part of this site", to prevent a redirect loop

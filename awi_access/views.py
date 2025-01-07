@@ -136,7 +136,7 @@ class settings_page(TemplateView):
 		
 		return context
 
-def denied_error(request):
+def denied_error(request, exception=None):
 	"""Custom error page for 403 errors"""
 	template=loader.get_template('awi_access/403.html')
 	if request.META.get('QUERY_STRING',False):
