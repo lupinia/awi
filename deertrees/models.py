@@ -66,6 +66,10 @@ class category(MPTTModel, access_control):
 		return reverse('category', kwargs={'cached_url':self.cached_url,})
 	
 	@property
+	def display_title(self):
+		return self.title
+	
+	@property
 	def content_summary_choices_simplified(self):
 		choices_simplified = []
 		for choice in self.CONTENT_SUMMARY_CHOICES:

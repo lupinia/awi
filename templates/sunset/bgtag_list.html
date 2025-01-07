@@ -2,15 +2,18 @@
 
 {% block content_left %}
 	<div class="left_sidebar">
-		<h2>Background Tags</h2>
+		<h2>Background Image Collections</h2>
+		<p>All background images on this site are selected from my own work.  When a tag or subdirectory doesn't contain images of its own, it can use one of these curated sets as a fallback, depending on which one is most thematically appropriate.</p>
 	</div>
 	
 	<div class="left_sidebar"><div class="leaf_links_wrapper">
 		{% for bgt in background_tag_list %}
 			<div class="leaf_link midheight">
-				<a class="leaf_a {% if bgt.default %}featured{% endif %}" href="{{bgt.get_absolute_url}}" title="Background Tag:  {{bgt}}">
+				<a class="leaf_a {% if bgt.default %}featured{% endif %}" href="{{bgt.get_absolute_url}}" title="Background Collection:  {{bgt.display_title}}">
 					{% if bgt.default %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Default" title="Default Background Images" /></span>{% endif %}
-					<span class="item_summary_head"><span class="item_summary_title">{{bgt}}</span></span><br />
+					<span class="item_summary_head">
+						<span class="item_summary_title">{{bgt.display_title}}</span>
+					</span><br />
 					<span class="item_summary_body">{{bgt.num_images}} image{{bgt.num_images|pluralize}} in set</span>
 				</a>
 			</div>

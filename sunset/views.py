@@ -161,10 +161,13 @@ class img_aggregate_bgtag(img_aggregate):
 	slug_url_kwarg = 'slug'
 	root = None
 	
+	def view_title_base(self):
+		return 'Background Images'
+	
 	def view_title(self):
 		title = self.view_title_base()
 		if self.root:
-			title = u'%s - %s' % (unicode(self.root), title) # type: ignore
+			title = u'%s: %s' % (title, self.root.display_title) # type: ignore
 		return title
 	
 	def build_queryset(self, queryset=None, **kwargs):
@@ -188,22 +191,18 @@ class img_bgtag_view(img_aggregate_bgtag, ListView):
 		if not self.root:
 			raise Http404
 		
-		if self.viewtype == 'featured':
-			context['highlight_featured'] = False
-		else:
-			context['highlight_featured'] = True
-		
+		context['highlight_featured'] = False
 		context['title_view'] = self.view_title_base()
 		context['root_obj'] = self.root
 		context['bg_tag'] = self.root
-		context['root_type'] = 'Background Tag'
+		context['root_type'] = 'Collection'
 		
 		# Breadcrumbs
 		if not context.get('breadcrumbs',False):
 			context['breadcrumbs'] = []
 		
-		context['breadcrumbs'].append({'url':reverse('sunset_bgtags_all'), 'title':'Background Tags'})
-		context['breadcrumbs'].append({'url':reverse('sunset_bgtag', kwargs={'slug':self.root.tag,}), 'title':unicode(self.root)}) # type: ignore
+		context['breadcrumbs'].append({'url':reverse('sunset_bgtags_all'), 'title':'Background Image Collections'})
+		context['breadcrumbs'].append({'url':reverse('sunset_bgtag', kwargs={'slug':self.root.tag,}), 'title':self.root.display_title})
 		
 		# Metadata
 		context['title_page'] = self.view_title()

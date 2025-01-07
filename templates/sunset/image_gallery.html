@@ -5,10 +5,10 @@
 {% block content_left %}
 	<div class="left_sidebar">
 		<div id="page_title">
-			<div id="page_title_main">
+			<div id="page_title_main" style="margin-right:10px;">
 				<h2>{{title_view}}</h2>
 				{% if root_obj or is_paginated %}
-				<div id="byline">{% if root_obj %}{{root_type}}: {{root_obj}}{% endif %}{% if is_paginated  %} &bull; Page {{page_obj.number}} of {{page_obj.paginator.num_pages}}{% endif %}</div>
+				<div id="byline">{% if root_obj %}{{root_type}}: {{root_obj.display_title}}{% endif %}{% if is_paginated  %} &bull; Page {{page_obj.number}} of {{page_obj.paginator.num_pages}}{% endif %}</div>
 				{% endif %}
 			</div>
 		</div>
