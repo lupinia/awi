@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content_left %}
+	<div class="left_sidebar">
+		<h2>Background Tags</h2>
+	</div>
+	
+	<div class="left_sidebar"><div class="leaf_links_wrapper">
+		{% for bgt in background_tag_list %}
+			<div class="leaf_link midheight">
+				<a class="leaf_a {% if bgt.default %}featured{% endif %}" href="{{bgt.get_absolute_url}}" title="Background Tag:  {{bgt}}">
+					{% if bgt.default %}<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Default" title="Default Background Images" /></span>{% endif %}
+					<span class="item_summary_head"><span class="item_summary_title">{{bgt}}</span></span><br />
+					<span class="item_summary_body">{{bgt.num_images}} image{{bgt.num_images|pluralize}} in set</span>
+				</a>
+			</div>
+		{% endfor %}
+		<div class="clearfix clear_left"></div>
+	</div></div>
+{% endblock %}

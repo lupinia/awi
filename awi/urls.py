@@ -52,6 +52,7 @@ urlpatterns = [
 	# APIs and utility views
 	url(r'^tools/category_list/$', permission_required('deertrees.change_leaf')(deertrees_views.all_cats.as_view()), name='all_cats'),
 	url(r'^tools/sunset/(?P<slug>.*)\.json', sunset_views.geojson_image, name='sunset_geojson'),
+	url(r'^tools/sunset/bgtag/$', sunset_views.bgtag_list.as_view(), name='sunset_bgtags_all'),
 	url(r'^tools/plate_generator/', include('deerbuild.urls', namespace='deerbuild')),
 	url(r'^tools/newtab\.html$', never_cache(newtab_view.as_view()), name='newtab_page'),
 	

@@ -9,7 +9,7 @@
 from django.contrib.syndication.views import Feed
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
@@ -65,6 +65,29 @@ class single_image(leaf_view):
 			
 		else:
 			context['image'] = ''
+		
+		return context
+
+class bgtag_list(ListView):
+	model = background_tag
+	template_name = 'sunset/bgtag_list.html'
+	
+	def get_queryset(self):
+		return super(bgtag_list, self).get_queryset().annotate(num_images=Count('images')).order_by('tag')
+	
+	def get_context_data(self, **kwargs):
+		context = super(bgtag_list, self).get_context_data(**kwargs)
+		
+		context['title_view'] = 'Background Tags'
+		
+		# Breadcrumbs
+		if not context.get('breadcrumbs',False):
+			context['breadcrumbs'] = []
+		
+		context['breadcrumbs'].append({'url':reverse('sunset_bgtags_all'), 'title':'Background Tags'})
+		
+		# Metadata
+		context['title_page'] = context['title_view']
 		
 		return context
 
