@@ -17,7 +17,7 @@ from django.views.decorators.cache import cache_control, never_cache
 
 from honeypot.decorators import check_honeypot
 
-from awi.errors import system_error
+from awi.utils.errors import system_error, request_error
 from awi.sitemaps import SITEMAP_OBJECTS
 from awi_access import views as access_views
 from deerbooks import views as deerbooks_views
@@ -28,6 +28,7 @@ from deertrees import views as deertrees_views
 from sunset import views as sunset_views
 
 admin.autodiscover()
+handler400 = request_error
 handler404 = not_found
 handler500 = system_error
 handler403 = access_views.denied_error
@@ -103,6 +104,7 @@ if settings.DEBUG:
 	urlpatterns_debug = [
 		url(r'^__debug__/', include(debug_toolbar.urls)),
 		url(r'^intentional500/', system_error, name='intentional500'),
+		url(r'^intentional400/', request_error, name='intentional400'),
 		url(r'^intentional404/', not_found, name='intentional404'),
 		url(r'^intentional403/', access_views.denied_error, name='intentional403'),
 	]

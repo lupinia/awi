@@ -8,8 +8,8 @@
 
 import sys
 
-from django.http import HttpResponseServerError
 from django.core.exceptions import SuspiciousOperation
+from django.http import HttpResponseServerError, HttpResponseBadRequest
 from django.template import loader
 
 class BadRequest(SuspiciousOperation):
@@ -31,3 +31,21 @@ def system_error(request):
 	}
 	
 	return HttpResponseServerError(content=template.render(context, request), content_type='text/html; charset=utf-8')
+
+def request_error(request, exception=None):
+	"""Custom error page for 400 errors"""
+	template=loader.get_template('400.html')
+	
+	if exception:
+		value = exception
+	else:
+		value = 'bad request (unknown)'
+	
+	context = {
+		'error_value':value,
+		'title_page':"Bad Request (HTTP 400)",
+		'response_code':'400',
+		'response_code_name':'Bad Request',
+	}
+	
+	return HttpResponseBadRequest(content=template.render(context, request), content_type='text/html; charset=utf-8')

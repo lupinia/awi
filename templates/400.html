@@ -1,0 +1,11 @@
+{% extends "error_page.html" %}
+
+{% block error_flavor_title %}What Are You Even Doing?{% endblock %}
+{% block error_flavor_text %}
+	<p>Um, excuse me, but <code>{{error_value}}</code> is not proper pony handling, so could you please stop it?  And maybe <a href="javascript:history.back()">go back</a> and try that again a different way?<br /><sub>Please?  This is very distressing!</sub></p>
+{% endblock %}
+
+{% block error_image %}fluttershy-badrequest.gif{% endblock %}
+{% block error_image_alt %}Fluttershy Panicking{% endblock %}
+{% block error_image_title %}Fluttershy is so confused!{% endblock %}
+{% block error_image_credit %}Screen capture from "My Little Pony"{% endblock %}
