@@ -1,16 +1,20 @@
-#	Awi Error (Django App)
+#	Lupinia Studios
 #	By Natasha L.
 #	www.lupinia.net | github.com/lupinia
 #	
 #	=================
-#	Views
-#	system_error:	500 error handler.  Just displays a template, further information is emailed.
+#	Utility functions/objects for error handling
 #	=================
 
 import sys
 
 from django.http import HttpResponseServerError
+from django.core.exceptions import SuspiciousOperation
 from django.template import loader
+
+class BadRequest(SuspiciousOperation):
+	"""The request is malformed and cannot be processed."""
+	pass
 
 def system_error(request):
 	"""Custom error page for 500 errors"""

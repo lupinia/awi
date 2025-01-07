@@ -160,6 +160,10 @@ LOGGING = {
 			'handlers': ['null',],
 			'propagate': False,
 		},
+		'django.security.BadRequest': {	# It's very stupid that this actually works
+			'handlers': ['null',],
+			'propagate': False,
+		},
 		'django.request': {
 			'handlers': ['mail_admins'],
 			'level': 'ERROR',
