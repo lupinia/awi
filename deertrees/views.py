@@ -18,6 +18,7 @@ from django.utils import timezone
 from django.utils.module_loading import import_string
 from django.views.generic import DetailView, ListView, TemplateView
 
+from awi.utils.errors import BadRequest
 from awi.utils.types import is_int
 from awi_access.models import access_query
 from deerfind.utils import g2_lookup, urlpath
@@ -218,6 +219,10 @@ class category_list(leaf_parent, DetailView):
 			elif g2results == 'retracted' or g2results == 'access_404':
 				self.request.session['deerfind_norecover'] = True
 				raise Http404
+		
+		if 'mode=' in self.request.META.get('QUERY_STRING',''):
+			# Stupid corner case where stupid AI bots love to throw wrong query arguments at every URL
+			raise BadRequest('invalid query argument (?mode=)')
 		
 		return super(category_list,self).dispatch(*args, **kwargs)
 	
