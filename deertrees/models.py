@@ -152,6 +152,7 @@ class category(MPTTModel, access_control):
 class tag(models.Model):
 	title = models.CharField(max_length=200,null=True,blank=True)
 	slug = models.SlugField(max_length=200,unique=True)
+	slug_cur = models.SlugField(max_length=200, db_index=False, null=True)	# There has to be a better way to do this
 	desc = models.TextField(null=True,blank=True)
 	
 	view_type = models.CharField(choices=viewtype_options(), max_length=15, default='default', help_text='Determines the placement of content when this tag is displayed.')
@@ -170,6 +171,15 @@ class tag(models.Model):
 	
 	def __str__(self):
 		return self.display_title
+	
+	def save(self, *args, **kwargs):
+		# If we already had a slug, and it changed, add the old one as a synonym
+		if self.slug_cur:
+			if self.slug != self.slug_cur:
+				self.add_synonym(self.slug_cur)
+		
+		self.slug_cur = self.slug
+		super(tag, self).save(*args, **kwargs)
 	
 	def get_absolute_url(self):
 		return reverse('tag', kwargs={'slug':self.slug,})
