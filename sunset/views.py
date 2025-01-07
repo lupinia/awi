@@ -12,6 +12,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.views.generic import ListView
 
 from awi.utils.views import json_response
@@ -19,7 +20,7 @@ from awi_access.models import access_query
 from deerfind.utils import urlpath
 from deertrees.models import category, tag
 from deertrees.views import leaf_view
-from sunset.models import *
+from sunset.models import image, batch_import, background_tag
 
 class single_image(leaf_view):
 	model=image
@@ -160,7 +161,9 @@ class img_cat_view(img_aggregate_cat, ListView):
 				context['highlight_featured'] = True
 			
 			context['title_view'] = self.view_title_base()
+			context['root_obj'] = self.root
 			context['category'] = self.root
+			context['root_type'] = 'Category'
 			
 			# Breadcrumbs
 			ancestors = self.root.get_ancestors(include_self=True)
@@ -203,7 +206,9 @@ class img_tag_view(img_aggregate_tag, ListView):
 				context['highlight_featured'] = True
 			
 			context['title_view'] = self.view_title_base()
+			context['root_obj'] = self.root
 			context['tag'] = self.root
+			context['root_type'] = 'Tag'
 			
 			# Breadcrumbs
 			if not context.get('breadcrumbs',False):

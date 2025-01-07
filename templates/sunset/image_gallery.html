@@ -7,8 +7,8 @@
 		<div id="page_title">
 			<div id="page_title_main">
 				<h2>{{title_view}}</h2>
-				{% if category or tag or is_paginated %}
-				<div id="byline">{% if category %}Category: {{category}}{% elif tag %}Tag: {{tag}}{% endif %}{% if is_paginated  %} &bull; Page {{page_obj.number}} of {{page_obj.paginator.num_pages}}{% endif %}</div>
+				{% if root_obj or is_paginated %}
+				<div id="byline">{% if root_obj %}{{root_type}}: {{root_obj}}{% endif %}{% if is_paginated  %} &bull; Page {{page_obj.number}} of {{page_obj.paginator.num_pages}}{% endif %}</div>
 				{% endif %}
 			</div>
 		</div>
