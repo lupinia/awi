@@ -48,6 +48,9 @@ class background_tag(models.Model):
 	def __str__(self):
 		return self.tag
 	
+	def get_absolute_url(self):
+		return reverse('sunset_bgtag', kwargs={'slug': self.tag})
+	
 	class Meta:
 		verbose_name = 'background tag'
 

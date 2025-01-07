@@ -156,6 +156,60 @@ class img_aggregate_tag(img_aggregate):
 		else:
 			return super(img_aggregate_tag, self).build_queryset(queryset, **kwargs).none()
 
+class img_aggregate_bgtag(img_aggregate):
+	slug_field = 'tag'
+	slug_url_kwarg = 'slug'
+	root = None
+	
+	def view_title(self):
+		title = self.view_title_base()
+		if self.root:
+			title = u'%s - %s' % (unicode(self.root), title) # type: ignore
+		return title
+	
+	def build_queryset(self, queryset=None, **kwargs):
+		if kwargs.get(self.slug_url_kwarg, False):
+			self.root = get_object_or_404(background_tag, **{self.slug_field: kwargs[self.slug_url_kwarg],})
+			return super(img_aggregate_bgtag, self).build_queryset(queryset, **kwargs).filter(bg_tags=self.root)
+		else:
+			return super(img_aggregate_bgtag, self).build_queryset(queryset, **kwargs).none()
+
+class img_bgtag_view(img_aggregate_bgtag, ListView):
+	def get_queryset(self):
+		queryset = super(img_bgtag_view, self).get_queryset()
+		queryset = self.build_queryset(queryset, **self.kwargs)
+		if queryset.exists():
+			return queryset
+		else:
+			raise Http404
+	
+	def get_context_data(self, **kwargs):
+		context = super(img_bgtag_view, self).get_context_data(**kwargs)
+		if not self.root:
+			raise Http404
+		
+		if self.viewtype == 'featured':
+			context['highlight_featured'] = False
+		else:
+			context['highlight_featured'] = True
+		
+		context['title_view'] = self.view_title_base()
+		context['root_obj'] = self.root
+		context['bg_tag'] = self.root
+		context['root_type'] = 'Background Tag'
+		
+		# Breadcrumbs
+		if not context.get('breadcrumbs',False):
+			context['breadcrumbs'] = []
+		
+		context['breadcrumbs'].append({'url':reverse('sunset_bgtags_all'), 'title':'Background Tags'})
+		context['breadcrumbs'].append({'url':reverse('sunset_bgtag', kwargs={'slug':self.root.tag,}), 'title':unicode(self.root)}) # type: ignore
+		
+		# Metadata
+		context['title_page'] = self.view_title()
+		
+		return context
+
 class img_cat_view(img_aggregate_cat, ListView):
 	def get_queryset(self):
 		queryset = super(img_cat_view, self).get_queryset()
