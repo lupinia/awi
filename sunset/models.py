@@ -43,7 +43,15 @@ def image_asset_type_choices():
 @python_2_unicode_compatible
 class background_tag(models.Model):
 	tag = models.SlugField(max_length=50, unique=True)
+	title = models.CharField(max_length=100, null=True, blank=True)
 	default = models.BooleanField(default=False, blank=True, help_text="Check this box if this tag should be considered a default option for pages/views that don't specify any other background info, such as the home/site root view.")
+	
+	@property
+	def display_title(self):
+		if self.title:
+			return self.title
+		else:
+			return self.tag
 	
 	def __str__(self):
 		return self.tag

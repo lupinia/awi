@@ -141,8 +141,12 @@ class batch_import_admin(access_admin):
 	deactivate.short_description = "Deactivate selected folders"
 	sync_now.short_description = "Sync selected folders immediately"
 
+class bgtag_admin(admin.ModelAdmin):
+	fields = ['title', 'tag', 'default']
+	list_display = ['display_title', 'tag', 'default']
+
 # Register admin objects
 admin.site.register(image,image_admin)
-admin.site.register(image_meta_key,image_meta_key_admin)
-admin.site.register(batch_import,batch_import_admin)
-admin.site.register(background_tag)
+admin.site.register(image_meta_key, image_meta_key_admin)
+admin.site.register(batch_import, batch_import_admin)
+admin.site.register(background_tag, bgtag_admin)
