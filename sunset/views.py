@@ -84,7 +84,7 @@ class bgtag_list(ListView):
 		if not context.get('breadcrumbs',False):
 			context['breadcrumbs'] = []
 		
-		context['breadcrumbs'].append({'url':reverse('sunset_bgtags_all'), 'title':'Background Tags'})
+		context['breadcrumbs'].append({'url':reverse('sunset_bgtags_all'), 'title':'Background Image Collections'})
 		
 		# Metadata
 		context['title_page'] = context['title_view']
