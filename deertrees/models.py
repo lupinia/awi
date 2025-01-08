@@ -294,6 +294,7 @@ class tag(models.Model):
 				self.view_type = target.view_type
 			
 			self.sitemap_include = any([not self.sitemap_include, not target.sitemap_include])
+			self.public = any([not self.public, not target.public])
 			
 			if target.desc:
 				if self.desc:
