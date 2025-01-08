@@ -20,6 +20,7 @@ from datetime import timedelta
 from mptt.models import MPTTModel, TreeForeignKey
 
 from awi.utils.text import format_html, summarize
+from awi.utils.types import is_string
 from awi_access.models import access_control
 
 def viewtype_options():
@@ -503,37 +504,55 @@ class leaf(access_control):
 			return cur_restriction
 	
 	def tag_item(self, taglist):
-		return_data = {'skipped':[], 'added':[], 'created':[]}
-		if ', ' in taglist:
-			new_tags = taglist.split(', ')
-		elif ',' in taglist:
-			new_tags = taglist.split(',')
+		"""
+		leaf.tag_item('tag1')
+		leaf.tag_item('tag1, tag2, tag3')
+		
+		Add one or more new tags to a leaf item, in bulk, specified by their slugs.
+		If a slug already exists, it will be added.  If not, it will be created.
+		Returns a tuple containing two querysets:
+			existing_tags:  Tags that already existed in the database
+			created_tags:  New tags created as a result of this function
+		
+		Raises TypeError if input is not a string!
+		"""
+		existing_tags = []
+		created_tags = []
+		
+		if not is_string(taglist):
+			raise TypeError('taglist must be a string')
+		
+		if ',' in taglist:
+			n = taglist.split(',')
 		else:
-			new_tags = [taglist,]
+			n = [taglist,]
 		
-		old_tags = {}
-		cur_tags = self.tags.all()
-		if cur_tags:
-			for old_tag in cur_tags:
-				old_tags[old_tag.slug] = old_tag
+		# Do a little cleanup first
+		new_tags = []
+		for newslug in n:
+			new_tags.append(slugify(newslug.strip()))
 		
-		new_tag_objs = []
-		for new_tag in new_tags:
-			if old_tags.get(new_tag, False):
-				return_data['skipped'].append(new_tag)
-			else:
-				new_tag = slugify(new_tag)
-				new_tag_obj = tag.objects.get_or_create(slug=new_tag)
-				new_tag_objs.append(new_tag_obj[0])
-				if new_tag_obj[1]:
-					return_data['created'].append(new_tag)
-				else:
-					return_data['added'].append(new_tag)
+		# Find any tag objects that already exist
+		existing_tags = tag.objects.filter(models.Q(slug__in=new_tags) | models.Q(synonyms__slug__in=new_tags)).prefetch_related('synonyms')
+		if existing_tags:
+			self.tags.add(*existing_tags)
 		
-		if new_tag_objs:
-			self.tags.add(*new_tag_objs)
+		# Figure out which ones we still need to create
+		existing_slugs = list(existing_tags.values_list('slug', flat=True))
+		existing_slugs += list(tag_synonym.objects.filter(parent__in=existing_tags).values_list('slug', flat=True))
+		tags_to_create = []
+		for newslug in new_tags:
+			if newslug not in existing_slugs:
+				tags_to_create.append(tag(slug=newslug))
 		
-		return return_data
+		# Create any tags that don't already exist
+		if tags_to_create:
+			created_tags = tag.objects.bulk_create(tags_to_create)
+			if created_tags:
+				self.tags.add(*created_tags)
+		
+		# All set!
+		return (existing_tags, created_tags)
 	
 	def display_times(self):
 		return_times = [{},{}]

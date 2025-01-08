@@ -348,7 +348,7 @@ class image(leaf):
 							if attr == 'tags':
 								# Special case:  Bulk-create tags
 								new_tags = ','.join(map(str, value))
-								tag_status = self.tag_item(new_tags)
+								tags_added, tags_created = self.tag_item(new_tags)
 							else:
 								if attr == 'timestamp_post':
 									# Special case:  Timestamp
