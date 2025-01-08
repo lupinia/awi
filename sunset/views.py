@@ -88,6 +88,7 @@ class bgtag_list(ListView):
 		
 		# Metadata
 		context['title_page'] = context['title_view']
+		context['sitemeta_desc'] = "All background images on this site are selected from my own work. When a tag or subdirectory doesn't contain images of its own, it can use one of these curated sets as a fallback, depending on which one is most thematically appropriate."
 		
 		return context
 
@@ -206,6 +207,7 @@ class img_bgtag_view(img_aggregate_bgtag, ListView):
 		
 		# Metadata
 		context['title_page'] = self.view_title()
+		context['sitemeta_desc'] = "All background images on this site are selected from my own work. When a tag or subdirectory doesn't contain images of its own, it can use one of these curated sets as a fallback, depending on which one is most thematically appropriate."
 		
 		return context
 
