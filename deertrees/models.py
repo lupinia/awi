@@ -293,7 +293,7 @@ class tag(models.Model):
 				# If the target has a manual view type, apply it here.
 				self.view_type = target.view_type
 			
-			self.sitemap_include = any([self.sitemap_include, target.sitemap_include])
+			self.sitemap_include = any([not self.sitemap_include, not target.sitemap_include])
 			
 			if target.desc:
 				if self.desc:
