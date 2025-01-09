@@ -23,6 +23,7 @@ from haystack.generic_views import FacetedSearchView
 from haystack.query import SearchQuerySet, SQ
 from haystack.inputs import AutoQuery
 
+from awi.utils.errors import BadRequest
 from awi_access.models import check_mature, access_search
 from deerfind.forms import simple_search_form
 from deerfind.models import pointer, hitlog
@@ -44,6 +45,10 @@ def not_found(request, exception=None):
 	else:
 		request.session['deerfind_norecover'] = False		# Always reset, just in case.
 		intentional_404 = False
+		
+		#	Second, let's check for things that should throw a 400 error
+		if 'contact/' in request.path.lower() and 'contact+form' in request.path.lower():
+			raise BadRequest('invalid request path')
 		
 		#	Gallery2 continues to make things complicated:
 		#		If the URL contains a g2_itemId in the GET query, prioritize that.
