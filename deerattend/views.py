@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView
 
+from awi.utils.errors import BadRequest
 from awi.utils.views import json_response
 from awi_access.models import check_mature
 from deerattend.models import attendance_flag, event, event_instance, event_type, venue
@@ -37,6 +38,15 @@ class event_list(special_feature_view, ListView):
 	
 	geojson_slug = None
 	special_filters = special_filter_list
+	
+	def dispatch(self, *args, **kwargs):
+		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
+		if 'mode=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?mode=)')
+		elif 'reply_to=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?reply_to=)')
+		
+		return super(event_list,self).dispatch(*args, **kwargs)
 	
 	def get_mature_check(self):
 		if self.mature_check[0] is None:
