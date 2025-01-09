@@ -335,7 +335,7 @@ def geojson_event_instance(request, slug, **kwargs):
 		query = query.filter(events__event=filter_obj)
 		item_filters = item_filters & Q(event=filter_obj)
 	else:
-		self.request.session['deerfind_norecover'] = True
+		request.session['deerfind_norecover'] = True
 		raise Http404
 	
 	for item in query:
