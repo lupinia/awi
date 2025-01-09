@@ -13,6 +13,7 @@ from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.views.generic import DetailView
 
+from awi.utils.errors import BadRequest
 from awi_access.models import access_query
 from deerbooks.models import page, toc
 from deerfind.utils import urlpath
@@ -22,6 +23,15 @@ from sunset.utils import sunset_embed
 class single_page(leaf_view):
 	model = page
 	alt_view = False
+	disallowed_args = ['display', 'reply_to', 'mode']
+	
+	def dispatch(self, *args, **kwargs):
+		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
+		for qarg in self.disallowed_args:
+			if '%s=' % qarg in self.request.META.get('QUERY_STRING',''):
+				raise BadRequest('invalid query argument (?%s=)' % qarg)
+		
+		return super(single_page,self).dispatch(*args, **kwargs)
 	
 	def get_queryset(self, *args, **kwargs):
 		return super(single_page, self).get_queryset(*args, **kwargs).select_related('book_title').prefetch_related('docfiles')
@@ -69,6 +79,7 @@ class single_page(leaf_view):
 
 class single_page_htm(single_page):
 	template_name = 'deerbooks/page.html'
+	disallowed_args = ['display', 'reply_to']
 	
 	def get_context_data(self, **kwargs):
 		context = super(single_page_htm,self).get_context_data(**kwargs)
