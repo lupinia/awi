@@ -181,6 +181,17 @@ class leaf_parent():
 class homepage(leaf_parent, TemplateView):
 	highlight_featured = False
 	
+	def dispatch(self, *args, **kwargs):
+		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
+		if 'mode=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?mode=)')
+		elif 'display=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?display=)')
+		elif 'reply_to=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?reply_to=)')
+		
+		return super(homepage,self).dispatch(*args, **kwargs)
+	
 	def get_context_data(self, **kwargs):
 		context = super(homepage,self).get_context_data(**kwargs)
 		context['highlight_featured'] = self.highlight_featured
@@ -220,9 +231,13 @@ class category_list(leaf_parent, DetailView):
 				self.request.session['deerfind_norecover'] = True
 				raise Http404
 		
+		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
 		if 'mode=' in self.request.META.get('QUERY_STRING',''):
-			# Stupid corner case where stupid AI bots love to throw wrong query arguments at every URL
 			raise BadRequest('invalid query argument (?mode=)')
+		elif 'display=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?display=)')
+		elif 'reply_to=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?reply_to=)')
 		
 		return super(category_list,self).dispatch(*args, **kwargs)
 	
@@ -303,6 +318,17 @@ class category_list(leaf_parent, DetailView):
 
 class tag_list(leaf_parent, DetailView):
 	model = tag
+	
+	def dispatch(self, *args, **kwargs):
+		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
+		if 'mode=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?mode=)')
+		elif 'display=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?display=)')
+		elif 'reply_to=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?reply_to=)')
+		
+		return super(tag_list,self).dispatch(*args, **kwargs)
 	
 	def get_queryset(self, *args, **kwargs):
 		return super(tag_list, self).get_queryset(*args, **kwargs).prefetch_related('synonyms')
@@ -790,6 +816,17 @@ class special_feature_view():
 class all_cats(TemplateView, special_feature_view):
 	template_name = 'deertrees/sitemap.html'
 	
+	def dispatch(self, *args, **kwargs):
+		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
+		if 'mode=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?mode=)')
+		elif 'display=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?display=)')
+		elif 'reply_to=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?reply_to=)')
+		
+		return super(all_cats,self).dispatch(*args, **kwargs)
+	
 	def get_context_data(self, **kwargs):
 		context = super(all_cats,self).get_context_data(**kwargs)
 		context['view'] = 'catlist'
@@ -824,6 +861,17 @@ class all_tags(ListView):
 	template_name = 'deertrees/taglist.html'
 	model = tag
 	context_object_name = 'tags'
+	
+	def dispatch(self, *args, **kwargs):
+		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
+		if 'mode=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?mode=)')
+		elif 'display=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?display=)')
+		elif 'reply_to=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?reply_to=)')
+		
+		return super(all_tags,self).dispatch(*args, **kwargs)
 	
 	def get_queryset(self, *args, **kwargs):
 		query = super(all_tags, self).get_queryset(*args, **kwargs)
