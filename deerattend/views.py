@@ -6,6 +6,7 @@
 #	Views
 #	=================
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Q
 from django.http import Http404
@@ -15,7 +16,7 @@ from django.views.generic import ListView
 
 from awi.utils.views import json_response
 from awi_access.models import check_mature
-from deerattend.models import *
+from deerattend.models import attendance_flag, event, event_instance, event_type, venue
 from deertrees.views import special_feature_view
 
 special_filter_list = {

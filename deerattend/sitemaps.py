@@ -9,7 +9,7 @@
 from django.contrib.sitemaps import Sitemap
 from django.core.urlresolvers import reverse
 
-from deerattend.models import *
+from deerattend.models import attendance_flag, event, event_type, venue
 from deerattend.views import special_filter_list
 
 class event_type_map(Sitemap):

@@ -12,7 +12,7 @@ from django.contrib import admin
 
 from django_mptt_admin.admin import DjangoMpttAdmin
 
-from deerfind.models import *
+from deerfind.models import hitlog, g2map, g2raw, pointer, category
 
 class log_list(admin.TabularInline):
 	model=hitlog

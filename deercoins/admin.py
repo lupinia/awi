@@ -7,7 +7,7 @@
 #	=================
 
 from django.contrib import admin
-from deercoins.models import *
+from deercoins.models import coin, code_alias, currency, country, euro
 
 class coins_admin(admin.ModelAdmin):
 	list_select_related = True

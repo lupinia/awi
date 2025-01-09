@@ -9,7 +9,7 @@
 from django.contrib.sitemaps import Sitemap
 
 from awi_access.models import access_query
-from sunset.models import *
+from sunset.models import image
 
 class image_map(Sitemap):
 	priority = 0.8

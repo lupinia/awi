@@ -8,8 +8,7 @@
 
 from django.contrib.sitemaps import Sitemap
 
-from awi_access.models import access_query
-from deerfood.models import *
+from deerfood.models import menu_section, menu_flag
 
 class menu_cat_map(Sitemap):
 	priority = 0.5

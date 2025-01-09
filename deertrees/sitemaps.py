@@ -10,7 +10,7 @@ from django.contrib.sitemaps import Sitemap
 from django.core.urlresolvers import reverse
 
 from awi_access.models import access_query
-from deertrees.models import *
+from deertrees.models import category, tag, special_feature
 
 class tag_map(Sitemap):
 	priority = 0.2
@@ -24,7 +24,7 @@ class tag_map(Sitemap):
 
 class cat_map(Sitemap):
 	priority = 0.6
-	changefreq = 'monthly'
+	changefreq = 'yearly'
 	
 	def items(self):
 		return category.objects.filter(access_query()).filter(sitemap_include=True)
@@ -34,7 +34,7 @@ class cat_map(Sitemap):
 
 class special_map(Sitemap):
 	priority = 0.5
-	changefreq = 'monthly'
+	changefreq = 'yearly'
 	
 	def items(self):
 		return special_feature.objects.filter(access_query()).select_related('cat')

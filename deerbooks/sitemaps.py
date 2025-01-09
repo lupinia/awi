@@ -9,7 +9,7 @@
 from django.contrib.sitemaps import Sitemap
 
 from awi_access.models import access_query
-from deerbooks.models import *
+from deerbooks.models import page
 
 class page_map(Sitemap):
 	priority = 0.7

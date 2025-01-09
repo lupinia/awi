@@ -12,7 +12,16 @@ from django.core.urlresolvers import reverse
 from awi_access.admin import access_admin
 from deerfind.admin import g2_inline
 from deertrees.admin import leaf_admin
-from sunset.models import *
+from sunset.models import (
+	image,
+	image_asset,
+	image_meta,
+	image_meta_key,
+	batch_import,
+	batch_image,
+	batch_meta,
+	background_tag
+)
 
 # Begin inlines
 class asset_inline_admin(admin.TabularInline):

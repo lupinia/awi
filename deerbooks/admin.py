@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse
 
 from deertrees.admin import leaf_admin
 
-from deerbooks.models import *
+from deerbooks.models import page, toc, export_file, attachment
 
 class page_admin(leaf_admin):
 	list_select_related = True

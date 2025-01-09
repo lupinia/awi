@@ -1,10 +1,10 @@
 #	Django sitemap framework
 #	Moved this here to clean up the URL config.
-from deerattend.sitemaps import *
-from deerbooks.sitemaps import *
-from deerfood.sitemaps import *
-from deertrees.sitemaps import *
-from sunset.sitemaps import *
+from deerattend.sitemaps import event_map, event_type_map, event_flag_map, event_special_filter_map, event_venue_map
+from deerbooks.sitemaps import page_map
+from deerfood.sitemaps import menu_cat_map, menu_flag_map
+from deertrees.sitemaps import cat_map, tag_map, special_map, static_map
+from sunset.sitemaps import image_map
 
 SITEMAP_OBJECTS = {
 	'images':image_map,

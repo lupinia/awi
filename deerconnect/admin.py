@@ -12,7 +12,7 @@ from django.core.urlresolvers import reverse
 from deertrees.admin import leaf_admin
 from awi_access.admin import access_admin
 
-from deerconnect.models import *
+from deerconnect.models import link, contact_link, spam_domain, spam_sender, spam_word
 
 class link_admin(leaf_admin):
 	list_select_related = True

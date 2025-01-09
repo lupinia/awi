@@ -14,7 +14,7 @@ from django.http import Http404
 from django.views.generic import DetailView
 
 from awi_access.models import access_query
-from deerbooks.models import page, toc, export_file
+from deerbooks.models import page, toc
 from deerfind.utils import urlpath
 from deertrees.views import leaf_view
 from sunset.utils import sunset_embed
