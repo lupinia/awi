@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
 
+from awi.utils.errors import BadRequest
 from deerfood.models import menu_item, menu_section, menu_flag
 from deertrees.views import special_feature_view
 
@@ -18,6 +19,17 @@ class menu_item_list(special_feature_view, ListView):
 	model=menu_item
 	context_object_name='menu_items'
 	template_name='deerfood/full_menu.html'
+	
+	def dispatch(self, *args, **kwargs):
+		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
+		if 'mode=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?mode=)')
+		elif 'display=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?display=)')
+		elif 'reply_to=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?reply_to=)')
+		
+		return super(menu_item_list,self).dispatch(*args, **kwargs)
 	
 	def build_breadcrumbs(self, cur=False, cur_type=''):
 		breadcrumbs = self.breadcrumbs()
