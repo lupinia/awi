@@ -23,8 +23,9 @@ from haystack.generic_views import FacetedSearchView
 from haystack.query import SearchQuerySet, SQ
 from haystack.inputs import AutoQuery
 
-from awi.utils.errors import BadRequest
 from awi_access.models import check_mature, access_search
+from awi_access.utils import add_new_block
+from awi_access.views import denied_error
 from deerfind.forms import simple_search_form
 from deerfind.models import pointer, hitlog
 from deerfind.utils import g2_lookup, shortcode_lookup
@@ -46,9 +47,10 @@ def not_found(request, exception=None):
 		request.session['deerfind_norecover'] = False		# Always reset, just in case.
 		intentional_404 = False
 		
-		#	Second, let's check for things that should throw a 400 error
+		#	Second, let's check for a particular type of scanner
 		if 'contact/' in request.path.lower() and 'contact+form' in request.path.lower():
-			raise BadRequest('invalid request path')
+			add_new_block(request.META['REMOTE_ADDR'], unicode(request.META.get('HTTP_USER_AGENT', ''))) # type: ignore
+			return denied_error(request)
 		
 		#	Gallery2 continues to make things complicated:
 		#		If the URL contains a g2_itemId in the GET query, prioritize that.
