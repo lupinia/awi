@@ -15,6 +15,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView
 
+from awi.utils.errors import BadRequest
 from awi.utils.views import json_response
 from awi_access.models import access_query
 from deerfind.utils import urlpath
@@ -25,6 +26,17 @@ from sunset.models import image, batch_import, background_tag
 class single_image(leaf_view):
 	model=image
 	template_name='sunset/image_single.html'
+	
+	def dispatch(self, *args, **kwargs):
+		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
+		if 'mode=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?mode=)')
+		elif 'display=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?display=)')
+		elif 'reply_to=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?reply_to=)')
+		
+		return super(single_image,self).dispatch(*args, **kwargs)
 	
 	def get_queryset(self, *args, **kwargs):
 		return super(single_image, self).get_queryset(*args, **kwargs).prefetch_related('assets')
@@ -71,6 +83,17 @@ class single_image(leaf_view):
 class bgtag_list(ListView):
 	model = background_tag
 	template_name = 'sunset/bgtag_list.html'
+	
+	def dispatch(self, *args, **kwargs):
+		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
+		if 'mode=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?mode=)')
+		elif 'display=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?display=)')
+		elif 'reply_to=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?reply_to=)')
+		
+		return super(bgtag_list,self).dispatch(*args, **kwargs)
 	
 	def get_queryset(self):
 		return super(bgtag_list, self).get_queryset().annotate(num_images=Count('images')).order_by('tag')
@@ -179,6 +202,17 @@ class img_aggregate_bgtag(img_aggregate):
 			return super(img_aggregate_bgtag, self).build_queryset(queryset, **kwargs).none()
 
 class img_bgtag_view(img_aggregate_bgtag, ListView):
+	def dispatch(self, *args, **kwargs):
+		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
+		if 'mode=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?mode=)')
+		elif 'display=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?display=)')
+		elif 'reply_to=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?reply_to=)')
+		
+		return super(img_bgtag_view,self).dispatch(*args, **kwargs)
+	
 	def get_queryset(self):
 		queryset = super(img_bgtag_view, self).get_queryset()
 		queryset = self.build_queryset(queryset, **self.kwargs)
@@ -212,6 +246,17 @@ class img_bgtag_view(img_aggregate_bgtag, ListView):
 		return context
 
 class img_cat_view(img_aggregate_cat, ListView):
+	def dispatch(self, *args, **kwargs):
+		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
+		if 'mode=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?mode=)')
+		elif 'display=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?display=)')
+		elif 'reply_to=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?reply_to=)')
+		
+		return super(img_cat_view,self).dispatch(*args, **kwargs)
+	
 	def get_queryset(self):
 		queryset = super(img_cat_view, self).get_queryset()
 		queryset = self.build_queryset(queryset, **self.kwargs)
@@ -259,6 +304,17 @@ class img_cat_view(img_aggregate_cat, ListView):
 		return context
 
 class img_tag_view(img_aggregate_tag, ListView):
+	def dispatch(self, *args, **kwargs):
+		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
+		if 'mode=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?mode=)')
+		elif 'display=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?display=)')
+		elif 'reply_to=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?reply_to=)')
+		
+		return super(img_tag_view,self).dispatch(*args, **kwargs)
+	
 	def get_queryset(self):
 		queryset = super(img_tag_view, self).get_queryset()
 		queryset = self.build_queryset(queryset, **self.kwargs)
@@ -302,6 +358,17 @@ class img_tag_view(img_aggregate_tag, ListView):
 		return context
 
 class img_all_view(img_aggregate, ListView):
+	def dispatch(self, *args, **kwargs):
+		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
+		if 'mode=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?mode=)')
+		elif 'display=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?display=)')
+		elif 'reply_to=' in self.request.META.get('QUERY_STRING',''):
+			raise BadRequest('invalid query argument (?reply_to=)')
+		
+		return super(img_all_view,self).dispatch(*args, **kwargs)
+	
 	def get_queryset(self):
 		queryset = super(img_all_view, self).get_queryset()
 		queryset =  self.build_queryset(queryset, **self.kwargs)
