@@ -329,7 +329,7 @@ class access_control(models.Model):
 
 @python_2_unicode_compatible
 class blocked_ip(models.Model):
-	address = models.GenericIPAddressField(db_index=True)
+	address = models.GenericIPAddressField(db_index=True, unique=True)
 	user_agent = models.TextField(null=True, blank=True)
 	active = models.BooleanField(default=True, blank=True, db_index=True)
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')

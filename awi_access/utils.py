@@ -33,4 +33,4 @@ def is_blocked(address, raise_403=False):
 
 def add_new_block(address, agent=None):
 	cache.set('blocked_ip_%s' % address, True, 60*60*24*7)
-	return blocked_ip.objects.create(address=address, user_agent=agent, active=True)
+	return blocked_ip.objects.update_or_create(address=address, defaults={'user_agent':agent, 'active':True})[0]
