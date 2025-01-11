@@ -136,6 +136,7 @@ class spam_word(models.Model):
 		('keyword','Keyword'),
 		('domain','Domain Name'),
 		('url','Full URL'),
+		('shortener','URL Shortener'),
 		('contact','Contact Info'),
 		('name','Org Name'),
 	)
