@@ -554,6 +554,31 @@ class leaf(access_control):
 		# All set!
 		return (existing_tags, created_tags)
 	
+	def move_item(self, dest):
+		"""
+		Move this item to a new directory (dest)
+		Returns a tuple:
+			success:  Boolean
+			message:  The object's new path
+		"""
+		success = False
+		message = 'deertrees_move_unknown'
+		
+		# First check:  Make sure this is a category
+		if isinstance(dest, category):
+			# Second check:  Look for name collisions in the new folder
+			if dest.leaves.filter(basename=self.basename).exists():
+				message = 'deertrees_move_duplicate'
+			else:
+				success = self.quick_edit('cat', dest)
+				if success:
+					message = ''
+		
+		else:
+			message = 'deertrees_move_desttype'
+		
+		return (success, message)
+	
 	def display_times(self):
 		return_times = [{},{}]
 		if self.timedisp == 'post':
