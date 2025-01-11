@@ -143,6 +143,33 @@ class category(MPTTModel, access_control):
 			else:
 				return super(category, self).can_edit(request, perm_check='deertrees.change_category')
 	
+	def move_item(self, dest):
+		"""
+		Move this item to a new parent directory (dest)
+		Returns a tuple:
+			success:  Boolean
+			message:  Error code
+		"""
+		success = False
+		message = 'deertrees_move_unknown'
+		
+		# First check:  Make sure this is a category
+		if isinstance(dest, category):
+			# Second check:  Look for name collisions in the new folder
+			if dest.leaves.filter(children=self.slug).exists():
+				message = 'deertrees_move_duplicate'
+			else:
+				# Moving a category requires a .save(), so we can't use quick_edit() for this
+				self.parent = dest
+				self.save()
+				success = True
+				message = ''
+		
+		else:
+			message = 'deertrees_move_desttype'
+		
+		return (success, message)
+	
 	class MPTTMeta:
 		order_insertion_by = ['title']
 	
@@ -556,10 +583,10 @@ class leaf(access_control):
 	
 	def move_item(self, dest):
 		"""
-		Move this item to a new directory (dest)
+		Move this item to a new parent directory (dest)
 		Returns a tuple:
 			success:  Boolean
-			message:  The object's new path
+			message:  Error code
 		"""
 		success = False
 		message = 'deertrees_move_unknown'
