@@ -9,7 +9,6 @@
 from django.conf import settings
 from django.contrib.syndication.views import Feed
 from django.core.cache import cache
-from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db.models import Case, Count, IntegerField, Sum, When
 from django.http import Http404
@@ -21,6 +20,7 @@ from django.views.generic import DetailView, ListView, TemplateView
 from awi.utils.errors import BadRequest
 from awi.utils.types import is_int
 from awi_access.models import access_query
+from awi_access.views import access_view
 from deerfind.utils import g2_lookup, urlpath
 from deertrees.models import category, tag, leaf, special_feature
 from sunset.utils import sunset_embed
@@ -208,7 +208,7 @@ class homepage(leaf_parent, TemplateView):
 		return context
 
 
-class category_list(leaf_parent, DetailView):
+class category_list(leaf_parent, access_view):
 	model = category
 	slug_field = 'cached_url'
 	slug_url_kwarg = 'cached_url'
@@ -241,77 +241,65 @@ class category_list(leaf_parent, DetailView):
 		
 		return super(category_list,self).dispatch(*args, **kwargs)
 	
+	def edit_object(self, obj):
+		self.edit_success = False
+		
+		# Pull known arguments
+		cmd = self.request.GET.get('alitelvdi', '')
+		target = self.request.GET.get('diyosdi', None)
+		
+		if cmd == 'mv':
+			# Move to a different parent directory (category)
+			# Requires diyosdi (target) parameter
+			if target and is_int(target):
+				dest = get_object_or_404(category, pk=int(target))
+				self.edit_success, self.edit_error = obj.move_item(dest)
+				if self.edit_success:
+					self.edit_redirect_to = obj.get_absolute_url()
+			else:
+				self.edit_success = False
+				self.edit_error = 'quickedit_cat_invalid_id'
+		
+		else:
+			super(category_list, self).edit_object(obj)
+	
 	def get_queryset(self, *args, **kwargs):
 		return super(category_list, self).get_queryset(*args, **kwargs).select_related('background_tag', 'access_code')
 	
-	def get_context_data(self, **kwargs):
-		context = super(category_list,self).get_context_data(**kwargs)
+	# We have an object and can view it
+	def get_context_canview(self, context, **kwargs):
+		context = super(category_list, self).get_context_canview(context, **kwargs)
 		if self.g2redir and context['object'].get_absolute_url() != self.g2redir:
 			self.request.session['deerfind_path'] = self.g2redir
 			raise Http404
 		
-		canview, view_restriction = context['object'].can_view(self.request)
-		if not canview:
-			if view_restriction == 'access_404':
-				self.request.session['deerfind_norecover'] = True
-				raise Http404
-			elif view_restriction == 'access_perms':
-				raise PermissionDenied
-			elif view_restriction == 'access_mature_prompt':
-				context['error'] = view_restriction
-				context['object'] = ''
-				context['embed_mature_form'] = True
-			else:
-				context['object'] = ''
-				context['error'] = view_restriction
-		else:
+		if context['can_edit']:
+			context['edit_mode'] = 'cat'
+		
+		has_blocks, blocks = self.assemble_blocks(context['object'], 'category', context['object'].view_type)
+		if has_blocks:
 			context['rss_feed'] = True
-			
-			context['can_edit'], edit_restriction = context['object'].can_edit(self.request)
-			if context['can_edit']:
-				context['return_to'] = context['object'].get_absolute_url()
-				context['can_edit'] = True
-				context['edit_mode'] = 'cat'
-				
-				if self.request.GET.get('feature', False) and not context['object'].featured:
-					context['object'].featured = True
-					context['object'].save()
-				elif self.request.GET.get('unfeature', False) and context['object'].featured:
-					context['object'].featured = False
-					context['object'].save()
-				elif self.request.GET.get('publish', False) and not context['object'].published:
-					context['object'].published = True
-					context['object'].save()
-				elif self.request.GET.get('unpublish', False) and context['object'].published:
-					context['object'].published = False
-					context['object'].save()
-				elif self.request.GET.get('change_cat', False):
-					new_cat = get_object_or_404(category, pk=self.request.GET.get('change_cat'))
-					context['object'].parent = new_cat
-					context['object'].save()
-			
-			blocks = self.assemble_blocks(context['object'],'category',context['object'].view_type)
-			if blocks[0]:
-				context.update(blocks[1])
-			else:
-				context['error'] = 'cat_empty'
-			
-			ancestors = context['object'].get_ancestors(include_self=True)
-			if not context.get('breadcrumbs',False):
-				context['breadcrumbs'] = []
-			
-			for crumb in ancestors:
-				context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
-			
-			context['highlight_featured'] = self.highlight_featured
-			context['body_text'] = sunset_embed(context['object'].body_html, self.request)
-			
-			context['title_page'] = str(context['object'])
-			
-			if context['object'].summary_short:
-				context['sitemeta_desc'] = context['object'].summary_short
-			else:
-				context['sitemeta_desc'] = "Directory:  %s" % (str(context['object']))
+			context.update(blocks)
+		else:
+			context['rss_feed'] = False
+			context['error'] = 'cat_empty'
+		
+		# Breadcrumbs
+		ancestors = context['object'].get_ancestors(include_self=True)
+		if not context.get('breadcrumbs',False):
+			context['breadcrumbs'] = []
+		
+		for crumb in ancestors:
+			context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
+		
+		context['title_page'] = str(context['object'])
+		context['highlight_featured'] = self.highlight_featured
+		context['body_text'] = sunset_embed(context['object'].body_html, self.request)
+		
+		if context['object'].summary_short:
+			context['sitemeta_desc'] = context['object'].summary_short
+		else:
+			context['sitemeta_desc'] = "Directory:  %s" % (str(context['object']))
 		
 		return context
 
@@ -634,151 +622,89 @@ def subcats(parent=False, parent_type=False, request=False):
 		return False
 
 
-class leaf_view(DetailView):
+class leaf_view(access_view):
 	slug_field = 'basename'
 	slug_url_kwarg = 'slug'
+	
+	def edit_object(self, obj):
+		self.edit_success = False
+		
+		# Pull known arguments
+		cmd = self.request.GET.get('alitelvdi', '')
+		target = self.request.GET.get('diyosdi', None)
+		
+		if cmd == 'mv':
+			# Move to a different parent directory (category)
+			# Requires diyosdi (target) parameter
+			if target and is_int(target):
+				dest = get_object_or_404(category, pk=int(target))
+				self.edit_success, self.edit_error = obj.move_item(dest)
+				if self.edit_success:
+					self.edit_redirect_to = obj.get_absolute_url()
+			else:
+				self.edit_success = False
+				self.edit_error = 'quickedit_cat_invalid_id'
+		
+		elif cmd == 'tag' or cmd == 'untag':
+			# Add or remove tags
+			# Requires diyosdi (target) parameter
+			if target and is_int(target):
+				target = get_object_or_404(tag, pk=int(target))
+				if cmd == 'tag':
+					obj.tags.add(target)
+					self.edit_success = True
+				elif cmd == 'untag':
+					obj.tags.remove(target)
+					self.edit_success = True
+			else:
+				self.edit_success = False
+				self.edit_error = 'quickedit_tag_invalid_id'
+		
+		else:
+			super(leaf_view, self).edit_object(obj)
 	
 	def get_queryset(self, *args, **kwargs):
 		return super(leaf_view, self).get_queryset(*args, **kwargs).filter(cat__cached_url=self.kwargs.get('cached_url', None)).select_related('access_code','cat').prefetch_related('tags')
 	
-	def get_context_data(self, **kwargs):
-		context = super(leaf_view,self).get_context_data(**kwargs)
+	# We have an object and can view it
+	def get_context_canview(self, context, **kwargs):
+		context = super(leaf_view,self).get_context_canview(context, **kwargs)
 		
-		# Permissions check
-		canview, view_restriction = context['object'].can_view(self.request)
-		if not canview:
-			if view_restriction == 'access_404':
-				self.request.session['deerfind_norecover'] = True
-				raise Http404
-			elif view_restriction == 'access_perms':
-				raise PermissionDenied
-			elif view_restriction == 'access_mature_prompt':
-				context['error'] = view_restriction
-				context['title_page'] = "%s (Mature Content)" % str(context['object'])
-				context['sitemeta_desc'] = "Viewing this content requires verifying your age, which will not be stored on our server in any way.  More details on the form, or in our Privacy Policy."
-				context['object'] = ''
-				context['embed_mature_form'] = True
-				
-			else:
-				context['object'] = ''
-				context['error'] = view_restriction
+		# Tags
+		if self.request.user.is_superuser:
+			context['tags'] = context['object'].tags.all()
 		else:
-			# Tags
-			if self.request.user.is_superuser:
-				context['tags'] = context['object'].tags.all()
-			else:
-				context['tags'] = context['object'].tags.filter(public=True)
-			context['category'] = context['object'].cat
-			
-			is_public, view_restriction = context['object'].is_public()
-			# Info for non-public content
-			if not is_public:
-				context['non_public'] = view_restriction
-			
-			# Editing Functions
-			context['can_edit'], edit_restriction = context['object'].can_edit(self.request)
-			if context['can_edit']:
-				context['return_to'] = context['object'].get_absolute_url()
-				changed = False
-				
-				# DeerTrees Leaf commands
-				if self.request.GET.get('add_tag', False):
-					if is_int(self.request.GET.get('add_tag', False)):
-						new_tag = get_object_or_404(tag, pk=self.request.GET.get('add_tag'))
-						context['object'].tags.add(new_tag)
-						context['object'].save()
-						changed = True
-				elif self.request.GET.get('remove_tag', False):
-					if is_int(self.request.GET.get('remove_tag', False)):
-						old_tag = get_object_or_404(tag, pk=self.request.GET.get('remove_tag'))
-						context['object'].tags.remove(old_tag)
-						context['object'].save()
-						changed = True
-				elif self.request.GET.get('change_cat', False):
-					if is_int(self.request.GET.get('change_cat', False)):
-						new_cat = get_object_or_404(category, pk=self.request.GET.get('change_cat'))
-						context['object'].cat = new_cat
-						context['object'].save()
-						changed = True
-				
-				# Awi Access commands
-				elif self.request.GET.get('feature', False) and not context['object'].featured:
-					context['object'].featured = True
-					context['object'].save()
-					changed = True
-				elif self.request.GET.get('unfeature', False) and context['object'].featured:
-					context['object'].featured = False
-					context['object'].save()
-					changed = True
-				elif self.request.GET.get('publish', False) and not context['object'].published:
-					context['object'].published = True
-					context['object'].save()
-					changed = True
-				elif self.request.GET.get('unpublish', False) and context['object'].published:
-					context['object'].published = False
-					context['object'].save()
-					changed = True
-				
-				# Awi Access access code commands
-				elif self.request.GET.get('revoke_code', False) and context['object'].access_code:
-					if is_int(self.request.GET.get('revoke_code', False)) and int(self.request.GET.get('revoke_code', False)) == context['object'].access_code.pk:
-						context['object'].access_code.is_valid = False
-						context['object'].access_code.save()
-						changed = True
-				elif self.request.GET.get('new_access_code', False) and self.request.user == context['object'].owner:
-					if self.request.GET.get('new_access_code', False) == 'permanent':
-						new_age = 0
-					else:
-						new_age = self.request.GET.get('new_access_code', False)
-					
-					if is_int(new_age):
-						new_age = int(new_age)
-						
-						if context['object'].access_code and context['object'].access_code.valid() and is_int(self.request.GET.get('replace', False)) and int(self.request.GET.get('replace', False)) == context['object'].access_code.pk:
-							context['object'].access_code.is_valid = False
-							context['object'].access_code.save()
-							context['object'].create_code(age=new_age, request=self.request)
-							changed = True
-						elif not context['object'].access_code or not context['object'].access_code.valid():
-							context['object'].create_code(age=new_age, request=self.request)
-							changed = True
-				
-				#if changed:
-					# I'm annoyed that there isn't an easier/more reliable way to do this.
-					# Commenting it out for now, since this mostly only affects me.
-					#cache.clear()
-			
-			else:
-				context['return_to'] = ''
-			
-			# Breadcrumbs
-			ancestors = context['object'].cat.get_ancestors(include_self=True)
-			if not context.get('breadcrumbs',False):
-				context['breadcrumbs'] = []
-			
-			for crumb in ancestors:
-				context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
-			
-			context['breadcrumbs'].append({'url':context['object'].get_absolute_url(), 'title':str(context['object'])})
-			
-			# Metadata
-			context['sitemeta_page_type'] = 'article'
-			context['title_page'] = str(context['object'])
-			context['permalink'] = context['object'].get_complete_url(self.request)
-			context['sitemeta_category'] = str(context['object'].cat)
-			context['sitemeta_timestamp_pub'] = context['object'].timestamp_post
-			context['sitemeta_timestamp_mod'] = context['object'].timestamp_mod
-			context['sitemeta_article_tags'] = context['object'].tags_list
-			
-			if not context['object'].admin_owned:
-				context['sitemeta_article_author_name'] = context['object'].author
-			
-			# External links
-			context['external_links'] = context['object'].get_links(self.request)
-			# This really should be easier
-			normal_link_count = context['external_links'].aggregate(c=Sum(Case(When(link_type__featured=False, then=1), output_field=IntegerField())))['c']
-			if normal_link_count < 3:
-				context['external_links_wide'] = True
+			context['tags'] = context['object'].tags.filter(public=True)
+		context['category'] = context['object'].cat
+		
+		# Breadcrumbs
+		ancestors = context['object'].cat.get_ancestors(include_self=True)
+		if not context.get('breadcrumbs',False):
+			context['breadcrumbs'] = []
+		
+		for crumb in ancestors:
+			context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
+		
+		context['breadcrumbs'].append({'url':context['object'].get_absolute_url(), 'title':str(context['object'])})
+		
+		# Metadata
+		context['sitemeta_page_type'] = 'article'
+		context['title_page'] = str(context['object'])
+		context['permalink'] = context['object'].get_complete_url(self.request)
+		context['sitemeta_category'] = str(context['object'].cat)
+		context['sitemeta_timestamp_pub'] = context['object'].timestamp_post
+		context['sitemeta_timestamp_mod'] = context['object'].timestamp_mod
+		context['sitemeta_article_tags'] = context['object'].tags_list
+		
+		if not context['object'].admin_owned:
+			context['sitemeta_article_author_name'] = context['object'].author
+		
+		# External links
+		context['external_links'] = context['object'].get_links(self.request)
+		# This really should be easier
+		normal_link_count = context['external_links'].aggregate(c=Sum(Case(When(link_type__featured=False, then=1), output_field=IntegerField())))['c']
+		if normal_link_count < 3:
+			context['external_links_wide'] = True
 		
 		return context
 
@@ -833,8 +759,8 @@ class all_cats(TemplateView, special_feature_view):
 		context['cats'] = category.objects.filter(access_query(self.request)).annotate(num_leaves=Count('leaves'))
 		context['breadcrumbs'] = self.breadcrumbs()
 		
-		if self.request.GET.get('return_to') and self.request.user.has_perm('deertrees.change_leaf'):
-			context['return_to'] = self.request.GET.get('return_to')
+		if self.request.GET.get('return_to', False) and self.request.GET.get('cmd', False) and self.request.user.has_perm('deertrees.change_leaf'):
+			context['return_to'] = '%s?alitelvdi=%s&diyosdi=' % (self.request.GET.get('return_to', ''), self.request.GET.get('cmd', ''))
 			context['title_page'] = "Select a Category"
 		else:
 			context['title_page'] = "All Categories"
@@ -898,8 +824,8 @@ class all_tags(ListView):
 		
 		context['breadcrumbs'].append({'url':reverse('all_tags'), 'title':'Tags'})
 		
-		if self.request.GET.get('return_to',False) and self.request.user.has_perm('deertrees.change_leaf'):
-			context['return_to'] = self.request.GET.get('return_to',False)
+		if self.request.GET.get('return_to',False) and self.request.GET.get('cmd', False) and self.request.user.has_perm('deertrees.change_leaf'):
+			context['return_to'] = '%s?alitelvdi=%s&diyosdi=' % (self.request.GET.get('return_to', ''), self.request.GET.get('cmd', ''))
 			context['title_page'] = "Select a Tag"
 		else:
 			context['title_page'] = "All Tags"
