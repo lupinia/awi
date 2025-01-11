@@ -162,6 +162,10 @@ class access_code(models.Model):
 		self.hits = self.hits + 1
 		self.save()
 	
+	def revoke(self):
+		self.is_valid = False
+		self.save()
+	
 	def save(self, *args, **kwargs):
 		if self.pk and self.is_valid and not self.valid():
 			self.is_valid = False
