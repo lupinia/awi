@@ -328,9 +328,9 @@ class access_control(models.Model):
 				return 'unknown'
 	
 	# Quick-edit operations
-	def quick_edit(self, field, value=None):
+	def quick_edit(self, field, value, refresh=True):
 		success = self.__class__.objects.filter(pk=self.pk).update(**{field:value})
-		if success:
+		if success and refresh:
 			self.refresh_from_db()
 		
 		return success
