@@ -17,6 +17,7 @@ from django.views.generic import ListView
 
 from awi.utils.errors import BadRequest
 from awi.utils.views import json_response
+from awi.utils.types import is_int
 from awi_access.models import access_query
 from deerfind.utils import urlpath
 from deertrees.models import category, tag
@@ -38,47 +39,101 @@ class single_image(leaf_view):
 		
 		return super(single_image,self).dispatch(*args, **kwargs)
 	
+	def edit_object(self, obj):
+		super(single_image, self).edit_object(obj)
+		
+		if not self.edit_cmd_handled:
+			self.edit_cmd_handled = True
+			# Pull known arguments
+			cmd = self.request.GET.get('alitelvdi', '')
+			target = self.request.GET.get('diyosdi', None)
+			
+			# Commands that don't require any extra parameters
+			quick_cmd_map = {
+				'queuebuild': {'field':'rebuild_assets', 'value':True,},
+				'unqueuebuild': {'field':'rebuild_assets', 'value':False,},
+				'fieldsauto': {'field':'auto_fields', 'value':True,},
+				'fieldsmanual': {'field':'auto_fields', 'value':False,},
+			}
+			
+			if cmd in quick_cmd_map.keys():
+				# Basic field changes/toggles that require no other parameters
+				# Defined in the dictionary above
+				self.edit_success = obj.quick_edit(**quick_cmd_map[cmd])
+			
+			elif cmd == 'delmap':
+				lat_success = obj.quick_edit('geo_lat', None, False)
+				long_success = obj.quick_edit('geo_long', None)
+				self.edit_success = all(lat_success, long_success)
+			
+			elif cmd == 'cropset' or cmd == 'cropreset':
+				# Reserved for crop center overrides
+				self.edit_success = False
+				self.edit_error = 'quickedit_futurecmd'
+			
+			elif cmd == 'bgadd' or cmd == 'bgrem':
+				# Add or remove background tags
+				# Requires diyosdi (target) parameter
+				if target and is_int(target):
+					target = get_object_or_404(background_tag, pk=int(target))
+					if cmd == 'bgadd':
+						obj.bg_tags.add(target)
+						self.edit_success = True
+					elif cmd == 'bgrem':
+						obj.bg_tags.remove(target)
+						self.edit_success = True
+				else:
+					self.edit_success = False
+					self.edit_error = 'quickedit_bgtag_invalid_id'
+			
+			else:
+				self.edit_cmd_handled = False
+	
 	def get_queryset(self, *args, **kwargs):
 		return super(single_image, self).get_queryset(*args, **kwargs).prefetch_related('assets')
 	
-	def get_context_data(self, **kwargs):
-		context=super(single_image,self).get_context_data(**kwargs)
+	# We have an object and can view it
+	def get_context_canview(self, context, **kwargs):
+		context=super(single_image,self).get_context_canview(context, **kwargs)
 		
-		if context['object']:
-			context['meta'] = context['object'].meta.filter(key__public=True).select_related('key')
-			context['assets'] = {}
-			asset_list = context['object'].assets.all()
-			for asset in asset_list:
-				context['assets'][asset.type] = asset
-			
-			if context['object'].geo_lat and context['object'].geo_long:
-				# Setting up the map.
-				context['map_type'] = 'photo_sub_map'
-				context['map_tiles'] = 'outdoors'
-				context['map_lat'] = context['object'].geo_lat
-				context['map_long'] = context['object'].geo_long
-			
-			context['showcase_mode'] = True
-			context['extra_classes'] = 'photo_page'
-			context['sitemeta_desc'] = context['object'].summary_short
-			context['sitemeta_is_image'] = True
-			
-			if context['assets'].get('display', False):
-				context['extra_style'] = 'max-width:%dpx;' % context['assets'].get('display', False).img_width
-			
-			if not context['object'].long_body and not context['object'].public_domain:
-				context['title_in_sidebar'] = True
-			
-			if context['object'].public_domain:
-				context['public_domain_content'] = True
-			
-			if context['can_edit']:
-				context['edit_url'] = 'admin:sunset_image_change'
-			
-		else:
-			context['image'] = ''
+		context['meta'] = context['object'].meta.filter(key__public=True).select_related('key')
+		context['assets'] = {}
+		asset_list = context['object'].assets.all()
+		for asset in asset_list:
+			context['assets'][asset.type] = asset
+		
+		if context['object'].geo_lat and context['object'].geo_long:
+			# Setting up the map.
+			context['map_type'] = 'photo_sub_map'
+			context['map_tiles'] = 'outdoors'
+			context['map_lat'] = context['object'].geo_lat
+			context['map_long'] = context['object'].geo_long
+		
+		context['showcase_mode'] = True
+		context['extra_classes'] = 'photo_page'
+		context['sitemeta_desc'] = context['object'].summary_short
+		context['sitemeta_is_image'] = True
+		
+		if context['assets'].get('display', False):
+			context['extra_style'] = 'max-width:%dpx;' % context['assets'].get('display', False).img_width
+		
+		if not context['object'].long_body and not context['object'].public_domain:
+			context['title_in_sidebar'] = True
+		
+		if context['object'].public_domain:
+			context['public_domain_content'] = True
+		
+		if context['can_edit']:
+			context['edit_url'] = 'admin:sunset_image_change'
 		
 		return context
+	
+	# We don't have an object, or we can't view it
+	def get_context_restricted(self, context, **kwargs):
+		context=super(single_image,self).get_context_restricted(context, **kwargs)
+		context['image'] = ''
+		return context
+
 
 class bgtag_list(ListView):
 	model = background_tag
