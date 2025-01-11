@@ -101,7 +101,11 @@ class bgtag_list(ListView):
 	def get_context_data(self, **kwargs):
 		context = super(bgtag_list, self).get_context_data(**kwargs)
 		
-		context['title_view'] = 'Background Tags'
+		if self.request.GET.get('return_to',False) and self.request.GET.get('cmd', False) and self.request.user.has_perm('deertrees.change_leaf'):
+			context['return_to'] = '%s?alitelvdi=%s&diyosdi=' % (self.request.GET.get('return_to', ''), self.request.GET.get('cmd', ''))
+			context['title_view'] = 'Select Background Tag'
+		else:
+			context['title_view'] = 'Background Image Collections'
 		
 		# Breadcrumbs
 		if not context.get('breadcrumbs',False):
