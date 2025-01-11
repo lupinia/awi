@@ -60,6 +60,10 @@ urlpatterns = [
 	# DeerConnect: Contact form
 	url(r'^contact/$', never_cache(check_honeypot(contact_page.as_view())), name='contact'),
 	
+	# Sunset: Background image collections (bgtags)
+	url(r'^backgrounds/$', sunset_views.bgtag_list.as_view(), name='sunset_bgtags_all'),
+	url(r'^backgrounds/(?P<slug>.*)\.cfm$', sunset_views.img_bgtag_view.as_view(), name='sunset_bgtag'),
+	
 	# =====================================
 	# DeerTrees: special_feature extension URLs
 	# DeerFood
@@ -76,10 +80,6 @@ urlpatterns = [
 	url(r'^tools/', include([
 		# DeerTrees: Full category list
 		url(r'^category_list\.ashx$', permission_required('deertrees.change_leaf')(deertrees_views.all_cats.as_view()), name='all_cats'),
-		
-		# Sunset: Background image collections (bgtags)
-		url(r'^backgrounds/$', sunset_views.bgtag_list.as_view(), name='sunset_bgtags_all'),
-		url(r'^backgrounds/(?P<slug>.*)\.cfm$', sunset_views.img_bgtag_view.as_view(), name='sunset_bgtag'),
 		
 		# Sunset: GeoJSON API (deprecated)
 		url(r'^sunset/(?P<slug>.*)\.json$', sunset_views.geojson_image, name='sunset_geojson'),
