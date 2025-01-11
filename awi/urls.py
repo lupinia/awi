@@ -79,10 +79,10 @@ urlpatterns = [
 		
 		# Sunset: Background image collections (bgtags)
 		url(r'^backgrounds/$', sunset_views.bgtag_list.as_view(), name='sunset_bgtags_all'),
-		url(r'^backgrounds/(?P<slug>.*)\.cfm', sunset_views.img_bgtag_view.as_view(), name='sunset_bgtag'),
+		url(r'^backgrounds/(?P<slug>.*)\.cfm$', sunset_views.img_bgtag_view.as_view(), name='sunset_bgtag'),
 		
 		# Sunset: GeoJSON API (deprecated)
-		url(r'^sunset/(?P<slug>.*)\.json', sunset_views.geojson_image, name='sunset_geojson'),
+		url(r'^sunset/(?P<slug>.*)\.json$', sunset_views.geojson_image, name='sunset_geojson'),
 		
 		# DeerBuild: Plate generator
 		url(r'^plate_generator/', include('deerbuild.urls', namespace='deerbuild')),
@@ -116,18 +116,18 @@ urlpatterns = [
 	# Directories and core structure
 	url(r'^(?P<cached_url>[\w\d_/-]+)/', include([
 		# DeerBooks: Book views
-		url(r'^book\.(?P<slug>.*)\.tex', deerbooks_views.book_tex.as_view(), name='book_tex'),
-		url(r'^book\.(?P<slug>.*)\.md', deerbooks_views.book_md.as_view(), name='book_md'),
-		url(r'^book\.(?P<slug>.*)\.txt', deerbooks_views.book_txt.as_view(), name='book_txt'),
+		url(r'^book\.(?P<slug>.*)\.tex$', deerbooks_views.book_tex.as_view(), name='book_tex'),
+		url(r'^book\.(?P<slug>.*)\.md$', deerbooks_views.book_md.as_view(), name='book_md'),
+		url(r'^book\.(?P<slug>.*)\.txt$', deerbooks_views.book_txt.as_view(), name='book_txt'),
 		
 		# DeerBooks: Page views
-		url(r'^(?P<slug>.*)\.htm', deerbooks_views.single_page_htm.as_view(), name='page_htm'),
-		url(r'^(?P<slug>.*)\.txt', deerbooks_views.single_page_txt.as_view(), name='page_txt'),
-		url(r'^(?P<slug>.*)\.md', deerbooks_views.single_page_md.as_view(), name='page_md'),
-		url(r'^(?P<slug>.*)\.tex', deerbooks_views.single_page_tex.as_view(), name='page_tex'),
+		url(r'^(?P<slug>.*)\.htm$', deerbooks_views.single_page_htm.as_view(), name='page_htm'),
+		url(r'^(?P<slug>.*)\.txt$', deerbooks_views.single_page_txt.as_view(), name='page_txt'),
+		url(r'^(?P<slug>.*)\.md$', deerbooks_views.single_page_md.as_view(), name='page_md'),
+		url(r'^(?P<slug>.*)\.tex$', deerbooks_views.single_page_tex.as_view(), name='page_tex'),
 		
 		# Sunset: Image views
-		url(r'^(?P<slug>.*)\.ihtm', sunset_views.single_image.as_view(), name='image_single'),
+		url(r'^(?P<slug>.*)\.ihtm$', sunset_views.single_image.as_view(), name='image_single'),
 		
 		# Aggregate gallery views and feeds for directory (Sunset)
 		url(r'^featured\-images\.cfm$', sunset_views.img_cat_view.as_view(), name='category_images_featured', kwargs={'viewtype':'featured'}),
