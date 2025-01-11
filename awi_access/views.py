@@ -9,10 +9,12 @@
 import datetime
 
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.template import loader
 from django.utils import dateparse
 from django.utils import timezone
@@ -225,6 +227,27 @@ class access_view(DetailView):
 			else:
 				self.edit_success = obj.quick_edit('security', level)
 		
+		elif cmd == 'chown':
+			if is_int(target) and obj.owner.pk != int(target):
+				self.request.session['deerfind_norecover'] = True
+				new_owner = get_object_or_404(User, pk=int(target))
+				self.request.session['deerfind_norecover'] = False
+				self.edit_success = obj.quick_edit('owner', new_owner)
+			else:
+				self.edit_success = False
+				self.edit_error = 'quickedit_chown_invalid'
+		
+		elif cmd == 'chgrp' or cmd == 'groupadd' or cmd == 'grouprem':
+			# Reserved for group operations
+			self.edit_success = False
+			self.edit_error = 'quickedit_futurecmd'
+		
+		elif cmd == 'rm':
+			# Reserved for object deletion
+			self.edit_success = False
+			self.edit_error = 'quickedit_futurecmd'
+		
+		# Access code commands
 		elif cmd == 'accessgrant' or cmd == 'accessreset':
 			if days == 'permanent':
 				days = 0

@@ -264,6 +264,16 @@ class category_list(leaf_parent, access_view):
 					self.edit_success = False
 					self.edit_error = 'quickedit_cat_invalid_id'
 			
+			elif cmd == 'ln':
+				# Reserved for symlinks
+				self.edit_success = False
+				self.edit_error = 'quickedit_futurecmd'
+			
+			elif cmd == 'hide' or cmd == 'unhide':
+				# Reserved for hidden object functionality
+				self.edit_success = False
+				self.edit_error = 'quickedit_futurecmd'
+			
 			else:
 				self.edit_cmd_handled = False
 	
@@ -671,8 +681,15 @@ class leaf_view(access_view):
 					self.edit_success = False
 					self.edit_error = 'quickedit_tag_invalid_id'
 			
+			elif cmd == 'ln':
+				# Reserved for symlinks
 				self.edit_success = False
+				self.edit_error = 'quickedit_futurecmd'
+			
+			elif cmd == 'hide' or cmd == 'unhide':
+				# Reserved for hidden object functionality
 				self.edit_success = False
+				self.edit_error = 'quickedit_futurecmd'
 			
 			else:
 				self.edit_cmd_handled = False
