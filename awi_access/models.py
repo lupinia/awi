@@ -327,6 +327,14 @@ class access_control(models.Model):
 			else:
 				return 'unknown'
 	
+	# Quick-edit operations
+	def quick_edit(self, field, value=None):
+		success = self.__class__.objects.filter(pk=self.pk).update(**{field:value})
+		if success:
+			self.refresh_from_db()
+		
+		return success
+	
 	class Meta:
 		abstract = True
 
