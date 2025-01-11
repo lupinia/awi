@@ -168,21 +168,23 @@ class access_view(DetailView):
 	edit_success = None
 	edit_error = ''
 	edit_redirect_to = None
+	edit_cmd_handled = None
 	
 	def edit_object(self, obj):
 		"""
 		Extendable method for handling inline edit commands
 		Executed within get_object() if permissions check succeeds and command is present
-		Put custom commands ahead of this one (put the super() call last)
+		Put additional commands after this function (put the super() call first)
 		"""
 		self.edit_success = False
+		self.edit_cmd_handled = True
 		self.edit_error = 'quickedit_unknown'
 		
 		# Pull known arguments
 		cmd = self.request.GET.get('alitelvdi', '')
 		target = self.request.GET.get('diyosdi', None)
-		users = self.request.GET.get('yvwi', None)
-		days = self.request.GET.get('didiga', None)
+		audience = self.request.GET.get('yvwi', None)
+		days = self.request.GET.get('sesdi', None)
 		
 		# Commands that don't require any extra parameters
 		quick_cmd_map = {
@@ -207,13 +209,13 @@ class access_view(DetailView):
 		
 		elif cmd == 'chmod':
 			level = None
-			if users == 'u':
+			if audience == 'u':
 				# Private
 				level = 2
-			elif users == 'g':
+			elif audience == 'g':
 				# Logged-in users
 				level = 1
-			elif users == 'o':
+			elif audience == 'o':
 				# Public
 				level = 0
 			
@@ -274,8 +276,7 @@ class access_view(DetailView):
 				self.edit_error = 'quickedit_accesscode_id_invalid'
 		
 		else:
-			self.edit_success = False
-			self.edit_error = 'quickedit_unknown_cmd'
+			self.edit_cmd_handled = False
 	
 	def get_object(self, queryset=None):
 		obj = super(access_view, self).get_object(queryset)

@@ -242,26 +242,30 @@ class category_list(leaf_parent, access_view):
 		return super(category_list,self).dispatch(*args, **kwargs)
 	
 	def edit_object(self, obj):
-		self.edit_success = False
+		super(category_list, self).edit_object(obj)
 		
-		# Pull known arguments
-		cmd = self.request.GET.get('alitelvdi', '')
-		target = self.request.GET.get('diyosdi', None)
-		
-		if cmd == 'mv':
-			# Move to a different parent directory (category)
-			# Requires diyosdi (target) parameter
-			if target and is_int(target):
-				dest = get_object_or_404(category, pk=int(target))
-				self.edit_success, self.edit_error = obj.move_item(dest)
-				if self.edit_success:
-					self.edit_redirect_to = obj.get_absolute_url()
+		if not self.edit_cmd_handled:
+			self.edit_cmd_handled = True
+			# Pull known arguments
+			cmd = self.request.GET.get('alitelvdi', '')
+			target = self.request.GET.get('diyosdi', None)
+			
+			if cmd == 'mv':
+				# Move to a different parent directory (category)
+				# Requires diyosdi (target) parameter
+				if target and is_int(target):
+					self.request.session['deerfind_norecover'] = True
+					dest = get_object_or_404(category, pk=int(target))
+					self.request.session['deerfind_norecover'] = False
+					self.edit_success, self.edit_error = obj.move_item(dest)
+					if self.edit_success:
+						self.edit_redirect_to = obj.get_absolute_url()
+				else:
+					self.edit_success = False
+					self.edit_error = 'quickedit_cat_invalid_id'
+			
 			else:
-				self.edit_success = False
-				self.edit_error = 'quickedit_cat_invalid_id'
-		
-		else:
-			super(category_list, self).edit_object(obj)
+				self.edit_cmd_handled = False
 	
 	def get_queryset(self, *args, **kwargs):
 		return super(category_list, self).get_queryset(*args, **kwargs).select_related('background_tag', 'access_code')
@@ -627,41 +631,51 @@ class leaf_view(access_view):
 	slug_url_kwarg = 'slug'
 	
 	def edit_object(self, obj):
-		self.edit_success = False
+		super(leaf_view, self).edit_object(obj)
 		
-		# Pull known arguments
-		cmd = self.request.GET.get('alitelvdi', '')
-		target = self.request.GET.get('diyosdi', None)
-		
-		if cmd == 'mv':
-			# Move to a different parent directory (category)
-			# Requires diyosdi (target) parameter
-			if target and is_int(target):
-				dest = get_object_or_404(category, pk=int(target))
-				self.edit_success, self.edit_error = obj.move_item(dest)
-				if self.edit_success:
-					self.edit_redirect_to = obj.get_absolute_url()
-			else:
+		if not self.edit_cmd_handled:
+			self.edit_cmd_handled = True
+			
+			# Pull known arguments
+			cmd = self.request.GET.get('alitelvdi', '')
+			target = self.request.GET.get('diyosdi', None)
+			
+			if cmd == 'mv':
+				# Move to a different parent directory (category)
+				# Requires diyosdi (target) parameter
+				if target and is_int(target):
+					self.request.session['deerfind_norecover'] = True
+					dest = get_object_or_404(category, pk=int(target))
+					self.request.session['deerfind_norecover'] = False
+					self.edit_success, self.edit_error = obj.move_item(dest)
+					if self.edit_success:
+						self.edit_redirect_to = obj.get_absolute_url()
+				else:
+					self.edit_success = False
+					self.edit_error = 'quickedit_cat_invalid_id'
+			
+			elif cmd == 'tag' or cmd == 'untag':
+				# Add or remove tags
+				# Requires diyosdi (target) parameter
+				if target and is_int(target):
+					self.request.session['deerfind_norecover'] = True
+					target = get_object_or_404(tag, pk=int(target))
+					self.request.session['deerfind_norecover'] = False
+					if cmd == 'tag':
+						obj.tags.add(target)
+						self.edit_success = True
+					elif cmd == 'untag':
+						obj.tags.remove(target)
+						self.edit_success = True
+				else:
+					self.edit_success = False
+					self.edit_error = 'quickedit_tag_invalid_id'
+			
 				self.edit_success = False
-				self.edit_error = 'quickedit_cat_invalid_id'
-		
-		elif cmd == 'tag' or cmd == 'untag':
-			# Add or remove tags
-			# Requires diyosdi (target) parameter
-			if target and is_int(target):
-				target = get_object_or_404(tag, pk=int(target))
-				if cmd == 'tag':
-					obj.tags.add(target)
-					self.edit_success = True
-				elif cmd == 'untag':
-					obj.tags.remove(target)
-					self.edit_success = True
-			else:
 				self.edit_success = False
-				self.edit_error = 'quickedit_tag_invalid_id'
-		
-		else:
-			super(leaf_view, self).edit_object(obj)
+			
+			else:
+				self.edit_cmd_handled = False
 	
 	def get_queryset(self, *args, **kwargs):
 		return super(leaf_view, self).get_queryset(*args, **kwargs).filter(cat__cached_url=self.kwargs.get('cached_url', None)).select_related('access_code','cat').prefetch_related('tags')
