@@ -90,7 +90,7 @@ class single_image(leaf_view):
 				self.edit_cmd_handled = False
 	
 	def get_queryset(self, *args, **kwargs):
-		return super(single_image, self).get_queryset(*args, **kwargs).prefetch_related('assets')
+		return super(single_image, self).get_queryset(*args, **kwargs).prefetch_related('assets', 'bg_tags')
 	
 	# We have an object and can view it
 	def get_context_canview(self, context, **kwargs):
@@ -101,6 +101,8 @@ class single_image(leaf_view):
 		asset_list = context['object'].assets.all()
 		for asset in asset_list:
 			context['assets'][asset.type] = asset
+		
+		context['background_tags'] = context['object'].bg_tags.all()
 		
 		if context['object'].geo_lat and context['object'].geo_long:
 			# Setting up the map.

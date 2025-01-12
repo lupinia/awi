@@ -103,5 +103,26 @@
 					<input type="text" name="embed_internal_display" id="embed_internal_display" readonly="readonly" value="&lt;sunset id=&quot;{{object.pk}}&quot; type=&quot;display&quot; /&gt;" />
 			</div>
 		{% endif %}
+		
+		{% comment %}<!-- Background Tags -->{% endcomment %}
+		{% if background_tags %}
+			<div class="right_sidebar_section content_summary">
+				{% if return_to and can_edit %}
+					<div class="admin_buttons">
+						<div class="hovericons16">
+							<a href="{% url 'sunset_bgtags_all' %}?cmd=bgadd&amp;return_to={{return_to}}" title="Add to Background Tag"><img src="{{STATIC_PREFIX}}images/icons/add.png" alt="Add to Background Tag" title="Add to Background Tag" /></a>
+						</div>
+					</div>
+				{% endif %}
+				<h3>Background Collections</h3>
+				<p>This image is featured in sitewide page background images, as part of the following themes/collections:</p>
+				<div class="tag_list_item">
+					{% for bgt in background_tags %}
+						{% if return_to and can_edit %}<div class="hovericons16"><a href="?alitelvdi=bgrem&amp;diyosdi={{bgt.pk}}" title="Remove Background Tag ({{bgt.display_title}})"><img src="{{STATIC_PREFIX}}images/icons/delete.png" alt="Remove" title="Remove Background Tag ({{bgt.display_title}})" /></a></div>{% endif %}
+						<a class="sidebar_link{% if bgt.default %} featured{% endif %}" href="{{bgt.get_absolute_url}}" rel="tag">{{bgt.display_title}}</a>
+					{% endfor %}
+				</div>
+			</div>
+		{% endif %}
 	{% endif %}
 {% endblock %}
