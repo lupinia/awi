@@ -75,7 +75,9 @@ class single_image(leaf_view):
 				# Add or remove background tags
 				# Requires diyosdi (target) parameter
 				if target and is_int(target):
+					self.request.session['deerfind_norecover'] = True
 					target = get_object_or_404(background_tag, pk=int(target))
+					self.request.session['deerfind_norecover'] = False
 					if cmd == 'bgadd':
 						obj.bg_tags.add(target)
 						self.edit_success = True
