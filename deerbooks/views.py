@@ -11,9 +11,11 @@ import re
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView
 
 from awi.utils.errors import BadRequest
+from awi.utils.types import is_int
 from awi_access.models import access_query
 from deerbooks.models import page, toc
 from deerfind.utils import urlpath
@@ -33,47 +35,81 @@ class single_page(leaf_view):
 		
 		return super(single_page,self).dispatch(*args, **kwargs)
 	
+	def edit_object(self, obj):
+		if self.alt_view:
+			# Do nothing unless this is the primary/HTML view
+			pass
+		else:
+			super(single_page, self).edit_object(obj)
+			
+			if not self.edit_cmd_handled:
+				self.edit_cmd_handled = True
+				# Pull known arguments
+				cmd = self.request.GET.get('alitelvdi', '')
+				
+				# Commands that don't require any extra parameters
+				quick_cmd_map = {
+					'buildon': {'field':'auto_export', 'value':True,},
+					'buildoff': {'field':'auto_export', 'value':False,},
+					'buildretry': {'field':'latex_fail', 'value':False,},
+					'less': {'field':'showcase_default', 'value':True,},
+					'more': {'field':'showcase_default', 'value':False,},
+				}
+				
+				if cmd in quick_cmd_map.keys():
+					# Basic field changes/toggles that require no other parameters
+					# Defined in the dictionary above
+					self.edit_success = obj.quick_edit(**quick_cmd_map[cmd])
+				
+				else:
+					self.edit_cmd_handled = False
+	
 	def get_queryset(self, *args, **kwargs):
 		return super(single_page, self).get_queryset(*args, **kwargs).select_related('book_title').prefetch_related('docfiles')
 	
-	def get_context_data(self, **kwargs):
-		context = super(single_page,self).get_context_data(**kwargs)
+	# We have an object and can view it
+	def get_context_canview(self, context, **kwargs):
+		context = super(single_page,self).get_context_canview(context, **kwargs)
 		context['has_reading_mode'] = True
 		
+		if context['object'].book_title:
+			context['toc'] = context['object'].book_title.pages.filter(access_query(self.request)).select_related('cat').order_by('book_order')
+		
+		context['alt_version_exclude'] = []
+		if context['object'].docfiles:
+			context['docfiles'] = []
+			for item in context['object'].docfiles.all():
+				context['alt_version_exclude'].append(item.filetype)
+				context['docfiles'].append(item)
+		
+		context['body_text'] = sunset_embed(context['object'].body_html, self.request)
+		
+		if self.request.GET.get('mode', False) == 'read':
+			context['showcase_mode'] = True
+		elif context['object'].showcase_default and self.request.GET.get('mode', False) != 'normal':
+			context['showcase_mode'] = True
+		else:
+			context['showcase_mode'] = False
+		
+		if context['can_edit']:
+			context['edit_url'] = 'admin:deerbooks_page_change'
+		
+		context['extra_classes'] = 'writing_page'
+		context['external_links_wide'] = False
+		
+		context['sitemeta_desc'] = context['object'].summary_short
+		if context['object'].revised:
+			context['sitemeta_timestamp_mod'] = context['object'].timestamp_revised
+		
+		context['source_url'] =  context['object'].get_complete_url(self.request)
+		
+		return context
+	
+	# We don't have an object, or we can't view it
+	def get_context_restricted(self, context, **kwargs):
+		context=super(single_page,self).get_context_restricted(context, **kwargs)
 		if self.alt_view and context.get('embed_mature_form') == True:
 			raise PermissionDenied
-		
-		if context['object']:
-			if context['object'].book_title:
-				context['toc'] = context['object'].book_title.pages.filter(access_query(self.request)).select_related('cat').order_by('book_order')
-			
-			context['alt_version_exclude'] = []
-			if context['object'].docfiles:
-				context['docfiles'] = []
-				for item in context['object'].docfiles.all():
-					context['alt_version_exclude'].append(item.filetype)
-					context['docfiles'].append(item)
-			
-			context['body_text'] = sunset_embed(context['object'].body_html, self.request)
-			
-			if self.request.GET.get('mode', False) == 'read':
-				context['showcase_mode'] = True
-			elif context['object'].showcase_default and self.request.GET.get('mode', False) != 'normal':
-				context['showcase_mode'] = True
-			else:
-				context['showcase_mode'] = False
-			
-			if context['can_edit']:
-				context['edit_url'] = 'admin:deerbooks_page_change'
-			
-			context['extra_classes'] = 'writing_page'
-			context['external_links_wide'] = False
-			
-			context['sitemeta_desc'] = context['object'].summary_short
-			if context['object'].revised:
-				context['sitemeta_timestamp_mod'] = context['object'].timestamp_revised
-			
-			context['source_url'] =  context['object'].get_complete_url(self.request)
 		
 		return context
 
@@ -81,8 +117,8 @@ class single_page_htm(single_page):
 	template_name = 'deerbooks/page.html'
 	disallowed_args = ['display', 'reply_to']
 	
-	def get_context_data(self, **kwargs):
-		context = super(single_page_htm,self).get_context_data(**kwargs)
+	def get_context_canview(self, context, **kwargs):
+		context = super(single_page_htm,self).get_context_canview(context, **kwargs)
 		
 		# Enable Highlight.js code highlighting, if needed
 		regexp = re.compile(r'<pre(.*)><code')
