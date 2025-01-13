@@ -16,6 +16,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 
+from awi.utils.models import TimestampModel
+
 # Stupidest function ever
 # This exact code directly in the default attribute throws an exception during makemigrations:
 #	TypeError: can't compare datetime.datetime to datetime.time
@@ -56,7 +58,7 @@ class state(models.Model):
 		ordering = ['name']
 
 @python_2_unicode_compatible
-class election(models.Model):
+class election(TimestampModel):
 	year = models.PositiveSmallIntegerField(unique=True, db_index=True)
 	past = models.BooleanField(default=False, blank=True, db_index=True)
 	day = models.DateField(blank=True)
@@ -64,9 +66,6 @@ class election(models.Model):
 	house_cycle = models.BooleanField(default=False, blank=True, db_index=True)
 	presidential_cycle = models.BooleanField(default=False, blank=True, db_index=True)
 	senate_class = models.PositiveSmallIntegerField(choices=settings.SENATE_CLASSES, default=0, blank=True, db_index=True)
-	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	@property
 	def senate_cycle(self):
@@ -88,7 +87,7 @@ class election(models.Model):
 		super(election, self).save(*args, **kwargs)
 
 @python_2_unicode_compatible
-class election_seats(models.Model):
+class election_seats(TimestampModel):
 	state = models.ForeignKey(state, on_delete=models.CASCADE, related_name='election_seats')
 	election_year = models.ForeignKey(election, on_delete=models.CASCADE, related_name='state_config')
 	
@@ -101,9 +100,6 @@ class election_seats(models.Model):
 	last_party_senate_special = models.CharField(max_length=1, choices=settings.ELECTION_PARTIES, null=True, blank=True)
 	last_party_house_data = JSONField(null=True, blank=True)
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
-	
 	def __str__(self):
 		return '%s - %d' % (self.state.abbr, self.election_year.year)
 	
@@ -112,7 +108,7 @@ class election_seats(models.Model):
 		ordering = ['-election_year','state']
 
 @python_2_unicode_compatible
-class data_source(models.Model):
+class data_source(TimestampModel):
 	name = models.CharField(max_length=128)
 	slug = models.SlugField(max_length=64, unique=True, db_index=True)
 	url = models.URLField(max_length=1024, null=True, blank=True)
@@ -121,13 +117,10 @@ class data_source(models.Model):
 	certified = models.BooleanField(default=False, blank=True, db_index=True)
 	owner = models.ForeignKey(User, on_delete=models.PROTECT, related_name='election_data_sources')
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
-	
 	def __str__(self):
 		return self.name
 
-class results(models.Model):
+class results(TimestampModel):
 	state = models.ForeignKey(state, on_delete=models.CASCADE, related_name='%(class)s')
 	election_year = models.ForeignKey(election, on_delete=models.CASCADE, related_name='%(class)s')
 	party = models.CharField(max_length=1, choices=settings.ELECTION_PARTIES, default='I')
@@ -137,9 +130,6 @@ class results(models.Model):
 	projected = models.BooleanField(default=False, blank=True, db_index=True)
 	certified = models.BooleanField(default=False, blank=True, db_index=True)
 	flipped = models.BooleanField(default=False, blank=True, db_index=True)
-	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	@property
 	def is_projected(self):
