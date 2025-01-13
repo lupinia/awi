@@ -130,6 +130,14 @@ class urlpath(object):
 			return self.dir_separator.join(self.path_parts)
 		else:
 			return ''
+	
+	def request_path(self, trailing_slash=True):
+		if self.is_file:
+			return '/%s/%s' % (self.dir_full, self.basename)
+		elif trailing_slash:
+			return '/%s/' % self.dir_full
+		else:
+			return '/%s' % self.dir_full
 
 
 #	Temporary tools for building the G2 object map
