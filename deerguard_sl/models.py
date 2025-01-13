@@ -11,10 +11,11 @@ from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 
+from awi.utils.models import TimestampModel
 from gridutils.models import device
 
 @python_2_unicode_compatible
-class security_system(models.Model):
+class security_system(TimestampModel):
 	name = models.CharField(max_length=200)
 	slug = models.SlugField(unique=True)
 	owner = models.ForeignKey('gridutils.avatar', on_delete=models.PROTECT, related_name='security_systems_owned')
@@ -26,9 +27,6 @@ class security_system(models.Model):
 	
 	system_admins = models.ManyToManyField('gridutils.avatar', blank=True, related_name='security_systems_managed')
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
-	
 	def __str__(self):
 		return '%s (%s)' % (self.name, self.grid.name)
 
@@ -36,7 +34,7 @@ class security_server(device):
 	system = models.ForeignKey(security_system, related_name='servers', on_delete=models.CASCADE)
 
 @python_2_unicode_compatible
-class security_zone(models.Model):
+class security_zone(TimestampModel):
 	system = models.ForeignKey(security_system, related_name='zones', on_delete=models.CASCADE)
 	name = models.CharField(max_length=200)
 	slug = models.SlugField()
@@ -53,9 +51,6 @@ class security_zone(models.Model):
 	
 	log_allowed = models.BooleanField(blank=True, default=True)
 	log_denied = models.BooleanField(blank=True, default=True)
-	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def user_allowed(self, user):
 		# Given a specific user, test whether they're allowed to do the thing they're trying to do.
@@ -101,12 +96,11 @@ class security_zone(models.Model):
 		return self.name
 
 @python_2_unicode_compatible
-class auth_log(models.Model):
+class auth_log(TimestampModel):
 	zone = models.ForeignKey(security_zone, related_name='logs', on_delete=models.CASCADE)
 	user = models.ForeignKey('gridutils.avatar', related_name='auth_logs', on_delete=models.CASCADE)
 	action = models.BooleanField(blank=True, help_text='True if allowed, False if denied')
 	action_code = models.CharField(max_length=20, default='UNKNOWN')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def __str__(self):
 		return 'Auth Log %d' % self.pk

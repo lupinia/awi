@@ -20,6 +20,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 
+from awi.utils.models import TimestampModel
 from awi.utils.rand import rand_int_list
 from gridutils.utils import (
 	device_type_choices,
@@ -47,15 +48,12 @@ class grid(models.Model):
 #	===========
 #	Users and Accounts
 @python_2_unicode_compatible
-class name_history(models.Model):
+class name_history(TimestampModel):
 	profile = models.ForeignKey('avatar', related_name='past_names')
 	
 	grid_name_first = models.CharField(max_length=50)
 	grid_name_last = models.CharField(max_length=50)
 	grid_username = models.CharField(max_length=100)
-	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	@property
 	def grid_name(self):
@@ -66,7 +64,7 @@ class name_history(models.Model):
 		#return '%s (Profile: %d)' % (self.grid_name, self.profile.pk)
 
 @python_2_unicode_compatible
-class avatar(models.Model):
+class avatar(TimestampModel):
 	account = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='grid_avatars')
 	key = models.UUIDField(db_index=True, help_text=mark_safe('The unique identifier for this user.  <a href="http://wiki.secondlife.com/wiki/Category:LSL_Key" target="_BLANK">More info</a>.'))
 	grid = models.ForeignKey(grid, on_delete=models.PROTECT, help_text='Select the virtual world/"grid" for this user.')
@@ -115,8 +113,6 @@ class avatar(models.Model):
 	skills_characters = models.BooleanField(blank=True, default=False)
 	
 	date_gridcreate = models.DateField(blank=True, null=True, verbose_name='account creation date')
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	timestamp_namechange = models.DateTimeField(blank=True, null=True, editable=False, verbose_name='date/time of last name change')
 	timestamp_sync = models.DateTimeField(blank=True, null=True, editable=False, verbose_name='date/time of last sync')
 	
@@ -221,7 +217,7 @@ class avatar(models.Model):
 #	===========
 #	Groups
 @python_2_unicode_compatible
-class group(models.Model):
+class group(TimestampModel):
 	name = models.CharField(max_length=40)
 	slug = models.SlugField(max_length=60, unique=True)
 	key = models.UUIDField(db_index=True)
@@ -240,8 +236,6 @@ class group(models.Model):
 	signup_fee = models.PositiveIntegerField(blank=True, default=0)
 	data_incomplete = models.BooleanField(editable=False, default=False, db_index=True, help_text='If True, group was created without knowing its name.')
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	timestamp_sync = models.DateTimeField(blank=True, null=True, editable=False, verbose_name='date/time of last sync')
 	
 	@property
@@ -276,7 +270,7 @@ class group(models.Model):
 		unique_together = (('key', 'grid'),)
 
 @python_2_unicode_compatible
-class group_role(models.Model):
+class group_role(TimestampModel):
 	role_name = models.CharField(max_length=40, blank=True, null=True, verbose_name='name')
 	role_title = models.CharField(max_length=40, blank=True, null=True, verbose_name='title')
 	key = models.UUIDField(blank=True, null=True)
@@ -287,8 +281,6 @@ class group_role(models.Model):
 	description = models.TextField(null=True, blank=True)
 	members = models.ManyToManyField(avatar, related_name='group_roles', blank=True)
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	timestamp_sync = models.DateTimeField(blank=True, null=True, editable=False, verbose_name='date/time of last sync')
 	
 	@property
@@ -326,7 +318,7 @@ class group_role(models.Model):
 #	===========
 #	Land
 @python_2_unicode_compatible
-class estate(models.Model):
+class estate(TimestampModel):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
 	grid = models.ForeignKey(grid, on_delete=models.PROTECT, help_text='Select the virtual world/"grid" for this estate and its regions.')
@@ -339,8 +331,6 @@ class estate(models.Model):
 	is_rental = models.BooleanField(blank=True, default=False)
 	default_estate = models.BooleanField(blank=True, default=False, help_text='If True, this estate is the "catch-all" for regions in its grid that do not have an estate defined at creation time.')
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	timestamp_sync = models.DateTimeField(blank=True, null=True, editable=False, verbose_name='date/time of last sync')
 	
 	def __str__(self):
@@ -350,7 +340,7 @@ class estate(models.Model):
 		unique_together = (('grid_estate_id', 'grid'),)
 
 @python_2_unicode_compatible
-class region(location_model):
+class region(location_model, TimestampModel):
 	SIM_STATUS_OPTIONS = (
 		('up','Running'),
 		('down','Offline'),
@@ -386,8 +376,6 @@ class region(location_model):
 	release_channel_override = models.CharField(max_length=255, null=True, blank=True)
 	release_version = models.CharField(max_length=255, null=True, blank=True)
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	timestamp_sync = models.DateTimeField(blank=True, null=True, editable=False, verbose_name='date/time of last sync')
 	timestamp_restart = models.DateTimeField(blank=True, null=True, editable=False, verbose_name='date/time of last restart')
 	
@@ -410,7 +398,7 @@ class region(location_model):
 		unique_together = (('name', 'estate'),)
 
 @python_2_unicode_compatible
-class parcel(location_model):
+class parcel(location_model, TimestampModel):
 	TELEPORT_OPTIONS = (
 		('None', 'Blocked'),
 		('LandingPoint', 'Landing Point'),
@@ -469,8 +457,6 @@ class parcel(location_model):
 	access_payment = models.BooleanField(blank=True, default=False)
 	access_group = models.BooleanField(blank=True, default=False)
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	timestamp_sync = models.DateTimeField(blank=True, null=True, editable=False, verbose_name='date/time of last sync')
 	
 	def get_owner(self):
@@ -501,7 +487,7 @@ class parcel(location_model):
 		return self.name
 
 @python_2_unicode_compatible
-class parcel_stream(models.Model):
+class parcel_stream(TimestampModel):
 	name = models.CharField(max_length=255, blank=True, null=True)
 	url = models.URLField(max_length=1024)
 	owner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='music_streams')
@@ -510,9 +496,6 @@ class parcel_stream(models.Model):
 	active = models.BooleanField(blank=True, default=True, db_index=True, help_text='If unchecked, stream URL no longer exists.')
 	healthy = models.BooleanField(blank=True, default=True, db_index=True)
 	managed = models.BooleanField(blank=True, default=False)
-	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	@property
 	def title(self):
@@ -525,14 +508,12 @@ class parcel_stream(models.Model):
 		return self.title
 
 @python_2_unicode_compatible
-class parcel_borders(models.Model):
+class parcel_borders(TimestampModel):
 	region = models.ForeignKey(region, on_delete=models.CASCADE, related_name='parcel_borders')
 	parcel = models.OneToOneField(parcel, on_delete=models.CASCADE, related_name='borders')
 	overlay = models.ImageField(upload_to='parcel_shapes', null=True, blank=True)
 	border_data = JSONField(blank=True, null=True, default=dict)
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	timestamp_sync = models.DateTimeField(blank=True, null=True, editable=False, verbose_name='date/time of last sync')
 	
 	@property
@@ -571,15 +552,12 @@ class parcel_borders(models.Model):
 		return '%s Borders (Parcel %d)' % (self.region.name, self.parcel.pk)
 
 @python_2_unicode_compatible
-class location(location_model):
+class location(location_model, TimestampModel):
 	name = models.CharField(max_length=200, blank=True, null=True)
 	slug = models.SlugField(max_length=100, unique=True)
 	
 	region = models.ForeignKey('region', on_delete=models.SET_NULL, blank=True, null=True)
 	active = models.BooleanField(blank=True, default=True, db_index=True, help_text='If unchecked, location no longer exists.')
-	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	app = models.CharField(max_length=40, default='unknown', db_index=True, help_text='System field:  Indicates which app this location belongs to.')
 	type = models.CharField(max_length=40, default='unknown', db_index=True, help_text='System field:  Indicates which model this location is.')
@@ -611,7 +589,7 @@ class location(location_model):
 #	All other models representing different types of objects should subclass this model.
 #	Be sure to also add them to settings.DEVICE_SETTINGS
 @python_2_unicode_compatible
-class device(location_model):
+class device(location_model, TimestampModel):
 	name = models.CharField(max_length=64)
 	key = models.UUIDField(db_index=True)
 	grid = models.ForeignKey(grid, on_delete=models.PROTECT)
@@ -634,8 +612,6 @@ class device(location_model):
 	init_start = models.BooleanField(default=False, editable=False, db_index=True, help_text="System field:  If true, the automated initialization steps have been completed successfully.")
 	init_ready = models.BooleanField(default=False, editable=False, db_index=True, help_text="System field:  If true, this device is fully authenticated and ready for use.")
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	timestamp_sync = models.DateTimeField(blank=True, null=True, verbose_name='date/time synchronized')
 	timestamp_authkey = models.DateTimeField(blank=True, null=True, verbose_name='date/time auth key assigned')
 	
@@ -901,7 +877,7 @@ class device(location_model):
 
 #	Authentication used to initialize an API connection.
 #	Equivalent to the application token/secret in an OAuth handshake.
-class device_authorization_token(models.Model):
+class device_authorization_token(TimestampModel):
 	parent = models.ForeignKey('device_authorization', on_delete=models.CASCADE, related_name='tokens')
 	version = models.PositiveIntegerField(blank=False)
 	
@@ -909,8 +885,6 @@ class device_authorization_token(models.Model):
 	init_secret = models.TextField(blank=True, null=True, editable=False)
 	is_active = models.BooleanField(default=True, blank=True, verbose_name='active')
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	timestamp_expire = models.DateTimeField(blank=True, null=True, verbose_name='expiration date/time')
 	
 	@property
@@ -972,7 +946,7 @@ class device_authorization_token(models.Model):
 	class Meta:
 		unique_together = (('parent', 'version'),)
 
-class device_authorization(models.Model):
+class device_authorization(TimestampModel):
 	name = models.CharField(max_length=64)
 	owner = models.ForeignKey(User, on_delete=models.PROTECT)
 	notes = models.TextField(blank=True, null=True)
@@ -981,9 +955,6 @@ class device_authorization(models.Model):
 	active = models.BooleanField(default=True, blank=True)
 	allowed_users = models.ManyToManyField(avatar, blank=True)
 	deprecation_days_override = models.PositiveIntegerField(blank=True, null=True)
-	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	@property
 	def available(self):
@@ -1029,7 +1000,7 @@ class device_authorization(models.Model):
 #	Queue to track device initializations requiring manual approval.
 #	This is a security mechanism that can be set for certain models subclassing device.
 #	It is also required when an already-initialized device tries to re-initialize.
-class device_approval_request(models.Model):
+class device_approval_request(TimestampModel):
 	REQUEST_TYPE_OPTIONS = (
 		('new', 'New Device'),
 		('reauth', 'Re-Authorization'),
@@ -1050,8 +1021,6 @@ class device_approval_request(models.Model):
 	
 	approver_ip = models.GenericIPAddressField(blank=True, null=True, editable=False)
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	timestamp_expire = models.DateTimeField(blank=True, null=True, verbose_name='expiration date/time')
 	timestamp_reviewed = models.DateTimeField(blank=True, null=True, verbose_name='date/time reviewed')
 	timestamp_authkey = models.DateTimeField(blank=True, null=True, verbose_name='date/time auth key assigned')

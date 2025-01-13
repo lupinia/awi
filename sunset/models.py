@@ -24,6 +24,7 @@ from datetime import datetime
 from fractions import Fraction
 from PIL import Image, ImageOps
 
+from awi.utils.models import TimestampModel
 from awi.utils.text import format_html, summarize
 from awi_access.models import access_control
 from deertrees.models import leaf, category, tag
@@ -41,7 +42,7 @@ def image_asset_type_choices():
 	return type_choices
 
 @python_2_unicode_compatible
-class background_tag(models.Model):
+class background_tag(TimestampModel):
 	tag = models.SlugField(max_length=50, unique=True)
 	title = models.CharField(max_length=100, null=True, blank=True)
 	default = models.BooleanField(default=False, blank=True, help_text="Check this box if this tag should be considered a default option for pages/views that don't specify any other background info, such as the home/site root view.")
@@ -465,7 +466,7 @@ class image(leaf):
 			return False
 
 @python_2_unicode_compatible
-class image_asset(models.Model):
+class image_asset(TimestampModel):
 	type = models.CharField(max_length=16, db_index=True, choices=image_asset_type_choices(), default='unknown')
 	parent = models.ForeignKey(image, related_name='assets', on_delete=models.CASCADE)
 	
@@ -474,8 +475,6 @@ class image_asset(models.Model):
 	img_mimetype = models.CharField(max_length=60, null=True, blank=True, verbose_name='image MIME type')
 	image_file = models.ImageField(upload_to=image_asset_uploadto, height_field='img_height', width_field='img_width', verbose_name='file')
 	
-	timestamp_post = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='date/time created')
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	hash = models.CharField(max_length=255, null=True, blank=True, editable=False, help_text='SHA hash of the image file, to assist in detecting duplicates and changes.')
 	
 	def __str__(self):
@@ -686,7 +685,7 @@ class image_meta(models.Model):
 
 
 @python_2_unicode_compatible
-class batch_import(access_control):
+class batch_import(access_control, TimestampModel):
 	folder = models.FilePathField(path=settings.SUNSET_IMPORT_DIR, recursive=True, allow_files=False, allow_folders=True)
 	cat = models.ForeignKey(category, verbose_name='category', help_text="This must be set manually.", on_delete=models.PROTECT)
 	
@@ -695,8 +694,6 @@ class batch_import(access_control):
 	sync_success = models.BooleanField(default=False, help_text='System field:  Indicates whether the last sync attempt was successful.')
 	sync_now = models.BooleanField(default=False, blank=True, db_index=True)
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	timestamp_sync = models.DateTimeField(blank=True, null=True, db_index=True, verbose_name='date/time synchronized')
 	
 	# The following fields will auto-populate discovered images, in addition to standard data from parsing the original file, if set.

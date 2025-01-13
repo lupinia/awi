@@ -14,6 +14,8 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 
+from awi.utils.models import TimestampModel
+
 @python_2_unicode_compatible
 class currency(models.Model):
 	code = models.SlugField(max_length=1, unique=True, verbose_name='filing code')
@@ -49,7 +51,7 @@ class gifter(models.Model):
 		return self.name
 
 @python_2_unicode_compatible
-class coin(models.Model):
+class coin(TimestampModel):
 	code = models.SlugField(unique=True, verbose_name='filing code')
 	country = models.ForeignKey(country, on_delete=models.PROTECT)
 	country_as_written = models.CharField(max_length=255, blank=True, null=True, verbose_name='country as-written', help_text="Overrides the country name if it's written differently on the coin/note.")
@@ -74,9 +76,6 @@ class coin(models.Model):
 	location_column = models.IntegerField(blank=True, null=True, verbose_name='binder page column')
 	
 	detail_link = models.URLField(max_length=255, blank=True, null=True, help_text='Link to an external site (like Numista.com) describing this coin/note in greater detail.')
-	
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
 	
 	def __str__(self):
 		return self.code

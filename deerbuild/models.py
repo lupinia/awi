@@ -12,18 +12,17 @@ from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 
+from awi.utils.models import TimestampModel
 from awi.utils.rand import rand_char_list, rand_int_list
 from awi.utils.types import is_int
 
 @python_2_unicode_compatible
-class license_plate_region_group(models.Model):
+class license_plate_region_group(TimestampModel):
 	name = models.CharField(max_length=200)
 	slug = models.SlugField(null=False)
 	
 	notes = models.TextField(blank=True, null=True)
 	active = models.BooleanField(default=True, blank=True, db_index=True)
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def __str__(self):
 		return self.name
@@ -41,15 +40,13 @@ class license_plate_region_group(models.Model):
 
 
 @python_2_unicode_compatible
-class license_plate_region(models.Model):
+class license_plate_region(TimestampModel):
 	name = models.CharField(max_length=200)
 	code = models.CharField(max_length=4, validators=[MinLengthValidator(4)], db_index=True, unique=True)
 	group = models.ForeignKey(license_plate_region_group, on_delete=models.PROTECT, related_name='plate_regions')
 	
 	notes = models.TextField(blank=True, null=True)
 	active = models.BooleanField(default=True, blank=True, db_index=True)
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def __str__(self):
 		return self.name
@@ -71,7 +68,7 @@ class license_plate_region(models.Model):
 
 
 @python_2_unicode_compatible
-class license_plate(models.Model):
+class license_plate(TimestampModel):
 	design_name = models.CharField(max_length=200)
 	territory = models.ForeignKey(license_plate_region, on_delete=models.CASCADE, related_name='plates')
 	design_code = models.CharField(max_length=2, validators=[MinLengthValidator(2)], db_index=True, verbose_name='design code')
@@ -80,8 +77,6 @@ class license_plate(models.Model):
 	
 	notes = models.TextField(blank=True, null=True)
 	active = models.BooleanField(default=True, blank=True, db_index=True)
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	@property
 	def code(self):

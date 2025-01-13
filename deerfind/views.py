@@ -27,7 +27,7 @@ from awi_access.models import check_mature, access_search
 from awi_access.utils import add_new_block
 from awi_access.views import denied_error
 from deerfind.forms import simple_search_form
-from deerfind.models import pointer, hitlog
+from deerfind.models import pointer
 from deerfind.utils import g2_lookup, shortcode_lookup
 
 #	404 Handler
@@ -67,28 +67,6 @@ def not_found(request, exception=None):
 		
 		if pointer_obj:
 			return_url = pointer_obj.new_url
-			
-			#	Log hits to known-bad URLs, to gauge whether the redirect is still necessary.
-			if pointer_obj.log_hits:
-				hitlog_fields = {
-					'pointer': pointer_obj, 
-					'user_agent': unicode(request.META.get('HTTP_USER_AGENT','')),  # type: ignore
-					'accept': unicode(request.META.get('HTTP_ACCEPT','')),  # type: ignore
-					'accept_encoding': unicode(request.META.get('HTTP_ACCEPT_ENCODING','')),  # type: ignore
-					'accept_language': unicode(request.META.get('HTTP_ACCEPT_LANGUAGE','')),  # type: ignore
-					'host': unicode(request.META.get('HTTP_HOST','')),  # type: ignore
-					'query_string': unicode(request.META.get('QUERY_STRING','')),  # type: ignore
-					'remote_addr': unicode(request.META.get('REMOTE_ADDR','')),  # type: ignore
-				}
-				
-				if request.META.get('HTTP_REFERER','').startswith('http'):
-					hitlog_fields['referer'] = unicode(request.META.get('HTTP_REFERER','')) # type: ignore
-				elif request.META.get('HTTP_REFERER',''):
-					hitlog_fields['referer'] = '(Redacted - Possibly Malicious)'
-				else:
-					hitlog_fields['referer'] = ''
-				
-				hitlog_obj = hitlog.objects.create(**hitlog_fields)
 		
 		elif not return_url and not intentional_404:
 			#	Time to go digging.  The plan here is to check each known finder function.

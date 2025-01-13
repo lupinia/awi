@@ -26,6 +26,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import slugify
 
 from awi.utils.hash import hash_sha256
+from awi.utils.models import TimestampModel
 
 #	Helper Functions
 def check_mature(request=False):
@@ -125,8 +126,8 @@ class access_code(models.Model):
 	desc = models.CharField(max_length=100, null=True, blank=True)
 	is_valid = models.BooleanField(default=True)
 	
-	timestamp_post = models.DateTimeField(auto_now_add=True, verbose_name='date/time created')
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
+	timestamp_post = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='date/time created')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	hits = models.IntegerField(default=0, help_text='Number of times this code has been used.')
 	
 	def __str__(self):
@@ -135,6 +136,7 @@ class access_code(models.Model):
 		else:
 			return 'permanent code for %s' (self.item_type)
 	
+	@property
 	def expiration_date(self):
 		if self.allowed_age:
 			return self.timestamp_post + timedelta(days=self.allowed_age)
@@ -153,7 +155,7 @@ class access_code(models.Model):
 	def valid(self):
 		if not self.is_valid:
 			return False
-		elif self.allowed_age > 0 and self.timestamp_post + timedelta(days=self.allowed_age) < timezone.now():
+		elif self.allowed_age > 0 and timezone.now() > self.expiration_date:
 			return False
 		else:
 			return True
@@ -178,15 +180,12 @@ class access_code(models.Model):
 
 
 @python_2_unicode_compatible
-class user_settings(models.Model):
+class user_settings(TimestampModel):
 	user = models.OneToOneField(User)
 	
 	mature_available = models.BooleanField(editable=False, default=False, help_text='System field:  If True, this user has provided a birthdate indicating an age >= 18 years.')
 	show_mature = models.BooleanField(default=False, help_text='Check this box to display mature content.')
 	age_check_date = models.DateTimeField(null=True, blank=True, editable=False, help_text='Date of last age check.')
-	
-	timestamp_post = models.DateTimeField(auto_now_add=True, verbose_name='date/time created')
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
 	
 	def check_mature(self):
 		if self.mature_available and self.show_mature:
@@ -340,12 +339,10 @@ class access_control(models.Model):
 
 
 @python_2_unicode_compatible
-class blocked_ip(models.Model):
+class blocked_ip(TimestampModel):
 	address = models.GenericIPAddressField(db_index=True, unique=True)
 	user_agent = models.TextField(null=True, blank=True)
 	active = models.BooleanField(default=True, blank=True, db_index=True)
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	notes = models.TextField(blank=True, null=True)
 	
 	def __str__(self):

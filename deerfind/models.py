@@ -6,7 +6,6 @@
 #	Models
 #	category:	Purely organizational.
 #	pointer:	Maps a known-bad URL to a known-good URL.
-#	hitlog:		Tracks basic request information for a hit on a known-bad URL.
 #	g2map:		Connects old Gallery2 item IDs with actual URLs in the new system.
 #	=================
 
@@ -42,39 +41,12 @@ class pointer(models.Model):
 	@property
 	def hit_count(self):
 		if self.log_hits:
-			return self.hitlog_set.count()
+			return 0
 		else:
 			return 0
 	
 	class Meta:
 		verbose_name = 'URL redirect pointer'
-
-
-@python_2_unicode_compatible
-class hitlog(models.Model):
-	pointer = models.ForeignKey(pointer, on_delete=models.CASCADE)
-	time = models.DateTimeField(auto_now=True)
-	
-	user_agent = models.TextField(null=True, blank=True)
-	accept = models.CharField(max_length=250, null=True, blank=True)
-	accept_encoding = models.CharField(max_length=250, null=True, blank=True)
-	accept_language = models.CharField(max_length=250, null=True, blank=True)
-	
-	host = models.CharField(max_length=250, null=True, blank=True)
-	referer = models.CharField(max_length=250,null=True, blank=True)
-	query_string = models.CharField(max_length=250, null=True, blank=True)
-	remote_addr = models.CharField(max_length=250, null=True, blank=True)
-	
-	@property
-	def timestamp_str(self):
-		return self.time.strftime('%b %-d, %Y %H:%M:%S')
-	
-	def __str__(self):
-		return '%s - %s' % (self.pointer.old_url, self.timestamp_str)
-	
-	class Meta:
-		verbose_name = 'pointer hit log entry'
-		verbose_name_plural = 'pointer hit log entries'
 
 
 @python_2_unicode_compatible

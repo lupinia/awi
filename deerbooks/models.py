@@ -16,6 +16,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import slugify
 
 from awi.utils.hash import hash_md5
+from awi.utils.models import TimestampModel
 from awi.utils.text import format_html, summarize
 from deertrees.models import leaf
 
@@ -220,11 +221,9 @@ class export_log(models.Model):
 
 
 @python_2_unicode_compatible
-class attachment(models.Model):
+class attachment(TimestampModel):
 	name = models.CharField(max_length=100)
 	file = models.FileField(upload_to=attachment_path)
-	timestamp_mod=models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post=models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def __str__(self):
 		return self.name

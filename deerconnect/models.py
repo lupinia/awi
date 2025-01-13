@@ -12,6 +12,7 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 
 from awi_access.models import access_control
+from awi.utils.models import TimestampModel
 from awi.utils.text import summarize
 from deertrees.models import leaf, category
 
@@ -94,13 +95,11 @@ class link(link_base, leaf):
 #	This is a special case that won't be part of the usual tree/leaf system, nor will they have tags
 #	Instead, these will be displayed on any descendant of a given category
 #	To do that, we're bypassing the leaf object, and making these have a unique relationship to their category
-class contact_link(link_base, access_control):
+class contact_link(link_base, access_control, TimestampModel):
 	name = models.CharField(max_length=140, verbose_name='username')
 	im = models.BooleanField(db_index=True, verbose_name='messaging service?', help_text='Check this box if this link is for an instant-messaging service.')
 	
 	cat = models.ForeignKey(category, null=True, blank=True, related_name='contact_links', on_delete=models.SET_NULL, verbose_name='category')
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def __str__(self):
 		return '%s - %s' % (self.label, self.name)
@@ -131,7 +130,7 @@ merge_note_delimiter = '\n=======\n'
 
 #	Keywords to scan for in contact form submissions
 @python_2_unicode_compatible
-class spam_word(models.Model):
+class spam_word(TimestampModel):
 	TYPE_CHOICES = (
 		('keyword','Keyword'),
 		('domain','Domain Name'),
@@ -146,9 +145,6 @@ class spam_word(models.Model):
 	active = models.BooleanField(default=True, blank=True, db_index=True)
 	case_sensitive = models.BooleanField(default=False, blank=True, db_index=True)
 	notes = models.TextField(blank=True, null=True)
-	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	used_count = models.PositiveSmallIntegerField(default=0, blank=True, verbose_name='used')
 	merged = models.BooleanField(default=False, blank=True, verbose_name='has been merged')
@@ -265,13 +261,11 @@ class spam_word(models.Model):
 		verbose_name = 'spam keyword'
 
 @python_2_unicode_compatible
-class spam_sender(models.Model):
+class spam_sender(TimestampModel):
 	email = models.EmailField(max_length=255, unique=True)
 	name = models.CharField(max_length=255, null=True, blank=True)
 	active = models.BooleanField(default=True, blank=True, db_index=True)
 	word_used = models.ManyToManyField(spam_word, blank=True, related_name='used_by')
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	notes = models.TextField(blank=True, null=True)
 	
 	def __str__(self):
@@ -286,12 +280,10 @@ class spam_sender(models.Model):
 		verbose_name = 'spam sender'
 
 @python_2_unicode_compatible
-class spam_domain(models.Model):
+class spam_domain(TimestampModel):
 	domain = models.CharField(max_length=255, unique=True)
 	whitelist = models.BooleanField(default=False, blank=True, db_index=True)
 	active = models.BooleanField(default=True, blank=True, db_index=True)
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	notes = models.TextField(blank=True, null=True)
 	manual_entry = models.BooleanField(default=False, blank=True, db_index=True)
 	

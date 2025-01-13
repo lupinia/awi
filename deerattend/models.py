@@ -15,14 +15,13 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.safestring import mark_safe
 
+from awi.utils.models import TimestampModel
 from awi.utils.text import summarize
 
 @python_2_unicode_compatible
-class venue(models.Model):
+class venue(TimestampModel):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	# Location
 	address = models.CharField(max_length=250, verbose_name='street address')
@@ -45,13 +44,12 @@ class venue(models.Model):
 			return "%s, %s" % (self.city, self.country)
 
 @python_2_unicode_compatible
-class attendance_flag(models.Model):
+class attendance_flag(TimestampModel):
 	name = models.CharField(max_length=250)
 	slug = models.SlugField(unique=True)
 	img_width = models.IntegerField(null=True, blank=True)
 	img_height = models.IntegerField(null=True, blank=True)
 	icon = models.ImageField(upload_to='attend_icons', height_field='img_height', width_field='img_width')
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	
 	def __str__(self):
 		return self.name
@@ -66,11 +64,10 @@ class attendance_flag(models.Model):
 		verbose_name = 'flag'
 
 @python_2_unicode_compatible
-class event_type(models.Model):
+class event_type(TimestampModel):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
 	notes = models.TextField(null=True, blank=True)
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	map_color = models.CharField(max_length=6, blank=True, default='4a3bd0', help_text="Hexadecimal-format color code for events of this type in the map view.")
 	
 	# Annoyingly, Mapbox appears to have no way to actually USE the newest Maki icons in a map, so this field is a bit pointless at the moment.  But, hopefully someday it can be used to create more interesting markers.
@@ -100,13 +97,11 @@ class event_type(models.Model):
 		verbose_name = 'type'
 
 @python_2_unicode_compatible
-class event(models.Model):
+class event(TimestampModel):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
 	notes = models.TextField(null=True, blank=True)
 	type = models.ForeignKey(event_type, on_delete=models.PROTECT)
-	timestamp_mod = models.DateTimeField(auto_now=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, verbose_name='date/time created')
 	mature = models.BooleanField(help_text='Check this box to indicate a mature/18+ event.', db_index=True)
 	
 	def __str__(self):
@@ -130,13 +125,11 @@ class event(models.Model):
 		return self.get_summary(512)
 
 @python_2_unicode_compatible
-class event_instance(models.Model):
+class event_instance(TimestampModel):
 	event = models.ForeignKey(event, on_delete=models.PROTECT)
 	instance = models.CharField(max_length=15, verbose_name='instance label', help_text="Label for the specific instance of an event.  Ideally a year, but not necessarily.  For example, 'Jan 2012', or '3'.")
 	name = models.CharField(max_length=100, null=True, blank=True, help_text="Override the standard format of 'event_instance.event.name event_instance.instance'")
 	slug = models.SlugField(unique=True)
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	uid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name='UUID')
 	
 	# Attendance Details

@@ -19,6 +19,7 @@ from django.utils.text import slugify
 from datetime import timedelta
 from mptt.models import MPTTModel, TreeForeignKey
 
+from awi.utils.models import TimestampModel
 from awi.utils.text import format_html, summarize
 from awi.utils.types import is_string
 from awi_access.models import access_control
@@ -32,7 +33,7 @@ def viewtype_options():
 	return viewtypes
 
 @python_2_unicode_compatible
-class category(MPTTModel, access_control):
+class category(MPTTModel, access_control, TimestampModel):
 	CONTENT_SUMMARY_CHOICES = (
 		('misc', 'Miscellaneous'),
 		('image', 'Images/Photos'),
@@ -57,8 +58,6 @@ class category(MPTTModel, access_control):
 	always_fresh = models.BooleanField(default=False, blank=True, help_text='If checked, the "old content" note will not be added to older content in this category. Useful for things like policy directories.')
 	
 	cached_url = models.CharField(max_length=255, null=True, blank=True, unique=True, help_text='System field:  Full unique slug for this category, including all parents.')
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def __str__(self):
 		return self.title
@@ -177,7 +176,7 @@ class category(MPTTModel, access_control):
 		verbose_name_plural = 'categories'
 
 @python_2_unicode_compatible
-class tag(models.Model):
+class tag(TimestampModel):
 	title = models.CharField(max_length=200,null=True,blank=True)
 	slug = models.SlugField(max_length=200,unique=True)
 	slug_cur = models.SlugField(max_length=200, db_index=False, null=True)	# There has to be a better way to do this
@@ -186,9 +185,6 @@ class tag(models.Model):
 	view_type = models.CharField(choices=viewtype_options(), max_length=15, default='default', help_text='Determines the placement of content when this tag is displayed.')
 	sitemap_include = models.BooleanField(default=True, verbose_name='include in sitemap', help_text='Check this box to include this tag in sitemap views.')
 	public = models.BooleanField(default=True, blank=True, db_index=True)
-	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	@property
 	def display_title(self):
@@ -357,11 +353,9 @@ class tag(models.Model):
 		ordering = ['slug',]
 
 @python_2_unicode_compatible
-class tag_synonym(models.Model):
+class tag_synonym(TimestampModel):
 	parent = models.ForeignKey(tag, on_delete=models.CASCADE, related_name='synonyms')
 	slug = models.SlugField(max_length=200,unique=True)
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def get_absolute_url(self):
 		return reverse('tag', kwargs={'slug':self.parent.slug,})
@@ -398,15 +392,13 @@ class external_link_type(models.Model):
 		verbose_name = 'external platform'
 
 @python_2_unicode_compatible
-class external_link(models.Model):
+class external_link(TimestampModel):
 	link_type = models.ForeignKey(external_link_type, on_delete=models.CASCADE, related_name='links', verbose_name='platform')
 	parent = models.ForeignKey('leaf', on_delete=models.CASCADE, related_name='external_links')
 	full_url = models.URLField(max_length=500, blank=True, null=True, verbose_name='URL')
 	remote_id = models.CharField(max_length=250, blank=True, null=True, verbose_name='remote object ID')
 	label_override = models.CharField(max_length=250, blank=True, null=True, verbose_name='label override')
 	
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	published = models.BooleanField(db_index=True, blank=True, default=False)
 	automated = models.BooleanField(db_index=True, blank=True, default=False)
 	notes = models.TextField(null=True, blank=True)

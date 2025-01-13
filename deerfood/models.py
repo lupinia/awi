@@ -12,14 +12,13 @@ from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 
+from awi.utils.models import TimestampModel
 from awi.utils.text import summarize
 
 @python_2_unicode_compatible
-class menu_section(models.Model):
+class menu_section(TimestampModel):
 	name = models.CharField(max_length=150)
 	slug = models.SlugField(unique=True)
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def __str__(self):
 		return self.name
@@ -32,13 +31,12 @@ class menu_section(models.Model):
 
 
 @python_2_unicode_compatible
-class menu_flag(models.Model):
+class menu_flag(TimestampModel):
 	name = models.CharField(max_length=250)
 	slug = models.SlugField(unique=True)
 	img_width = models.IntegerField(null=True, blank=True, verbose_name='icon height')
 	img_height = models.IntegerField(null=True, blank=True, verbose_name='icon width')
 	icon = models.ImageField(upload_to='menu_icons',height_field='img_height',width_field='img_width')
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	
 	def __str__(self):
 		return self.name
@@ -54,14 +52,12 @@ class menu_flag(models.Model):
 
 
 @python_2_unicode_compatible
-class menu_item(models.Model):
+class menu_item(TimestampModel):
 	name = models.CharField(max_length=150)
 	desc = models.TextField(verbose_name='description')
 	section = models.ForeignKey(menu_section, on_delete=models.PROTECT)
 	flags = models.ManyToManyField(menu_flag, blank=True)
 	recipe_internal = models.ForeignKey('deerbooks.page', null=True, blank=True, on_delete=models.SET_NULL, verbose_name='recipe', help_text='Select a Page that contains the recipe for this item.')
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time created')
 	
 	def __str__(self):
 		return self.name
