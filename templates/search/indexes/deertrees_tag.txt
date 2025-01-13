@@ -1,0 +1,3 @@
+{{object}}
+{% for tag in object.synonyms_list %}{% if not forloop.first %} {% endif %}{{tag}}{% endfor %}
+{{object.body_html}}

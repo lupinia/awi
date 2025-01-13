@@ -235,6 +235,8 @@ class tag(TimestampModel):
 		if self.title:
 			# Why did I write this check?  What problem was I trying to solve?
 			# Is this even what I intended?  Or was this a mistake?
+			#	Answer: I don't know if it was my original intent,
+			#	but this helps with the search index template.
 			sluglist.append(self.slug)
 		
 		synonyms = self.synonyms.all().values_list('slug', flat=True)
@@ -242,6 +244,17 @@ class tag(TimestampModel):
 			sluglist += list(synonyms)
 		
 		return sluglist
+	
+	@property
+	def search_keyword_list(self):
+		"""Synonym list specially formatted for search index data"""
+		keywords = []
+		if self.title:
+			keywords.append(self.title)
+		else:
+			keywords.append(self.slug)
+		keywords += self.synonym_list
+		return ' '.join(keywords)
 	
 	@property
 	def body_html(self):

@@ -4,5 +4,5 @@
 
 {{object.cat}} 
 {% for tag in object.tags.all %}
-{% if not forloop.first %} {% endif %}{{tag}}
+{% if not forloop.first %} {% endif %}{{tag.search_keyword_list}}
 {% endfor %}

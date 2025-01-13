@@ -66,7 +66,7 @@ class tag_index(indexes.SearchIndex, indexes.Indexable):
 	# REQUIRED - Primary Content Fields
 	title = indexes.CharField(model_attr='display_title')
 	summary = indexes.CharField(model_attr='summary_short', null=True)
-	text = indexes.CharField(document=True, use_template=True, template_name='search/indexes/deertrees.txt')
+	text = indexes.CharField(document=True, use_template=True, template_name='search/indexes/deertrees_tag.txt')
 	url = indexes.CharField(model_attr='get_absolute_url')
 	
 	# REQUIRED - Primary Facet/Filter Fields
