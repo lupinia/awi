@@ -26,7 +26,9 @@ body.newtab_page {
 		.center_time_wrapper { position:relative; }
 		
 		&.timer_active {
-			.center_time_wrapper { bottom: 60px; }
+			@media #{$scr_short} {
+				.center_time_wrapper { bottom: 60px; }
+			}
 			.timestamp.timer { display: block !important; }
 			button#timer_open img { opacity: 100% !important; }
 		}
