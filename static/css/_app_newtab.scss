@@ -152,8 +152,8 @@ body.newtab_page {
 		justify-content: space-evenly;
 		align-items: flex-end;
 		bottom:0;
-		position:absolute;
-			
+		position:fixed;
+		
 		.timestamp {
 			float: left;
 			height: auto;
