@@ -93,6 +93,7 @@ body.newtab_page {
 			.timer_time {
 				font-size:70pt;
 				color: #aa90cc;
+				transition: color 0.1s linear;
 				&.timer_running { color: $color_breadcrumbs; }
 				&.timer_complete { color: $color_red; }
 			}
