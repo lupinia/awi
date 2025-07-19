@@ -1,7 +1,9 @@
 {% extends "base_blank.html" %}
 {% load static %}
 {% load tz %}
+{% load sunset_bg %}
 {% get_static_prefix as STATIC_PREFIX %}
+{% get_bg_data as bg %}
 
 {% block title %}New Tab{% endblock %}
 {% block cookielaw_js %}{% endblock %}
@@ -42,6 +44,12 @@
 		{% endfor %}
 		</div>
 	{% endlocaltime %}{% endif %}
+	
+	{% if bg and bg.display_footer_info %}
+		<div id="topright">
+			<img id="icon_photo_credit" src="{{STATIC_PREFIX}}images/icons/camera.png" alt="Photo:" title="Photo Credit" width="12" height="12" /> <a href="{{bg.info_url}}">{{bg.title}}</a> by {{sitemeta_author_name}}
+		</div>
+	{% endif %}
 </div>
 {% endblock %}
 
