@@ -16,6 +16,7 @@ var timer_up_button;
 var timer_down_button;
 var timer_startstop_button;
 var timer_handle;
+var page_container;
 
 function setup_timer() {
 	timer_display = document.getElementById("timer_main_time");
@@ -24,6 +25,10 @@ function setup_timer() {
 	timer_up_button = document.getElementById("timer_adj_up");
 	timer_down_button = document.getElementById("timer_adj_down");
 	timer_startstop_button = document.getElementById("timer_start");
+	page_container = document.getElementById("newtab");
+	
+	page_container.classList.add("has_timer");
+	page_container.classList.remove("timer_complete");
 }
 
 function toggle_timer() {
@@ -44,6 +49,7 @@ function toggle_timer() {
 		timer_up_button.classList.remove("disabled");
 		timer_down_button.classList.remove("disabled");
 	}
+	page_container.classList.remove("timer_complete");
 }
 
 function timer_startstop() {
@@ -68,6 +74,7 @@ function timer_reset_button() {
 		timer_down_button.disabled = false;
 		timer_up_button.classList.remove("disabled");
 		timer_down_button.classList.remove("disabled");
+		page_container.classList.remove("timer_complete");
 		set_timer();
 	}
 }
@@ -105,6 +112,7 @@ function stop_timer(timer_end=false) {
 		timer_display.classList.remove("timer_running");
 		if(timer_end) {
 			timer_display.classList.add("timer_complete");
+			page_container.classList.add("timer_complete");
 			timer_started = false;
 		}
 		else {
@@ -112,6 +120,7 @@ function stop_timer(timer_end=false) {
 			timer_down_button.disabled = false;
 			timer_up_button.classList.remove("disabled");
 			timer_down_button.classList.remove("disabled");
+			page_container.classList.remove("timer_complete");
 		}
 		timer_startstop_button.classList.remove("timer_status_running");
 	}
@@ -127,6 +136,7 @@ function start_timer() {
 		timer_up_button.classList.add("disabled");
 		timer_down_button.classList.add("disabled");
 		timer_startstop_button.classList.add("timer_status_running");
+		page_container.classList.remove("timer_complete");
 	}
 }
 

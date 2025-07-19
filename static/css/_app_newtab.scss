@@ -32,6 +32,12 @@ body.newtab_page {
 		}
 	}
 	
+	&.has_timer {
+		transition: background-color 1s ease-in-out;
+		
+		&.timer_complete { background-color: $color_green_trans; }
+	}
+	
 	.timestamp {
 		border:none;
 		text-shadow: 0px 0px 5px #000000;
