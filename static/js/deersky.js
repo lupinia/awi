@@ -132,10 +132,8 @@ function start_timer() {
 		timer_active = true;
 		timer_handle = setInterval(step_timer, 1000);
 		timer_display.classList.add("timer_running");
-		timer_up_button.disabled = true;
-		timer_down_button.disabled = true;
-		timer_up_button.classList.add("disabled");
-		timer_down_button.classList.add("disabled");
+		set_button_state(timer_up_button, false);
+		set_button_state(timer_down_button, false);
 		timer_startstop_button.classList.add("timer_status_running");
 		page_container.classList.remove("timer_complete");
 	}
@@ -153,13 +151,22 @@ function stop_timer(timer_end=false) {
 			timer_started = false;
 		}
 		else {
-			timer_up_button.disabled = false;
-			timer_down_button.disabled = false;
-			timer_up_button.classList.remove("disabled");
-			timer_down_button.classList.remove("disabled");
+			set_button_state(timer_up_button, true);
+			set_button_state(timer_down_button, true);
 			page_container.classList.remove("timer_complete");
 		}
 		timer_startstop_button.classList.remove("timer_status_running");
+	}
+}
+
+// Function: Enable or disable a specified timer button
+function set_button_state(target_button, enable=true) {
+	target_button.disabled = !enable;
+	if(enable) {
+		target_button.classList.remove("disabled");
+	}
+	else {
+		target_button.classList.add("disabled");
 	}
 }
 
@@ -177,10 +184,8 @@ function toggle_timer() {
 		if(!timer_cur) {
 			set_timer();
 		}
-		timer_up_button.disabled = false;
-		timer_down_button.disabled = false;
-		timer_up_button.classList.remove("disabled");
-		timer_down_button.classList.remove("disabled");
+		set_button_state(timer_up_button, true);
+		set_button_state(timer_down_button, true);
 	}
 	page_container.classList.remove("timer_complete");
 }
@@ -205,10 +210,8 @@ function timer_reset_button() {
 			stop_timer();
 		}
 		timer_display.classList.remove("timer_complete");
-		timer_up_button.disabled = false;
-		timer_down_button.disabled = false;
-		timer_up_button.classList.remove("disabled");
-		timer_down_button.classList.remove("disabled");
+		set_button_state(timer_up_button, true);
+		set_button_state(timer_down_button, true);
 		page_container.classList.remove("timer_complete");
 		set_timer();
 	}
