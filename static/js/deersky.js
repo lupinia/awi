@@ -149,6 +149,7 @@ function stop_timer(timer_end=false) {
 		if(timer_end) {
 			timer_display.classList.add("timer_complete");
 			page_container.classList.add("timer_complete");
+			set_button_state(timer_startstop_button, false);
 			timer_started = false;
 		}
 		else {
@@ -187,6 +188,7 @@ function toggle_timer() {
 		}
 		set_button_state(timer_up_button, true);
 		set_button_state(timer_down_button, true);
+		set_button_state(timer_startstop_button, true);
 	}
 	page_container.classList.remove("timer_complete");
 }
@@ -213,6 +215,7 @@ function timer_reset_button() {
 		timer_display.classList.remove("timer_complete");
 		set_button_state(timer_up_button, true);
 		set_button_state(timer_down_button, true);
+		set_button_state(timer_startstop_button, true);
 		page_container.classList.remove("timer_complete");
 		set_timer();
 	}
