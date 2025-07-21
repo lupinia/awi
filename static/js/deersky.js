@@ -106,7 +106,7 @@ function setup_timer() {
 
 // Function: Set/update the timer's start value
 function set_timer(t=timer_start) {
-	if(timer_open && !timer_active && t) {
+	if(timer_open && !timer_active && t > 0) {
 		timer_cur = t;
 		timer_display.innerHTML = format_time(timer_cur);
 		if(!timer_started) {
@@ -117,9 +117,9 @@ function set_timer(t=timer_start) {
 
 // Function: setInterval payload to subtract one second from the timer until it reaches zero
 function step_timer() {
-	if(timer_open && timer_active && timer_cur) {
+	if(timer_open && timer_active && timer_cur > 0) {
 		timer_cur -= 1;
-		if(!timer_cur) {
+		if(timer_cur <= 0) {
 			stop_timer(true);
 		}
 		timer_display.innerHTML = format_time(timer_cur);
@@ -181,7 +181,7 @@ function toggle_timer() {
 	else {
 		timer_container.classList.add("timer_active");
 		timer_open = true;
-		if(!timer_cur) {
+		if(timer_cur <= 0) {
 			set_timer();
 		}
 		set_button_state(timer_up_button, true);
