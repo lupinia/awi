@@ -37,7 +37,7 @@ body.newtab_page {
 	&.has_timer {
 		transition: background-color 1s ease-in-out;
 		
-		&.timer_complete { background-color: $color_green_trans; }
+		&.timer_complete { background-color: $color_timer_end_bg; }
 	}
 	
 	.timestamp {
@@ -103,7 +103,7 @@ body.newtab_page {
 				color: #aa90cc;
 				transition: color 0.1s linear;
 				&.timer_running { color: $color_breadcrumbs; }
-				&.timer_complete { color: $color_red; }
+				&.timer_complete { color: $color_timer_end_text; }
 			}
 			
 			.timer_buttons {
