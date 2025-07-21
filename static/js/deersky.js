@@ -115,6 +115,17 @@ function set_timer(t=timer_start) {
 	}
 }
 
+// Function: setInterval payload to subtract one second from the timer until it reaches zero
+function step_timer() {
+	if(timer_open && timer_active && timer_cur) {
+		timer_cur -= 1;
+		if(!timer_cur) {
+			stop_timer(true);
+		}
+		timer_display.innerHTML = format_time(timer_cur);
+	}
+}
+
 // Function: Start the timer (initializes setInterval)
 function start_timer() {
 	if(timer_open && !timer_active) {
@@ -127,17 +138,6 @@ function start_timer() {
 		timer_down_button.classList.add("disabled");
 		timer_startstop_button.classList.add("timer_status_running");
 		page_container.classList.remove("timer_complete");
-	}
-}
-
-// Function: setInterval payload to subtract one second from the timer until it reaches zero
-function step_timer() {
-	if(timer_open && timer_active && timer_cur) {
-		timer_cur -= 1;
-		if(!timer_cur) {
-			stop_timer(true);
-		}
-		timer_display.innerHTML = format_time(timer_cur);
 	}
 }
 
