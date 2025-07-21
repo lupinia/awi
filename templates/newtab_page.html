@@ -47,7 +47,7 @@
 	
 	{% if bg and bg.display_footer_info %}
 		<div id="topright">
-			<img id="icon_photo_credit" src="{{STATIC_PREFIX}}images/icons/camera.png" alt="Photo:" title="Photo Credit" width="12" height="12" /> <a href="{{bg.info_url}}">{{bg.title}}</a> by {{sitemeta_author_name}}
+			<img id="icon_photo_credit" src="{{STATIC_PREFIX}}images/icons/camera.png" alt="Photo:" title="Photo Credit" width="12" height="12" /> <a href="{{bg.info_url}}" title="Photo Details:  {{bg.title}}">{{bg.title}}</a> by {{sitemeta_author_name}}
 		</div>
 	{% endif %}
 </div>
