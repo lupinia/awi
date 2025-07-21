@@ -120,6 +120,7 @@ function step_timer() {
 	if(timer_open && timer_active && timer_cur > 0) {
 		timer_cur -= 1;
 		if(timer_cur <= 0) {
+			timer_cur = 0;
 			stop_timer(true);
 		}
 		timer_display.innerHTML = format_time(timer_cur);
