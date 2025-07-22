@@ -10,6 +10,8 @@
 #	Might become a core feature of either Awi Access or DeerTrees in the future.
 #	This is also a highly experimental feature, we'll see if I end up liking it.
 #	
+#	Also includes Sunset background tags
+#	
 #	Current Schedule:
 #		/photo/autumn:		Sep 1 - Nov 30
 #		/photo/winter:		Nov 1 - Feb 28
@@ -23,6 +25,7 @@ from django.core.cache import cache
 from django.utils import timezone
 
 from deertrees.models import category
+from sunset.models import background_tag
 
 class Command(BaseCommand):
 	# List of category slugs to feature and unfeature for each month.
@@ -80,8 +83,15 @@ class Command(BaseCommand):
 	def handle(self, *args, **kwargs):
 		cur_time = timezone.now()
 		if self.months.get(cur_time.month, False):
+			# Categories
 			category.objects.filter(slug__in=self.months[cur_time.month]['unfeature']).update(featured=False)
 			category.objects.filter(slug__in=self.months[cur_time.month]['feature']).update(featured=True)
+			
+			# Background tags
+			background_tag.objects.filter(tag__in=self.months[cur_time.month]['unfeature']).update(default=False)
+			background_tag.objects.filter(tag__in=self.months[cur_time.month]['feature']).update(default=True)
+			
 			self.stdout.write('Featured:  %s\nUnfeatured:  %s\n' % (', '.join(self.months[cur_time.month]['feature']), ', '.join(self.months[cur_time.month]['unfeature'])))
+		
 		else:
 			self.stdout.write('Error:  No feature/unfeature list for current month (%d)' % cur_time.month)
