@@ -24,6 +24,7 @@ class newtab_view(TemplateView):
 		context['title_page'] = "New Tab"
 		context['newtab'] = True
 		context['time_local'] = timezone.now()
+		context['timer_start'] = 300
 		context['clock_sync'] = (60 - context['time_local'].second) * 1000
 		if settings.NEWTAB_CLOCK_LIST:
 			context['time_list'] = []

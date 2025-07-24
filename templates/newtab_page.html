@@ -55,7 +55,7 @@
 
 {% block after_content %}
 <script>
-	setup_timer();
+	setup_timer({{timer_start}});
 	setTimeout(load_updater, {{clock_sync}});
 </script>
 {% endblock %}

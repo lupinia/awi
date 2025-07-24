@@ -91,7 +91,8 @@ var timer_startstop_button;
 var page_container;
 
 // Function: Initialize timer variables
-function setup_timer() {
+function setup_timer(timer_default=300) {
+	timer_start = timer_default;
 	timer_display = document.getElementById("timer_main_time");
 	timer_obj = document.getElementById("timer_main");
 	timer_container = document.getElementById("center_info");
