@@ -98,7 +98,7 @@ def bg_select(context, input_string=''):
 			# Third check:  If bg_type is current_tag, try to pick something from the current tag.
 			cur_tag = context.get('tag', False)
 			cache_key = 'tag_%d' % cur_tag.pk
-			cache_timeout = 600
+			cache_timeout = 3600
 			bg_query = bg_query.filter(tags=cur_tag).filter(featured=True)
 		
 		elif input_string:
