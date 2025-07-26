@@ -7,7 +7,6 @@
 #	=================
 
 from django.conf import settings
-from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.views.generic.edit import FormView
 
