@@ -15,9 +15,9 @@ from django.views.generic import TemplateView
 from django.utils import timezone
 
 
-#	A homepage for new tabs, to just show a photo background, plus some helpful extra data
+#	Legacy homepage for new tabs, to just show a photo background, plus some helpful extra data
 class newtab_view(TemplateView):
-	template_name = 'newtab_page.html'
+	template_name = 'deersky/newtab_view.html'
 	
 	def get_context_data(self, **kwargs):
 		context=super(newtab_view,self).get_context_data(**kwargs)
