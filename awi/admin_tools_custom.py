@@ -26,6 +26,7 @@ itemlist_structure = (
 	'deertrees.*',
 	'sunset.models.background_tag',
 	'deerconnect.models.contact_link',
+	'deersky.*',
 )
 
 itemlist_sl = (
