@@ -11,9 +11,10 @@ import pytz
 from datetime import datetime
 
 from django.conf import settings
-from django.views.generic import TemplateView
+from django.views.generic import DetailView, TemplateView
 from django.utils import timezone
 
+from deersky.models import homepage
 
 #	Legacy homepage for new tabs, to just show a photo background, plus some helpful extra data
 class newtab_view(TemplateView):
@@ -33,5 +34,20 @@ class newtab_view(TemplateView):
 					{'label': label,
 					'timestamp': datetime.now(pytz.timezone(zone))}
 				)
+		
+		return context
+
+#	Customizable homepage view showing a photo background and clocks
+class homepage_view(DetailView):
+	model = homepage
+	template_name = 'deersky/newtab_view.html'
+	
+	def get_context_data(self, **kwargs):
+		context = super(homepage_view,self).get_context_data(**kwargs)
+		
+		context['newtab'] = True
+		context['title_page'] = context['homepage'].title
+		context['time_local'] = context['homepage'].city.now()
+		context['time_list'] = context['homepage'].secondary_clocks
 		
 		return context

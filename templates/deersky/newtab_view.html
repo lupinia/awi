@@ -12,26 +12,30 @@
 {% block page_structure %}
 <div id="newtab">
 	<div id="center_info">
-		{% if time_local %}
-			<div class="center_time_wrapper"><fieldset class="timestamp" id="timestamp_main">
-				<legend>Washington</legend>
-				<div class="timestamp_time">{{time_local|time:"H:i"}}</div>
-				<div class="timestamp_date">{{time_local|date:"F j, Y"}}</div>
-				<button id="timer_open" title="Open/close timer" onclick="toggle_timer()"><img src="{{STATIC_PREFIX}}images/icons/timer-16.png" title="Open/close timer" alt="T" /></button>
-			</fieldset>
-			<div class="timer timestamp" id="timer_main">
-				<div class="timer_label">Timer</div>
-				<div class="timer_buttons" id="timer_buttons_left">
-					<button id="timer_adj_up" title="Add 1 minute" onclick="change_timer(60)"><img src="{{STATIC_PREFIX}}images/icons/adjust-up-16.png" title="Add 1 minute" alt="+" /></button>
-					<button id="timer_adj_down" title="Subtract 1 minute" onclick="change_timer(-60)"><img src="{{STATIC_PREFIX}}images/icons/adjust-down-16.png" title="Subtract 1 minute" alt="-" /></button>
+		{% if time_local %}{% localtime off %}
+			<div class="center_time_wrapper">
+				<fieldset class="timestamp" id="timestamp_main">
+					<legend>{{homepage.city.label}}</legend>
+					<div class="timestamp_time">{{time_local|time:"H:i"}}</div>
+					<div class="timestamp_date">{{time_local|date:"F j, Y"}}</div>
+					{% if homepage.enable_timer %}<button id="timer_open" title="Open/close timer" onclick="toggle_timer()"><img src="{{STATIC_PREFIX}}images/icons/timer-16.png" title="Open/close timer" alt="T" /></button>{% endif %}
+				</fieldset>
+				{% if homepage.enable_timer %}
+				<div class="timer timestamp" id="timer_main">
+					<div class="timer_label">Timer</div>
+					<div class="timer_buttons" id="timer_buttons_left">
+						<button id="timer_adj_up" title="Add 1 minute" onclick="change_timer(60)"><img src="{{STATIC_PREFIX}}images/icons/adjust-up-16.png" title="Add 1 minute" alt="+" /></button>
+						<button id="timer_adj_down" title="Subtract 1 minute" onclick="change_timer(-60)"><img src="{{STATIC_PREFIX}}images/icons/adjust-down-16.png" title="Subtract 1 minute" alt="-" /></button>
+					</div>
+					<div class="timer_time timer_stopped" id="timer_main_time">00:00</div>
+					<div class="timer_buttons" id="timer_buttons_right">
+						<button id="timer_start" title="Start/stop timer" onclick="timer_startstop()"><img src="{{STATIC_PREFIX}}images/icons/play-16.png" title="Start timer" alt="&gt;" id="timer_startstop_play_icon" /><img src="{{STATIC_PREFIX}}images/icons/pause-16.png" title="Stop timer" alt="||" id="timer_startstop_pause_icon" /></button>
+						<button id="timer_reset" title="Reset timer" onclick="timer_reset_button()"><img src="{{STATIC_PREFIX}}images/icons/reset-16.png" title="Reset timer" alt="R" /></button>
+					</div>
 				</div>
-				<div class="timer_time timer_stopped" id="timer_main_time">00:00</div>
-				<div class="timer_buttons" id="timer_buttons_right">
-					<button id="timer_start" title="Start/stop timer" onclick="timer_startstop()"><img src="{{STATIC_PREFIX}}images/icons/play-16.png" title="Start timer" alt="&gt;" id="timer_startstop_play_icon" /><img src="{{STATIC_PREFIX}}images/icons/pause-16.png" title="Stop timer" alt="||" id="timer_startstop_pause_icon" /></button>
-					<button id="timer_reset" title="Reset timer" onclick="timer_reset_button()"><img src="{{STATIC_PREFIX}}images/icons/reset-16.png" title="Reset timer" alt="R" /></button>
-				</div>
-			</div></div>
-		{% endif %}
+				{% endif %}
+			</div>
+		{% endlocaltime %}{% endif %}
 	</div>
 	{% if time_list %}{% localtime off %}
 		<div id="footer">
@@ -55,7 +59,7 @@
 
 {% block after_content %}
 <script>
-	setup_timer({{timer_start}});
-	setTimeout(load_updater, {{clock_sync}});
+	{% if homepage.enable_timer %}setup_timer({{homepage.timer_default}});{% endif %}
+	setTimeout(load_updater, {{homepage.clock_sync}});
 </script>
 {% endblock %}

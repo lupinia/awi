@@ -89,6 +89,7 @@ urlpatterns = [
 		
 		# DeerSky: Newtab page
 		url(r'^newtab\.html$', never_cache(newtab_view.as_view()), name='newtab_page'),
+		url(r'^home/', include('deersky.urls', namespace='deersky')),
 	])),
 	
 	# =====================================
