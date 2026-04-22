@@ -23,7 +23,6 @@ from awi_access import views as access_views
 from deerbooks import views as deerbooks_views
 from deerconnect.views import contact_page
 from deerfind.views import not_found, search_view, shortcode_redirect
-from deersky.views import newtab_view
 from deertrees import views as deertrees_views
 from sunset import views as sunset_views
 
@@ -88,7 +87,6 @@ urlpatterns = [
 		url(r'^plate_generator/', include('deerbuild.urls', namespace='deerbuild')),
 		
 		# DeerSky: Newtab page
-		url(r'^newtab\.html$', never_cache(newtab_view.as_view()), name='newtab_page'),
 		url(r'^home/', include('deersky.urls', namespace='deersky')),
 	])),
 	

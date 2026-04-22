@@ -1,41 +1,14 @@
-#	Lupinia Studios
+#	DeerSky - Digital Almanac and Weather Data (Django App)
 #	By Natasha L.
 #	www.lupinia.net | github.com/lupinia
 #	
 #	=================
-#	Views (Sitewide)
+#	Views
 #	=================
 
-import pytz
-
-from datetime import datetime
-
-from django.conf import settings
-from django.views.generic import DetailView, TemplateView
-from django.utils import timezone
+from django.views.generic import DetailView
 
 from deersky.models import homepage
-
-#	Legacy homepage for new tabs, to just show a photo background, plus some helpful extra data
-class newtab_view(TemplateView):
-	template_name = 'newtab_page.html'
-	
-	def get_context_data(self, **kwargs):
-		context=super(newtab_view,self).get_context_data(**kwargs)
-		context['title_page'] = "New Tab"
-		context['newtab'] = True
-		context['time_local'] = timezone.now()
-		context['timer_start'] = 300
-		context['clock_sync'] = (60 - context['time_local'].second) * 1000
-		if settings.NEWTAB_CLOCK_LIST:
-			context['time_list'] = []
-			for label, zone in settings.NEWTAB_CLOCK_LIST:
-				context['time_list'].append(
-					{'label': label,
-					'timestamp': datetime.now(pytz.timezone(zone))}
-				)
-		
-		return context
 
 #	Customizable homepage view showing a photo background and clocks
 class homepage_view(DetailView):

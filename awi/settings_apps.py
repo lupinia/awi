@@ -333,21 +333,6 @@ SUNSET_BG_NOTIFY_FAIL = True	# Send a notification if sunset_bg is used but a ba
 SUNSET_EXIFTOOL_CMD = '/usr/bin/exiftool'	# ExifTool executable path for pyexiftool
 SUNSET_RESYNC_TIME = 8	# Time before rechecking sync folders, measured in hours
 
-#	New tab page view
-#	Tuple of strings:
-#		First value is the label that will be displayed
-#		Second value is the actual timezone data for pytz
-NEWTAB_CLOCK_LIST = [
-	('Seattle', 'America/Los_Angeles'),
-	('Lima', 'America/Lima'),
-	('UTC', 'UTC'),
-	('Baghdad', 'Asia/Baghdad'),
-	('Karachi', 'Asia/Karachi'),
-	('Perth', 'Australia/Perth'),
-	('Adelaide', 'Australia/Adelaide'),
-	('Sydney', 'Australia/Sydney'),
-]
-
 
 #	THIRD-PARTY APPS
 #	==============
