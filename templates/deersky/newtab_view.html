@@ -40,10 +40,10 @@
 	{% if time_list %}{% localtime off %}
 		<div id="footer">
 		{% for clock in time_list %}
-			<fieldset class="timestamp">
-				<legend>{{clock.label}}</legend>
-				<div class="timestamp_time">{{clock.timestamp|time:"H:i"}}</div>
-				<div class="timestamp_date">{{clock.timestamp|date:"F j, Y"}}</div>
+			<fieldset class="timestamp" id="extraclock{{clock.priority}}">
+				<legend>{{clock.city.label}}</legend>
+				<div class="timestamp_time">{{clock.city.now|time:"H:i"}}</div>
+				<div class="timestamp_date">{{clock.city.now|date:"F j, Y"}}</div>
 			</fieldset>
 		{% endfor %}
 		</div>
