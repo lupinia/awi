@@ -13,6 +13,7 @@ from datetime import datetime
 
 from django.conf import settings
 from django.core.cache import cache
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
@@ -153,7 +154,7 @@ class homepage(TimestampModel):
 		# The original new tab page clock list only stored label and timezone
 		# To support things like sunrise/sunset, we need the whole city object
 		# This basically caches the city twice, but avoiding doing that is complicated 
-		clockobjects = self.secondary_clock_set.all().select_related()
+		clockobjects = self.secondary_clock_set.filter(priority__lte=settings.HOMEPAGE_MAX_EXTRA_CLOCKS).select_related()
 		if clockobjects:
 			clocklist = []
 			for clock in clockobjects:
@@ -172,7 +173,7 @@ class homepage(TimestampModel):
 class secondary_clock(models.Model):
 	parent = models.ForeignKey(homepage, on_delete=models.CASCADE)
 	city = models.ForeignKey(city, on_delete=models.CASCADE, related_name='secondary_for')
-	priority = models.PositiveSmallIntegerField()
+	priority = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(settings.HOMEPAGE_MAX_EXTRA_CLOCKS)])
 	
 	def __str__(self):
 		return self.city.label

@@ -333,6 +333,10 @@ SUNSET_BG_NOTIFY_FAIL = True	# Send a notification if sunset_bg is used but a ba
 SUNSET_EXIFTOOL_CMD = '/usr/bin/exiftool'	# ExifTool executable path for pyexiftool
 SUNSET_RESYNC_TIME = 8	# Time before rechecking sync folders, measured in hours
 
+#	DeerSky
+# 	Maximum number of secondary clocks on a homepage
+HOMEPAGE_MAX_EXTRA_CLOCKS = 12
+
 
 #	THIRD-PARTY APPS
 #	==============
