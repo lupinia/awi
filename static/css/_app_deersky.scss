@@ -176,12 +176,8 @@ body.newtab_page {
 			&:hover, &:active, &:focus { opacity: 100%; }
 			
 			// Corresponds to the value of settings.HOMEPAGE_MAX_EXTRA_CLOCKS
-			&#extraclock3 {
-				@media screen and (max-width: 500px) { display: none; }
-			}
-			&#extraclock4 {
-				@media screen and (max-width: 600px) { display: none; }
-			}
+			&#extraclock3 { @media screen and (max-width: 500px) { display: none; } }
+			&#extraclock4 { @media screen and (max-width: 600px) { display: none; } }
 			&#extraclock5 { @media screen and (max-width: 750px) { display: none; } }
 			&#extraclock6 { @media screen and (max-width: 900px) { display: none; } }
 			&#extraclock7 { @media screen and (max-width: 1050px) { display: none; } }
@@ -191,6 +187,17 @@ body.newtab_page {
 			&#extraclock11 { @media screen and (max-width: 1650px) { display: none; } }
 			&#extraclock12 { @media screen and (max-width: 1800px) { display: none; } }
 		}
+		
+		@media screen and (max-height: 450px) {
+			justify-content: space-between;
+			.timestamp { display: none; }
+			.timestamp#extraclock1, .timestamp#extraclock2 {
+				@media screen and (min-width: 650px) {
+					display: block;
+					margin-left: 20px !important;
+					margin-right: 20px !important;
+				}
+			}
 		}
 	}
 	
