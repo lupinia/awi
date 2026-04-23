@@ -29,8 +29,8 @@ body.newtab_page {
 		}
 		
 		&.timer_active {
-			@media #{$scr_short} {
-				.center_time_wrapper { bottom: 60px; }
+			@media screen and (max-height: 720px) {
+				.center_time_wrapper { bottom: 72px; }
 			}
 			.timestamp.timer { display: block !important; }
 			button#timer_open img { opacity: 100% !important; }
