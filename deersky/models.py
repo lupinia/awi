@@ -116,7 +116,7 @@ class homepage(TimestampModel):
 		if main_city_obj is None:
 			# Second try: Get it from the database, and hope we never have to do this again
 			main_city_obj = self.main_city
-			cache.set('deersky_city_%d' % main_city_obj.pk, main_city_obj)
+			cache.set('deersky_city_%d' % main_city_obj.pk, main_city_obj, None)
 		
 		return main_city_obj
 	
@@ -163,7 +163,7 @@ class homepage(TimestampModel):
 					'city':clock.city,
 				})
 			
-			cache.set('%s_extraclocks' % self.cache_prefix, clocklist)
+			cache.set('%s_extraclocks' % self.cache_prefix, clocklist, None)
 			return True
 		
 		else:
