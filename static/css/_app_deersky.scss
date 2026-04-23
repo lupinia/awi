@@ -23,7 +23,10 @@ body.newtab_page {
 		justify-content: center;
 		height: 100%;
 		
-		.center_time_wrapper { position:relative; }
+		.center_time_wrapper {
+			position:relative;
+			z-index: 2;
+		}
 		
 		&.timer_active {
 			@media #{$scr_short} {
@@ -162,6 +165,7 @@ body.newtab_page {
 		align-items: flex-end;
 		bottom:0;
 		position:fixed;
+		z-index: 1;
 		
 		.timestamp {
 			float: left;
