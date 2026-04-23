@@ -100,6 +100,10 @@ def record_spammer(sender, name, words=[]):
 
 #	Check whether the contact form has already been submitted
 def form_too_soon(request):
+	if request.user.is_authenticated():
+		# Authenticated users never have a timeout
+		return False
+	
 	if request.META.get('REMOTE_ADDR', '') and request.META.get('HTTP_USER_AGENT', False):
 		cache_check = cache.get('deerconnect_formsent_%s' % request.META['REMOTE_ADDR'])
 		if cache_check is not None:

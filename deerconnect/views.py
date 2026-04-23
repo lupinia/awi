@@ -72,8 +72,7 @@ class contact_page(FormView):
 	def form_valid(self, form):
 		success, self.send_status = form.send_email(self.request)
 		if success:
-			if not self.request.user.is_authenticated():
-				self.request.session['deerconnect_contact_form_success'] = True
+			self.request.session['deerconnect_contact_form_success'] = True
 			return super(contact_page, self).form_valid(form)
 		else:
 			return super(contact_page, self).form_invalid(form)
@@ -88,8 +87,9 @@ class contact_page(FormView):
 		context['breadcrumbs'].append({'url':reverse('contact'), 'title':'Contact'})
 		
 		# Apparently there's no way around using a session variable for this, so we still have to handle that.
-		if self.request.session.get('deerconnect_contact_form_success', False) and not self.request.user.is_authenticated():
-			context['form'] = ''
+		if self.request.session.get('deerconnect_contact_form_success', False):
+			if not self.request.user.is_authenticated():
+				context['form'] = ''
 			context['error'] = 'mailform_success'
 			self.request.session['deerconnect_contact_form_success'] = False
 		elif self.send_status:
