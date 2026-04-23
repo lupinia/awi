@@ -349,7 +349,7 @@ class blocked_ip(TimestampModel):
 		return self.address
 	
 	def save(self, *args, **kwargs):
-		cache.set('blocked_ip_%s' % self.address, None, 0)
+		cache.set('blocked_ip_%s' % self.address, self.active, 60*60*24*7)
 		return super(blocked_ip, self).save(*args, **kwargs)
 	
 	class Meta:
