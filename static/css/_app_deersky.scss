@@ -170,6 +170,23 @@ body.newtab_page {
 			opacity: 50%;
 			
 			&:hover, &:active, &:focus { opacity: 100%; }
+			
+			// Corresponds to the value of settings.HOMEPAGE_MAX_EXTRA_CLOCKS
+			&#extraclock3 {
+				@media screen and (max-width: 500px) { display: none; }
+			}
+			&#extraclock4 {
+				@media screen and (max-width: 600px) { display: none; }
+			}
+			&#extraclock5 { @media screen and (max-width: 750px) { display: none; } }
+			&#extraclock6 { @media screen and (max-width: 900px) { display: none; } }
+			&#extraclock7 { @media screen and (max-width: 1050px) { display: none; } }
+			&#extraclock8 { @media screen and (max-width: 1200px) { display: none; } }
+			&#extraclock9 { @media screen and (max-width: 1350px) { display: none; } }
+			&#extraclock10 { @media screen and (max-width: 1500px) { display: none; } }
+			&#extraclock11 { @media screen and (max-width: 1650px) { display: none; } }
+			&#extraclock12 { @media screen and (max-width: 1800px) { display: none; } }
+		}
 		}
 	}
 	

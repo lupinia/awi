@@ -334,7 +334,8 @@ SUNSET_EXIFTOOL_CMD = '/usr/bin/exiftool'	# ExifTool executable path for pyexift
 SUNSET_RESYNC_TIME = 8	# Time before rechecking sync folders, measured in hours
 
 #	DeerSky
-# 	Maximum number of secondary clocks on a homepage
+#	Maximum number of secondary clocks on a homepage
+#	When changing this, make sure the CSS supports all secondary clocks!
 HOMEPAGE_MAX_EXTRA_CLOCKS = 12
 
 
