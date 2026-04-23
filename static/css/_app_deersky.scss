@@ -188,6 +188,20 @@ body.newtab_page {
 			&#extraclock12 { @media screen and (max-width: 1800px) { display: none; } }
 		}
 		
+		@media screen and (max-height: 600px) {
+			&.timer_active {
+				justify-content: space-between;
+				.timestamp { display: none; }
+				.timestamp#extraclock1, .timestamp#extraclock2 {
+					@media screen and (min-width: 650px) {
+						display: block;
+						margin-left: 20px !important;
+						margin-right: 20px !important;
+					}
+				}
+			}
+		}
+		
 		@media screen and (max-height: 450px) {
 			justify-content: space-between;
 			.timestamp { display: none; }

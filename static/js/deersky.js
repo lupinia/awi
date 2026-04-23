@@ -89,6 +89,7 @@ var timer_up_button;
 var timer_down_button;
 var timer_startstop_button;
 var page_container;
+var footer_container;
 
 // Function: Initialize timer variables
 function setup_timer(timer_default=300) {
@@ -100,6 +101,7 @@ function setup_timer(timer_default=300) {
 	timer_down_button = document.getElementById("timer_adj_down");
 	timer_startstop_button = document.getElementById("timer_start");
 	page_container = document.getElementById("newtab");
+	footer_container = document.getElementById("footer");
 	
 	page_container.classList.add("has_timer");
 	page_container.classList.remove("timer_complete");
@@ -177,12 +179,14 @@ function set_button_state(target_button, enable=true) {
 function toggle_timer() {
 	if(timer_open) {
 		timer_container.classList.remove("timer_active");
+		footer_container.classList.remove("timer_active");
 		stop_timer();
 		timer_display.classList.remove("timer_complete");
 		timer_open = false;
 	}
 	else {
 		timer_container.classList.add("timer_active");
+		footer_container.classList.add("timer_active");
 		timer_open = true;
 		if(timer_cur <= 0) {
 			set_timer();
