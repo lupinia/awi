@@ -105,7 +105,7 @@
 		{% endif %}
 		
 		{% comment %}<!-- Background Tags -->{% endcomment %}
-		{% if background_tags %}
+		{% if background_tags or return_to and can_edit %}
 			<div class="right_sidebar_section content_summary">
 				{% if return_to and can_edit %}
 					<div class="admin_buttons">
@@ -115,6 +115,7 @@
 					</div>
 				{% endif %}
 				<h3>Background Collections</h3>
+				{% if background_tags %}
 				<p>This image is featured in sitewide page background images, as part of the following themes/collections:</p>
 				<div class="tag_list_item">
 					{% for bgt in background_tags %}
@@ -122,6 +123,9 @@
 						<a class="sidebar_link{% if bgt.default %} featured{% endif %}" href="{{bgt.get_absolute_url}}" rel="tag">{{bgt.display_title}}</a>
 					{% endfor %}
 				</div>
+				{% elif return_to and can_edit %}
+				<p><em>Click the Add button to add this image to a sitewide page background collection.</em></p>
+				{% endif %}
 			</div>
 		{% endif %}
 	{% endif %}
