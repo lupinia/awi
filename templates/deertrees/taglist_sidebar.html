@@ -1,7 +1,7 @@
 {% load static %}
 {% get_static_prefix as STATIC_PREFIX %}
 
-{% if tags %}
+{% if tags or return_to and can_edit %}
 	<div class="transbox right_sidebar_section">
 		{% if return_to and can_edit %}
 			<div class="admin_buttons">
@@ -11,11 +11,15 @@
 			</div>
 		{% endif %}
 		<h3>Tags</h3>
-		<div class="tag_list_item">
-			{% for tag in tags %}
-				{% if return_to and can_edit %}<div class="hovericons16"><a href="?alitelvdi=untag&amp;diyosdi={{tag.pk}}" title="Remove Tag ({{tag}})"><img src="{{STATIC_PREFIX}}images/icons/delete.png" alt="Remove" title="Remove Tag ({{tag}})" /></a></div>{% endif %}
-				<a class="sidebar_link{% if not tag.public %} restricted{% endif %}" href="{% url 'tag' tag.slug %}" rel="tag">{{tag}}</a>
-			{% endfor %}
-		</div>
+		{% if tags %}
+			<div class="tag_list_item">
+				{% for tag in tags %}
+					{% if return_to and can_edit %}<div class="hovericons16"><a href="?alitelvdi=untag&amp;diyosdi={{tag.pk}}" title="Remove Tag ({{tag}})"><img src="{{STATIC_PREFIX}}images/icons/delete.png" alt="Remove" title="Remove Tag ({{tag}})" /></a></div>{% endif %}
+					<a class="sidebar_link{% if not tag.public %} restricted{% endif %}" href="{% url 'tag' tag.slug %}" rel="tag">{{tag}}</a>
+				{% endfor %}
+			</div>
+		{% elif return_to and can_edit %}
+			<p><em>Click the Add button to add this image to a tag.</em></p>
+		{% endif %}
 	</div>
 {% endif %}

@@ -58,7 +58,7 @@
 	
 	{% if object and not error %}
 		{% comment %}<!-- Tags -->{% endcomment %}
-		{% if tags %}
+		{% if tags or return_to and can_edit %}
 			{% include 'deertrees/taglist_sidebar.html' %}
 		{% endif %}
 		
