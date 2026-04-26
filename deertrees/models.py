@@ -706,7 +706,10 @@ class special_feature(leaf):
 	directory = models.BooleanField(blank=True, default=True, help_text='Does this link to content that behaves like a single file, or like a subdirectory?')
 	
 	def get_absolute_url(self):
-		return '%s%s' % (reverse('category', kwargs={'cached_url':self.cat.cached_url,}), self.url)
+		if self.url_reverse:
+			return reverse(self.url_reverse)
+		else:
+			return '%s%s' % (reverse('category', kwargs={'cached_url':self.cat.cached_url,}), self.url)
 	
 	def __str__(self):
 		return '%s: %s' % (self.emulation_mode.capitalize(), self.title)
