@@ -17,8 +17,8 @@
 			{% if view == 'sitemap' %}
 				<li><a href="/robots.txt">/robots.txt</a> <em>(Robots.txt file)</em></li>
 				<li><a href="/sitemap.xml">/sitemap.xml</a> <em>(XML site map)</em></li>
-				<li><a href="/accounts/login/">/accounts/login/</a> <em>(User login)</em></li>
-				<li><a href="/accounts/logout/">/accounts/logout/</a> <em>(User logout)</em></li>
+				<li><a href="/accounts/login.ashx">/accounts/login.ashx</a> <em>(User login)</em></li>
+				<li><a href="/accounts/logout.ashx">/accounts/logout.ashx</a> <em>(User logout)</em></li>
 				{% if user.is_superuser %}<li><a href="/admin/">/admin/*</a> <em>(Administration)</em></li>{% endif %}
 				<li><a href="/contact/">/contact/</a> <em>(Contact information)</em></li>
 				<li><a href="/search/">/search/</a> <em>(Search)</em></li>

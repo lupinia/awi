@@ -47,10 +47,10 @@ urlpatterns = [
 	# User authentication and management/settings
 	url(r'^settings/$', access_views.settings_page.as_view(), name='settings'),
 	url(r'^accounts/', include([
-		url(r'^login/$', login_view, name='login'),
-		url(r'^logout/$', logout_view, {'template_name':'registration/login.html'}, name='logout'),
 		url(r'^age_form/$', never_cache(check_honeypot(field_name=settings.HONEYPOT_FIELD_NAME_AWIACCESS)(access_views.age_verify_full.as_view())), name='age_form'),
 		url(r'^age_form_embed/$', never_cache(check_honeypot(field_name=settings.HONEYPOT_FIELD_NAME_AWIACCESS)(access_views.age_verify.as_view())), name='age_form_embed'),
+		url(r'^login\.ashx$', login_view, name='login'),
+		url(r'^logout\.ashx$', logout_view, {'template_name':'registration/login.html'}, name='logout'),
 	])),
 	
 	# DeerFind: Main search view
