@@ -28,7 +28,7 @@ from awi_access.models import check_mature, user_settings
 class age_verify(FormView):
 	template_name = 'awi_access/age_form_embed.html'
 	form_class = age_verify_form
-	success_url = '/accounts/age_form_embed/'
+	success_url = '/accounts/age_form_embed.ashx'
 	
 	def get_success_url(self):
 		if self.request.GET.get('return_to', False):
@@ -81,7 +81,7 @@ class age_verify(FormView):
 
 class age_verify_full(age_verify):
 	template_name = 'awi_access/age_form.html'
-	success_url = '/accounts/age_form/'
+	success_url = '/accounts/age_form.ashx'
 	
 	def get_context_data(self, **kwargs):
 		context = super(age_verify_full, self).get_context_data(**kwargs)
