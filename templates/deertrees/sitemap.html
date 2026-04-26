@@ -14,16 +14,22 @@
 	{% endif %}
 	
 	<div class="left_full">
-		<ul class="tree">
+		<ul>
+		{% if view == 'sitemap' %}
+			<a name="core" id="core"></a>
+			<li><a href="/robots.txt">/robots.txt</a> <em>(Robots.txt file)</em></li>
+			<li><a href="/sitemap.xml">/sitemap.xml</a> <em>(XML site map)</em></li>
+			<li><a href="/accounts/login.ashx">/accounts/login.ashx</a> <em>(User login)</em></li>
+			<li><a href="/accounts/logout.ashx">/accounts/logout.ashx</a> <em>(User logout)</em></li>
+			{% if user.is_superuser %}<li><a href="/admin/">/admin/*</a> <em>(Administration)</em></li>{% endif %}
+			<li><a href="/contact/">/contact/</a> <em>(Contact information)</em></li>
+			<li><a href="/search/">/search/</a> <em>(Search)</em></li>
+			<li><a href="/settings/">/settings/</a> <em>(Settings)</em></li>
+		{% endif %}
+		
+		{% if cats %}
 			{% if view == 'sitemap' %}
-				<li><a href="/robots.txt">/robots.txt</a> <em>(Robots.txt file)</em></li>
-				<li><a href="/sitemap.xml">/sitemap.xml</a> <em>(XML site map)</em></li>
-				<li><a href="/accounts/login.ashx">/accounts/login.ashx</a> <em>(User login)</em></li>
-				<li><a href="/accounts/logout.ashx">/accounts/logout.ashx</a> <em>(User logout)</em></li>
-				{% if user.is_superuser %}<li><a href="/admin/">/admin/*</a> <em>(Administration)</em></li>{% endif %}
-				<li><a href="/contact/">/contact/</a> <em>(Contact information)</em></li>
-				<li><a href="/search/">/search/</a> <em>(Search)</em></li>
-				<li><a href="/settings/">/settings/</a> <em>(Settings)</em></li>
+				<li><strong>Main Content Directory Structure (Categories)</strong><a name="cats" id="cats"></a></li>
 			{% endif %}
 			{% recursetree cats %}
 				<li><a href="{% if return_to %}{{return_to}}{{node.pk}}{% else %}{% url 'category' node.cached_url %}{% endif %}">{% url 'category' node.cached_url %}</a> <em>(Category:  {{node.title}})  {% if node.num_leaves %}({{node.num_leaves}} content item{{node.num_leaves|pluralize}}){% endif %}</em>
@@ -41,15 +47,30 @@
 					{% endif %}
 				</li>
 			{% endrecursetree  %}
-			{% if tags %}
-				<li><a href="{% url 'all_tags' %}">/tags/</a> <em>(Tag list)</em>
-					<ul>
-						{% for tag in tags %}
-							{% if tag.num_leaves %}<li><a href="{% url 'tag' tag.slug %}">{% url 'tag' tag.slug %}</a> <em>(Tag:  {{tag}})  ({{tag.num_leaves}} content items)</em></li>{% endif %}
-						{% endfor %}
-					</ul>
-				</li>
-			{% endif %}
+		{% endif %}
+		
+		{% if view == 'sitemap' and tags %}
+			<li><strong><a href="{% url 'all_tags' %}" name="tags" id="tags">/tags/</a> <em>(Tag list)</em></strong>
+				<ul>
+				{% for tag in tags %}
+					{% if tag.num_leaves %}<li><a href="{% url 'tag' tag.slug %}">{% url 'tag' tag.slug %}</a> <em>(Tag:  {{tag}})  ({{tag.num_leaves}} content items)</em></li>{% endif %}
+				{% endfor %}
+				</ul>
+			</li>
+		{% endif %}
 		</ul>
 	</div>
+{% endblock %}
+
+{% block content_right %}
+	{% if view == 'sitemap' %}
+	<div class="right_sidebar_section">
+		<h3>Directory Types</h3>
+		<ol class="table_of_contents">
+			<li><a href="#core">General</a></li>
+			<li><a href="#cats">Main Content</a></li>
+			<li><a href="#tags">Tags</a></li>
+		</ol>
+	</div>
+	{% endif %}
 {% endblock %}
