@@ -804,12 +804,30 @@ class sitemap(all_cats):
 	
 	def get_context_data(self, **kwargs):
 		context = super(sitemap,self).get_context_data(**kwargs)
+		
+		context['title_page'] = "Site Map"
 		context['view'] = 'sitemap'
+		
 		context['cats'] = context['cats'].filter(sitemap_include=True)
 		context['tags'] = tag.objects.filter(sitemap_include=True).annotate(num_leaves=Count('leaves'))
 		if not self.request.user.is_superuser:
 			context['tags'] = context['tags'].filter(public=True)
-		context['title_page'] = "Site Map"
+		
+		# Special feature directories to inject into the main directory tree
+		special_feature_list = special_feature.objects.filter(access_query(self.request)).select_related('cat')
+		context['special_features'] = {}
+		context['has_special_features'] = []
+		for feature in special_feature_list:
+			if context['special_features'].get(feature.cat.pk, None) is None:
+				context['special_features'][feature.cat.pk] = []
+				context['has_special_features'].append(feature.cat.pk)
+			
+			context['special_features'][feature.cat.pk].append({
+				'url':feature.get_absolute_url(),
+				'title':feature.title,
+				'mode':feature.emulation_mode,
+			})
+		
 		return context
 
 
