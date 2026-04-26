@@ -823,9 +823,9 @@ class sitemap(all_cats):
 				context['has_special_features'].append(feature.cat.pk)
 			
 			context['special_features'][feature.cat.pk].append({
-				'url':feature.get_absolute_url(),
-				'title':feature.title,
-				'mode':feature.emulation_mode,
+				'url': feature.get_absolute_url(),
+				'title': 'Special Feature: %s' % feature.title,
+				'mode': feature.emulation_mode,
 			})
 		
 		return context
