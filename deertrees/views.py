@@ -817,6 +817,7 @@ class sitemap(all_cats):
 		special_feature_list = special_feature.objects.filter(access_query(self.request)).select_related('cat')
 		context['special_features'] = {}
 		context['has_special_features'] = []
+		
 		for feature in special_feature_list:
 			if context['special_features'].get(feature.cat.pk, None) is None:
 				context['special_features'][feature.cat.pk] = []
@@ -831,11 +832,16 @@ class sitemap(all_cats):
 		# Special features with their own recursive trees
 		# I hate doing imports this way
 		from deerattend.sitemaps import html_map as deerattend_sitemap
+		from deerfood.sitemaps import html_map as deerfood_sitemap
 		
 		events_url, events_tree = deerattend_sitemap(self.request)
+		food_url, food_tree = deerfood_sitemap(self.request)
 		
-		context['has_child_tree'] = [events_url,]
-		context['child_trees'] = {events_url: events_tree,}
+		context['has_child_tree'] = [events_url, food_url,]
+		context['child_trees'] = {
+			events_url: events_tree,
+			food_url: food_tree,
+		}
 		
 		return context
 
