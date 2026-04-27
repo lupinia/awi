@@ -822,7 +822,9 @@ class sitemap(all_cats):
 		# I hate doing imports this way
 		from deerattend.sitemaps import html_map as deerattend_sitemap
 		from deerfood.sitemaps import html_map as deerfood_sitemap
+		from sunset.sitemaps import html_map as sunset_sitemap
 		
+		bgtag_root, context['bgtag_tree'] = sunset_sitemap(self.request)
 		events_url, events_tree = deerattend_sitemap(self.request)
 		food_url, food_tree = deerfood_sitemap(self.request)
 		

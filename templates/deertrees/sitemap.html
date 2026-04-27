@@ -24,6 +24,7 @@
 				<li><a href="/accounts/logout.ashx">/accounts/logout.ashx</a> <em>(User logout)</em></li>
 			</ul></li>
 			{% if user.is_superuser %}<li><a href="/admin/">/admin/*</a> <em>(Administration)</em></li>{% endif %}
+			{% include 'deertrees/sitemap_special_feature.html' with element=bgtag_tree only %}
 			<li><a href="/contact/">/contact/</a> <em>(Contact information)</em></li>
 			<li><a href="/search/">/search/</a> <em>(Search)</em></li>
 			<li><a href="/settings/">/settings/</a> <em>(Settings)</em></li>
