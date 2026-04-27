@@ -846,6 +846,14 @@ class sitemap(all_cats):
 					'mode': feature.emulation_mode,
 				})
 		
+		context['tools_tree'] = [
+			{
+				'url': reverse('all_cats'),
+				'title': 'All Categories List',
+				'mode': 'file',
+			},
+		]
+		
 		return context
 
 

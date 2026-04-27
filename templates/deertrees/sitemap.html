@@ -27,6 +27,11 @@
 			<li><a href="/contact/">/contact/</a> <em>(Contact information)</em></li>
 			<li><a href="/search/">/search/</a> <em>(Search)</em></li>
 			<li><a href="/settings/">/settings/</a> <em>(Settings)</em></li>
+			<li>/tools/ <em>(APIs and Special Extra Modules)</em><ul>
+				{% for tool in tools_tree %}
+					{% include 'deertrees/sitemap_special_feature.html' with element=tool only %}
+				{% endfor %}
+			</ul></li>
 		</ul>
 		{% endif %}
 		
