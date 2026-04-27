@@ -818,17 +818,6 @@ class sitemap(all_cats):
 		context['special_features'] = {}
 		context['has_special_features'] = []
 		
-		for feature in special_feature_list:
-			if context['special_features'].get(feature.cat.pk, None) is None:
-				context['special_features'][feature.cat.pk] = []
-				context['has_special_features'].append(feature.cat.pk)
-			
-			context['special_features'][feature.cat.pk].append({
-				'url': feature.get_absolute_url(),
-				'title': 'Special Feature: %s' % feature.title,
-				'mode': feature.emulation_mode,
-			})
-		
 		# Special features with their own recursive trees
 		# I hate doing imports this way
 		from deerattend.sitemaps import html_map as deerattend_sitemap
@@ -837,11 +826,25 @@ class sitemap(all_cats):
 		events_url, events_tree = deerattend_sitemap(self.request)
 		food_url, food_tree = deerfood_sitemap(self.request)
 		
-		context['has_child_tree'] = [events_url, food_url,]
-		context['child_trees'] = {
+		child_trees = {
 			events_url: events_tree,
 			food_url: food_tree,
 		}
+		
+		for feature in special_feature_list:
+			if context['special_features'].get(feature.cat.pk, None) is None:
+				context['special_features'][feature.cat.pk] = []
+				context['has_special_features'].append(feature.cat.pk)
+			
+			feature_url = feature.get_absolute_url()
+			if feature_url in child_trees.keys():
+				context['special_features'][feature.cat.pk].append(child_trees[feature_url])
+			else:
+				context['special_features'][feature.cat.pk].append({
+					'url': feature_url,
+					'title': 'Special Feature: %s' % feature.title,
+					'mode': feature.emulation_mode,
+				})
 		
 		return context
 
