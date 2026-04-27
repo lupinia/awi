@@ -828,6 +828,15 @@ class sitemap(all_cats):
 				'mode': feature.emulation_mode,
 			})
 		
+		# Special features with their own recursive trees
+		# I hate doing imports this way
+		from deerattend.sitemaps import html_map as deerattend_sitemap
+		
+		events_url, events_tree = deerattend_sitemap(self.request)
+		
+		context['has_child_tree'] = [events_url,]
+		context['child_trees'] = {events_url: events_tree,}
+		
 		return context
 
 
