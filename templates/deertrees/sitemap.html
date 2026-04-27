@@ -14,23 +14,28 @@
 	{% endif %}
 	
 	<div class="left_full">
-		<ul>
 		{% if view == 'sitemap' %}
-			<a name="core" id="core"></a>
+		<a name="core" id="core"></a>
+		<ul class="tree">
 			<li><a href="/robots.txt">/robots.txt</a> <em>(Robots.txt file)</em></li>
 			<li><a href="/sitemap.xml">/sitemap.xml</a> <em>(XML site map)</em></li>
-			<li><a href="/accounts/login.ashx">/accounts/login.ashx</a> <em>(User login)</em></li>
-			<li><a href="/accounts/logout.ashx">/accounts/logout.ashx</a> <em>(User logout)</em></li>
+			<li>/accounts/ <em>(User Profiles and Tools)</em><ul>
+				<li><a href="/accounts/login.ashx">/accounts/login.ashx</a> <em>(User login)</em></li>
+				<li><a href="/accounts/logout.ashx">/accounts/logout.ashx</a> <em>(User logout)</em></li>
+			</ul></li>
 			{% if user.is_superuser %}<li><a href="/admin/">/admin/*</a> <em>(Administration)</em></li>{% endif %}
 			<li><a href="/contact/">/contact/</a> <em>(Contact information)</em></li>
 			<li><a href="/search/">/search/</a> <em>(Search)</em></li>
 			<li><a href="/settings/">/settings/</a> <em>(Settings)</em></li>
+		</ul>
 		{% endif %}
 		
 		{% if cats %}
 			{% if view == 'sitemap' %}
-				<li><strong>Main Content Directory Structure (Categories)</strong><a name="cats" id="cats"></a></li>
+			<a name="cats" id="cats"></a>
+			<h3>Main Content Directory Structure (Categories)</h3>
 			{% endif %}
+			<ul class="tree">
 			{% recursetree cats %}
 				<li><a href="{% if return_to %}{{return_to}}{{node.pk}}{% else %}{% url 'category' node.cached_url %}{% endif %}">{% url 'category' node.cached_url %}</a> <em>(Category:  {{node.title}})  {% if node.num_leaves %}({{node.num_leaves}} content item{{node.num_leaves|pluralize}}){% endif %}</em>
 					{% if view == 'sitemap' and node.pk in has_special_features %}
@@ -48,19 +53,23 @@
 						</ul>
 					{% endif %}
 				</li>
-			{% endrecursetree  %}
+			{% endrecursetree %}
+			</ul>
 		{% endif %}
 		
 		{% if view == 'sitemap' and tags %}
-			<li><strong><a href="{% url 'all_tags' %}" name="tags" id="tags">/tags/</a> <em>(Tag list)</em></strong>
-				<ul>
-				{% for tag in tags %}
-					{% if tag.num_leaves %}<li><a href="{% url 'tag' tag.slug %}">{% url 'tag' tag.slug %}</a> <em>(Tag:  {{tag}})  ({{tag.num_leaves}} content items)</em></li>{% endif %}
-				{% endfor %}
-				</ul>
-			</li>
+			<a name="tags" id="tags"></a>
+			<h3>Tags</h3>
+			<ul class="tree">
+				<li><a href="{% url 'all_tags' %}">/tags/</a> <em>(Tag list)</em>
+					<ul>
+					{% for tag in tags %}
+						{% if tag.num_leaves %}<li><a href="{% url 'tag' tag.slug %}">{% url 'tag' tag.slug %}</a> <em>(Tag:  {{tag}})  ({{tag.num_leaves}} content items)</em></li>{% endif %}
+					{% endfor %}
+					</ul>
+				</li>
+			</ul>
 		{% endif %}
-		</ul>
 	</div>
 {% endblock %}
 
