@@ -1,0 +1,14 @@
+<li>
+	{% spaceless %}
+		{% if element.mode == 'empty' %}
+			{{element.url}}
+		{% else %}
+			<a href="{{element.url}}">{{element.url}}</a>
+		{% endif %}
+	{% endspaceless %} <em>({{element.title}}){% if element.num_leaves %}  ({{element.num_leaves}} content item{{element.num_leaves|pluralize}}){% endif %}</em>
+	{% if element.children %}
+		<ul>{% for subelement in element.children %}
+			{% include 'deertrees/sitemap_special_feature.html' with element=subelement only %}
+		{% endfor %}</ul>
+	{% endif %}
+</li>

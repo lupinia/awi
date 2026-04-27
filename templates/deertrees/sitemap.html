@@ -35,15 +35,7 @@
 				<li><a href="{% if return_to %}{{return_to}}{{node.pk}}{% else %}{% url 'category' node.cached_url %}{% endif %}">{% url 'category' node.cached_url %}</a> <em>(Category:  {{node.title}})  {% if node.num_leaves %}({{node.num_leaves}} content item{{node.num_leaves|pluralize}}){% endif %}</em>
 					{% if view == 'sitemap' and node.pk in has_special_features %}
 						<ul>{% for feature in special_features|get_item:node.pk %}
-							<li>
-								{% spaceless %}
-									{% if feature.mode == 'empty' %}
-										{{feature.url}}
-									{% else %}
-										<a href="{{feature.url}}">{{feature.url}}</a>
-									{% endif %}
-								{% endspaceless %} <em>({{feature.title}})</em>
-							</li>
+							{% include 'deertrees/sitemap_special_feature.html' with element=feature only %}
 						{% endfor %}</ul>
 					{% endif %}
 					{% if not node.is_leaf_node %}
