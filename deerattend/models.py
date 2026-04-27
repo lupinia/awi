@@ -22,6 +22,7 @@ from awi.utils.text import summarize
 class venue(TimestampModel):
 	name = models.CharField(max_length=100)
 	slug = models.SlugField(unique=True)
+	private = models.BooleanField(blank=True, default=False, db_index=True)
 	
 	# Location
 	address = models.CharField(max_length=250, verbose_name='street address')
