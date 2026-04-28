@@ -36,6 +36,7 @@ class plate_region_admin(admin.ModelAdmin):
 class plate_admin(admin.ModelAdmin):
 	fieldsets = [
 		(None, {'fields':(('design_name','design_code','territory',),'sequence','notes',),},),
+		('Visual Options', {'fields':(('color_text','color_bg',),),},),
 		('System Options', {'fields':(('can_generate','active',),('timestamp_post','timestamp_mod',),),},),
 	]
 	

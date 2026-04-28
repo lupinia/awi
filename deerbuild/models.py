@@ -78,6 +78,9 @@ class license_plate(TimestampModel):
 	notes = models.TextField(blank=True, null=True)
 	active = models.BooleanField(default=True, blank=True, db_index=True)
 	
+	color_text = models.CharField(max_length=6, blank=True, null=True, verbose_name='text color', help_text='Hexadecimal color code for the plate text in the preview display.  Leave blank for site default.')
+	color_bg = models.CharField(max_length=6, blank=True, null=True, verbose_name='background color', help_text='Hexadecimal color code for the plate background in the preview display.  Leave blank for site default.')
+	
 	@property
 	def code(self):
 		return '%s-%s' % (self.territory.code, self.design_code)
@@ -115,6 +118,14 @@ class license_plate(TimestampModel):
 	def chars_total(self):
 		"""Total length of the sequence"""
 		return len(self.sequence)
+	
+	@property
+	def override_style(self):
+		"""Shortcut for testing whether both colors are set"""
+		if self.color_text and self.color_bg:
+			return True
+		else:
+			return False
 	
 	def generate(self):
 		"""
