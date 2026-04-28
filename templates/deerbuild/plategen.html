@@ -13,6 +13,6 @@
 		{% if object.notes %}
 			<p><strong>Note:</strong>  {{object.notes}}</p>
 		{% endif %}
-		<p><strong><a href="{{permalink}}">Regenerate?</a></strong> &bull; <a href="{{cwd}}">Back to list</a></p>
+		<p>{% if object.can_generate %}<strong><a href="{{permalink}}">Regenerate?</a></strong> &bull; {% endif %}<a href="{{cwd}}">Back to list</a></p>
 	</div>
 {% endblock %}
