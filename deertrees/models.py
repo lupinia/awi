@@ -8,6 +8,7 @@
 
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -168,6 +169,39 @@ class category(MPTTModel, access_control, TimestampModel):
 			message = 'deertrees_move_desttype'
 		
 		return (success, message)
+	
+	def get_content_types(self, force=False, include_children=True):
+		"""Get a list of content types in this category"""
+		if include_children:
+			cache_key = 'deertrees.types-in-cat.%d_tree' % self.pk
+		else:
+			cache_key = 'deertrees.types-in-cat.%d' % self.pk
+		
+		type_list = cache.get(cache_key)
+		if type_list is None or force:
+			if include_children:
+				catlist = self.get_descendants(include_self=True).values_list('pk', flat=True)
+				type_list = leaf.objects.filter(cat__pk__in=catlist)
+			else:
+				type_list = self.leaves.all()
+				
+			type_list = type_list.values_list('type', flat=True).distinct('type')
+			type_list = list(type_list)
+			
+			if self.get_descendant_count():
+				type_list.append('category')
+			
+			cache.set(cache_key, type_list, 60*60*24*7)
+		
+		return type_list
+	
+	def has_content_type(self, content_type, force=False, include_children=True):
+		"""Check whether this category contains a specific content type."""
+		type_list = self.get_content_types(force, include_children)
+		if content_type in type_list:
+			return True
+		else:
+			return False
 	
 	class MPTTMeta:
 		order_insertion_by = ['title']
@@ -361,6 +395,26 @@ class tag(TimestampModel):
 			success = True
 		
 		return (success, reason)
+	
+	def get_content_types(self, force=False, **kwargs):
+		"""Get a list of content types in this tag"""
+		cache_key = 'deertrees.types-in-tag.%d' % self.pk
+		
+		type_list = cache.get(cache_key)
+		if type_list is None or force:
+			type_list = self.leaves.all().values_list('type', flat=True).distinct('type')
+			cache.set(cache_key, type_list, 60*60*24*7)
+		
+		type_list = list(type_list)
+		return type_list
+	
+	def has_content_type(self, content_type, force=False, **kwargs):
+		"""Check whether this tag contains a specific content type."""
+		type_list = self.get_content_types(force)
+		if content_type in type_list:
+			return True
+		else:
+			return False
 	
 	class Meta:
 		ordering = ['slug',]
