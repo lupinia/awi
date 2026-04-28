@@ -1,0 +1,30 @@
+//	Lupinia Studios Main Theme - "Showcase"
+//	App-Specific SASS Stylesheet - New Tab Page
+//	By Natasha L.
+//	www.lupinia.net | github.com/lupinia
+
+/*	App:  SL Build Tools	*/
+.plate_generator_text {
+	background-color: $color_bgdark;
+	border-radius: 10px;
+	width: 24em;
+	height: 12em;
+	margin-left: auto;
+	margin-right: auto;
+	aspect-ratio: 2/1;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	
+	.plate_text {
+		text-align: center;
+		font-size: 6em;
+		vertical-align: middle;
+		margin: auto;
+		padding: 0px;
+	}
+}
+
+/*	=====	*/

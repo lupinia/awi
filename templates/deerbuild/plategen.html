@@ -9,7 +9,9 @@
 		{% else %}
 			<p>This license plate cannot be randomly generated.  Sample sequence:</p>
 		{% endif %}
-		<h1>{{object.generate}}</h1>
+		<div class="plate_generator_text" {% if object.override_style %}style="color:#{{object.color_text}};background-color:#{{object.color_bg}};"{% endif %}>
+			<span class="plate_text">{{object.generate}}</span>
+		</div>
 		{% if object.notes %}
 			<p><strong>Note:</strong>  {{object.notes}}</p>
 		{% endif %}
