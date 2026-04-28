@@ -4,6 +4,12 @@
 {% block content_left %}
 	<div class="left_sidebar">
 		<h2>{{title_page}}</h2>
+		{% spaceless %}
+			{% if object.sample_image %}
+			</div>
+			<div class="left_split"><div class="left_column">
+			{% endif %}
+		{% endspaceless %}
 		{% if object.can_generate %}
 			<p>Your randomly-generated license plate number is:</p>
 		{% else %}
@@ -16,5 +22,15 @@
 			<p><strong>Note:</strong>  {{object.notes}}</p>
 		{% endif %}
 		<p>{% if object.can_generate %}<strong><a href="{{permalink}}">Regenerate?</a></strong> &bull; {% endif %}<a href="{{cwd}}">Back to list</a></p>
+		{% if object.sample_image %}
+		</div>
+		<div class="right_column">
+			<div class="plate_sample_image">
+				<h2>Sample Image</h2>
+				<img src="{{object.sample_image_url}}" alt="Sample license plate: {{object.name}}" title="Sample license plate: {{object.name}}" />
+			</div>
+		</div>
+		<div class="clearfix clear_both"></div>
+		{% endif %}
 	</div>
 {% endblock %}
