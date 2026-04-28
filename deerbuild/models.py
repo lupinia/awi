@@ -6,6 +6,7 @@
 #	Models
 #	=================
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.validators import MinLengthValidator
 from django.db import models
@@ -80,6 +81,7 @@ class license_plate(TimestampModel):
 	
 	color_text = models.CharField(max_length=6, blank=True, null=True, verbose_name='text color', help_text='Hexadecimal color code for the plate text in the preview display.  Leave blank for site default.')
 	color_bg = models.CharField(max_length=6, blank=True, null=True, verbose_name='background color', help_text='Hexadecimal color code for the plate background in the preview display.  Leave blank for site default.')
+	sample_image = models.ImageField(upload_to='sample_plates', null=True, blank=True)
 	
 	@property
 	def code(self):
@@ -126,6 +128,13 @@ class license_plate(TimestampModel):
 			return True
 		else:
 			return False
+	
+	@property
+	def sample_image_url(self):
+		if self.sample_image:
+			return "%s%s" % (settings.MEDIA_URL, self.sample_image.name)
+		else:
+			return None
 	
 	def generate(self):
 		"""
