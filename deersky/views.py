@@ -19,6 +19,7 @@ class homepage_view(DetailView):
 		context = super(homepage_view,self).get_context_data(**kwargs)
 		
 		context['newtab'] = True
+		context['bg_tag'] = context['homepage'].get_bg_tag()
 		context['title_page'] = context['homepage'].title
 		context['time_local'] = context['homepage'].city.now()
 		context['time_list'] = context['homepage'].secondary_clocks

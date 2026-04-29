@@ -7,6 +7,7 @@
 #	=================
 
 import math
+import random
 import pytz
 
 from datetime import datetime
@@ -145,6 +146,32 @@ class homepage(TimestampModel):
 		else:
 			return self.city.label
 	
+	def get_bg_tag(self, recache=False):
+		"""Pull one of this page's background tags from cache"""
+		cache_time = 900 # 15 minutes
+		
+		cur_tag = cache.get('%s_bgtag' % self.cache_prefix)
+		if cur_tag is None or recache:
+			# Nothing in cache, pull a new selection
+			bgtags = self.backgrounds_override.all().values_list('tag', flat=True)
+			if bgtags:
+				bgtags = list(bgtags)
+				if self.default_backgrounds:
+					bgtags.append(False)
+				cur_tag = random.choice(bgtags)
+			else:
+				# No override background tags, use the defaults
+				cur_tag = False
+				cache_time = None
+			
+			cache.set('%s_bgtag' % self.cache_prefix, cur_tag, cache_time)
+		
+		if cur_tag:
+			return cur_tag
+		else:
+			# Special case: Storing None in the cache is a mess
+			return None
+	
 	def clock_sync(self):
 		"""Number of seconds until the next minute
 		Used to synchronize Javascript clock update code to server time"""
@@ -196,7 +223,11 @@ class homepage(TimestampModel):
 	
 	def save(self, *args, **kwargs):
 		# Recache secondary clocks on save
-		cache.delete_many(['%s_extraclocks' % self.cache_prefix, 'deersky_city_%d' % self.main_city.pk])
+		cache.delete_many([
+			'%s_extraclocks' % self.cache_prefix,
+			'deersky_city_%d' % self.main_city.pk,
+			'%s_bgtag' % self.cache_prefix,
+		])
 		self.city
 		self.build_clocks()
 		super(homepage, self).save(*args, **kwargs)
