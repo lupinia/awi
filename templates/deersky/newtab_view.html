@@ -5,7 +5,7 @@
 {% get_static_prefix as STATIC_PREFIX %}
 {% get_bg_data as bg %}
 
-{% block title %}New Tab{% endblock %}
+{% block title %}{{title_page}}{% endblock %}
 {% block cookielaw_js %}{% endblock %}
 {% block extra_head %}<script src="{{STATIC_PREFIX}}js/deersky.js"></script>{% endblock %}
 
