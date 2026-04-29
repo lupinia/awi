@@ -22,6 +22,7 @@ from awi_access.models import access_query
 from awi_access.views import access_view
 from deerfind.utils import g2_lookup, urlpath
 from deertrees.models import category, tag, leaf, special_feature
+from deertrees.utils import get_feeds
 from sunset.utils import sunset_embed
 
 class leaf_parent():
@@ -195,7 +196,11 @@ class homepage(leaf_parent, TemplateView):
 		context = super(homepage,self).get_context_data(**kwargs)
 		context['highlight_featured'] = self.highlight_featured
 		context['homepage'] = True
-		context['rss_feed'] = True
+		
+		# Homepage view gets its own set of feeds
+		context['rss_feeds'] = [
+			{'feed_title': 'Lupinia Studios - Newest Content (All)', 'filename': 'feed.rss',},
+		]
 		
 		has_blocks, blocks = self.assemble_blocks(parent_type = 'homepage', view_type='home')
 		if has_blocks:
@@ -291,11 +296,12 @@ class category_list(leaf_parent, access_view):
 		
 		has_blocks, blocks = self.assemble_blocks(context['object'], 'category', context['object'].view_type)
 		if has_blocks:
-			context['rss_feed'] = True
 			context.update(blocks)
+			rss_feeds = get_feeds(view_title='Lupinia Studios - %s' % str(context['object']), add_feeds=context['object'].get_content_types())
+			context['rss_feeds'] = rss_feeds
 		else:
-			context['rss_feed'] = False
 			context['error'] = 'cat_empty'
+			context['rss_feeds'] = None
 		
 		# Breadcrumbs
 		ancestors = context['object'].get_ancestors(include_self=True)
@@ -357,9 +363,11 @@ class tag_list(leaf_parent, DetailView):
 			has_blocks, blocks = self.assemble_blocks(context['object'],'tag',context['object'].view_type)
 			if has_blocks:
 				context.update(blocks)
-				context['rss_feed'] = True
+				rss_feeds = get_feeds(view_title='Lupinia Studios - Tagged: %s' % str(context['object']), add_feeds=context['object'].get_content_types())
+				context['rss_feeds'] = rss_feeds
 			else:
 				context['error'] = 'tag_empty'
+				context['rss_feeds'] = None
 			
 			if not context.get('breadcrumbs',False):
 				context['breadcrumbs'] = []

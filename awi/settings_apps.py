@@ -256,6 +256,10 @@ DEERTREES_BLOCK_MAP = {
 	},
 }
 
+DEERTREES_FEEDS = {
+	'default': [{'filename': 'feed.rss', 'title_suffix':'Newest Content (All)',},],
+}
+
 
 #	deerfind
 #	Stores a list of apps and their associated finder functions, in the event of a 404
