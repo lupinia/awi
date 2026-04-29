@@ -258,6 +258,10 @@ DEERTREES_BLOCK_MAP = {
 
 DEERTREES_FEEDS = {
 	'default': [{'filename': 'feed.rss', 'title_suffix':'Newest Content (All)',},],
+	'image': [
+		{'filename': 'featured-images.rss', 'title_suffix':'Featured Images',},
+		{'filename': 'recent-images.rss', 'title_suffix':'Newest Images',},
+	],
 }
 
 
