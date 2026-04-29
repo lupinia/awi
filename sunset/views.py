@@ -442,6 +442,7 @@ class img_all_view(img_aggregate, ListView):
 			raise Http404
 
 class img_aggregate_feed(Feed):
+	title_text = "Lupinia Studios"
 	author_name = "Natasha L."
 	item_author_name = "Natasha L."
 	description = "Photography, writing, and creative works by Natasha L."
@@ -454,8 +455,11 @@ class img_aggregate_feed(Feed):
 		else:
 			raise Http404
 	
-	def title(self):
-		return self.view_title()
+	def title(self, obj=None):
+		if obj:
+			return '%s - %s - %s' % (self.title_text, unicode(obj), self.view_title()) # type: ignore
+		else:
+			return '%s - %s' % (self.title_text, self.view_title())
 	
 	def item_pubdate(self, item):
 		return item.timestamp_upload
