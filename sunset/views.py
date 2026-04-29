@@ -21,6 +21,7 @@ from awi.utils.types import is_int
 from awi_access.models import access_query
 from deerfind.utils import urlpath
 from deertrees.models import category, tag
+from deertrees.utils import get_feeds
 from deertrees.views import leaf_view
 from sunset.models import image, batch_import, background_tag
 
@@ -350,6 +351,11 @@ class img_cat_view(img_aggregate_cat, ListView):
 			context['root_obj'] = self.root
 			context['category'] = self.root
 			context['root_type'] = 'Category'
+			context['rss_feeds'] = get_feeds(
+				view_title='Lupinia Studios - %s' % unicode(self.root), #type:ignore
+				add_feeds=['image'], 
+				include_default=False
+			)
 			
 			# Breadcrumbs
 			ancestors = self.root.get_ancestors(include_self=True)
@@ -406,6 +412,11 @@ class img_tag_view(img_aggregate_tag, ListView):
 			context['root_obj'] = self.root
 			context['tag'] = self.root
 			context['root_type'] = 'Tag'
+			context['rss_feeds'] = get_feeds(
+				view_title='Lupinia Studios - Tagged: %s' % unicode(self.root), #type:ignore
+				add_feeds=['image'], 
+				include_default=False
+			)
 			
 			# Breadcrumbs
 			if not context.get('breadcrumbs',False):
