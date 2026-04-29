@@ -297,7 +297,7 @@ class category_list(leaf_parent, access_view):
 		has_blocks, blocks = self.assemble_blocks(context['object'], 'category', context['object'].view_type)
 		if has_blocks:
 			context.update(blocks)
-			rss_feeds = get_feeds(view_title='Lupinia Studios - %s' % str(context['object']), add_feeds=context['object'].get_content_types())
+			rss_feeds = get_feeds(view_title='Lupinia Studios - %s' % unicode(context['object']), add_feeds=context['object'].get_content_types()) #type:ignore
 			context['rss_feeds'] = rss_feeds
 		else:
 			context['error'] = 'cat_empty'
@@ -311,14 +311,14 @@ class category_list(leaf_parent, access_view):
 		for crumb in ancestors:
 			context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
 		
-		context['title_page'] = str(context['object'])
+		context['title_page'] = unicode(context['object']) #type:ignore
 		context['highlight_featured'] = self.highlight_featured
 		context['body_text'] = sunset_embed(context['object'].body_html, self.request)
 		
 		if context['object'].summary_short:
 			context['sitemeta_desc'] = context['object'].summary_short
 		else:
-			context['sitemeta_desc'] = "Directory:  %s" % (str(context['object']))
+			context['sitemeta_desc'] = "Directory:  %s" % (unicode(context['object'])) #type:ignore
 		
 		return context
 
@@ -363,7 +363,7 @@ class tag_list(leaf_parent, DetailView):
 			has_blocks, blocks = self.assemble_blocks(context['object'],'tag',context['object'].view_type)
 			if has_blocks:
 				context.update(blocks)
-				rss_feeds = get_feeds(view_title='Lupinia Studios - Tagged: %s' % str(context['object']), add_feeds=context['object'].get_content_types())
+				rss_feeds = get_feeds(view_title='Lupinia Studios - Tagged: %s' % unicode(context['object']), add_feeds=context['object'].get_content_types()) #type:ignore
 				context['rss_feeds'] = rss_feeds
 			else:
 				context['error'] = 'tag_empty'
@@ -377,11 +377,11 @@ class tag_list(leaf_parent, DetailView):
 			
 			context['body_text'] = sunset_embed(context['object'].body_html, self.request)
 			
-			context['title_page'] = str(context['object'])
+			context['title_page'] = unicode(context['object']) #type:ignore
 			if context['object'].summary_short:
 				context['sitemeta_desc'] = context['object'].summary_short
 			else:
-				context['sitemeta_desc'] = "Tag:  %s" % (str(context['object']))
+				context['sitemeta_desc'] = "Tag:  %s" % (unicode(context['object'])) #type:ignore
 		
 		return context
 
@@ -723,13 +723,13 @@ class leaf_view(access_view):
 		for crumb in ancestors:
 			context['breadcrumbs'].append({'url':reverse('category',kwargs={'cached_url':crumb.cached_url,}), 'title':crumb.title})
 		
-		context['breadcrumbs'].append({'url':context['object'].get_absolute_url(), 'title':str(context['object'])})
+		context['breadcrumbs'].append({'url':context['object'].get_absolute_url(), 'title':unicode(context['object'])}) #type:ignore
 		
 		# Metadata
 		context['sitemeta_page_type'] = 'article'
-		context['title_page'] = str(context['object'])
+		context['title_page'] = unicode(context['object']) #type:ignore
 		context['permalink'] = context['object'].get_complete_url(self.request)
-		context['sitemeta_category'] = str(context['object'].cat)
+		context['sitemeta_category'] = unicode(context['object'].cat) #type:ignore
 		context['sitemeta_timestamp_pub'] = context['object'].timestamp_post
 		context['sitemeta_timestamp_mod'] = context['object'].timestamp_mod
 		context['sitemeta_article_tags'] = context['object'].tags_list
