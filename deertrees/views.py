@@ -197,9 +197,9 @@ class homepage(leaf_parent, TemplateView):
 		context['homepage'] = True
 		context['rss_feed'] = True
 		
-		blocks = self.assemble_blocks(parent_type = 'homepage', view_type='home')
-		if blocks[0]:
-			context.update(blocks[1])
+		has_blocks, blocks = self.assemble_blocks(parent_type = 'homepage', view_type='home')
+		if has_blocks:
+			context.update(blocks)
 		
 		context['title_site'] = '' # This will force default to the full homepage title
 		context['title_page'] = '' # This will force default to the full homepage title
@@ -354,9 +354,9 @@ class tag_list(leaf_parent, DetailView):
 				context['can_edit'] = True
 				context['edit_mode'] = 'tags'
 			
-			blocks = self.assemble_blocks(context['object'],'tag',context['object'].view_type)
-			if blocks[0]:
-				context.update(blocks[1])
+			has_blocks, blocks = self.assemble_blocks(context['object'],'tag',context['object'].view_type)
+			if has_blocks:
+				context.update(blocks)
 				context['rss_feed'] = True
 			else:
 				context['error'] = 'tag_empty'
@@ -389,9 +389,9 @@ class main_rssfeed(leaf_parent, Feed):
 	
 	def title(self, obj=None):
 		if obj:
-			return '%s - %s' % (self.title_text, unicode(obj)) # type: ignore
+			return '%s - %s - Newest Content (All)' % (self.title_text, unicode(obj)) # type: ignore
 		else:
-			return self.title_text
+			return '%s - Newest Content (All)' % self.title_text
 	
 	def link(self, obj=None):
 		if obj:

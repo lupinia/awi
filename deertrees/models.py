@@ -24,14 +24,7 @@ from awi.utils.models import TimestampModel
 from awi.utils.text import format_html, summarize
 from awi.utils.types import is_string
 from awi_access.models import access_control
-
-def viewtype_options():
-	blocks_map = settings.DEERTREES_BLOCK_MAP
-	viewtypes = []
-	for map_name, map in blocks_map.iteritems():
-		if map.get('meta',{}).get('option_name',False) and map.get('meta',{}).get('selectable',True):
-			viewtypes.append((map_name, map.get('meta',{}).get('option_name',map_name),))
-	return viewtypes
+from deertrees.utils import viewtype_options
 
 @python_2_unicode_compatible
 class category(MPTTModel, access_control, TimestampModel):
