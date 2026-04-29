@@ -145,9 +145,9 @@ class homepage(TimestampModel):
 		else:
 			return self.city.label
 	
-	# Number of seconds until the next minute
-	# Used to synchronize Javascript clock update code to server time
 	def clock_sync(self):
+		"""Number of seconds until the next minute
+		Used to synchronize Javascript clock update code to server time"""
 		return (60 - self.city.now().second) * 1000
 	
 	@property

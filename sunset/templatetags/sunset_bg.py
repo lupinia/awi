@@ -68,7 +68,7 @@ def bg_select(context, input_string=''):
 	global bg_data
 	display_footer_info = False
 	cache_key = ""
-	cache_timeout = 900
+	cache_timeout = 900 # 15 minutes
 	
 	if context.get('image', False) and context.get('image', False).can_view(context.get('request', False))[0]:
 		# First check:  If bg_type is current_image, just set the current image as the background.
@@ -85,7 +85,7 @@ def bg_select(context, input_string=''):
 			# Second check:  Try to pick something from the current category, or a specified one.
 			cur_cat_id = context['category'].pk
 			cache_key = 'cat_%d' % cur_cat_id
-			cache_timeout = 1800
+			cache_timeout = 1800 # 30 minutes
 			
 			bg_query_cat = bg_query.filter(cat_id=cur_cat_id).filter(featured=True)
 			# Special case:  If there's nothing directly in this category, use the category's background tag
@@ -98,7 +98,7 @@ def bg_select(context, input_string=''):
 			# Third check:  If bg_type is current_tag, try to pick something from the current tag.
 			cur_tag = context.get('tag', False)
 			cache_key = 'tag_%d' % cur_tag.pk
-			cache_timeout = 3600
+			cache_timeout = 3600 # 1 hour
 			bg_query = bg_query.filter(tags=cur_tag).filter(featured=True)
 		
 		elif input_string:
