@@ -80,6 +80,12 @@ class city(TimestampModel):
 			# If we're not doing sunrise/sunset calculation, nothing to do here
 			return False
 	
+	def save(self, *args, **kwargs):
+		# Recache secondary clocks on save
+		cache.delete('deersky_city_%d' % self.pk)
+		cache.set('deersky_city_%d' % self.pk, self, None)
+		super(city, self).save(*args, **kwargs)
+	
 	class Meta:
 		unique_together = (('label', 'timezone'),)
 		ordering = ['timezone_order', 'long']
@@ -107,7 +113,7 @@ class homepage(TimestampModel):
 	
 	@property
 	def cache_prefix(self):
-		return 'deersky_homepage_%s' % self.slug
+		return 'deersky_homepage_%d' % self.pk
 	
 	@cached_property
 	def city(self):
@@ -168,6 +174,13 @@ class homepage(TimestampModel):
 		
 		else:
 			return False
+	
+	def save(self, *args, **kwargs):
+		# Recache secondary clocks on save
+		cache.delete_many(['%s_extraclocks' % self.cache_prefix, 'deersky_city_%d' % self.main_city.pk])
+		self.city
+		self.build_clocks()
+		super(homepage, self).save(*args, **kwargs)
 
 @python_2_unicode_compatible
 class secondary_clock(models.Model):
