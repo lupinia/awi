@@ -120,6 +120,13 @@ class homepage(TimestampModel):
 	def cache_prefix(self):
 		return 'deersky_homepage_%d' % self.pk
 	
+	@property
+	def is_default(self):
+		if self.slug == 'default':
+			return True
+		else:
+			return False
+	
 	@cached_property
 	def city(self):
 		# First try: Look it up by primary key
