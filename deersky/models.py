@@ -94,6 +94,7 @@ class city(TimestampModel):
 @python_2_unicode_compatible
 class homepage(TimestampModel):
 	title = models.CharField(max_length=250, default="New Tab - Lupinia Studios")
+	list_label = models.CharField(max_length=128, null=True, blank=True, verbose_name='label', help_text="Override city label for this homepage in list views")
 	slug = models.SlugField(max_length=64, unique=True)
 	owner = models.ForeignKey('auth.User', on_delete=models.PROTECT)
 	public = models.BooleanField(default=False, blank=True, db_index=True, help_text="Check this box to show this homepage in a public list of available options.  When unchecked, it will still be available to anyone with the URL.")
@@ -110,7 +111,7 @@ class homepage(TimestampModel):
 	enable_extraclocks = models.BooleanField(default=True, blank=True, verbose_name='enable secondary clocks?')
 	
 	def __str__(self):
-		return self.title
+		return self.label
 	
 	def get_absolute_url(self):
 		return reverse('deersky:newtab', kwargs={'slug': self.slug})
@@ -129,6 +130,13 @@ class homepage(TimestampModel):
 			cache.set('deersky_city_%d' % main_city_obj.pk, main_city_obj, None)
 		
 		return main_city_obj
+	
+	@property
+	def label(self):
+		if self.list_label:
+			return self.list_label
+		else:
+			return self.city.label
 	
 	# Number of seconds until the next minute
 	# Used to synchronize Javascript clock update code to server time

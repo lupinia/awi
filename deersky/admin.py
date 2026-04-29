@@ -30,7 +30,7 @@ class extraclock_admin(admin.TabularInline):
 
 class homepage_admin(admin.ModelAdmin):
 	fieldsets = [
-		(None, {'fields':(('title','slug',),'main_city',),},),
+		(None, {'fields':(('list_label','slug',),'main_city','title',),},),
 		('Backgrounds', {'fields':('backgrounds_override','default_backgrounds',),},),
 		('Widgets', {'fields':(('enable_timer','timer_default',),'enable_extraclocks',),},),
 		('System', {'fields':(('public','owner',),('timestamp_post','timestamp_mod',),),},),
@@ -40,7 +40,7 @@ class homepage_admin(admin.ModelAdmin):
 	filter_horizontal = ['backgrounds_override',]
 	inlines = [extraclock_admin,]
 	list_filter = ('public','enable_timer','enable_extraclocks','owner','timestamp_post','timestamp_mod',)
-	list_display = ('slug','main_city','public','timestamp_post','timestamp_mod',)
+	list_display = ('label','main_city','public','timestamp_post','timestamp_mod',)
 	readonly_fields = ['timestamp_mod',]
 	search_fields = ('title','slug','main_city__label',)
 
