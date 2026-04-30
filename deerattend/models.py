@@ -50,7 +50,7 @@ class attendance_flag(TimestampModel):
 	slug = models.SlugField(unique=True)
 	img_width = models.IntegerField(null=True, blank=True)
 	img_height = models.IntegerField(null=True, blank=True)
-	icon = models.ImageField(upload_to='attend_icons', height_field='img_height', width_field='img_width')
+	icon = models.ImageField(upload_to='icons/attend', height_field='img_height', width_field='img_width')
 	
 	def __str__(self):
 		return self.name
