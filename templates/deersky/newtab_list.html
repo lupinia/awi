@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content_left %}
+	<div class="left_sidebar">
+		<h2>{{title_view}}</h2>
+		<p>Looking for a basic photo-background clock for your browser homepage?  Feeling frustrated by such a basic concept being overrun by ads and slop, especially in <em>certain browsers</em>?  Me too.  I created these views to be a New Tab page in my browser that I could trust, showcasing photography that I know is real (because I took the photos), without trying to sell me things or steal my attention.  And I invite you to use these too.  This site has been around for almost 30 years, without ever once containing ads or for-profit content, and I will never change that under any circumstances.  This is an enshittification-free zone.  Enjoy!</p>
+	</div>
+	
+	<div class="left_full"><div class="leaf_links_wrapper deersky_list_items">
+		{% for page in homepage_list %}
+			<div class="leaf_link tall">
+				<a class="leaf_a {% if page.is_default %}featured{% elif not page.public %}restricted{% endif %}" href="{{page.get_absolute_url}}" title="Homepage:  {{page}}">
+					{% spaceless %}
+						{% if page.is_default %}
+							<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/featured24.png" alt="Default" title="Default Homepage" /></span>
+						{% elif not page.public %}
+							<span class="item_feature_mark"><img src="{{STATIC_PREFIX}}images/icons/restriction-hidden24.png" alt="Hidden" title="Hidden" /></span>
+						{% endif %}
+					{% endspaceless %}
+					<span class="item_summary_head">
+						<span class="item_summary_title">{{page}}</span>
+					</span><br />
+					<span class="item_summary_body"></span>
+				</a>
+			</div>
+		{% endfor %}
+		<div class="clearfix clear_left"></div>
+	</div></div>
+{% endblock %}
