@@ -36,7 +36,7 @@ class menu_flag(TimestampModel):
 	slug = models.SlugField(unique=True)
 	img_width = models.IntegerField(null=True, blank=True, verbose_name='icon height')
 	img_height = models.IntegerField(null=True, blank=True, verbose_name='icon width')
-	icon = models.ImageField(upload_to='menu_icons',height_field='img_height',width_field='img_width')
+	icon = models.ImageField(upload_to='icons/food',height_field='img_height',width_field='img_width')
 	
 	def __str__(self):
 		return self.name
