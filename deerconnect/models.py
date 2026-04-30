@@ -21,8 +21,8 @@ class link_base(models.Model):
 	label = models.CharField(max_length=140)
 	url = models.CharField(max_length=250, verbose_name='URL')
 	desc = models.TextField(null=True, blank=True, verbose_name='description')
-	icon = models.ImageField(upload_to='linkicons', null=True, blank=True)
-	icon_large = models.ImageField(upload_to='linkicons_large', null=True, blank=True)
+	icon = models.ImageField(upload_to='icons/links', null=True, blank=True)
+	icon_large = models.ImageField(upload_to='icons/links/large', null=True, blank=True)
 	
 	def __str__(self):
 		return self.label
