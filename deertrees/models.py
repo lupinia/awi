@@ -430,7 +430,7 @@ class tag_synonym(TimestampModel):
 class external_link_type(models.Model):
 	name = models.CharField(max_length=200, verbose_name='site name')
 	label = models.CharField(max_length=200, verbose_name='link label')
-	icon = models.ImageField(upload_to='linkicons_ext', null=True, blank=True)
+	icon = models.ImageField(upload_to='icons/links/ext', null=True, blank=True)
 	url_format = models.CharField(max_length=250, blank=True, null=True, verbose_name='URL format', help_text='Use &lt;id&gt; to create a placeholder for remote_id on links of this type.')
 	
 	featured = models.BooleanField(db_index=True, blank=True, default=False)
