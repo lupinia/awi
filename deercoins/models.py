@@ -32,8 +32,8 @@ class currency(models.Model):
 class country(models.Model):
 	code = models.SlugField(max_length=2, unique=True, verbose_name='filing code')
 	name = models.CharField(max_length=255)
-	flag = models.ImageField(upload_to='flags', null=True, blank=True, verbose_name='flag icon (24px)')
-	flag_large = models.ImageField(upload_to='flags-large', null=True, blank=True, verbose_name='flag icon (96px)')
+	flag = models.ImageField(upload_to='icons/flags/sm', null=True, blank=True, verbose_name='flag icon (24px)')
+	flag_large = models.ImageField(upload_to='icons/flags', null=True, blank=True, verbose_name='flag icon (96px)')
 	
 	def __str__(self):
 		return self.name
