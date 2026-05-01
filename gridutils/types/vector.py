@@ -206,6 +206,7 @@ class BaseVector(object):
 			max_bounds: Override maximum bounds for all three coordinates, pass None to disable
 			min_x, min_y, min_z:  Override minimum bound for specific axes, pass None to disable
 			max_x, max_y, max_z:  Override maximum bound for specific axes, pass None to disable
+			precision: Override decimal precision when rounding or converting to string
 		"""
 		# This code *could* be a lot simpler, but it would be less accurate/flexible
 		# LSL is a hot mess, so ingesting its output requires a lot of flexibility
@@ -229,6 +230,12 @@ class BaseVector(object):
 			self.z = kwargs.pop('z', self.z)
 			need_z = False
 			kwarg_coords = True
+		
+		if 'precision' in kwargs.keys():
+			prec_override = self.set_coord_type(kwargs.pop('precision', self.prec))
+			if prec_override != self.prec:
+				self.prec = prec_override
+				self._init_params['precision'] = prec_override
 		
 		if 'strict_bounds' in kwargs.keys():
 			self.strict_bounds = kwargs.pop('strict_bounds', False)
