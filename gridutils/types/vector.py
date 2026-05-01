@@ -34,7 +34,7 @@ vector_types = {
 # Decorator for math operators
 def _operator(func):
 	def inner(this, other):
-		if isinstance(other, vector):
+		if isinstance(other, BaseVector):
 			# Working with something that's already a vector, so just send it directly
 			return func(this, other)
 		elif type(other) in [int, float, bool]:
@@ -56,7 +56,7 @@ def _operator(func):
 
 
 # CLASS DEFINITIONS
-class vector(object):
+class BaseVector(object):
 	"""
 	Defines a 3-axis set of coordinates or parameters for use as a single unit.
 	Primarily useful in 3D modeling, and especially heavily used in Second Life.
@@ -141,7 +141,9 @@ class vector(object):
 				This can be tested with vector.any_equal(num)
 	"""
 	
-	prec = 5	# Maximum decimal places when representing as a string
+	# TYPE CONFIG VALUES
+	# Maximum decimal places when representing as a string
+	prec = 5
 	
 	# Coordinates!  The main thing we're here for!
 	# At least I assume that's what you're here for
@@ -209,7 +211,7 @@ class vector(object):
 				if all([need_x, need_y, need_z]):
 					# If we're here, we're typecasting, so this could be anything
 					# Step 1:  The easiest is converting one type of vector to another
-					if isinstance(args[0], vector):
+					if isinstance(args[0], BaseVector):
 						# Re-normalizing *should* be a formality, but that's the main difference between vector types
 						self.x = args[0].x
 						self.y = args[0].y
@@ -339,15 +341,20 @@ class vector(object):
 		if validate:
 			self.validate_coords()
 		
-		super(vector, self).__init__(*args, **kwargs)
+		super(BaseVector, self).__init__(*args, **kwargs)
 	
 	
 	# INITIALIZATION
-	# Reset this to zero, but leave other values intact
 	def set_to_zero(self):
+		"""
+		Reset vector to zero
+		"""
 		self.set_to_value(0)
 	
 	def set_to_value(self, new_value):
+		"""
+		Set all three coordinates to the specified value
+		"""
 		self.x = new_value
 		self.y = new_value
 		self.z = new_value
@@ -591,7 +598,7 @@ class vector(object):
 	
 	def __rmod__(self, other):
 		# This one *only* makes sense if other is a vector
-		if isinstance(other, vector):
+		if isinstance(other, BaseVector):
 			return type(self)(x=other.x%self.x, y=other.y%self.y, z=other.z%self.z)
 		else:
 			return NotImplemented
@@ -620,7 +627,7 @@ class vector(object):
 	
 	def __rpow__(self, other):
 		# This one *only* makes sense if other is a vector
-		if isinstance(other, vector):
+		if isinstance(other, BaseVector):
 			return type(self)(x=other.x**self.x, y=other.y**self.y, z=other.z**self.z)
 		else:
 			return NotImplemented
@@ -693,8 +700,9 @@ class vector(object):
 		return not self.__eq__(other)
 
 
-# OTHER VECTOR TYPES
-class ivector(vector):
+# ======================================
+# Base classes for other formats
+class IntVector(BaseVector):
 	"""
 	Special type of vector strictly used for integers
 	"""
@@ -706,3 +714,11 @@ class ivector(vector):
 		Convert a single coordinate value to an integer, or raises a value error.
 		"""
 		return int(coord)
+
+
+# OTHER VECTOR TYPES
+class vector(BaseVector):
+	"""
+	Standard generic vector (float type)
+	"""
+	pass
