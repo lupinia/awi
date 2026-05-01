@@ -31,39 +31,6 @@ vector_types = {
 }
 
 # HELPER FUNCTIONS
-# Special vector handling for strings
-# Accepts <>, [], or () as enclosing characters
-# Doesn't do validation, just deconstructs the format
-# Always returns three values, None indicates failure
-def coords_from_string(input):
-	input = input.strip().replace(" ", "")
-	if input == "ZERO_VECTOR":
-		return (0, 0, 0)
-	
-	parse_match = re.search(r"(?:<|\[|\()(?P<x>\S+?),(?P<y>\S+?),(?P<z>\S+?)(?:>|\]|\))", input)
-	if parse_match is None:
-		return (None, None, None)
-	else:
-		return (parse_match.group('x'), parse_match.group('y'), parse_match.group('z'))
-
-# Special vector handling for lists and tuples
-# Doesn't do validation, just deconstructs the format
-# Always returns three values, None indicates failure
-def coords_from_iter(input):
-	if len(input) == 1:
-		# Only one element, so just apply it to all three coordinates
-		input.extend([input[0], input[0]])
-	elif len(input) == 2:
-		# Two elements, so append a zero to make it three
-		input.append(0)
-	
-	if len(input) == 3:
-		# We're good to go!
-		return input
-	else:
-		# Not sure what this is, but it's not a vector
-		return (None, None, None)
-
 # Decorator for math operators
 def _operator(func):
 	def inner(this, other):
@@ -275,7 +242,7 @@ class vector(object):
 					
 					# Step 4:  This could be a string representation of multiple values
 					elif is_string(args[0]):
-						coords_check = coords_from_string(args.pop(0))
+						coords_check = self.coords_from_string(args.pop(0))
 						if None in coords_check:
 							raise TypeError('casting str to vector requires 3 comma-separated coordinates')
 						else:
@@ -286,7 +253,7 @@ class vector(object):
 					
 					# Step 5:  Perhaps it's an iterable?
 					elif is_iterable(args[0]):
-						coords_check = coords_from_iter(args.pop(0))
+						coords_check = self.coords_from_iter(args.pop(0))
 						if None in coords_check:
 							raise TypeError('casting iterable to vector requires 3 elements')
 						else:
@@ -384,6 +351,43 @@ class vector(object):
 		self.x = new_value
 		self.y = new_value
 		self.z = new_value
+	
+	def coords_from_string(self, input):
+		"""
+		String input parsing for vectors
+		Accepts <>, [], or () as enclosing characters
+		Doesn't do validation, just deconstructs the format
+		Always returns three values, None indicates failure
+		"""
+		input = input.strip().replace(" ", "")
+		if input == "ZERO_VECTOR":
+			return (0, 0, 0)
+		
+		parse_match = re.search(r"(?:<|\[|\()(?P<x>\S+?),(?P<y>\S+?),(?P<z>\S+?)(?:>|\]|\))", input)
+		if parse_match is None:
+			return (None, None, None)
+		else:
+			return (parse_match.group('x'), parse_match.group('y'), parse_match.group('z'))
+	
+	def coords_from_iter(self, input):
+		"""
+		List and tuple input handling for vectors
+		Doesn't do validation, just deconstructs the format
+		Always returns three values, None indicates failure
+		"""
+		if len(input) == 1:
+			# Only one element, so just apply it to all three coordinates
+			input.extend([input[0], input[0]])
+		elif len(input) == 2:
+			# Two elements, so append a zero to make it three
+			input.append(0)
+		
+		if len(input) == 3:
+			# We're good to go!
+			return input
+		else:
+			# Not sure what this is, but it's not a vector
+			return (None, None, None)
 	
 	
 	# VALIDATION AND NORMALIZATION
