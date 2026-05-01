@@ -145,6 +145,27 @@ class BaseVector(object):
 	# Maximum decimal places when representing as a string
 	prec = 5
 	
+	# Minimum and maximum bounds
+	# Override for basic value limits
+	# Set to None for unbounded on that axis
+	min_x = None
+	min_y = None
+	min_z = None
+	max_x = None
+	max_y = None
+	max_z = None
+	
+	# Shortcut for switching type bounds to positive-only
+	allow_negative = True
+	
+	# Set to True to treat out-of-bounds coordinate values as an exception
+	# Has no effect when bounds are set to None
+	strict_bounds = False
+	
+	# Set to True to always force coordinate bounds
+	# Otherwise requires using .normalize() method separately
+	force_bounds = False
+	
 	# Coordinates!  The main thing we're here for!
 	# At least I assume that's what you're here for
 	# If you're not here for coordinates, you may have come to the wrong class
@@ -178,14 +199,19 @@ class BaseVector(object):
 			x: X axis coordinate
 			y: Y axis coordinate
 			z: Z axis coordinate
-			validate: Optional, set to False to disable vector.validate_coords() on creation
+		Optional keyword arguments (not positional):
+			strict_bounds: Set to True to raise a ValueError if values are out of bounds
+			force_bounds: Set to True to always normalize coordinate bounds
+			min_bounds: Override minimum bounds for all three coordinates, pass None to disable
+			max_bounds: Override maximum bounds for all three coordinates, pass None to disable
+			min_x, min_y, min_z:  Override minimum bound for specific axes, pass None to disable
+			max_x, max_y, max_z:  Override maximum bound for specific axes, pass None to disable
 		"""
 		# This code *could* be a lot simpler, but it would be less accurate/flexible
 		# LSL is a hot mess, so ingesting its output requires a lot of flexibility
 		need_x = True
 		need_y = True
 		need_z = True
-		validate = True
 		kwarg_coords = False
 		
 		# Let's start with the kwargs, because they're easy
@@ -204,9 +230,53 @@ class BaseVector(object):
 			need_z = False
 			kwarg_coords = True
 		
-		if 'validate' in kwargs.keys():
-			validate = kwargs.pop('validate', True)
-			self._init_params['validate'] = validate
+		if 'strict_bounds' in kwargs.keys():
+			self.strict_bounds = kwargs.pop('strict_bounds', False)
+			self._init_params['strict_bounds'] = self.strict_bounds
+		
+		if 'force_bounds' in kwargs.keys():
+			self.force_bounds = kwargs.pop('force_bounds', False)
+			self._init_params['force_bounds'] = self.force_bounds
+		
+		# Overriding bounds
+		if 'min_bounds' in kwargs.keys():
+			min_bound = kwargs.pop('min_bounds', None)
+			self._init_params['min_bound'] = min_bound
+			self.min_x = min_bound
+			self.min_y = min_bound
+			self.min_z = min_bound
+		
+		if 'max_bounds' in kwargs.keys():
+			max_bound = kwargs.pop('max_bounds', None)
+			self._init_params['max_bound'] = max_bound
+			self.max_x = max_bound
+			self.max_y = max_bound
+			self.max_z = max_bound
+		
+		if 'min_x' in kwargs.keys():
+			self.min_x = kwargs.pop('min_x', None)
+			self._init_params['min_x'] = self.min_x
+		
+		if 'min_y' in kwargs.keys():
+			self.min_y = kwargs.pop('min_y', None)
+			self._init_params['min_y'] = self.min_y
+		
+		if 'min_z' in kwargs.keys():
+			self.min_z = kwargs.pop('min_z', None)
+			self._init_params['min_z'] = self.min_z
+		
+		if 'max_x' in kwargs.keys():
+			self.max_x = kwargs.pop('max_x', None)
+			self._init_params['max_x'] = self.max_x
+		
+		if 'max_y' in kwargs.keys():
+			self.max_y = kwargs.pop('max_y', None)
+			self._init_params['max_y'] = self.max_y
+		
+		if 'max_z' in kwargs.keys():
+			self.max_z = kwargs.pop('max_z', None)
+			self._init_params['max_z'] = self.max_z
+		
 		
 		if args and any([need_x, need_y, need_z]):
 			# Ok, we still have positional arguments to deal with
@@ -342,9 +412,11 @@ class BaseVector(object):
 			raise TypeError('Unable to parse vector input into 3 coordinates')
 		
 		# Final cleanup!  We have our values, let's see if they work
-		self.normalize_coords()
-		if validate:
-			self.validate_coords()
+		self.set_types()
+		if self.strict_bounds:
+			self.is_valid()
+		if self.force_bounds:
+			self.normalize()
 		
 		super(BaseVector, self).__init__(*args, **kwargs)
 	
@@ -403,32 +475,125 @@ class BaseVector(object):
 	
 	
 	# VALIDATION AND NORMALIZATION
-	def normalize_coord(self, coord):
+	def set_coord_type(self, coord):
 		"""
-		vector.normalize_coord(coord) -> float(coord)
+		vector.set_coord_type(coord) -> float(coord)
 		Convert a single coordinate value to a float, or raises a value error.
 		Should be overridden by child classes that require different number types.
 		"""
 		return float(coord)
 	
-	def normalize_coords(self):
+	def set_types(self):
 		"""
 		Bulk method to normalize all three coordinates
-		Overriding this is not recommended, override normalize_coord() instead
+		Overriding this is not recommended, override set_coord_type() instead
 		"""
 		if None in [self.x, self.y, self.z]:
 			raise ValueError("'NoneType' object is not a number")
 		
-		self.x = self.normalize_coord(self.x)
-		self.y = self.normalize_coord(self.y)
-		self.z = self.normalize_coord(self.z)
+		self.x = self.set_coord_type(self.x)
+		self.y = self.set_coord_type(self.y)
+		self.z = self.set_coord_type(self.z)
 	
-	def validate_coords(self):
+	def normalize_coord(self, coord, minval=None, maxval=None):
 		"""
-		Apply validation rules to coordinates.  Does nothing by default.
-		Should be extended by child classes for different types of vectors.
+		Fits a single coordinate value within the specified bounds
 		"""
-		pass
+		if minval is not None:
+			if minval < 0 and not self.allow_negative:
+				minval = 0
+			if coord < minval:
+				return self.set_coord_type(minval)
+		
+		if maxval is not None:
+			if coord > maxval:
+				return self.set_coord_type(maxval)
+		
+		# If we're here, we must either be between the bounds, or unbounded
+		return coord
+	
+	def normalize(self):
+		"""
+		Apply bounded normalization to this object
+		No return value, this is a transformative operation
+		"""
+		self.x = self.normalize_coord(self.x, self.min_x, self.max_x)
+		self.y = self.normalize_coord(self.y, self.min_y, self.max_y)
+		self.z = self.normalize_coord(self.z, self.min_z, self.max_z)
+	
+	def normalized(self, **kwargs):
+		"""
+		Returns a copy of this object with values normalized within bounds
+		Additional keyword arguments will be passed to the constructor of the resulting object
+		"""
+		return self.copy_type(
+			x = self.normalize_coord(self.x, self.min_x, self.max_x),
+			y = self.normalize_coord(self.y, self.min_y, self.max_y),
+			z = self.normalize_coord(self.z, self.min_z, self.max_z),
+			**kwargs
+		)
+	
+	def validate_coord(self, coord, minval=None, maxval=None):
+		"""
+		Check whether a single coordinate value is within the specified bounds
+		Returns a tuple:
+			valid:  Bool, True if coord is within bounds or bounds are None
+			reason:  String, details of validation failure
+		"""
+		coord = self.set_coord_type(coord)
+		if minval is not None:
+			if minval < 0 and not self.allow_negative:
+				minval = 0
+			if coord < minval:
+				return (False, "coordinate value %d less than minimum %d" % (coord, minval))
+		
+		if maxval is not None:
+			if coord > maxval:
+				return (False, "coordinate value %d greater than maximum %d" % (coord, maxval))
+		
+		return (True, "")
+	
+	def check_valid(self):
+		"""
+		Check whether the values of this vector are within bounds
+		Returns a tuple:
+			valid:  Bool, True if all three coords are within bounds, False if any coord fails validation
+			reason:  List of strings specifying which axes failed validation, and by how much
+		"""
+		x_valid, x_status = self.validate_coord(self.x, self.min_x, self.max_x)
+		y_valid, y_status = self.validate_coord(self.y, self.min_y, self.max_y)
+		z_valid, z_status = self.validate_coord(self.z, self.min_z, self.max_z)
+		
+		if all([x_valid, y_valid, z_valid]):
+			return (True, [])
+		else:
+			reasons = []
+			if not x_valid:
+				reasons.append('X %s' % x_status)
+			if not y_valid:
+				reasons.append('Y %s' % y_status)
+			if not z_valid:
+				reasons.append('Z %s' % z_status)
+			
+			return (False, reasons)
+	
+	def is_valid(self, strict=None):
+		"""
+		Check whether the values of this vector are within bounds
+		If strict_bounds is True, this will throw a ValueError on out-of-bounds coordinates
+		Use strict parameter to override vector.strict_bounds for this operation only
+		Returns Bool, True if all three coords are within bounds, False if any coord fails validation
+		Use .check_valid() instead to get detailed status messages in return value
+		NOTE: With strict=True or self.strict_bounds=True, this can result in a None return on failed validation
+		"""
+		if strict is not None:
+			strict = self.strict_bounds
+		
+		valid, reasons = self.check_valid()
+		if strict and not valid:
+			raise ValueError(', '.join(reasons))
+		else:
+			return valid
 	
 	
 	# OUTPUT
@@ -727,9 +892,9 @@ class IntVector(BaseVector):
 	"""
 	prec = 0
 	
-	def normalize_coord(self, coord):
+	def set_coord_type(self, coord):
 		"""
-		vector.normalize_coord(coord) -> int(coord)
+		vector.set_coord_type(coord) -> int(coord)
 		Convert a single coordinate value to an integer, or raises a value error.
 		"""
 		return int(coord)
