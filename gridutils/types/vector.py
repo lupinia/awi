@@ -153,6 +153,10 @@ class BaseVector(object):
 	y = 0
 	z = 0
 	
+	# Store a copy of any override kwargs used to set up this object
+	# These will be passed along whenever a copy of the object is created
+	_init_params = {}
+	
 	def __init__(self, *args, **kwargs):
 		"""
 		vector(x, y, z, type='float') -> Create a new vector object
@@ -202,6 +206,7 @@ class BaseVector(object):
 		
 		if 'validate' in kwargs.keys():
 			validate = kwargs.pop('validate', True)
+			self._init_params['validate'] = validate
 		
 		if args and any([need_x, need_y, need_z]):
 			# Ok, we still have positional arguments to deal with
@@ -483,6 +488,20 @@ class BaseVector(object):
 		else:
 			return ''
 	
+	def copy_type(self, **kwargs):
+		"""
+		Shortcut for creating another object of the same type as this one
+		Include parameter include_init=False to skip init params on new object
+		"""
+		include_init = kwargs.pop('include_init', True)
+		if include_init:
+			params = self._init_params
+			params.update(kwargs)
+		else:
+			params = kwargs
+		
+		return type(self)(**params)
+	
 	def __repr__(self):
 		return self.as_string(pad=False)
 	
@@ -534,11 +553,11 @@ class BaseVector(object):
 	
 	def floor(self):
 		"""Converts all coordinates to integers, rounded down"""
-		return type(self)(x=math.floor(self.x), y=math.floor(self.y), z=math.floor(self.z))
+		return self.copy_type(x=math.floor(self.x), y=math.floor(self.y), z=math.floor(self.z))
 	
 	def ceil(self):
 		"""Converts all coordinates to integers, rounded up"""
-		return type(self)(x=math.ceil(self.x), y=math.ceil(self.y), z=math.ceil(self.z))
+		return self.copy_type(x=math.ceil(self.x), y=math.ceil(self.y), z=math.ceil(self.z))
 	
 	def round(self, prec=None):
 		"""
@@ -548,14 +567,14 @@ class BaseVector(object):
 		"""
 		if prec is None:
 			prec = self.prec
-		return type(self)(x=round(self.x, prec), y=round(self.y, prec), z=round(self.z, prec))
+		return self.copy_type(x=round(self.x, prec), y=round(self.y, prec), z=round(self.z, prec))
 	
 	
 	# MATH OPERATORS
 	# Addition
 	@_operator
 	def __add__(self, other):
-		return type(self)(x=self.x+other.x, y=self.y+other.y, z=self.z+other.z)
+		return self.copy_type(x=self.x+other.x, y=self.y+other.y, z=self.z+other.z)
 	
 	def __radd__(self, other):
 		return self.__add__(other)
@@ -563,16 +582,16 @@ class BaseVector(object):
 	# Subtraction
 	@_operator
 	def __sub__(self, other):
-		return type(self)(x=self.x-other.x, y=self.y-other.y, z=self.z-other.z)
+		return self.copy_type(x=self.x-other.x, y=self.y-other.y, z=self.z-other.z)
 	
 	@_operator
 	def __rsub__(self, other):
-		return type(self)(x=other.x-self.x, y=other.y-self.y, z=other.z-self.z)
+		return self.copy_type(x=other.x-self.x, y=other.y-self.y, z=other.z-self.z)
 	
 	# Multiplication
 	@_operator
 	def __mul__(self, other):
-		return type(self)(x=self.x*other.x, y=self.y*other.y, z=self.z*other.z)
+		return self.copy_type(x=self.x*other.x, y=self.y*other.y, z=self.z*other.z)
 	
 	def __rmul__(self, other):
 		return self.__mul__(other)
@@ -580,11 +599,11 @@ class BaseVector(object):
 	# Division
 	@_operator
 	def __div__(self, other):
-		return type(self)(x=self.x/other.x, y=self.y/other.y, z=self.z/other.z)
+		return self.copy_type(x=self.x/other.x, y=self.y/other.y, z=self.z/other.z)
 	
 	@_operator
 	def __rdiv__(self, other):
-		return type(self)(x=other.x/self.x, y=other.y/self.y, z=other.z/self.z)
+		return self.copy_type(x=other.x/self.x, y=other.y/self.y, z=other.z/self.z)
 	
 	def __truediv__(self, other):
 		return self.__div__(other)
@@ -594,41 +613,41 @@ class BaseVector(object):
 	
 	@_operator
 	def __mod__(self, other):
-		return type(self)(x=self.x%other.x, y=self.y%other.y, z=self.z%other.z)
+		return self.copy_type(x=self.x%other.x, y=self.y%other.y, z=self.z%other.z)
 	
 	def __rmod__(self, other):
 		# This one *only* makes sense if other is a vector
 		if isinstance(other, BaseVector):
-			return type(self)(x=other.x%self.x, y=other.y%self.y, z=other.z%self.z)
+			return self.copy_type(x=other.x%self.x, y=other.y%self.y, z=other.z%self.z)
 		else:
 			return NotImplemented
 	
 	@_operator
 	def __floordiv__(self, other):
-		return type(self)(x=self.x//other.x, y=self.y//other.y, z=self.z//other.z)
+		return self.copy_type(x=self.x//other.x, y=self.y//other.y, z=self.z//other.z)
 	
 	@_operator
 	def __rfloordiv__(self, other):
-		return type(self)(x=other.x//self.x, y=other.y//self.y, z=other.z//self.z)
+		return self.copy_type(x=other.x//self.x, y=other.y//self.y, z=other.z//self.z)
 	
 	# Other
 	def __abs__(self):
-		return type(self)(x=abs(self.x), y=abs(self.y), z=abs(self.z))
+		return self.copy_type(x=abs(self.x), y=abs(self.y), z=abs(self.z))
 	
 	def __neg__(self):
-		return type(self)(x= -self.x, y= -self.y, z= -self.z)
+		return self.copy_type(x= -self.x, y= -self.y, z= -self.z)
 	
 	def __pos__(self):
 		return -self.__neg__()
 	
 	@_operator
 	def __pow__(self, other):
-		return type(self)(x=self.x**other.x, y=self.y**other.y, z=self.z**other.z)
+		return self.copy_type(x=self.x**other.x, y=self.y**other.y, z=self.z**other.z)
 	
 	def __rpow__(self, other):
 		# This one *only* makes sense if other is a vector
 		if isinstance(other, BaseVector):
-			return type(self)(x=other.x**self.x, y=other.y**self.y, z=other.z**self.z)
+			return self.copy_type(x=other.x**self.x, y=other.y**self.y, z=other.z**self.z)
 		else:
 			return NotImplemented
 	
