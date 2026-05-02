@@ -951,10 +951,11 @@ class angle(BaseVector):
 	"""
 	prec = 2
 	force_bounds = True
+	allow_negative = False
 	
-	min_x = -360.0
-	min_y = -360.0
-	min_z = -360.0
+	min_x = 0.0
+	min_y = 0.0
+	min_z = 0.0
 	
 	max_x = 360.0
 	max_y = 360.0
