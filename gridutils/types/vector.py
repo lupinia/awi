@@ -920,6 +920,16 @@ class vector(BaseVector):
 	"""
 	pass
 
+class position(BaseVector):
+	"""
+	Standard vector for locations and positions (float type)
+	"""
+	allow_negative = False
+	
+	max_x = 256.0
+	max_y = 256.0
+	max_z = 4096.0
+
 class angle(BaseVector):
 	"""
 	Special vector used for rotations and angles
