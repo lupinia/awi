@@ -919,3 +919,49 @@ class vector(BaseVector):
 	Standard generic vector (float type)
 	"""
 	pass
+
+class angle(BaseVector):
+	"""
+	Special vector used for rotations and angles
+	force_bounds is True by default, but out of bounds values loop around
+	For example, 359 is 359, 360 becomes 0, and 361 becomes 1
+	If this is not the desired out of bounds behavior, use a different vector type.
+	NOTE: Rotations (quaternions) are not supported
+	"""
+	prec = 2
+	force_bounds = True
+	
+	min_x = -360.0
+	min_y = -360.0
+	min_z = -360.0
+	
+	max_x = 360.0
+	max_y = 360.0
+	max_z = 360.0
+	
+	def normalize_coord(self, coord, minval=None, maxval=None):
+		"""
+		Fits a single coordinate value within the specified bounds
+		"""
+		if minval is not None:
+			if minval < 0 and not self.allow_negative:
+				minval = 0
+			
+			if coord < minval:
+				# Gotta do some extra work to check for and avoid dividing by zero
+				if minval:
+					# Ok, this is easy, no divide by zero here
+					return self.set_coord_type(coord % minval)
+				else:
+					# This *would* be a divide by zero, but that causes temporal incursions
+					# So instead, we'll flip it, modulo by 360, and then flip it again
+					# This would get extremely messy if we didn't know how many degrees are in an angle
+					coord = abs(coord) % 360.0
+					return self.set_coord_type(-coord)
+		
+		if maxval is not None:
+			if coord >= maxval:
+				return self.set_coord_type(coord % maxval)
+		
+		# If we're here, we must either be between the bounds, or unbounded
+		return coord
