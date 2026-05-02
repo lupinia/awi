@@ -635,6 +635,9 @@ class BaseVector(object):
 		Optional parameter "pad" adds trailing spaces
 		to ensure the correct number of decimal places if True
 		"""
+		if self.force_bounds:
+			self.normalize()
+		
 		return '<%s,%s%s,%s%s>' % (
 			self.coord_as_string(self.x, pad),
 			self.spacer,
@@ -648,6 +651,9 @@ class BaseVector(object):
 		Retrieve coordinates as a list.
 		vector is not an iterable, so this is a typecasting method, like vector.as_string()
 		"""
+		if self.force_bounds:
+			self.normalize()
+		
 		return [self.x, self.y, self.z]
 	
 	@property
