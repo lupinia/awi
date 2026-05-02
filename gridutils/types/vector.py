@@ -930,6 +930,17 @@ class position(BaseVector):
 	max_y = 256.0
 	max_z = 4096.0
 
+class primsize(BaseVector):
+	"""
+	Standard vector for prim sizes (float type)
+	Also used for local position, since it shares the same bounds
+	"""
+	allow_negative = False
+	
+	max_x = 64.0
+	max_y = 64.0
+	max_z = 64.0
+
 class angle(BaseVector):
 	"""
 	Special vector used for rotations and angles
