@@ -656,6 +656,32 @@ class BaseVector(object):
 		
 		return [self.x, self.y, self.z]
 	
+	def as_dict(self, **kwargs):
+		"""
+		Retrieve coordinates as a dictionary.
+		This is primarily for use with function parameters that require separate coordinates
+		Example:
+			some_function(**this_vector.as_dict())
+		
+		Optional arguments:
+			include_init: Default False, set to True to include all settings, not just coordinates
+			Extra keyword arguments will be passed to the resulting dictionary
+		"""
+		if self.force_bounds:
+			self.normalize()
+		
+		coords_dict = {
+			'x': self.x,
+			'y': self.y,
+			'z': self.z,
+		}
+		
+		include_init = kwargs.pop('include_init', True)
+		if include_init:
+			coords_dict.update(self._init_params)
+		
+		return coords_dict.update(kwargs)
+	
 	@property
 	def spacer(self):
 		"""
