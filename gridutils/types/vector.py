@@ -215,6 +215,9 @@ class BaseVector(object):
 		need_z = True
 		kwarg_coords = False
 		
+		# First off, let's pull out any expected extras that aren't coordinates
+		kwargs = self.parse_init_kwargs(kwargs)
+		
 		# Let's start with the kwargs, because they're easy
 		if 'x' in kwargs.keys():
 			self.x = kwargs.pop('x', self.x)
@@ -230,60 +233,6 @@ class BaseVector(object):
 			self.z = kwargs.pop('z', self.z)
 			need_z = False
 			kwarg_coords = True
-		
-		if 'precision' in kwargs.keys():
-			prec_override = self.set_coord_type(kwargs.pop('precision', self.prec))
-			if prec_override != self.prec:
-				self.prec = prec_override
-				self._init_params['precision'] = prec_override
-		
-		if 'strict_bounds' in kwargs.keys():
-			self.strict_bounds = kwargs.pop('strict_bounds', False)
-			self._init_params['strict_bounds'] = self.strict_bounds
-		
-		if 'force_bounds' in kwargs.keys():
-			self.force_bounds = kwargs.pop('force_bounds', False)
-			self._init_params['force_bounds'] = self.force_bounds
-		
-		# Overriding bounds
-		if 'min_bounds' in kwargs.keys():
-			min_bound = kwargs.pop('min_bounds', None)
-			self._init_params['min_bound'] = min_bound
-			self.min_x = min_bound
-			self.min_y = min_bound
-			self.min_z = min_bound
-		
-		if 'max_bounds' in kwargs.keys():
-			max_bound = kwargs.pop('max_bounds', None)
-			self._init_params['max_bound'] = max_bound
-			self.max_x = max_bound
-			self.max_y = max_bound
-			self.max_z = max_bound
-		
-		if 'min_x' in kwargs.keys():
-			self.min_x = kwargs.pop('min_x', None)
-			self._init_params['min_x'] = self.min_x
-		
-		if 'min_y' in kwargs.keys():
-			self.min_y = kwargs.pop('min_y', None)
-			self._init_params['min_y'] = self.min_y
-		
-		if 'min_z' in kwargs.keys():
-			self.min_z = kwargs.pop('min_z', None)
-			self._init_params['min_z'] = self.min_z
-		
-		if 'max_x' in kwargs.keys():
-			self.max_x = kwargs.pop('max_x', None)
-			self._init_params['max_x'] = self.max_x
-		
-		if 'max_y' in kwargs.keys():
-			self.max_y = kwargs.pop('max_y', None)
-			self._init_params['max_y'] = self.max_y
-		
-		if 'max_z' in kwargs.keys():
-			self.max_z = kwargs.pop('max_z', None)
-			self._init_params['max_z'] = self.max_z
-		
 		
 		if args and any([need_x, need_y, need_z]):
 			# Ok, we still have positional arguments to deal with
@@ -479,6 +428,66 @@ class BaseVector(object):
 		else:
 			# Not sure what this is, but it's not a vector
 			return (None, None, None)
+	
+	def parse_init_kwargs(self, kwargs={}):
+		"""
+		Standardize and validate the constructor arguments for setting overrides
+		Returns the passed kwargs dictionary, stripped of any setting arguments
+		"""
+		if 'precision' in kwargs.keys():
+			prec_override = self.set_coord_type(kwargs.pop('precision', self.prec))
+			if prec_override != self.prec:
+				self.prec = prec_override
+				self._init_params['precision'] = prec_override
+		
+		if 'strict_bounds' in kwargs.keys():
+			self.strict_bounds = kwargs.pop('strict_bounds', False)
+			self._init_params['strict_bounds'] = self.strict_bounds
+		
+		if 'force_bounds' in kwargs.keys():
+			self.force_bounds = kwargs.pop('force_bounds', False)
+			self._init_params['force_bounds'] = self.force_bounds
+		
+		# Overriding bounds
+		if 'min_bounds' in kwargs.keys():
+			min_bound = kwargs.pop('min_bounds', None)
+			self._init_params['min_bound'] = min_bound
+			self.min_x = min_bound
+			self.min_y = min_bound
+			self.min_z = min_bound
+		
+		if 'max_bounds' in kwargs.keys():
+			max_bound = kwargs.pop('max_bounds', None)
+			self._init_params['max_bound'] = max_bound
+			self.max_x = max_bound
+			self.max_y = max_bound
+			self.max_z = max_bound
+		
+		if 'min_x' in kwargs.keys():
+			self.min_x = kwargs.pop('min_x', None)
+			self._init_params['min_x'] = self.min_x
+		
+		if 'min_y' in kwargs.keys():
+			self.min_y = kwargs.pop('min_y', None)
+			self._init_params['min_y'] = self.min_y
+		
+		if 'min_z' in kwargs.keys():
+			self.min_z = kwargs.pop('min_z', None)
+			self._init_params['min_z'] = self.min_z
+		
+		if 'max_x' in kwargs.keys():
+			self.max_x = kwargs.pop('max_x', None)
+			self._init_params['max_x'] = self.max_x
+		
+		if 'max_y' in kwargs.keys():
+			self.max_y = kwargs.pop('max_y', None)
+			self._init_params['max_y'] = self.max_y
+		
+		if 'max_z' in kwargs.keys():
+			self.max_z = kwargs.pop('max_z', None)
+			self._init_params['max_z'] = self.max_z
+		
+		return kwargs
 	
 	
 	# VALIDATION AND NORMALIZATION
