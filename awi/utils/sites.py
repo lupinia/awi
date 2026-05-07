@@ -8,6 +8,7 @@
 
 from django.conf import settings
 from django.contrib.sites.models import Site
+from django.contrib.sites.middleware import CurrentSiteMiddleware as CurrentSiteMiddlewareRaw
 from django.core.cache import cache
 
 SITE_CACHE_PREFIX = 'awi.utils.site.'
@@ -22,3 +23,10 @@ def get_current_site(request=None):
 		cache.set(get_cache_prefix(cur_site.pk), cur_site, None)
 	
 	return cur_site
+
+class CurrentSiteMiddleware(CurrentSiteMiddlewareRaw):
+	"""
+	Middleware that sets `site` attribute to request object, using cache if possible
+	"""
+	def process_request(self, request):
+		request.site = get_current_site(request)
