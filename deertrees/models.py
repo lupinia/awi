@@ -7,7 +7,6 @@
 #	=================
 
 from django.conf import settings
-from django.contrib.sites.models import Site
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
@@ -437,7 +436,7 @@ class external_link_type(models.Model):
 	featured = models.BooleanField(db_index=True, blank=True, default=False)
 	public = models.BooleanField(db_index=True, blank=True, default=True)
 	notes = models.TextField(null=True, blank=True)
-	sites = models.ManyToManyField(Site, db_index=True, help_text='Sites/domains on which this item will appear.')
+	sites = models.ManyToManyField('sites.Site', db_index=True, help_text='Sites/domains on which this item will appear.')
 	
 	def __str__(self):
 		return self.name
