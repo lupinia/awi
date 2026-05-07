@@ -11,10 +11,10 @@ from django.contrib.sites.models import Site
 from django.contrib.sites.middleware import CurrentSiteMiddleware as CurrentSiteMiddlewareRaw
 from django.core.cache import cache
 
-SITE_CACHE_PREFIX = 'awi.utils.site.'
+SITE_CACHE_PREFIX = 'awi.utils.sites'
 
 def get_cache_prefix(pk):
-	return '%s%d' % (SITE_CACHE_PREFIX, pk)
+	return '%s.%d' % (SITE_CACHE_PREFIX, pk)
 
 def get_current_site(request=None):
 	cur_site = cache.get(get_cache_prefix(settings.SITE_ID))
