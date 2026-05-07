@@ -22,6 +22,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 from awi.utils.models import TimestampModel
 from awi.utils.text import format_html, summarize
+from awi.utils.sites import get_current_site
 from awi.utils.types import is_string
 from awi_access.models import access_control
 from deertrees.utils import viewtype_options
@@ -525,7 +526,7 @@ class leaf(access_control):
 		else:
 			primary_site = self.sites.all().order_by('pk').first()
 			if not primary_site:
-				primary_site = Site.objects.get(pk=settings.SITE_ID)
+				primary_site = get_current_site()
 			
 			domain = primary_site.domain
 			if 'www' not in domain:
