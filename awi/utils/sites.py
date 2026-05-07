@@ -24,6 +24,14 @@ def get_current_site(request=None):
 	
 	return cur_site
 
+def get_site_pks():
+	pk_list = cache.get('%s.all.pklist' % SITE_CACHE_PREFIX)
+	if pk_list is None:
+		pk_list = list(Site.objects.all().values_list('pk', flat=True))
+		cache.set('%s.all.pklist' % SITE_CACHE_PREFIX, pk_list, None)
+	
+	return pk_list
+
 class CurrentSiteMiddleware(CurrentSiteMiddlewareRaw):
 	"""
 	Middleware that sets `site` attribute to request object, using cache if possible

@@ -6,11 +6,11 @@
 #	Search Index Objects
 #	=================
 
-from django.contrib.sites.models import Site
 from django.utils import timezone
 
 from haystack import indexes
 
+from awi.utils.sites import get_site_pks
 from deerfood.models import menu_item
 
 class food_index(indexes.SearchIndex, indexes.Indexable):
@@ -22,7 +22,7 @@ class food_index(indexes.SearchIndex, indexes.Indexable):
 	
 	# REQUIRED - Primary Facet/Filter Fields
 	pub_date = indexes.DateTimeField(model_attr='timestamp_mod', faceted=True)
-	sites = indexes.MultiValueField(default=list(Site.objects.all().values_list('pk', flat=True)))
+	sites = indexes.MultiValueField(default=get_site_pks())
 	mature = indexes.BooleanField(default=False, faceted=True)
 	security = indexes.IntegerField(default=0)
 	
