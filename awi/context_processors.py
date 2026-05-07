@@ -9,7 +9,8 @@
 import os
 
 from django.conf import settings
-from django.contrib.sites.models import Site
+
+from awi.utils.sites import get_current_site
 
 def site(request):
 	"""
@@ -26,7 +27,7 @@ def site(request):
 		cwd_absolute:  CWD plus domain and scheme, to reference files in the same directory
 	"""
 	
-	site_data = {'site':Site.objects.get_current(), 'cookie_banner':False, 'ssl':False, 'certauth':False,}
+	site_data = {'site':request.site, 'cookie_banner':False, 'ssl':False, 'certauth':False,}
 	
 	site_data['domain_name'] = request.get_host()
 	if '.eu' in site_data['domain_name']:
