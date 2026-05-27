@@ -107,6 +107,8 @@ class image(leaf):
 	
 	# Core metadata
 	timestamp_upload = models.DateTimeField(auto_now_add=True, db_index=True, help_text='System field:  Tracks the original time that this image was created in the database, rather than the time the image was initially captured/created.')
+	timestamp_meta = models.DateTimeField(null=True, db_index=True, help_text='Timestamp of last metadata revision, from image metadata tags')
+	document_id = models.UUIDField(db_index=True, blank=True, null=True, help_text='Unique identifier from XMP metadata')
 	
 	# Extra metadata
 	geo_lat = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
@@ -370,8 +372,22 @@ class image(leaf):
 									date_obj = datetime.strptime(timestamp, '%Y:%m:%d %H:%M:%S')
 									value = timezone.make_aware(date_obj)
 								
+								elif attr == 'document_id':
+									# Special case:  UUID
+									# Sometimes this is a bare hex string, sometimes it has extra stuff
+									if ':' in value:
+										prefix, value = value.rsplit(':', 1)
+									try:
+										value = uuid.UUID(value)
+									except:
+										value = uuid.UUID(int=0)
+								
 								# Handled special cases
 								setattr(self, attr, value)
+						
+						if not self.timestamp_meta:
+							self.timestamp_meta = timezone.now()
+						
 						self.save()
 						import_log.objects.create(command='image.build_meta', message='Successfully set %d new meta entries' % len(new_self_attrs), image=self)
 					
