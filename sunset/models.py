@@ -94,15 +94,20 @@ class image(leaf):
 		('b', 'Bottom'),
 	)
 	
+	# Basic content fields
 	title = models.CharField(max_length=100, null=True, blank=True)
 	body = models.TextField(null=True, blank=True, verbose_name='description')
 	summary = models.CharField(max_length=255, null=True, blank=True, help_text='Short summary used in the description meta tag, and in place of the Description field if Description is empty.')
 	
+	# Import processing workflow
 	rebuild_assets = models.BooleanField(default=True, db_index=True, help_text='If this is checked, the assets for this image will be rebuild on the next run of the process_images command.')
 	auto_fields = models.BooleanField(default=True, verbose_name='automatic fields from EXIF?', help_text='If this is checked, the Title, Summary/Description, and Latitude/Longitude will be rebuilt from the EXIF data of the original image file.  If you have manually edited any of these fields, uncheck this box.')
 	is_new = models.BooleanField(default=True, db_index=True, help_text='System field:  If True, this image will be published after its first asset build.')
+	
+	# Core metadata
 	timestamp_upload = models.DateTimeField(auto_now_add=True, db_index=True, help_text='System field:  Tracks the original time that this image was created in the database, rather than the time the image was initially captured/created.')
 	
+	# Extra metadata
 	geo_lat = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
 	geo_long = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='longitude', help_text='Positive numbers are eastern hemisphere, negative numbers are western.')
 	crop_horizontal = models.CharField(max_length=2, default='c', choices=CENTER_CHOICES_H, verbose_name='crop alignment (horizontal)')
@@ -363,6 +368,8 @@ class image(leaf):
 										tzstamp = ''
 									date_obj = datetime.strptime(timestamp, '%Y:%m:%d %H:%M:%S')
 									value = timezone.make_aware(date_obj)
+								
+								# Handled special cases
 								setattr(self, attr, value)
 						self.save()
 						import_log.objects.create(command='image.build_meta', message='Successfully set %d new meta entries' % len(new_self_attrs), image=self)
@@ -570,6 +577,7 @@ class image_meta_key(models.Model):
 	
 	def format_datetime(self, data):
 		# Trying to parse datetimes from ExifTool is a horrendous mess, because the format could be almost anything.
+		# TODO:  Do this better (see issue #265)
 		if '-' in data:
 			timestamp, tzstamp = data.split('-')
 		elif '+' in data:
