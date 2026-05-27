@@ -895,6 +895,10 @@ class batch_image(models.Model):
 	def __str__(self):
 		return '%s - %s' % (unicode(self.parent), self.img_filename) # type: ignore
 	
+	@property
+	def img_path(self):
+		return '%s/%s' % (self.parent.folder, self.img_filename)
+	
 	class Meta:
 		verbose_name = 'batch import image'
 
