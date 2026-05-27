@@ -10,6 +10,7 @@ import exiftool
 import magic
 import os
 import urllib
+import uuid
 
 from django.db import models
 from django.conf import settings
@@ -532,6 +533,7 @@ class image_meta_key(models.Model):
 		('exposureprogram','Exposure Program (Auto/Program/Tv/Av)'),
 		('meteringmode','Metering Mode (Spot/Center-Weighted)'),
 		('automan','Auto/Manual Binary Choice'),
+		('uuid','UUID'),
 	)
 	
 	key = models.CharField(max_length=100, unique=True, help_text='Enter the metadata key exactly as it appears in the output of ExifTool.')
@@ -568,6 +570,17 @@ class image_meta_key(models.Model):
 				label = url_raw
 		
 		return '<a href="%s">%s</a>' % (url,label)
+	
+	def format_uuid(self, data):
+		# Sometimes this is a bare hex string, sometimes it has extra stuff
+		if ':' in data:
+			prefix, data = data.rsplit(':', 1)
+		try:
+			parsed = uuid.UUID(data)
+		except:
+			parsed = uuid.UUID(int=0)
+		
+		return parsed
 	
 	def format_aperture(self, data):
 		return ('f%f' % float(data)).rstrip('0').rstrip('.')
