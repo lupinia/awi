@@ -1,4 +1,10 @@
 {% extends "content_page.html" %}
+{% block extra_head %}
+	{% if highlight_code %}{% load static %}{% get_static_prefix as STATIC_PREFIX %}
+	<link rel="stylesheet" href="{{STATIC_PREFIX}}js/highlight/styles/{{showcase_mode|yesno:'vs,atelier-cave-dark'}}.css">
+	<script src="{{STATIC_PREFIX}}js/highlight/highlight.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>{% endif %}
+{% endblock %}
 
 {% block content_body %}
 	{% if object and not error %}
