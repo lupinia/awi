@@ -33,7 +33,8 @@
 	<meta name="robots" content="noai, noimageai" />
 	<link rel="preconnect" href="//cdn.fur.vc" />
 	{% if locale %}<meta property="og:locale" content="{{locale}}" />{% endif %}
-	{% if permalink %}<meta property="og:url" content="{{permalink}}" />{% endif %}
+	{% if permalink %}<meta property="og:url" content="{{permalink}}" />
+	<link rel="canonical" href="{{permalink}}" />{% endif %}
 	
 {% if sitemeta_page_type == 'article' %}
 	{% if sitemeta_timestamp_pub %}<meta property="article:published_time" content="{{sitemeta_timestamp_pub|date:"c"}}" />{% endif %}
