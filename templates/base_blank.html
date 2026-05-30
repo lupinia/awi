@@ -36,18 +36,22 @@
 	{% if permalink %}<meta property="og:url" content="{{permalink}}" />
 	<link rel="canonical" href="{{permalink}}" />{% endif %}
 	
-{% if sitemeta_page_type == 'article' %}
+	{% if sitemeta_twitter %}<meta name="twitter:site" content="{{sitemeta_twitter}}" />{% endif %}
+	{% comment "Begin author profile data" %}{% endcomment %}{% if content_author %}<meta name="author" content="{{content_author.name}}" />
+	{% if sitemeta_page_type == 'article' %}<meta property="article:author" content="{{content_author.name}}" />{% endif %}
+	{% if content_author.social_twitter %}<meta name="twitter:creator" content="{{content_author.social_twitter}}" />{% endif %}
+	{% else %}<meta name="author" content="{{siteowner_name|default:'Natasha L.'}}" />
+	{% if sitemeta_page_type == 'article' %}<meta property="article:author" content="{{siteowner_name|default:'Natasha L.'}}" />{% endif %}
+	{% if sitemeta_twitter %}<meta name="twitter:creator" content="{{sitemeta_twitter}}" />{% endif %}
+	{% endif %}{% comment "End author profile data" %}{% endcomment %}
+	{% if sitemeta_page_type == 'article' %}
+	<!-- Extra fields for type: Article -->
 	{% if sitemeta_timestamp_pub %}<meta property="article:published_time" content="{{sitemeta_timestamp_pub|date:"c"}}" />{% endif %}
 	{% if sitemeta_timestamp_mod %}<meta property="article:modified_time" content="{{sitemeta_timestamp_mod|date:"c"}}" />{% endif %}
-	<meta property="article:author" content="{% if sitemeta_article_author_name %}{{sitemeta_article_author_name}}{% else %}{{siteowner_name}}{% endif %}" />
 	{% if sitemeta_category %}<meta property="article:section" content="{{sitemeta_category}}" />{% endif %}
 	{% if sitemeta_article_tags %}{% for article_tag in sitemeta_article_tags %}
 	<meta property="article:tag" content="{{article_tag}}" />
-	{% endfor %}{% endif %}
-{% endif %}
-	
-	{% if sitemeta_twitter %}<meta name="twitter:site" content="{{sitemeta_twitter}}" />
-	{% if not sitemeta_article_author_name %}<meta name="twitter:creator" content="{{sitemeta_twitter}}" />{% endif %}{% endif %}
+	{% endfor %}{% endif %}{% endif %}
 	
 	{% get_bg_data as bg %}
 	{% if bg.og_url %}

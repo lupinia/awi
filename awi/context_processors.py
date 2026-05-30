@@ -97,14 +97,20 @@ def meta(request):
 		sitemeta_page_type:  Default OpenGraph content type
 		sitemeta_is_image:  Boolean, set to True if this is primarily image content 
 		sitemeta_desc:  Default page summary
+		content_author:  Dictionary containing author data, to be swapped in bulk when the author changes
 	"""
 	return {
 		'title_site':getattr(settings, 'SITE_TITLE', 'Lupinia Studios'),
 		'title_page':'',
 		'title_img':settings.SITE_TITLE_IMG_CODE,
-		'sitemeta_twitter':settings.DEFAULT_AUTHOR_TWITTER,
 		'siteowner_name':getattr(settings, 'DEFAULT_AUTHOR_NAME', 'Natasha L.'),
+		'sitemeta_twitter':settings.DEFAULT_AUTHOR_TWITTER,
 		'sitemeta_page_type':'website',
 		'sitemeta_is_image':False,
 		'sitemeta_desc':'',
+		'content_author':{
+			'is_siteowner':True,
+			'name':settings.DEFAULT_AUTHOR_NAME,
+			'social_twitter':settings.DEFAULT_AUTHOR_TWITTER,
+		}
 	}

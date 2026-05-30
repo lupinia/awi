@@ -735,7 +735,10 @@ class leaf_view(access_view):
 		context['sitemeta_article_tags'] = context['object'].tags_list
 		
 		if not context['object'].admin_owned:
-			context['sitemeta_article_author_name'] = context['object'].author
+			context['content_author'] = {
+				'is_siteowner':False,
+				'name':context['object'].author,
+			}
 		
 		# External links
 		context['external_links'] = context['object'].get_links(self.request)
