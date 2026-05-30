@@ -30,6 +30,7 @@
 	<meta property="og:type" content="{% if sitemeta_page_type %}{{sitemeta_page_type}}{% else %}website{% endif %}" />
 	
 	<meta name="twitter:description" content="{% if sitemeta_desc %}{{sitemeta_desc}}{% else %}Lupinia Studios is {% if siteowner_name %}{{siteowner_name}}{% else %}Natasha L.{% endif %}'s personal portfolio, featuring her written works, digital photography, and digital graphics.{% endif %}" />
+	<meta name="robots" content="noai, noimageai" />
 	{% if locale %}<meta property="og:locale" content="{{locale}}" />{% endif %}
 	{% if permalink %}<meta property="og:url" content="{{permalink}}" />{% endif %}
 	
