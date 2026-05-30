@@ -13,7 +13,7 @@
 			<a href="/" id="large_logo"><img src="{{ STATIC_PREFIX }}images/text/title{% if debug_check %}-beta{% elif certauth %}-manage{% endif %}.png" title="Lupinia Studios{% if debug_check %} (Beta){% endif %}" alt="Lupinia Studios{% if debug_check %} (Beta){% endif %}" /><br /></a>
 			<a href="/" id="small_logo"><img src="{{ STATIC_PREFIX }}images/text/admin-title{% if certauth %}-manage{% endif %}.png" title="Lupinia Studios{% if debug_check %} (Beta){% endif %}" alt="Lupinia Studios{% if debug_check %} (Beta){% endif %}" /><br /></a>
 			
-			<a id="sig_image" href="/about/" rel="help"><img src="{{ STATIC_PREFIX }}images/text/name-{% if title_img %}{{title_img}}{% else %}fr{% endif %}.png" title="By {{sitemeta_author_name}}" alt="By {{sitemeta_author_name}}" /></a>
+			<a id="sig_image" href="/about/" rel="help"><img src="{{ STATIC_PREFIX }}images/text/name-{% if title_img %}{{title_img}}{% else %}fr{% endif %}.png" title="By {{siteowner_name}}" alt="By {{siteowner_name}}" /></a>
 			
 			{% block social_icons %}
 				{% if rss_feeds or header_icons %}
@@ -61,7 +61,7 @@
 					</div>
 				{% endif %}
 				<div class="bg_info">{% block bginfo %}{% if bg and bg.display_footer_info and not showcase_mode %}Background Photo:  <a href="{{bg.info_url}}">{{bg.title}}</a>{% else %}&nbsp;{% endif %}{% endblock %}</div>
-				<div class="lower">{% if public_domain_content %}Site and other content {% endif %}&copy;2000-{{curyear}} {{sitemeta_author_name}} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a></div>
+				<div class="lower">{% if public_domain_content %}Site and other content {% endif %}&copy;2000-{{curyear}} {{siteowner_name}} &bull; <a href="/about/privacy.htm" title="Privacy Policy">Privacy Policy</a></div>
 			</div>
 			
 			<nav role="navigation" aria-label="Footer Links">

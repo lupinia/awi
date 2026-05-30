@@ -92,7 +92,7 @@ def meta(request):
 		title_site:  Overall title for the whole site
 		title_page:  Page-specific title, defaults to an empty string
 		title_img:  Image filename component, just set to 'fr'
-		sitemeta_author_name:  Default content author name
+		siteowner_name:  Default content author name
 		sitemeta_twitter:  Default content author Twitter handle
 		sitemeta_page_type:  Default OpenGraph content type
 		sitemeta_is_image:  Boolean, set to True if this is primarily image content 
@@ -102,8 +102,8 @@ def meta(request):
 		'title_site':getattr(settings, 'SITE_TITLE', 'Lupinia Studios'),
 		'title_page':'',
 		'title_img':settings.SITE_TITLE_IMG_CODE,
-		'sitemeta_author_name':settings.DEFAULT_AUTHOR_NAME,
 		'sitemeta_twitter':settings.DEFAULT_AUTHOR_TWITTER,
+		'siteowner_name':getattr(settings, 'DEFAULT_AUTHOR_NAME', 'Natasha L.'),
 		'sitemeta_page_type':'website',
 		'sitemeta_is_image':False,
 		'sitemeta_desc':'',

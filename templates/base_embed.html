@@ -5,9 +5,9 @@
 {% now "Y" as curyear %}
 <head>
 	<meta charset="UTF-8">
-	{% if sitemeta_author_name %}<meta name="author" content="{{sitemeta_author_name}}" />{% endif %}
+	{% if siteowner_name %}<meta name="author" content="{{siteowner_name}}" />{% endif %}
 	<meta name="designer" content="Lupinia Studios - www.lupinia.net" />
-	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{{curyear}} by {% if sitemeta_author_name %}{{sitemeta_author_name}}{% else %}Natasha L.{% endif %}" />
+	<meta name="copyright" content="Unless otherwise specified, all content is (c) 2000-{{curyear}} by {% if siteowner_name %}{{siteowner_name}}{% else %}Natasha L.{% endif %}" />
 
 	<title>{% block title %}{% if title_site and title_page %}{{title_page}} - {{title_site}}{% elif title_site %}{{title_site}}{% else %}Lupinia Studios{% endif %}{% endblock %}</title>
 	

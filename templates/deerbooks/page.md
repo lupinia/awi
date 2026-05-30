@@ -1,6 +1,6 @@
 # {% if page.title %}{{page.get_title|safe}}{% else %}Untitled{% endif %}
 
-By {{sitemeta_author_name}} - [{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}](http://{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}/)  
+By {{siteowner_name}} - [{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}](http://{% if 'www' not in site.domain %}www.{% endif %}{{site.domain}}/)  
 *{{page.display_times.0.label}}:  {{page.display_times.0.timestamp|date:'F j, Y  G:i:s'}} | {{page.body|wordcount}} words*
 
 ---
@@ -9,5 +9,5 @@ By {{sitemeta_author_name}} - [{% if 'www' not in site.domain %}www.{% endif %}{
 
 --
 
-(c) {{page.display_times.0.timestamp|date:'Y'}} {{sitemeta_author_name}}  
+(c) {{page.display_times.0.timestamp|date:'Y'}} {{siteowner_name}}  
 *Original version and further downloads available at {{source_url}}*
