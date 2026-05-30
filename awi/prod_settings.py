@@ -18,6 +18,7 @@ SITE_TITLE = 'Lupinia Studios'
 SITE_TITLE_IMG_CODE = 'fr' # Set to 'fr' unless you know what this does
 DEFAULT_AUTHOR_NAME = 'Natasha L.'
 DEFAULT_AUTHOR_TWITTER = '@lupinia'
+DEFAULT_AUTHOR_MASTODON = '@lupinia@infosec.exchange'
 
 from settings import *
 

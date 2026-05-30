@@ -32,10 +32,11 @@
 	{% comment "Begin author profile data" %}{% endcomment %}{% if content_author %}<meta name="author" content="{{content_author.name}}" />
 	{% if sitemeta_page_type == 'article' %}<meta property="article:author" content="{{content_author.name}}" />{% endif %}
 	{% if content_author.social_twitter %}<meta name="twitter:creator" content="{{content_author.social_twitter}}" />{% endif %}
+	{% if content_author.social_mastodon %}<meta name="fediverse:creator" content="{{content_author.social_mastodon}}" />{% endif %}
 	{% else %}<meta name="author" content="{{siteowner_name|default:'Natasha L.'}}" />
 	{% if sitemeta_page_type == 'article' %}<meta property="article:author" content="{{siteowner_name|default:'Natasha L.'}}" />{% endif %}
 	{% if sitemeta_twitter %}<meta name="twitter:creator" content="{{sitemeta_twitter}}" />{% endif %}
-	{% endif %}{% comment "End author profile data" %}{% endcomment %}
+	{% if sitemeta_mastodon %}<meta name="fediverse:creator" content="{{sitemeta_mastodon}}" />{% endif %}{% endif %}{% comment "End author profile data" %}{% endcomment %}
 	
 	<!-- Description and content -->
 	<meta name="description" property="og:description" content="{% block desc %}{% if sitemeta_desc %}{{sitemeta_desc}}{% else %}Lupinia Studios is {{siteowner_name|default:'Natasha L.'}}'s personal portfolio, featuring her written works, digital photography, and digital graphics.{% endif %}{% endblock %}" />

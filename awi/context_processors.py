@@ -105,6 +105,7 @@ def meta(request):
 		'title_img':settings.SITE_TITLE_IMG_CODE,
 		'siteowner_name':getattr(settings, 'DEFAULT_AUTHOR_NAME', 'Natasha L.'),
 		'sitemeta_twitter':settings.DEFAULT_AUTHOR_TWITTER,
+		'sitemeta_mastodon':settings.DEFAULT_AUTHOR_MASTODON,
 		'sitemeta_page_type':'website',
 		'sitemeta_is_image':False,
 		'sitemeta_desc':'',
@@ -112,5 +113,6 @@ def meta(request):
 			'is_siteowner':True,
 			'name':settings.DEFAULT_AUTHOR_NAME,
 			'social_twitter':settings.DEFAULT_AUTHOR_TWITTER,
+			'social_mastodon':settings.DEFAULT_AUTHOR_MASTODON,
 		}
 	}
