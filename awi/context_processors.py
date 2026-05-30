@@ -99,7 +99,7 @@ def meta(request):
 		sitemeta_desc:  Default page summary
 	"""
 	return {
-		'title_site':settings.SITE_TITLE,
+		'title_site':getattr(settings, 'SITE_TITLE', 'Lupinia Studios'),
 		'title_page':'',
 		'title_img':settings.SITE_TITLE_IMG_CODE,
 		'sitemeta_author_name':settings.DEFAULT_AUTHOR_NAME,
