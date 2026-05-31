@@ -25,6 +25,7 @@ class homepage_view(DetailView):
 		context['title_page'] = context['homepage'].title
 		context['time_local'] = context['homepage'].city.now()
 		context['time_list'] = context['homepage'].secondary_clocks
+		context['shortlink'] = context['homepage'].get_short_url(self.request)
 		
 		return context
 

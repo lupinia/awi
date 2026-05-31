@@ -307,6 +307,7 @@ DEERFIND_SHORTCODE_TYPES = {
 	'e': 'deerattend.event',
 	'v': 'deerattend.venue',
 	'p': 'deerbooks.page',
+	'z': 'deersky.homepage',
 	'c': 'deertrees.category',
 	't': 'deertrees.tag',
 	'x': 'deertrees.special_feature',

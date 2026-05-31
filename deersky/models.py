@@ -22,6 +22,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 
 from awi.utils.models import TimestampModel
+from awi.utils.sites import get_current_site
 
 @python_2_unicode_compatible
 class city(TimestampModel):
@@ -111,8 +112,48 @@ class homepage(TimestampModel):
 	# Widget:  Secondary clocks
 	enable_extraclocks = models.BooleanField(default=True, blank=True, verbose_name='enable secondary clocks?')
 	
+	SHORTCODE_PREFIX = 'z'
+	
 	def __str__(self):
 		return self.label
+	
+	@property
+	def shortcode(self):
+		if hasattr(self, 'SHORTCODE_PREFIX'):
+			return '%s%d' % (self.SHORTCODE_PREFIX, self.pk)
+		else:
+			return None
+	
+	def get_url_domain(self, request=None):
+		"""
+		Get a domain name for building canonical URLs.
+		Optionally pass the request object to use the same hostname.
+		"""
+		if request:
+			domain = request.get_host()
+		else:
+			primary_site = get_current_site()
+			domain = primary_site.domain
+			if not domain.startswith('www.'):
+				domain = 'www.%s' % domain
+		
+		return domain
+	
+	def get_complete_url(self, request=None):
+		"""
+		An extension of get_absolute_url() to include the domain.
+		Optionally pass the request object to use the same hostname.
+		"""
+		return 'https://%s%s' % (self.get_url_domain(request), self.get_absolute_url())
+	
+	def get_short_url(self, request=None):
+		"""
+		Similar to get_complete_url(), but only for short URLs.
+		"""
+		if hasattr(self, 'SHORTCODE_PREFIX'):
+			return 'https://%s%s' % (self.get_url_domain(request), reverse('shortcode', kwargs={'type':self.SHORTCODE_PREFIX, 'pk':self.pk}))
+		else:
+			return None
 	
 	def get_absolute_url(self):
 		return reverse('deersky:newtab', kwargs={'slug': self.slug})
