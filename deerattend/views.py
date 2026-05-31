@@ -66,8 +66,7 @@ class event_list(special_feature_view, ListView):
 		
 		return queryset.order_by('-date_start').prefetch_related('flags').select_related('event','event__type','venue','photos','report')
 	
-	def build_breadcrumbs(self, cur=False, cur_type=''):
-		breadcrumbs = self.breadcrumbs()
+	def build_breadcrumbs(self, cur=False, cur_type='', breadcrumbs=[]):
 		if breadcrumbs:
 			if cur and cur_type:
 				if cur_type == 'special':
@@ -157,8 +156,9 @@ class full_list(event_list):
 	def get_context_data(self, **kwargs):
 		self.geojson_slug = 'full_list'
 		
-		context=super(full_list,self).get_context_data(**kwargs)
-		context['breadcrumbs'] = self.build_breadcrumbs()
+		context = super(full_list,self).get_context_data(**kwargs)
+		context = self.leaf_context(context, **kwargs)
+		context['breadcrumbs'] = self.build_breadcrumbs(breadcrumbs=context.get('breadcrumbs', []))
 		return context
 
 
@@ -173,10 +173,11 @@ class event_instances(event_list):
 		self.geojson_slug = 'event_%s' % cur_filter.slug
 		
 		context = super(event_instances,self).get_context_data(**kwargs)
+		context = self.leaf_context(context, **kwargs)
 		context['is_map_view'] = False
 		context['cur_filter'] = cur_filter
 		context['cur_filter_type'] = 'event'
-		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'event')
+		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'event', breadcrumbs=context.get('breadcrumbs', []))
 		context['title_page'] = "%s - %s" % (context['title_page'], cur_filter.name)
 		
 		if cur_filter.mature and not self.get_mature_check()[0]:
@@ -213,9 +214,10 @@ class events_by_type(event_list):
 		self.geojson_slug = 'filter_type_%s' % cur_filter.slug
 		
 		context = super(events_by_type,self).get_context_data(**kwargs)
+		context = self.leaf_context(context, **kwargs)
 		context['cur_filter'] = cur_filter
 		context['cur_filter_type'] = 'type'
-		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'type')
+		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'type', breadcrumbs=context.get('breadcrumbs', []))
 		context['title_page'] = "%s - %s" % (context['title_page'], cur_filter.name)
 		
 		return context
@@ -229,9 +231,10 @@ class events_by_venue(event_list):
 		cur_filter = get_object_or_404(venue, slug=self.kwargs['slug'])
 		
 		context = super(events_by_venue,self).get_context_data(**kwargs)
+		context = self.leaf_context(context, **kwargs)
 		context['cur_filter'] = cur_filter
 		context['cur_filter_type'] = 'venue'
-		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'venue')
+		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'venue', breadcrumbs=context.get('breadcrumbs', []))
 		context['title_page'] = "%s - %s" % (context['title_page'], cur_filter.name)
 		
 		return context
@@ -249,9 +252,10 @@ class events_by_flag(event_list):
 		self.geojson_slug = 'filter_flag_%s' % cur_filter.slug
 		
 		context = super(events_by_flag,self).get_context_data(**kwargs)
+		context = self.leaf_context(context, **kwargs)
 		context['cur_filter'] = cur_filter
 		context['cur_filter_type'] = 'flag'
-		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'flag')
+		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'flag', breadcrumbs=context.get('breadcrumbs', []))
 		context['title_page'] = "%s - %s" % (context['title_page'], cur_filter.name)
 		return context
 
@@ -268,11 +272,12 @@ class events_by_special(event_list):
 	
 	def get_context_data(self, **kwargs):
 		context=super(events_by_special,self).get_context_data(**kwargs)
+		context = self.leaf_context(context, **kwargs)
 		context['cur_filter'] = self.special_filters.get(self.kwargs['slug'], False)
 		context['cur_filter_type'] = 'special'
 		
 		if context['cur_filter']:
-			context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'special')
+			context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'special', breadcrumbs=context.get('breadcrumbs', []))
 			context['title_page'] = "%s - %s" % (context['title_page'], context['cur_filter']['name'])
 			
 			if self.special_filters.get(self.kwargs['slug'], {}).get('is_mature', False) and not self.get_mature_check()[0]:
