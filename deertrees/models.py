@@ -518,20 +518,13 @@ class leaf(access_control):
 	def __str__(self):
 		return '%s:  %d' % (self.type.capitalize(), self.pk)
 	
-	# An extension of get_absolute_url() to include the domain
 	def get_complete_url(self, request=None):
-		if request:
-			domain = request.get_host()
+		"""
+		An extension of get_absolute_url() to include the domain.
+		Optionally pass the request object to use the same hostname.
+		"""
+		return 'https://%s%s' % (self.get_url_domain(request), self.get_absolute_url())
 		else:
-			primary_site = self.sites.all().order_by('pk').first()
-			if not primary_site:
-				primary_site = get_current_site()
-			
-			domain = primary_site.domain
-			if 'www' not in domain:
-				domain = 'www.%s' % domain
-		
-		return 'https://%s%s' % (domain, self.get_absolute_url())
 	
 	def save(self, *args, **kwargs):
 		if not self.pk:

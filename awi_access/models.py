@@ -336,6 +336,29 @@ class access_control(models.Model):
 	
 	class Meta:
 		abstract = True
+	
+	def get_url_domain(self, request=None):
+		"""
+		Get a domain name for building canonical URLs.
+		Optionally pass the request object to use the same hostname.
+		"""
+		if request:
+			domain = request.get_host()
+		else:
+			domain_cache_key = 'model_urldomain.%s.%d' % (self.__class__.__name__, self.pk)
+			domain = cache.get(domain_cache_key)
+			if domain is None:
+				primary_site = self.sites.all().order_by('pk').first()
+				if not primary_site:
+					primary_site = get_current_site()
+				
+				domain = primary_site.domain
+				if not domain.startswith('www.'):
+					domain = 'www.%s' % domain
+				
+				cache.set(domain_cache_key, domain, 60*60*24*7)
+		
+		return domain
 
 
 @python_2_unicode_compatible
