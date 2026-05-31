@@ -73,6 +73,7 @@ class image(leaf):
 		'Composite:GPSLatitude':'geo_lat', 
 		'Composite:GPSLongitude':'geo_long', 
 		'EXIF:ImageDescription':'body', 
+		'EXIF:UserComment':'alt_text_override', 
 		'IPTC:Caption-Abstract':'body', 
 		'IPTC:Keywords':'tags', 
 		'IPTC:ObjectName':'title', 
