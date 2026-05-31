@@ -51,9 +51,25 @@ class image_admin(leaf_admin):
 	list_select_related = True
 	search_fields = ['body','summary','title','basename'] + leaf_admin.search_fields
 	fieldsets = [
-		(None,{'fields':(('title','basename'),('summary','auto_fields','rebuild_assets'),'body','bg_tags',('crop_horizontal','crop_vertical',),),},),
+		(None,{'fields':(
+			('title','basename'),
+			('summary','is_new',),
+			'body',
+			'alt_text_override',
+		),},),
+		('Metadata',{'fields':(
+			'timestamp_upload',
+			('geo_lat','geo_long',),
+			'public_domain',
+		),},),
+		('Build Options',{'fields':(
+			('auto_fields','rebuild_assets',),
+			('crop_horizontal','crop_vertical',),
+			'bg_tags',
+		),},),
 	] + leaf_admin.fieldsets
 	prepopulated_fields={'basename':('title',)}
+	readonly_fields = leaf_admin.readonly_fields + ['is_new','timestamp_upload',]
 	list_display = ('title','rebuild_assets','public_domain',) + leaf_admin.list_display
 	inlines = leaf_admin.inlines + [g2_inline, asset_inline_admin, meta_inline_admin]
 	list_filter = ['bg_tags','rebuild_assets','public_domain','auto_fields',] + leaf_admin.list_filter
