@@ -562,7 +562,7 @@ def geojson_image(request, slug, **kwargs):
 			'type':'Feature',
 			'geometry': {
 				'type':'Point', 
-				'coordinates':[item.geo_long, item.geo_lat],
+				'coordinates':item.geo_longlat,
 			},
 			'properties': {
 				'marker-color':marker_color,

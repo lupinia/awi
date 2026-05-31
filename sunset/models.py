@@ -258,6 +258,22 @@ class image(leaf):
 		else:
 			return None
 	
+	@property
+	def geo_latlong(self):
+		"""Retrieve map coordinates as a tuple, latitude first"""
+		if self.geotagged:
+			return (self.geodata_lat, self.geodata_long)
+		else:
+			return (None, None)
+	
+	@property
+	def geo_longlat(self):
+		"""Retrieve map coordinates as a tuple, longitude first"""
+		if self.geotagged:
+			return (self.geodata_long, self.geodata_lat)
+		else:
+			return (None, None)
+	
 	# ALIAS
 	@property
 	def rss_description(self):
