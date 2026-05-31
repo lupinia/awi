@@ -63,9 +63,7 @@ class single_image(leaf_view):
 				self.edit_success = obj.quick_edit(**quick_cmd_map[cmd])
 			
 			elif cmd == 'delmap':
-				lat_success = obj.quick_edit('geo_lat', None, False)
-				long_success = obj.quick_edit('geo_long', None)
-				self.edit_success = all(lat_success, long_success)
+				self.edit_success = obj.quick_edit('geodata_public', False)
 			
 			elif cmd == 'cropset' or cmd == 'cropreset':
 				# Reserved for crop center overrides
