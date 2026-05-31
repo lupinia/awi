@@ -16,6 +16,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.safestring import mark_safe
 
 from awi.utils.models import TimestampModel
+from awi.utils.sites import get_current_site
 from awi.utils.text import summarize
 
 @python_2_unicode_compatible
@@ -37,6 +38,28 @@ class venue(TimestampModel):
 	
 	def get_absolute_url(self):
 		return reverse('deerattend:filter_venue', kwargs={'slug':self.slug,})
+	
+	def get_url_domain(self, request=None):
+		"""
+		Get a domain name for building canonical URLs.
+		Optionally pass the request object to use the same hostname.
+		"""
+		if request:
+			domain = request.get_host()
+		else:
+			primary_site = get_current_site()
+			domain = primary_site.domain
+			if not domain.startswith('www.'):
+				domain = 'www.%s' % domain
+		
+		return domain
+	
+	def get_complete_url(self, request=None):
+		"""
+		An extension of get_absolute_url() to include the domain.
+		Optionally pass the request object to use the same hostname.
+		"""
+		return 'https://%s%s' % (self.get_url_domain(request), self.get_absolute_url())
 	
 	def get_city(self):
 		if self.state:
@@ -107,6 +130,28 @@ class event(TimestampModel):
 	
 	def __str__(self):
 		return self.name
+	
+	def get_url_domain(self, request=None):
+		"""
+		Get a domain name for building canonical URLs.
+		Optionally pass the request object to use the same hostname.
+		"""
+		if request:
+			domain = request.get_host()
+		else:
+			primary_site = get_current_site()
+			domain = primary_site.domain
+			if not domain.startswith('www.'):
+				domain = 'www.%s' % domain
+		
+		return domain
+	
+	def get_complete_url(self, request=None):
+		"""
+		An extension of get_absolute_url() to include the domain.
+		Optionally pass the request object to use the same hostname.
+		"""
+		return 'https://%s%s' % (self.get_url_domain(request), self.get_absolute_url())
 	
 	def get_absolute_url(self):
 		return reverse('deerattend:filter_event', kwargs={'slug':self.slug,})
