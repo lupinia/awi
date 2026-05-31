@@ -110,6 +110,7 @@ class image(leaf):
 	timestamp_upload = models.DateTimeField(auto_now_add=True, db_index=True, help_text='System field:  Tracks the original time that this image was created in the database, rather than the time the image was initially captured/created.')
 	timestamp_meta = models.DateTimeField(null=True, db_index=True, help_text='Timestamp of last metadata revision, from image metadata tags')
 	document_id = models.UUIDField(db_index=True, blank=True, null=True, help_text='Unique identifier from XMP metadata')
+	alt_text_override = models.TextField(null=True, blank=True, verbose_name='visual description')
 	
 	# Extra metadata
 	geo_lat = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
@@ -164,10 +165,13 @@ class image(leaf):
 	@property
 	def alt_text(self):
 		# This is a situation where we MUST return a value of some sort, so it may take a few tries
-		summary = summarize(body=self.body, summary=self.summary, fallback=str(self), length=255)
-		if not summary:
-			summary = self.title
-		return summary
+		if self.alt_text_override:
+			return self.alt_text_override
+		else:
+			summary = summarize(body=self.body, summary=self.summary, fallback=str(self), length=255)
+			if not summary:
+				summary = self.title
+			return summary
 	
 	@property
 	def body_text(self):
