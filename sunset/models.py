@@ -234,6 +234,16 @@ class image(leaf):
 		
 		return (center_h, center_v)
 	
+	@property
+	def geotagged(self):
+		if self.geodata_public:
+			if self.geo_lat is not None and self.geo_long is not None:
+				return True
+			else:
+				return False
+		else:
+			return False
+	
 	# ALIAS
 	@property
 	def rss_description(self):
