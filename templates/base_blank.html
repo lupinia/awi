@@ -24,6 +24,7 @@
 	{% if locale %}<meta property="og:locale" content="{{locale}}" />{% endif %}
 	{% if permalink %}<meta property="og:url" content="{{permalink}}" />
 	<link rel="canonical" href="{{permalink}}" />{% endif %}
+	{% if shortlink %}<link rel="shortlink" href="{{shortlink}}" />{% endif %}
 	
 	<!-- Credits and attribution -->
 	<meta name="designer" content="Lupinia Studios - www.lupinia.net" />
