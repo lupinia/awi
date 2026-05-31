@@ -763,7 +763,7 @@ class special_feature_view():
 	def breadcrumbs(self, **kwargs):
 		breadcrumbs = []
 		if not self.leaf:
-			self.get_leaf()
+			self.get_leaf(**kwargs)
 		
 		if self.leaf:
 			ancestors = self.leaf.cat.get_ancestors(include_self=True)
@@ -776,7 +776,16 @@ class special_feature_view():
 			return breadcrumbs
 		
 		else:
-			return False
+			return None
+	
+	def leaf_context(self, context, **kwargs):
+		if not self.leaf:
+			self.get_leaf(**kwargs)
+		
+		if self.leaf:
+			context['breadcrumbs'] = self.breadcrumbs(**kwargs)
+		
+		return context
 
 
 #	Views that don't use the leaf system.
@@ -796,9 +805,9 @@ class all_cats(TemplateView, special_feature_view):
 	
 	def get_context_data(self, **kwargs):
 		context = super(all_cats,self).get_context_data(**kwargs)
+		context = self.leaf_context(context, **kwargs)
 		context['view'] = 'catlist'
 		context['cats'] = category.objects.filter(access_query(self.request)).annotate(num_leaves=Count('leaves'))
-		context['breadcrumbs'] = self.breadcrumbs()
 		
 		if self.request.GET.get('return_to', False) and self.request.GET.get('cmd', False) and self.request.user.has_perm('deertrees.change_leaf'):
 			context['return_to'] = '%s?alitelvdi=%s&diyosdi=' % (self.request.GET.get('return_to', ''), self.request.GET.get('cmd', ''))
