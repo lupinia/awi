@@ -165,7 +165,7 @@ class image(leaf):
 	@property
 	def alt_text(self):
 		# This is a situation where we MUST return a value of some sort, so it may take a few tries
-		if self.alt_text_override:
+		if self.alt_text_override and self.alt_text_override != 'User comments':
 			return self.alt_text_override
 		else:
 			summary = summarize(body=self.body, summary=self.summary, fallback=str(self), length=255)
