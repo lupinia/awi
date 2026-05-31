@@ -179,6 +179,7 @@ class event_instances(event_list):
 		context['cur_filter_type'] = 'event'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'event', breadcrumbs=context.get('breadcrumbs', []))
 		context['title_page'] = "%s - %s" % (context['title_page'], cur_filter.name)
+		context['shortlink'] = cur_filter.get_short_url(self.request)
 		
 		if cur_filter.mature and not self.get_mature_check()[0]:
 			context['event_instances'] = []
@@ -219,6 +220,7 @@ class events_by_type(event_list):
 		context['cur_filter_type'] = 'type'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'type', breadcrumbs=context.get('breadcrumbs', []))
 		context['title_page'] = "%s - %s" % (context['title_page'], cur_filter.name)
+		context['shortlink'] = None
 		
 		return context
 
@@ -236,6 +238,7 @@ class events_by_venue(event_list):
 		context['cur_filter_type'] = 'venue'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'venue', breadcrumbs=context.get('breadcrumbs', []))
 		context['title_page'] = "%s - %s" % (context['title_page'], cur_filter.name)
+		context['shortlink'] = cur_filter.get_short_url(self.request)
 		
 		return context
 
@@ -257,6 +260,8 @@ class events_by_flag(event_list):
 		context['cur_filter_type'] = 'flag'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'flag', breadcrumbs=context.get('breadcrumbs', []))
 		context['title_page'] = "%s - %s" % (context['title_page'], cur_filter.name)
+		context['shortlink'] = None
+		
 		return context
 
 
@@ -275,6 +280,7 @@ class events_by_special(event_list):
 		context = self.leaf_context(context, **kwargs)
 		context['cur_filter'] = self.special_filters.get(self.kwargs['slug'], False)
 		context['cur_filter_type'] = 'special'
+		context['shortlink'] = None
 		
 		if context['cur_filter']:
 			context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'special', breadcrumbs=context.get('breadcrumbs', []))
