@@ -70,8 +70,8 @@ class image(leaf):
 	# All others will be created as image_meta objects.
 	META_MAP = {
 		'Composite:DateTimeCreated':'timestamp_post', 
-		'Composite:GPSLatitude':'geo_lat', 
-		'Composite:GPSLongitude':'geo_long', 
+		'Composite:GPSLatitude':'geodata_lat', 
+		'Composite:GPSLongitude':'geodata_long', 
 		'EXIF:ImageDescription':'body', 
 		'EXIF:UserComment':'alt_text_override', 
 		'IPTC:Caption-Abstract':'body', 
@@ -114,13 +114,13 @@ class image(leaf):
 	alt_text_override = models.TextField(null=True, blank=True, verbose_name='visual description')
 	
 	# Extra metadata
-	geo_lat = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
-	geo_long = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='longitude', help_text='Positive numbers are eastern hemisphere, negative numbers are western.')
 	crop_horizontal = models.CharField(max_length=2, default='c', choices=CENTER_CHOICES_H, verbose_name='crop alignment (horizontal)')
 	crop_vertical = models.CharField(max_length=2, default='c', choices=CENTER_CHOICES_V, verbose_name='crop alignment (vertical)')
 	public_domain = models.BooleanField(default=False, db_index=True, help_text='If this is checked, this image will be treated as a public-domain release.')
 	
 	# Geotagging
+	geodata_lat = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
+	geodata_long = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='longitude', help_text='Positive numbers are eastern hemisphere, negative numbers are western.')
 	geodata_public = models.BooleanField(default=True, db_index=True, verbose_name='show location?', help_text='Uncheck this to hide geotagging data')
 	
 	# Page backgrounds
@@ -237,12 +237,26 @@ class image(leaf):
 	@property
 	def geotagged(self):
 		if self.geodata_public:
-			if self.geo_lat is not None and self.geo_long is not None:
+			if self.geodata_lat is not None and self.geodata_long is not None:
 				return True
 			else:
 				return False
 		else:
 			return False
+	
+	@property
+	def geo_lat(self):
+		if self.geotagged:
+			return self.geodata_lat
+		else:
+			return None
+	
+	@property
+	def geo_long(self):
+		if self.geotagged:
+			return self.geodata_long
+		else:
+			return None
 	
 	# ALIAS
 	@property
