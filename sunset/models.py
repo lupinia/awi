@@ -94,6 +94,7 @@ class image(leaf):
 		('cb', 'Center-Bottom'),
 		('b', 'Bottom'),
 	)
+	SHORTCODE_PREFIX = 'i'
 	
 	# Basic content fields
 	title = models.CharField(max_length=100, null=True, blank=True)

@@ -28,6 +28,7 @@ from deertrees.utils import viewtype_options
 
 @python_2_unicode_compatible
 class category(MPTTModel, access_control, TimestampModel):
+	SHORTCODE_PREFIX = 'c'
 	CONTENT_SUMMARY_CHOICES = (
 		('misc', 'Miscellaneous'),
 		('image', 'Images/Photos'),
@@ -56,12 +57,28 @@ class category(MPTTModel, access_control, TimestampModel):
 	def __str__(self):
 		return self.title
 	
+	@property
+	def shortcode(self):
+		if hasattr(self, 'SHORTCODE_PREFIX'):
+			return '%s%d' % (self.SHORTCODE_PREFIX, self.pk)
+		else:
+			return None
+	
 	def get_complete_url(self, request=None):
 		"""
 		An extension of get_absolute_url() to include the domain.
 		Optionally pass the request object to use the same hostname.
 		"""
 		return 'https://%s%s' % (self.get_url_domain(request), self.get_absolute_url())
+	
+	def get_short_url(self, request=None):
+		"""
+		Similar to get_complete_url(), but only for short URLs.
+		"""
+		if hasattr(self, 'SHORTCODE_PREFIX'):
+			return 'https://%s%s' % (self.get_url_domain(request), reverse('shortcode', kwargs={'type':self.SHORTCODE_PREFIX, 'pk':self.pk}))
+		else:
+			return None
 	
 	def get_absolute_url(self):
 		return reverse('category', kwargs={'cached_url':self.cached_url,})
@@ -220,6 +237,8 @@ class tag(TimestampModel):
 	sitemap_include = models.BooleanField(default=True, verbose_name='include in sitemap', help_text='Check this box to include this tag in sitemap views.')
 	public = models.BooleanField(default=True, blank=True, db_index=True)
 	
+	SHORTCODE_PREFIX = 't'
+	
 	@property
 	def display_title(self):
 		if self.title:
@@ -238,6 +257,13 @@ class tag(TimestampModel):
 		
 		self.slug_cur = self.slug
 		super(tag, self).save(*args, **kwargs)
+	
+	@property
+	def shortcode(self):
+		if hasattr(self, 'SHORTCODE_PREFIX'):
+			return '%s%d' % (self.SHORTCODE_PREFIX, self.pk)
+		else:
+			return None
 	
 	def get_absolute_url(self):
 		return reverse('tag', kwargs={'slug':self.slug,})
@@ -263,6 +289,15 @@ class tag(TimestampModel):
 		Optionally pass the request object to use the same hostname.
 		"""
 		return 'https://%s%s' % (self.get_url_domain(request), self.get_absolute_url())
+	
+	def get_short_url(self, request=None):
+		"""
+		Similar to get_complete_url(), but only for short URLs.
+		"""
+		if hasattr(self, 'SHORTCODE_PREFIX'):
+			return 'https://%s%s' % (self.get_url_domain(request), reverse('shortcode', kwargs={'type':self.SHORTCODE_PREFIX, 'pk':self.pk}))
+		else:
+			return None
 	
 	def can_edit(self, request=False):
 		if not request:
@@ -547,13 +582,28 @@ class leaf(access_control):
 	def __str__(self):
 		return '%s:  %d' % (self.type.capitalize(), self.pk)
 	
+	@property
+	def shortcode(self):
+		if hasattr(self, 'SHORTCODE_PREFIX'):
+			return '%s%d' % (self.SHORTCODE_PREFIX, self.pk)
+		else:
+			return None
+	
 	def get_complete_url(self, request=None):
 		"""
 		An extension of get_absolute_url() to include the domain.
 		Optionally pass the request object to use the same hostname.
 		"""
 		return 'https://%s%s' % (self.get_url_domain(request), self.get_absolute_url())
+	
+	def get_short_url(self, request=None):
+		"""
+		Similar to get_complete_url(), but only for short URLs.
+		"""
+		if hasattr(self, 'SHORTCODE_PREFIX'):
+			return 'https://%s%s' % (self.get_url_domain(request), reverse('shortcode', kwargs={'type':self.SHORTCODE_PREFIX, 'pk':self.pk}))
 		else:
+			return None
 	
 	def save(self, *args, **kwargs):
 		if not self.pk:
@@ -773,6 +823,8 @@ class special_feature(leaf):
 	title = models.CharField(max_length=60)
 	desc = models.CharField(max_length=255, null=True, blank=True, verbose_name='Description')
 	directory = models.BooleanField(blank=True, default=True, help_text='Does this link to content that behaves like a single file, or like a subdirectory?')
+	
+	SHORTCODE_PREFIX = 'x'
 	
 	def get_absolute_url(self):
 		if self.url_reverse:

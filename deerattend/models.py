@@ -33,11 +33,20 @@ class venue(TimestampModel):
 	geo_lat = models.DecimalField(decimal_places=15, max_digits=20, blank=True, null=True, db_index=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
 	geo_long = models.DecimalField(decimal_places=15, max_digits=20, blank=True, null=True, db_index=True, verbose_name='longitude', help_text='Positive numbers are eastern hemisphere, negative numbers are western.')
 	
+	SHORTCODE_PREFIX = 'v'
+	
 	def __str__(self):
 		return self.name
 	
 	def get_absolute_url(self):
 		return reverse('deerattend:filter_venue', kwargs={'slug':self.slug,})
+	
+	@property
+	def shortcode(self):
+		if hasattr(self, 'SHORTCODE_PREFIX'):
+			return '%s%d' % (self.SHORTCODE_PREFIX, self.pk)
+		else:
+			return None
 	
 	def get_url_domain(self, request=None):
 		"""
@@ -60,6 +69,15 @@ class venue(TimestampModel):
 		Optionally pass the request object to use the same hostname.
 		"""
 		return 'https://%s%s' % (self.get_url_domain(request), self.get_absolute_url())
+	
+	def get_short_url(self, request=None):
+		"""
+		Similar to get_complete_url(), but only for short URLs.
+		"""
+		if hasattr(self, 'SHORTCODE_PREFIX'):
+			return 'https://%s%s' % (self.get_url_domain(request), reverse('shortcode', kwargs={'type':self.SHORTCODE_PREFIX, 'pk':self.pk}))
+		else:
+			return None
 	
 	def get_city(self):
 		if self.state:
@@ -128,8 +146,17 @@ class event(TimestampModel):
 	type = models.ForeignKey(event_type, on_delete=models.PROTECT)
 	mature = models.BooleanField(help_text='Check this box to indicate a mature/18+ event.', db_index=True)
 	
+	SHORTCODE_PREFIX = 'e'
+	
 	def __str__(self):
 		return self.name
+	
+	@property
+	def shortcode(self):
+		if hasattr(self, 'SHORTCODE_PREFIX'):
+			return '%s%d' % (self.SHORTCODE_PREFIX, self.pk)
+		else:
+			return None
 	
 	def get_url_domain(self, request=None):
 		"""
@@ -152,6 +179,15 @@ class event(TimestampModel):
 		Optionally pass the request object to use the same hostname.
 		"""
 		return 'https://%s%s' % (self.get_url_domain(request), self.get_absolute_url())
+	
+	def get_short_url(self, request=None):
+		"""
+		Similar to get_complete_url(), but only for short URLs.
+		"""
+		if hasattr(self, 'SHORTCODE_PREFIX'):
+			return 'https://%s%s' % (self.get_url_domain(request), reverse('shortcode', kwargs={'type':self.SHORTCODE_PREFIX, 'pk':self.pk}))
+		else:
+			return None
 	
 	def get_absolute_url(self):
 		return reverse('deerattend:filter_event', kwargs={'slug':self.slug,})

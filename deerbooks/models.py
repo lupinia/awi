@@ -97,6 +97,8 @@ class page(leaf):
 	
 	timestamp_revised = models.DateTimeField(null=True, blank=True, db_index=True, verbose_name='date/time revised', help_text='Date/time of last content edit.')
 	
+	SHORTCODE_PREFIX = 'p'
+	
 	@property
 	def slug(self):
 		"""Legacy support after https://github.com/lupinia/awi/issues/171"""
