@@ -314,6 +314,7 @@ class category_list(leaf_parent, access_view):
 		context['title_page'] = unicode(context['object']) #type:ignore
 		context['highlight_featured'] = self.highlight_featured
 		context['body_text'] = sunset_embed(context['object'].body_html, self.request)
+		context['shortlink'] = context['object'].get_short_url(self.request)
 		
 		if context['object'].summary_short:
 			context['sitemeta_desc'] = context['object'].summary_short
@@ -374,6 +375,7 @@ class tag_list(leaf_parent, DetailView):
 			
 			context['breadcrumbs'].append({'url':reverse('all_tags'), 'title':'Tags'})
 			context['breadcrumbs'].append({'url':reverse('tag',kwargs={'slug':context['object'].slug,}), 'title':unicode(context['object'])}) # type: ignore
+			context['shortlink'] = context['object'].get_short_url(self.request)
 			
 			context['body_text'] = sunset_embed(context['object'].body_html, self.request)
 			
@@ -733,6 +735,7 @@ class leaf_view(access_view):
 		context['sitemeta_timestamp_pub'] = context['object'].timestamp_post
 		context['sitemeta_timestamp_mod'] = context['object'].timestamp_mod
 		context['sitemeta_article_tags'] = context['object'].tags_list
+		context['shortlink'] = context['object'].get_short_url(self.request)
 		
 		if not context['object'].admin_owned:
 			context['content_author'] = {
@@ -783,6 +786,7 @@ class special_feature_view():
 			self.get_leaf(**kwargs)
 		
 		if self.leaf:
+			context['shortlink'] = self.leaf.get_short_url(getattr(self, 'request', None))
 			context['breadcrumbs'] = self.breadcrumbs(**kwargs)
 		
 		return context
