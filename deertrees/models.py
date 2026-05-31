@@ -56,6 +56,13 @@ class category(MPTTModel, access_control, TimestampModel):
 	def __str__(self):
 		return self.title
 	
+	def get_complete_url(self, request=None):
+		"""
+		An extension of get_absolute_url() to include the domain.
+		Optionally pass the request object to use the same hostname.
+		"""
+		return 'https://%s%s' % (self.get_url_domain(request), self.get_absolute_url())
+	
 	def get_absolute_url(self):
 		return reverse('category', kwargs={'cached_url':self.cached_url,})
 	
@@ -234,6 +241,28 @@ class tag(TimestampModel):
 	
 	def get_absolute_url(self):
 		return reverse('tag', kwargs={'slug':self.slug,})
+	
+	def get_url_domain(self, request=None):
+		"""
+		Get a domain name for building canonical URLs.
+		Optionally pass the request object to use the same hostname.
+		"""
+		if request:
+			domain = request.get_host()
+		else:
+			primary_site = get_current_site()
+			domain = primary_site.domain
+			if not domain.startswith('www.'):
+				domain = 'www.%s' % domain
+		
+		return domain
+	
+	def get_complete_url(self, request=None):
+		"""
+		An extension of get_absolute_url() to include the domain.
+		Optionally pass the request object to use the same hostname.
+		"""
+		return 'https://%s%s' % (self.get_url_domain(request), self.get_absolute_url())
 	
 	def can_edit(self, request=False):
 		if not request:
