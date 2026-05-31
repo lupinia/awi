@@ -105,7 +105,7 @@ class single_image(leaf_view):
 		
 		context['background_tags'] = context['object'].bg_tags.all()
 		
-		if context['object'].geo_lat and context['object'].geo_long:
+		if context['object'].geotagged:
 			# Setting up the map.
 			context['map_type'] = 'photo_sub_map'
 			context['map_tiles'] = 'outdoors'
@@ -531,7 +531,7 @@ class img_tag_feed(img_aggregate_tag, img_aggregate_feed):
 
 def geojson_image(request, slug, **kwargs):
 	return_data = []
-	query = image.objects.filter(access_query(request)).exclude(rebuild_assets=True, is_new=True).exclude(Q(geo_lat__isnull=True) | Q(geo_long__isnull=True)).order_by('-timestamp_post').select_related('cat').prefetch_related('assets')
+	query = image.objects.filter(access_query(request)).exclude(rebuild_assets=True, is_new=True, geodata_public=False).exclude(Q(geo_lat__isnull=True) | Q(geo_long__isnull=True)).order_by('-timestamp_post').select_related('cat').prefetch_related('assets')
 	
 	if slug == 'full_list':
 		pass

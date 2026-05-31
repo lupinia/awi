@@ -19,7 +19,7 @@
 			</div>
 		{% endif %}
 		
-		{% if object.geo_lat and object.geo_long %}
+		{% if object.geotagged %}
 			{% include 'includes/map_embed.html' %}
 		{% endif %}
 	{% endif %}
