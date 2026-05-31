@@ -120,6 +120,9 @@ class image(leaf):
 	crop_vertical = models.CharField(max_length=2, default='c', choices=CENTER_CHOICES_V, verbose_name='crop alignment (vertical)')
 	public_domain = models.BooleanField(default=False, db_index=True, help_text='If this is checked, this image will be treated as a public-domain release.')
 	
+	# Geotagging
+	geodata_public = models.BooleanField(default=True, db_index=True, verbose_name='show location?', help_text='Uncheck this to hide geotagging data')
+	
 	# Page backgrounds
 	bg_tags = models.ManyToManyField(background_tag, blank=True, related_name='images', verbose_name='background tags', help_text='To use this image as a sitewide background, select the background tag(s) it should be associated with.')
 	

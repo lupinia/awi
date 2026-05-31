@@ -59,7 +59,7 @@ class image_admin(leaf_admin):
 		),},),
 		('Metadata',{'fields':(
 			'timestamp_upload',
-			('geo_lat','geo_long',),
+			('geo_lat','geo_long','geodata_public',),
 			'public_domain',
 		),},),
 		('Build Options',{'fields':(
