@@ -116,6 +116,7 @@ class single_image(leaf_view):
 		context['extra_classes'] = 'photo_page'
 		context['sitemeta_desc'] = context['object'].summary_short
 		context['sitemeta_is_image'] = True
+		context['sitemeta_fullheight_image'] = True
 		
 		if context['assets'].get('display', False):
 			context['extra_style'] = 'max-width:%dpx;' % context['assets'].get('display', False).img_width
