@@ -38,14 +38,18 @@ def store_cache(prefix, data, timeout=300):
 	value = json.dumps(data)
 	cache.set('sunsetbg_%s' % prefix, value, timeout)
 
-def set_bg(image_obj, display_footer_info, cache_key="", cache_timeout=0):
+def set_bg(image_obj, display_footer_info, cache_key="", cache_timeout=0, og_fullheight=False):
 	new_bg_data = {}
-	url_key_map = {'bg':'url', 'og':'og_url', 'twitter':'twitter_url'}
-	cur_bg_assets = image_obj.assets.filter(type__in=['bg', 'og', 'twitter'])
+	url_key_map = {'bg':'url', 'og':'og_url', 'display':'og_url', 'twitter':'twitter_url'}
+	og_asset = 'og'
+	if og_fullheight:
+		og_asset = 'display'
+	asset_list = ['bg', 'twitter', og_asset]
+	cur_bg_assets = image_obj.assets.filter(type__in=asset_list)
 	if cur_bg_assets:
 		for cur_bg_asset in cur_bg_assets:
 			new_bg_data[url_key_map[cur_bg_asset.type]] = cur_bg_asset.get_url()
-			if cur_bg_asset.type == 'og':
+			if cur_bg_asset.type == og_asset:
 				new_bg_data['mime'] = cur_bg_asset.img_mimetype
 				new_bg_data['og_height'] = cur_bg_asset.img_height
 				new_bg_data['og_width'] = cur_bg_asset.img_width
@@ -74,7 +78,7 @@ def bg_select(context, input_string=''):
 		# First check:  If bg_type is current_image, just set the current image as the background.
 		bg_selected = context.get('image', False)
 		display_footer_info = False
-		bg_data = set_bg(bg_selected, display_footer_info)
+		bg_data = set_bg(bg_selected, display_footer_info, og_fullheight=context.get('sitemeta_fullheight_image', False))
 		return ''
 	else:
 		display_footer_info = True
