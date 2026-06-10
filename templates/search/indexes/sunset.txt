@@ -1,5 +1,6 @@
 {{object}}
-{{object.body_html}}
+{{object.alt_text}}
+{% if object.alt_text != object.body_html %}{{object.body_html}}{% endif %}
 {{object.cat}}
 
 {% for tag in object.tags.all %}
