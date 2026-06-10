@@ -17,7 +17,7 @@
 							{% elif image.mature %}
 								<div class="feature_mark"></div>
 							{% endif %}
-							<img src="{{asset.get_url}}" alt="{{image}}" title="{{image}}" />
+							<img src="{{asset.get_url}}" alt="{{image.alt_text}}" title="{{image}}" />
 						</a>
 					{% endif %}
 				{% endfor %}
