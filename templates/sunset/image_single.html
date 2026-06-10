@@ -4,7 +4,7 @@
 	{% if object and not error %}
 		{% if assets.display %}
 		<div class="photo_image">
-			{% if assets.full %}<a href="{{assets.full.get_url}}" title="Full-Size View">{% endif %}<img src="{{assets.display.get_url}}" alt="{{object}}" title="{{object}}" />{% if assets.full %}</a>{% endif %}
+			{% if assets.full %}<a href="{{assets.full.get_url}}" title="Full-Size View">{% endif %}<img src="{{assets.display.get_url}}" alt="{{object.alt_text}}" title="{{object}}" />{% if assets.full %}</a>{% endif %}
 		</div>
 		{% endif %}
 		
