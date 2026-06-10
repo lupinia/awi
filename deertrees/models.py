@@ -550,10 +550,10 @@ class external_link(TimestampModel):
 			return self.link_type.label
 	
 	def clean(self):
-		if not self.full_url and not self.remote_id:
-			raise ValidationError('Either a full URL or a remote ID are required.')
 		if not self.link_type.url_format and not self.full_url:
 			raise ValidationError('A full URL is required for this link type')
+		if not self.full_url and not self.remote_id:
+			raise ValidationError('Either a full URL or a remote ID are required.')
 		return super(external_link,self).clean()
 	
 	class Meta:
