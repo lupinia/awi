@@ -40,29 +40,16 @@ class single_page(leaf_view):
 			# Do nothing unless this is the primary/HTML view
 			pass
 		else:
-			super(single_page, self).edit_object(obj)
+			# Adding extra to the standard quickedit basic commands
+			self.edit_quick_cmd_map.update({
+				'buildon': {'field':'auto_export', 'value':True,},
+				'buildoff': {'field':'auto_export', 'value':False,},
+				'buildretry': {'field':'latex_fail', 'value':False,},
+				'less': {'field':'showcase_default', 'value':True,},
+				'more': {'field':'showcase_default', 'value':False,},
+			})
 			
-			if not self.edit_cmd_handled:
-				self.edit_cmd_handled = True
-				# Pull known arguments
-				cmd = self.request.GET.get('alitelvdi', '')
-				
-				# Commands that don't require any extra parameters
-				quick_cmd_map = {
-					'buildon': {'field':'auto_export', 'value':True,},
-					'buildoff': {'field':'auto_export', 'value':False,},
-					'buildretry': {'field':'latex_fail', 'value':False,},
-					'less': {'field':'showcase_default', 'value':True,},
-					'more': {'field':'showcase_default', 'value':False,},
-				}
-				
-				if cmd in quick_cmd_map.keys():
-					# Basic field changes/toggles that require no other parameters
-					# Defined in the dictionary above
-					self.edit_success = obj.quick_edit(**quick_cmd_map[cmd])
-				
-				else:
-					self.edit_cmd_handled = False
+			super(single_page, self).edit_object(obj)
 	
 	def get_queryset(self, *args, **kwargs):
 		return super(single_page, self).get_queryset(*args, **kwargs).select_related('book_title').prefetch_related('docfiles')

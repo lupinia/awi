@@ -133,6 +133,7 @@ class settings_page(TemplateView):
 						changed = True
 			
 			if changed:
+				# TODO:  GET RID OF THIS
 				cache.clear()
 		
 		# Metadata
@@ -172,6 +173,16 @@ class access_view(DetailView):
 	edit_redirect_to = None
 	edit_cmd_handled = None
 	
+	# Edit commands that don't require any extra parameters
+	edit_quick_cmd_map = {
+		'feature': {'field':'featured', 'value':True,},
+		'unfeature': {'field':'featured', 'value':False,},
+		'publish': {'field':'published', 'value':True,},
+		'unpublish': {'field':'published', 'value':False,},
+		'nsfw': {'field':'mature', 'value':True,},
+		'sfw': {'field':'mature', 'value':False,},
+	}
+	
 	def edit_object(self, obj):
 		"""
 		Extendable method for handling inline edit commands
@@ -188,26 +199,16 @@ class access_view(DetailView):
 		audience = self.request.GET.get('yvwi', None)
 		days = self.request.GET.get('sesdi', None)
 		
-		# Commands that don't require any extra parameters
-		quick_cmd_map = {
-			'feature': {'field':'featured', 'value':True,},
-			'unfeature': {'field':'featured', 'value':False,},
-			'publish': {'field':'published', 'value':True,},
-			'unpublish': {'field':'published', 'value':False,},
-			'nsfw': {'field':'mature', 'value':True,},
-			'sfw': {'field':'mature', 'value':False,},
-		}
-		
 		if cmd == 'touch':
 			# Simply re-save the object to update its last-modified timestamp
 			# Commands issued in this function usually don't do that
 			obj.save()
 			self.edit_success = True
 		
-		elif cmd in quick_cmd_map.keys():
+		elif cmd in self.edit_quick_cmd_map.keys():
 			# Basic field changes/toggles that require no other parameters
 			# Defined in the dictionary above
-			self.edit_success = obj.quick_edit(**quick_cmd_map[cmd])
+			self.edit_success = obj.quick_edit(**self.edit_quick_cmd_map[cmd])
 		
 		elif cmd == 'chmod':
 			level = None
@@ -344,7 +345,7 @@ class access_view(DetailView):
 		return context
 	
 	def get_context_restricted(self, context, **kwargs):
-		"""Extendable method for context when permission checks for the object succeeded"""
+		"""Extendable method for context when permission checks for the object failed"""
 		context['error'] = self.view_restriction
 		if self.view_restriction == 'access_mature_prompt':
 			if context['object']:

@@ -41,6 +41,15 @@ class single_image(leaf_view):
 		return super(single_image,self).dispatch(*args, **kwargs)
 	
 	def edit_object(self, obj):
+		# Adding extra to the standard quickedit basic commands
+		self.edit_quick_cmd_map.update({
+			'queuebuild': {'field':'rebuild_assets', 'value':True,},
+			'unqueuebuild': {'field':'rebuild_assets', 'value':False,},
+			'fieldsauto': {'field':'auto_fields', 'value':True,},
+			'fieldsmanual': {'field':'auto_fields', 'value':False,},
+			'delmap': {'field':'geodata_public', 'value':False,},
+		})
+		
 		super(single_image, self).edit_object(obj)
 		
 		if not self.edit_cmd_handled:
@@ -49,23 +58,7 @@ class single_image(leaf_view):
 			cmd = self.request.GET.get('alitelvdi', '')
 			target = self.request.GET.get('diyosdi', None)
 			
-			# Commands that don't require any extra parameters
-			quick_cmd_map = {
-				'queuebuild': {'field':'rebuild_assets', 'value':True,},
-				'unqueuebuild': {'field':'rebuild_assets', 'value':False,},
-				'fieldsauto': {'field':'auto_fields', 'value':True,},
-				'fieldsmanual': {'field':'auto_fields', 'value':False,},
-			}
-			
-			if cmd in quick_cmd_map.keys():
-				# Basic field changes/toggles that require no other parameters
-				# Defined in the dictionary above
-				self.edit_success = obj.quick_edit(**quick_cmd_map[cmd])
-			
-			elif cmd == 'delmap':
-				self.edit_success = obj.quick_edit('geodata_public', False)
-			
-			elif cmd == 'cropset' or cmd == 'cropreset':
+			if cmd == 'cropset' or cmd == 'cropreset':
 				# Reserved for crop center overrides
 				self.edit_success = False
 				self.edit_error = 'quickedit_futurecmd'
