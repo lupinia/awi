@@ -66,6 +66,55 @@
 	<!-- CSS and JS -->
 	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase.css" type="text/css" rel="stylesheet" id="main_css" title="Purple" />
 	{% block cookielaw_js %}<script src="{{STATIC_PREFIX}}cookielaw/js/cookielaw.js" type="text/javascript"></script>{% endblock %}
+	{% if js_strip_params %}<script>
+		// Remove extraneous URL query parameters
+		var params_to_strip = ["{{js_strip_params|join:'","'}}"];
+		var cur_url = window.location.href;
+		if(cur_url.indexOf("?") !== -1)
+		{
+			var url_parts = cur_url.split("?");
+			var url_base = url_parts[0];
+			var url_params = url_parts[1].split("&");
+			var params_to_keep = [];
+			var replace_url = false;
+			
+			for(var i=0; i<url_params.length; i++) {
+				var s = url_params[i];
+				var s_parts = s.split("=");
+				if(params_to_strip.indexOf(s_parts[0]) > -1) {
+					// Found something, so we're rebuilding the URL
+					replace_url = true;
+				}
+				else {
+					// Not found in params_to_strip, so add to params_to_keep
+					params_to_keep.push(s);
+				}
+			}
+			
+			if(replace_url) {
+				var new_url = url_base;
+				
+				if(params_to_keep.length > 0) {
+					var new_params = "";
+					if(params_to_keep.length > 1) {
+						new_params = params_to_keep.join("&");
+					}
+					else {
+						new_params = params_to_keep[0];
+					}
+					
+					if(new_params) {
+						new_url = new_url + "?" + new_params;
+					}
+				}
+				
+				// One last sanity check
+				if(new_url != cur_url) {
+					window.history.replaceState(null, "", new_url);
+				}
+			}
+		}
+	</script>{% endif %}
 	{% block extra_head %}{% endblock %}
 	
 	{% if rss_feeds and cwd_absolute %}<!-- RSS Feeds -->{% for feed in rss_feeds %}
