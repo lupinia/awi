@@ -15,7 +15,7 @@
 		{% if time_local %}{% localtime off %}
 			<div class="center_time_wrapper">
 				<fieldset class="timestamp" id="timestamp_main">
-					<legend>{{homepage.city.label}}</legend>
+					<legend>{{homepage.city.label}}<noscript id="deersky_nojs_button">&nbsp;<img src="{{STATIC_PREFIX}}images/icons/timer-error-16.png" alt="Clock Updates Disabled" title="With Javascript disabled, these clocks will show the current time as of the last page load, but will not dynamically update.  Please don't refresh this page every second :)" /></noscript></legend>
 					<div class="timestamp_time">{{time_local|time:"H:i"}}</div>
 					<div class="timestamp_date">{{time_local|date:"F j, Y"}}</div>
 					{% if homepage.enable_timer %}<button id="timer_open" title="Open/close timer" onclick="toggle_timer()"><img src="{{STATIC_PREFIX}}images/icons/timer-16.png" title="Open/close timer" alt="T" /></button>{% endif %}
