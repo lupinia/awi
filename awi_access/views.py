@@ -98,6 +98,7 @@ class settings_page(TemplateView):
 	
 	def get_context_data(self, **kwargs):
 		context = super(settings_page,self).get_context_data(**kwargs)
+		params_to_strip_if_changed = []
 		
 		if not context.get('breadcrumbs',False):
 			context['breadcrumbs'] = []
@@ -115,6 +116,7 @@ class settings_page(TemplateView):
 		
 		if self.request.GET.get('mature', False) and not mature_check[1] == 'access_mature_denied':
 			changed = False
+			params_to_strip_if_changed.append('mature')
 			if self.request.GET.get('mature', False) == 'hide' and mature_check[0]:
 				if context.get('user_meta', False):
 					context['user_meta'].show_mature = False
@@ -133,6 +135,7 @@ class settings_page(TemplateView):
 						changed = True
 			
 			if changed:
+				context['js_strip_params'] = context.get('js_strip_params', []) + params_to_strip_if_changed
 				# TODO:  GET RID OF THIS
 				cache.clear()
 		
@@ -172,6 +175,8 @@ class access_view(DetailView):
 	edit_error = ''
 	edit_redirect_to = None
 	edit_cmd_handled = None
+	params_to_strip = []
+	params_to_strip_on_edit = ['alitelvdi', 'diyosdi', 'yvwi', 'sesdi',]
 	
 	# Edit commands that don't require any extra parameters
 	edit_quick_cmd_map = {
@@ -315,6 +320,8 @@ class access_view(DetailView):
 			if self.can_edit and self.request.GET.get('alitelvdi', False):
 				# Handling this part with a separate method to make it easy to extend
 				self.edit_object(obj)
+				if self.edit_success:
+					self.params_to_strip = self.params_to_strip + self.params_to_strip_on_edit
 		
 		else:
 			if self.view_restriction == 'access_404':
@@ -366,6 +373,8 @@ class access_view(DetailView):
 		# But that also means we may or may not have an object
 		# These usually go together, but we'll test both in case I screw something up
 		if self.can_view and context['object']:
+			if self.params_to_strip:
+				context['js_strip_params'] = self.params_to_strip
 			return self.get_context_canview(context)
 		
 		else:
@@ -373,6 +382,8 @@ class access_view(DetailView):
 			# But to make extending this method easier, we won't remove the object until last
 			context = self.get_context_restricted(context)
 			context['object'] = ''
+			if self.params_to_strip:
+				context['js_strip_params'] = self.params_to_strip
 			return context
 	
 	def render_to_response(self, context, **response_kwargs):
