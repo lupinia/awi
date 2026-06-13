@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html prefix="og: https://ogp.me/ns#{{sitemeta_page_type|default:'website'}}"{% if debug_white_bg %} class="debug_white_bg"{% endif %}>
 {% spaceless %}
-	{% load static %}
 	{% load sunset_bg %}
-	{% get_static_prefix as STATIC_PREFIX %}
-	{% now "Y" as curyear %}
 	{% block bg_image %}{% bg_select bg_tag %}{% endblock %}
 {% endspaceless %}
 <head>

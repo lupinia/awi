@@ -1,7 +1,3 @@
-{% load static %}
-{% get_static_prefix as STATIC_PREFIX %}
-{% get_media_prefix as MEDIA_PREFIX %}
-
 {% if 'sidebar' in blockname %}
 	{% for event in leaves %}
 	<a href="{% url 'deerattend:full_list' %}" class="sidebar_link {% if event.is_upcoming %}featured{% elif event.event.mature %}mature{% elif event.is_tentative %}notpublic{% endif %}">

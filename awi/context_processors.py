@@ -9,6 +9,7 @@
 import os
 
 from django.conf import settings
+from django.utils import timezone
 
 from awi.utils.sites import get_current_site
 
@@ -70,6 +71,12 @@ def settings_vars(request):
 		mapbox_token:  Value of settings.MAPBOX_KEY
 		locale:  Value of settings.LANGUAGE_CODE
 		server_canonical_name:  Value of settings.SERVER_CANONICAL_NAME
+		request:  Replaces django.template.context_processors.request
+		curyear:  Shortcut for common usage of 'now' template tag
+		STATIC_URL:  Replaces django.template.context_processors.static
+		STATIC_PREFIX:  Replaces per-template calls to get_static_prefix
+		MEDIA_URL:  Replaces django.template.context_processors.media
+		MEDIA_PREFIX:  Replaces per-template calls to get_static_prefix
 	"""
 	bg_white = False
 	if settings.DEBUG and request.GET.get('nobg',False):
@@ -81,6 +88,12 @@ def settings_vars(request):
 		'mapbox_token':settings.MAPBOX_KEY,
 		'locale':settings.LANGUAGE_CODE,
 		'server_canonical_name':settings.SERVER_CANONICAL_NAME,
+		'request': request,
+		'curyear': timezone.now().year,
+		'STATIC_URL': settings.STATIC_URL,
+		'STATIC_PREFIX': settings.STATIC_URL,
+		'MEDIA_URL': settings.MEDIA_URL,
+		'MEDIA_PREFIX': settings.MEDIA_URL,
 	}
 
 def meta(request):

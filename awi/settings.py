@@ -82,18 +82,15 @@ TEMPLATES = [{
 	'DIRS' : [os.path.abspath(os.path.join(BASE_DIR,'./templates')),],
 	'OPTIONS' : {
 		'context_processors' : [
+			'awi.context_processors.settings_vars',
 			'django.contrib.auth.context_processors.auth',
 			'django.template.context_processors.debug',
 			'django.template.context_processors.i18n',
-			'django.template.context_processors.media',
-			'django.template.context_processors.static',
 			'django.template.context_processors.tz',
 			'django.contrib.messages.context_processors.messages',
 			
 			#	Non-standard ones
-			'django.template.context_processors.request',
 			'awi.context_processors.site',
-			'awi.context_processors.settings_vars',
 			'awi.context_processors.meta',
 			'awi_access.context_processors.mature_check',
 			'deerconnect.context_processors.social_icons',
