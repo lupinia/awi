@@ -87,7 +87,8 @@ TEMPLATES = [{
 	'DIRS' : [os.path.abspath(os.path.join(BASE_DIR,'./templates')),],
 	'OPTIONS' : {
 		'context_processors' : [
-			'awi.context_processors.settings_vars',
+			'awi.context_processors.core',
+			
 			'django.contrib.auth.context_processors.auth',
 			'django.template.context_processors.debug',
 			'django.template.context_processors.i18n',

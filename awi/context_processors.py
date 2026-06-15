@@ -13,6 +13,41 @@ from django.utils import timezone
 
 from awi.utils.sites import get_current_site
 
+def core(request):
+	"""
+	Context processor to add various system settings as context variables.
+	
+	Values:
+		debug_check:  Bool, value of settings.DEBUG
+		debug_white_bg:  Bool, True if settings.DEBUG is True and ?nobg=1 in URL
+		mapbox_token:  Value of settings.MAPBOX_KEY
+		locale:  Value of settings.LANGUAGE_CODE
+		server_canonical_name:  Value of settings.SERVER_CANONICAL_NAME
+		request:  Replaces django.template.context_processors.request
+		curyear:  Shortcut for common usage of 'now' template tag
+		STATIC_URL:  Replaces django.template.context_processors.static
+		STATIC_PREFIX:  Replaces per-template calls to get_static_prefix
+		MEDIA_URL:  Replaces django.template.context_processors.media
+		MEDIA_PREFIX:  Replaces per-template calls to get_static_prefix
+	"""
+	bg_white = False
+	if settings.DEBUG and request.GET.get('nobg',False):
+		bg_white = True
+	
+	return {
+		'debug_check': settings.DEBUG,
+		'debug_white_bg': bg_white,
+		'mapbox_token': settings.MAPBOX_KEY,
+		'locale': settings.LANGUAGE_CODE,
+		'server_canonical_name': settings.SERVER_CANONICAL_NAME,
+		'request': request,
+		'curyear': timezone.now().year,
+		'STATIC_URL': settings.STATIC_URL,
+		'STATIC_PREFIX': settings.STATIC_URL,
+		'MEDIA_URL': settings.MEDIA_URL,
+		'MEDIA_PREFIX': settings.MEDIA_URL,
+	}
+
 def site(request):
 	"""
 	Context processor to add values related to the current site and request.
@@ -60,41 +95,6 @@ def site(request):
 	site_data['cwd_absolute'] = '%s://%s%s' % (request.scheme, site_data['domain_name'], site_data['cwd'])
 	
 	return site_data
-
-def settings_vars(request):
-	"""
-	Context processor to add various system settings as context variables.
-	
-	Values:
-		debug_check:  Bool, value of settings.DEBUG
-		debug_white_bg:  Bool, True if settings.DEBUG is True and ?nobg=1 in URL
-		mapbox_token:  Value of settings.MAPBOX_KEY
-		locale:  Value of settings.LANGUAGE_CODE
-		server_canonical_name:  Value of settings.SERVER_CANONICAL_NAME
-		request:  Replaces django.template.context_processors.request
-		curyear:  Shortcut for common usage of 'now' template tag
-		STATIC_URL:  Replaces django.template.context_processors.static
-		STATIC_PREFIX:  Replaces per-template calls to get_static_prefix
-		MEDIA_URL:  Replaces django.template.context_processors.media
-		MEDIA_PREFIX:  Replaces per-template calls to get_static_prefix
-	"""
-	bg_white = False
-	if settings.DEBUG and request.GET.get('nobg',False):
-		bg_white = True
-	
-	return {
-		'debug_check':settings.DEBUG,
-		'debug_white_bg':bg_white,
-		'mapbox_token':settings.MAPBOX_KEY,
-		'locale':settings.LANGUAGE_CODE,
-		'server_canonical_name':settings.SERVER_CANONICAL_NAME,
-		'request': request,
-		'curyear': timezone.now().year,
-		'STATIC_URL': settings.STATIC_URL,
-		'STATIC_PREFIX': settings.STATIC_URL,
-		'MEDIA_URL': settings.MEDIA_URL,
-		'MEDIA_PREFIX': settings.MEDIA_URL,
-	}
 
 def meta(request):
 	"""
