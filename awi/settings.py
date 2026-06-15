@@ -8,6 +8,7 @@
 #	=================
 
 import os
+
 from settings_local import *
 from settings_apps import *
 
@@ -57,7 +58,6 @@ INSTALLED_APPS = (
 	'static_precompiler',
 	
 	#	My Apps - System/Core
-	'awi_access',	# Access Control
 	'deerfind',		# Intelligent 404 Recovery
 	'watchdeer',	# Unified logging and notifications
 	
@@ -79,6 +79,7 @@ INSTALLED_APPS = (
 	'deercoins',	# Coin collection database
 	'deerfood',		# Restaurant-style menu
 	'deersky',		# Digital almanac and weather/timezone data aggregation
+	'dagasi',	# Access Control
 )
 
 # =================
@@ -99,7 +100,7 @@ TEMPLATES = [{
 			#	Non-standard ones
 			'awi.context_processors.site',
 			'awi.context_processors.meta',
-			'awi_access.context_processors.mature_check',
+			'dagasi.context_processors.mature_check',
 			'deerconnect.context_processors.social_icons',
 		],
 		'loaders' : [
