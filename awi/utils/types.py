@@ -8,6 +8,11 @@
 #	=================
 
 def is_iterable(test_obj):
+	"""
+	is_iterable(obj) -> bool
+	Tests whether an unknown object is iterable without an exception
+	Always returns True (if yes) or False
+	"""
 	try:
 		type_test = iter(test_obj)
 	except TypeError:
@@ -16,6 +21,11 @@ def is_iterable(test_obj):
 		return True
 
 def is_int(test_obj):
+	"""
+	is_int(obj) -> bool
+	Tests whether an unknown object is - or can become - an integer without an exception
+	Always returns True (if yes) or False
+	"""
 	try:
 		type_test = int(test_obj)
 	except ValueError:
@@ -26,4 +36,10 @@ def is_int(test_obj):
 		return True
 
 def is_string(test_obj):
+	"""
+	is_string(obj) -> bool
+	Tests whether an unknown object is a string
+	Compatible with Python 2.7 unicode and str types
+	Always returns True (if yes) or False
+	"""
 	return isinstance(test_obj, basestring) # type: ignore
