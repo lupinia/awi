@@ -1,4 +1,4 @@
-#	Awi Access (Django App)
+#	Dagasi - Content Security (Django App)
 #	By Natasha L.
 #	www.lupinia.net | github.com/lupinia
 #	
