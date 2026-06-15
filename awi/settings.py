@@ -11,23 +11,27 @@ import os
 from settings_local import *
 from settings_apps import *
 
+# =================
+# Localization
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 TIME_ZONE = 'America/New_York'
 LANGUAGE_CODE = 'en-us'
-#LANGUAGE_CODE = 'chr'		# Cherokee translation for Django is in progress, but not ready yet!
-#LOCALE_PATHS = (os.path.abspath(os.path.join(BASE_DIR,'./locale')),)
 
-MEDIA_URL = 'https://cdn.fur.vc/awi/'
-STATIC_URL = 'https://cdn.fur.vc/awi-hagata/'
-#	Moved STATICFILES_STORAGE and DEFAULT_FILE_STORAGE to settings_apps because they're used in other apps' settings
-
+# =================
+# URL Config
 SECURE_CONTENT_TYPE_NOSNIFF = True
 LOGIN_REDIRECT_URL='/'
 ROOT_URLCONF = 'awi.urls'
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
+MEDIA_URL = 'https://cdn.fur.vc/awi/'
+STATIC_URL = 'https://cdn.fur.vc/awi-hagata/'
+#	Moved STATICFILES_STORAGE and DEFAULT_FILE_STORAGE to settings_apps because they're used in other apps' settings
+
+# =================
+# App Config
 INSTALLED_APPS = (
 	'django.contrib.contenttypes',
 	
@@ -77,7 +81,8 @@ INSTALLED_APPS = (
 	'deersky',		# Digital almanac and weather/timezone data aggregation
 )
 
-#	System Settings
+# =================
+# Template Config
 TEMPLATES = [{
 	'BACKEND': 'django.template.backends.django.DjangoTemplates',
 	'DIRS' : [os.path.abspath(os.path.join(BASE_DIR,'./templates')),],
@@ -134,6 +139,12 @@ STATICFILES_FINDERS = (
 	'static_precompiler.finders.StaticPrecompilerFinder',
 )
 
+# =================
+# Middleware Config
+
+
+# =================
+# Logging Config
 LOGGING = {
 	'version': 1,
 	'disable_existing_loggers': False,
