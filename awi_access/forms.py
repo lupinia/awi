@@ -16,7 +16,7 @@ from django.utils import timezone
 years_list = sorted(range(timezone.now().year-80, timezone.now().year+1), reverse=True)
 
 class age_verify_form(forms.Form):
-	error_css_class = 'has_error';
+	error_css_class = 'has_error'
 	
 	birthdate = forms.DateField(label='Your Birthdate', widget=extras.SelectDateWidget(years=years_list))
 	
