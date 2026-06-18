@@ -26,6 +26,7 @@ STATIC_URL = 'https://cdn.fur.vc/awi-hagata/'
 SECURE_CONTENT_TYPE_NOSNIFF = True
 LOGIN_REDIRECT_URL='/'
 ROOT_URLCONF = 'awi.urls'
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 INSTALLED_APPS = (
 	'django.contrib.contenttypes',
