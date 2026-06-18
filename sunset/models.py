@@ -80,6 +80,7 @@ class image(leaf):
 		'XMP:Description':'body', 
 		'XMP:Subject':'tags', 
 		'XMP:Title':'title', 
+		'XMP:MetadataDate':'timestamp_meta',
 	}
 	CENTER_CHOICES_H = (
 		('l', 'Left'),
@@ -429,7 +430,7 @@ class image(leaf):
 								new_tags = ','.join(map(str, value))
 								tags_added, tags_created = self.tag_item(new_tags)
 							else:
-								if attr == 'timestamp_post':
+								if attr == 'timestamp_post' or attr == 'timestamp_meta':
 									# Special case:  Timestamp
 									# Trying to parse datetimes from ExifTool is a horrendous mess, because the format could be almost anything.
 									if '-' in value:
