@@ -27,6 +27,7 @@ from django.utils.text import slugify
 
 from awi.utils.hash import hash_sha256
 from awi.utils.models import TimestampModel
+from awi.utils.sites import get_current_site
 
 #	Helper Functions
 def check_mature(request=False):
