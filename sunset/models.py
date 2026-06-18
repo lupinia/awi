@@ -68,7 +68,7 @@ class background_tag(TimestampModel):
 class image(leaf):
 	# Map EXIF/IPTC keys to attributes on this model.
 	# All others will be created as image_meta objects.
-	META_MAP = {
+	_META_MAP = {
 		'Composite:DateTimeCreated':'timestamp_post', 
 		'Composite:GPSLatitude':'geodata_lat', 
 		'Composite:GPSLongitude':'geodata_long', 
@@ -140,6 +140,11 @@ class image(leaf):
 	PIL_obj = False
 	orig_path = False
 	orig_type = False
+	
+	@property
+	def META_MAP(self):
+		mapdata = self._META_MAP
+		return mapdata
 	
 	@property
 	def slug(self):
