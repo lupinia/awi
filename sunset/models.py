@@ -144,6 +144,12 @@ class image(leaf):
 	@property
 	def META_MAP(self):
 		mapdata = self._META_MAP
+		if self.idmode == 'lr':
+			mapdata['XMP:OriginalDocumentID'] = 'document_id'
+			mapdata['XMP:InstanceID'] = 'instance_id'
+		elif self.idmode == 'ps':
+			mapdata['XMP:DocumentID'] = 'document_id'
+			mapdata['XMP:InstanceID'] = 'instance_id'
 		return mapdata
 	
 	@property
