@@ -95,6 +95,11 @@ class image(leaf):
 		('cb', 'Center-Bottom'),
 		('b', 'Bottom'),
 	)
+	IDMODE_CHOICES = (
+		(None, 'No UUID field comparison'),
+		('lr', 'Lightroom (InstanceID vs OrigID)'),
+		('ps', 'Photoshop (InstanceID vs DocID)'),
+	)
 	SHORTCODE_PREFIX = 'i'
 	
 	# Basic content fields
@@ -110,8 +115,13 @@ class image(leaf):
 	# Core metadata
 	timestamp_upload = models.DateTimeField(auto_now_add=True, db_index=True, help_text='System field:  Tracks the original time that this image was created in the database, rather than the time the image was initially captured/created.')
 	timestamp_meta = models.DateTimeField(null=True, db_index=True, help_text='Timestamp of last metadata revision, from image metadata tags')
-	document_id = models.UUIDField(db_index=True, blank=True, null=True, help_text='Unique identifier from XMP metadata')
 	alt_text_override = models.TextField(null=True, blank=True, verbose_name='visual description')
+	
+	# Change tracking
+	hash = models.CharField(max_length=128, db_index=True, null=True, editable=False, help_text='Current SHA256 hash of original source file')
+	document_id = models.UUIDField(db_index=True, blank=True, null=True, editable=False, help_text='Persistent unique identifier from XMP metadata')
+	instance_id = models.UUIDField(db_index=True, blank=True, null=True, help_text='File version unique identifier from XMP metadata')
+	idmode = models.CharField(max_length=8, null=True, choices=IDMODE_CHOICES)
 	
 	# Extra metadata
 	crop_horizontal = models.CharField(max_length=2, default='c', choices=CENTER_CHOICES_H, verbose_name='crop alignment (horizontal)')
