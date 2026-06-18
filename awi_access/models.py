@@ -32,23 +32,22 @@ from awi.utils.sites import get_current_site
 #	Helper Functions
 def check_mature(request=False):
 	if request:
-		if request.user.is_authenticated():
-			if not hasattr(request.user, 'user_settings'):
-				user_settings.objects.create(user=request.user)
-			mature_auth_check = request.user.user_settings.check_mature()
-			if mature_auth_check[0]:
-				return (True, '')
-			else:
-				return (False, 'access_mature_%s' % mature_auth_check[1])
-		
-		elif request.session.get('awi_mature_denied', False):
+		if request.session.get('awi_mature_denied', False):
 			return (False, 'access_mature_denied')
 		
 		elif request.session.get('awi_mature_access', False):
 			if dateparse.parse_datetime(request.session.get('awi_mature_access', False)) > timezone.now():
 				return (True, '')
+		
+		if request.user.is_authenticated():
+			if not hasattr(request.user, 'user_settings'):
+				user_settings.objects.create(user=request.user)
+			mature_auth_check = request.user.user_settings.check_mature()
+			if mature_auth_check[0]:
+				request.session['awi_mature_access'] = str(timezone.now() + timedelta(days=365))
+				return (True, '')
 			else:
-				return (False,'access_mature_prompt')
+				return (False, 'access_mature_%s' % mature_auth_check[1])
 		
 		else:
 			return (False,'access_mature_prompt')
