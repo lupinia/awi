@@ -24,6 +24,10 @@ class link_base(models.Model):
 	icon = models.ImageField(upload_to='icons/links', null=True, blank=True)
 	icon_large = models.ImageField(upload_to='icons/links/large', null=True, blank=True)
 	
+	# Placeholder images when icon or icon_large are blank
+	DEFAULT_IMGNAME_ICON = 'default-link-16.png'
+	DEFAULT_IMGNAME_ICON_LARGE = 'default-link-128.png'
+	
 	def __str__(self):
 		return self.label
 	
@@ -66,14 +70,14 @@ class link_base(models.Model):
 		if self.icon:
 			return "%s%s" % (settings.MEDIA_URL,self.icon.name)
 		else:
-			return "%simages/icons/default-link-16.png" % settings.STATIC_URL
+			return "%simages/icons/%s" % (settings.STATIC_URL, self.DEFAULT_IMGNAME_ICON)
 	
 	@property
 	def icon_large_url(self):
 		if self.icon_large:
 			return "%s%s" % (settings.MEDIA_URL,self.icon_large.name)
 		else:
-			return "%simages/icons/default-link-128.png" % settings.STATIC_URL
+			return "%simages/icons/%s" % (settings.STATIC_URL, self.DEFAULT_IMGNAME_ICON_LARGE)
 	
 	class Meta:
 		abstract = True
@@ -101,25 +105,15 @@ class contact_link(link_base, access_control, TimestampModel):
 	
 	cat = models.ForeignKey(category, null=True, blank=True, related_name='contact_links', on_delete=models.SET_NULL, verbose_name='category')
 	
+	# Placeholder images when icon or icon_large are blank
+	DEFAULT_IMGNAME_ICON = 'default-contact-16.png'
+	DEFAULT_IMGNAME_ICON_LARGE = 'default-contact-128.png'
+	
 	def __str__(self):
 		return '%s - %s' % (self.label, self.name)
 	
 	def get_absolute_url(self):
 		return self.url
-	
-	@property
-	def icon_url(self):
-		if self.icon:
-			return "%s%s" % (settings.MEDIA_URL, self.icon.name)
-		else:
-			return "%simages/icons/default-contact-16.png" % settings.STATIC_URL
-	
-	@property
-	def icon_large_url(self):
-		if self.icon_large:
-			return "%s%s" % (settings.MEDIA_URL, self.icon_large.name)
-		else:
-			return "%simages/icons/default-contact-128.png" % settings.STATIC_URL
 	
 	class Meta:
 		verbose_name = 'contact link'
