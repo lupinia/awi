@@ -21,12 +21,21 @@ class link_base(models.Model):
 	label = models.CharField(max_length=140)
 	url = models.CharField(max_length=250, verbose_name='URL')
 	desc = models.TextField(null=True, blank=True, verbose_name='description')
-	icon = models.ImageField(upload_to='icons/links', null=True, blank=True)
-	icon_large = models.ImageField(upload_to='icons/links/large', null=True, blank=True)
+	
+	icon = models.ImageField(upload_to='icons/links', null=True, blank=True, width_field='icon_w', height_field='icon_h', help_text='Must be 16x16 pixels')
+	icon_w = models.PositiveSmallIntegerField(default=0)
+	icon_h = models.PositiveSmallIntegerField(default=0)
+	
+	icon_large = models.ImageField(upload_to='icons/links/large', null=True, blank=True, width_field='icon_large_w', height_field='icon_large_h', help_text='Generally 128x128px, but can be any size')
+	icon_large_w = models.PositiveSmallIntegerField(default=0)
+	icon_large_h = models.PositiveSmallIntegerField(default=0)
 	
 	# Placeholder images when icon or icon_large are blank
 	DEFAULT_IMGNAME_ICON = 'default-link-16.png'
+	DEFAULT_DIMENSIONS_ICON = (16, 16)	# (width, height)
+	
 	DEFAULT_IMGNAME_ICON_LARGE = 'default-link-128.png'
+	DEFAULT_DIMENSIONS_ICON_LARGE = (128, 128)	# (width, height)
 	
 	def __str__(self):
 		return self.label
@@ -73,11 +82,73 @@ class link_base(models.Model):
 			return "%simages/icons/%s" % (settings.STATIC_URL, self.DEFAULT_IMGNAME_ICON)
 	
 	@property
+	def icon_width(self):
+		if self.icon:
+			if self.icon_w:
+				return self.icon_w
+			else:
+				return self.icon.width
+		else:
+			return self.DEFAULT_DIMENSIONS_ICON[0]
+	
+	@property
+	def icon_height(self):
+		if self.icon:
+			if self.icon_h:
+				return self.icon_h
+			else:
+				return self.icon.height
+		else:
+			return self.DEFAULT_DIMENSIONS_ICON[1]
+	
+	@property
+	def icon_dimensions(self):
+		"""
+		link_base.icon_dimensions -> (width, height)
+		
+		Convenience method for retrieving icon dimensions
+		If icon field is blank, this will return the dimensions for the default placeholder
+		Always returns a tuple of integers, width then height
+		"""
+		return (self.icon_width, self.icon_height)
+	
+	@property
 	def icon_large_url(self):
 		if self.icon_large:
 			return "%s%s" % (settings.MEDIA_URL,self.icon_large.name)
 		else:
 			return "%simages/icons/%s" % (settings.STATIC_URL, self.DEFAULT_IMGNAME_ICON_LARGE)
+	
+	@property
+	def icon_large_width(self):
+		if self.icon_large:
+			if self.icon_large_w:
+				return self.icon_large_w
+			else:
+				return self.icon_large.width
+		else:
+			return self.DEFAULT_DIMENSIONS_ICON_LARGE[0]
+	
+	@property
+	def icon_large_height(self):
+		if self.icon_large:
+			if self.icon_large_h:
+				return self.icon_large_h
+			else:
+				return self.icon_large.height
+		else:
+			return self.DEFAULT_DIMENSIONS_ICON_LARGE[1]
+	
+	@property
+	def icon_large_dimensions(self):
+		"""
+		link_base.icon_large_dimensions -> (width, height)
+		
+		Convenience method for retrieving icon dimensions
+		If icon field is blank, this will return the dimensions for the default placeholder
+		Always returns a tuple of integers, width then height
+		"""
+		return (self.icon_large_width, self.icon_large_height)
 	
 	class Meta:
 		abstract = True
@@ -107,7 +178,10 @@ class contact_link(link_base, access_control, TimestampModel):
 	
 	# Placeholder images when icon or icon_large are blank
 	DEFAULT_IMGNAME_ICON = 'default-contact-16.png'
+	DEFAULT_DIMENSIONS_ICON = (16, 16)	# (width, height)
+	
 	DEFAULT_IMGNAME_ICON_LARGE = 'default-contact-128.png'
+	DEFAULT_DIMENSIONS_ICON_LARGE = (128, 128)	# (width, height)
 	
 	def __str__(self):
 		return '%s - %s' % (self.label, self.name)
