@@ -150,6 +150,30 @@ class link_base(models.Model):
 		"""
 		return (self.icon_large_width, self.icon_large_height)
 	
+	@property
+	def icon_large_type(self):
+		"""
+		Convenience property to render the large icon differently based on its dimensions.
+		Possible values:
+			square:	Image height and width match
+			button:	Dimensions are exactly 88x31
+			wide:	Width is greater than height
+			tall:	Height is greater than width
+		"""
+		w, h = self.icon_large_dimensions
+		
+		if w == 88 and h == 31:
+			return 'button'
+		elif w == h:
+			return 'square'
+		elif w > h:
+			return 'wide'
+		elif w < h:
+			return 'tall'
+		else:
+			# I don't know how this is mathematically possible
+			return 'unknown'
+	
 	class Meta:
 		abstract = True
 
