@@ -494,13 +494,19 @@ class tag_synonym(TimestampModel):
 class external_link_type(models.Model):
 	name = models.CharField(max_length=200, verbose_name='site name')
 	label = models.CharField(max_length=200, verbose_name='link label')
-	icon = models.ImageField(upload_to='icons/links/ext', null=True, blank=True)
+	icon = models.ImageField(upload_to='icons/links/ext', null=True, blank=True, width_field='icon_w', height_field='icon_h', help_text='Must be 32x32 pixels')
+	icon_w = models.PositiveSmallIntegerField(default=0)
+	icon_h = models.PositiveSmallIntegerField(default=0)
 	url_format = models.CharField(max_length=250, blank=True, null=True, verbose_name='URL format', help_text='Use &lt;id&gt; to create a placeholder for remote_id on links of this type.')
 	
 	featured = models.BooleanField(db_index=True, blank=True, default=False)
 	public = models.BooleanField(db_index=True, blank=True, default=True)
 	notes = models.TextField(null=True, blank=True)
 	sites = models.ManyToManyField('sites.Site', db_index=True, help_text='Sites/domains on which this item will appear.')
+	
+	# Placeholder images when icon or icon_large are blank
+	DEFAULT_IMGNAME_ICON = 'default-link-32.png'
+	DEFAULT_DIMENSIONS_ICON = (32, 32)	# (width, height)
 	
 	def __str__(self):
 		return self.name
@@ -510,7 +516,27 @@ class external_link_type(models.Model):
 		if self.icon:
 			return "%s%s" % (settings.MEDIA_URL,self.icon.name)
 		else:
-			return "%simages/icons/default-link-32.png" % settings.STATIC_URL
+			return "%simages/icons/%s" % (settings.STATIC_URL, self.DEFAULT_IMGNAME_ICON)
+	
+	@property
+	def icon_width(self):
+		if self.icon:
+			if self.icon_w:
+				return self.icon_w
+			else:
+				return self.icon.width
+		else:
+			return self.DEFAULT_DIMENSIONS_ICON[0]
+	
+	@property
+	def icon_height(self):
+		if self.icon:
+			if self.icon_h:
+				return self.icon_h
+			else:
+				return self.icon.height
+		else:
+			return self.DEFAULT_DIMENSIONS_ICON[1]
 	
 	class Meta:
 		verbose_name = 'external platform'
