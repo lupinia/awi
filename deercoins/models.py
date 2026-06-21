@@ -32,8 +32,68 @@ class currency(models.Model):
 class country(models.Model):
 	code = models.SlugField(max_length=2, unique=True, verbose_name='filing code')
 	name = models.CharField(max_length=255)
-	flag = models.ImageField(upload_to='icons/flags/sm', null=True, blank=True, verbose_name='flag icon (24px)')
-	flag_large = models.ImageField(upload_to='icons/flags', null=True, blank=True, verbose_name='flag icon (96px)')
+	
+	flag = models.ImageField(upload_to='icons/flags/sm', null=True, blank=True, width_field='flag_w', height_field='flag_h', verbose_name='flag icon (24px)')
+	flag_w = models.PositiveSmallIntegerField(default=0)
+	flag_h = models.PositiveSmallIntegerField(default=0)
+	
+	flag_large = models.ImageField(upload_to='icons/flags', null=True, blank=True, width_field='flag_large_w', height_field='flag_large_h', verbose_name='flag icon (96px)')
+	flag_large_w = models.PositiveSmallIntegerField(default=0)
+	flag_large_h = models.PositiveSmallIntegerField(default=0)
+	
+	@property
+	def flag_url(self):
+		if self.flag:
+			return "%s%s" % (settings.MEDIA_URL, self.flag.name)
+		else:
+			return None
+	
+	@property
+	def flag_width(self):
+		if self.flag:
+			if self.flag_w:
+				return self.flag_w
+			else:
+				return self.flag.width
+		else:
+			return None
+	
+	@property
+	def flag_height(self):
+		if self.flag:
+			if self.flag_h:
+				return self.flag_h
+			else:
+				return self.flag.height
+		else:
+			return None
+	
+	@property
+	def flag_large_url(self):
+		if self.flag_large:
+			return "%s%s" % (settings.MEDIA_URL, self.flag_large.name)
+		else:
+			return None
+	
+	@property
+	def flag_large_width(self):
+		if self.flag_large:
+			if self.flag_large_w:
+				return self.flag_large_w
+			else:
+				return self.flag_large.width
+		else:
+			return None
+	
+	@property
+	def flag_large_height(self):
+		if self.flag_large:
+			if self.flag_large_h:
+				return self.flag_large_h
+			else:
+				return self.flag_large.height
+		else:
+			return None
 	
 	def __str__(self):
 		return self.name
