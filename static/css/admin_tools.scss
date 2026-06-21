@@ -81,5 +81,9 @@ div.breadcrumbs a {
 		}
 	}
 	
-	img.admin_image_field_darkbg { background-color: $color_bg_hover; }
+	img.admin_image_field_darkbg {
+		background-color: $color_bg_hover;
+		padding: 3px;
+		border-radius: 5px;
+	}
 }
