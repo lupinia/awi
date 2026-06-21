@@ -59,7 +59,7 @@ class contact_admin(access_admin):
 	icon_admin_tag.short_description = 'current'
 	
 	def icon_admin_tag_list(self, obj):
-		return imgfield_as_html(obj, imgfield='icon', width='icon_width', height='icon_height', default='icon_url')
+		return imgfield_as_html(obj, imgfield='icon', width='icon_width', height='icon_height', default='icon_url', darkbg=True)
 	icon_admin_tag_list.short_description = 'icon'
 	
 	def icon_large_admin_tag(self, obj):
