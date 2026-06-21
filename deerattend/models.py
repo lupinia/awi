@@ -89,9 +89,9 @@ class venue(TimestampModel):
 class attendance_flag(TimestampModel):
 	name = models.CharField(max_length=250)
 	slug = models.SlugField(unique=True)
-	img_width = models.IntegerField(null=True, blank=True)
-	img_height = models.IntegerField(null=True, blank=True)
-	icon = models.ImageField(upload_to='icons/attend', height_field='img_height', width_field='img_width')
+	icon = models.ImageField(upload_to='icons/attend', width_field='icon_w', height_field='icon_h')
+	icon_w = models.PositiveSmallIntegerField(default=0)
+	icon_h = models.PositiveSmallIntegerField(default=0)
 	
 	def __str__(self):
 		return self.name
@@ -100,7 +100,32 @@ class attendance_flag(TimestampModel):
 		return reverse('deerattend:filter_flag', kwargs={'slug':self.slug,})
 	
 	def get_icon_url(self):
+		"""Deprecated alias for menu_flag.icon_url"""
+		return self.icon_url
+	
+	@property
+	def icon_url(self):
 		return "%s%s" % (settings.MEDIA_URL, self.icon.name)
+	
+	@property
+	def icon_width(self):
+		if self.icon:
+			if self.icon_w:
+				return self.icon_w
+			else:
+				return self.icon.width
+		else:
+			return None
+	
+	@property
+	def icon_height(self):
+		if self.icon:
+			if self.icon_h:
+				return self.icon_h
+			else:
+				return self.icon.height
+		else:
+			return None
 	
 	class Meta:
 		verbose_name = 'flag'
