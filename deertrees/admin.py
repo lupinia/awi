@@ -11,6 +11,7 @@ from django.contrib.messages import constants as messages
 from django.core.urlresolvers import reverse
 
 from django_mptt_admin.admin import DjangoMpttAdmin
+from awi.utils.admin import imgfield_as_html
 from awi_access.admin import access_admin
 from deerfind.admin import g2_inline
 
@@ -19,12 +20,21 @@ from deertrees.models import category, tag, tag_synonym, external_link, external
 class external_link_type_admin(admin.ModelAdmin):
 	list_select_related = True
 	fieldsets = [
-		(None, {'fields':(('name', 'label',), 'url_format', 'icon', 'notes'),},),
+		(None, {'fields':(('name', 'label',), 'url_format', ('icon', 'icon_admin_tag',), 'notes'),},),
 		("Options", {'fields':(('featured', 'public',), 'sites',),},),
 	]
 	search_fields = ('name', 'label', 'notes', 'url_format',)
-	list_display = ('name', 'public', 'featured',)
+	list_display = ('name', 'icon_admin_tag_list', 'public', 'featured',)
 	list_filter = ['public', 'featured',]
+	readonly_fields = ['icon_admin_tag',]
+	
+	def icon_admin_tag(self, obj):
+		return imgfield_as_html(obj, imgfield='icon', width='icon_width', height='icon_height', darkbg=True)
+	icon_admin_tag.short_description = 'current'
+	
+	def icon_admin_tag_list(self, obj):
+		return imgfield_as_html(obj, imgfield='icon', width='icon_width', height='icon_height', default='icon_url', darkbg=True)
+	icon_admin_tag_list.short_description = 'icon'
 
 class external_link_admin(admin.ModelAdmin):
 	list_select_related = True
