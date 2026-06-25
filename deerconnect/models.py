@@ -189,6 +189,14 @@ class link(link_base, leaf):
 			if leaf.objects.filter(cat=self.cat, basename=self.basename).exists():
 				self.basename = '%s%d' % (self.basename, link.objects.all().count()+1)
 		super(link, self).save(*args, **kwargs)
+	
+	@property
+	def is_healthy(self):
+		if self.health_check and not self.healthy:
+			# The health check can only be failed if it is enabled
+			return False
+		else:
+			return True
 
 
 #	This is a special case that won't be part of the usual tree/leaf system, nor will they have tags
