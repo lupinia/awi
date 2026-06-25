@@ -197,6 +197,25 @@ class link(link_base, leaf):
 			return False
 		else:
 			return True
+	
+	def is_public(self):
+		public, restrictions = super(link, self).is_public()
+		if not self.published and not self.is_healthy:
+			# This technically doesn't need to also unpublish things anymore
+			# I should clean that up one of these days
+			public = False
+			restrictions.append('Destination is offline')
+		
+		return (public, restrictions)
+	
+	# Helper method for extracting a reason for non-public status that's easier to work with programmaticly
+	@property
+	def restriction(self):
+		cur_restriction = super(link, self).restriction
+		if not self.is_healthy:
+			return 'offline'
+		else:
+			return cur_restriction
 
 
 #	This is a special case that won't be part of the usual tree/leaf system, nor will they have tags
