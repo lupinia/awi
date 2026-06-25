@@ -494,6 +494,7 @@ class tag_synonym(TimestampModel):
 class external_link_type(models.Model):
 	name = models.CharField(max_length=200, verbose_name='site name')
 	label = models.CharField(max_length=200, verbose_name='link label')
+	shortcode_prefix = models.SlugField(max_length=32, null=True, blank=True, verbose_name='shortcode')
 	icon = models.ImageField(upload_to='icons/links/ext', null=True, blank=True, width_field='icon_w', height_field='icon_h', help_text='Must be 32x32 pixels')
 	icon_w = models.PositiveSmallIntegerField(default=0)
 	icon_h = models.PositiveSmallIntegerField(default=0)

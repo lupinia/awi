@@ -20,11 +20,11 @@ from deertrees.models import category, tag, tag_synonym, external_link, external
 class external_link_type_admin(admin.ModelAdmin):
 	list_select_related = True
 	fieldsets = [
-		(None, {'fields':(('name', 'label',), 'url_format', ('icon', 'icon_admin_tag',), 'notes'),},),
+		(None, {'fields':(('name', 'label', 'shortcode_prefix',), 'url_format', ('icon', 'icon_admin_tag',), 'notes'),},),
 		("Options", {'fields':(('featured', 'public',), 'sites',),},),
 	]
 	search_fields = ('name', 'label', 'notes', 'url_format',)
-	list_display = ('name', 'icon_admin_tag_list', 'public', 'featured',)
+	list_display = ('name', 'shortcode_prefix', 'icon_admin_tag_list', 'public', 'featured',)
 	list_filter = ['public', 'featured',]
 	readonly_fields = ['icon_admin_tag',]
 	
