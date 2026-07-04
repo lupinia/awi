@@ -114,7 +114,6 @@ middleware_first = (
 
 middleware_main = (
 	'django.contrib.sessions.middleware.SessionMiddleware',
-	'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'awi.utils.sites.CurrentSiteMiddleware', # Replace django.contrib.sites.middleware.CurrentSiteMiddleware
 	'django.middleware.common.CommonMiddleware',

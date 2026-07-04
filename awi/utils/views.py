@@ -19,5 +19,5 @@ def json_response(request, data=''):
 class placeholder(TemplateView):
 	"""Blank template view"""
 	def get_context_data(self, **kwargs):
-		context=super(placeholder,self).get_context_data(**kwargs)
+		context = super(placeholder,self).get_context_data(**kwargs)
 		return context

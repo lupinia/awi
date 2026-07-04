@@ -16,9 +16,9 @@ from deerfood.models import menu_item, menu_section, menu_flag
 from deertrees.views import special_feature_view
 
 class menu_item_list(special_feature_view, ListView):
-	model=menu_item
-	context_object_name='menu_items'
-	template_name='deerfood/full_menu.html'
+	model = menu_item
+	context_object_name = 'menu_items'
+	template_name = 'deerfood/full_menu.html'
 	
 	def dispatch(self, *args, **kwargs):
 		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
@@ -69,7 +69,7 @@ class full_menu(menu_item_list):
 		return menu_item.objects.all().order_by('section','name').prefetch_related('flags').select_related('section')
 	
 	def get_context_data(self, **kwargs):
-		context=super(full_menu,self).get_context_data(**kwargs)
+		context = super(full_menu,self).get_context_data(**kwargs)
 		context['breadcrumbs'] = self.build_breadcrumbs()
 		return context
 
@@ -79,7 +79,7 @@ class menu_by_section(menu_item_list, ListView):
 		return menu_item.objects.filter(section__slug=self.kwargs['slug']).order_by('name').prefetch_related('flags').select_related('section')
 	
 	def get_context_data(self, **kwargs):
-		context=super(menu_by_section,self).get_context_data(**kwargs)
+		context = super(menu_by_section,self).get_context_data(**kwargs)
 		context['cur_filter'] = get_object_or_404(menu_section, slug=self.kwargs['slug'])
 		context['cur_filter_type'] = 'section'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'section')
@@ -92,7 +92,7 @@ class menu_by_flag(menu_item_list, ListView):
 		return menu_item.objects.filter(flags__slug=self.kwargs['slug']).order_by('name').prefetch_related('flags').select_related('section')
 	
 	def get_context_data(self, **kwargs):
-		context=super(menu_by_flag,self).get_context_data(**kwargs)
+		context = super(menu_by_flag,self).get_context_data(**kwargs)
 		context['cur_filter'] = get_object_or_404(menu_flag, slug=self.kwargs['slug'])
 		context['cur_filter_type'] = 'flag'
 		context['breadcrumbs'] = self.build_breadcrumbs(context['cur_filter'], 'flag')

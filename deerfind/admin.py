@@ -14,8 +14,8 @@ from deerfind.models import g2map, g2raw, pointer, category
 
 # Inlines
 class g2_inline(admin.TabularInline):
-	model=g2map
-	extra=0
+	model = g2map
+	extra = 0
 
 # Full admin views
 class pointer_admin(admin.ModelAdmin):
