@@ -16,7 +16,7 @@
 			{% autoescape off %}
 				{{body_text}}
 			{% endautoescape %}
-			{% if object.revised %}
+			{% if object.revised and not object.cat.always_fresh %}
 				<hr />
 				<p><em>This article has been updated as of {{object.timestamp_revised|date:'F j, Y  G:i'}}</em></p>
 			{% endif %}
