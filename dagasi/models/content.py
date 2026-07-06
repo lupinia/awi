@@ -111,7 +111,7 @@ def access_search(sqs, request=False):
 
 
 # MODELS
-class access_control(models.Model):
+class SecuredModel(models.Model):
 	# Field choices constants
 	SECURITY_OPTIONS = (
 		(0, 'Public'),
