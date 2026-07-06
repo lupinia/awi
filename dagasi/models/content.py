@@ -300,12 +300,33 @@ class SecuredModel(models.Model):
 		else:
 			return None
 	
+	@property
+	def objcache_keys(self):
+		"""Retrieve a list of keys to clear when resetting the cache for this object"""
+		if self.objcache_id is None:
+			return None
+		
+		keylist = [
+			'siteid_list',
+			'contributorid_list',
+			'groupid_list',
+		]
+		return [self.cache_key(x) for x in keylist]
+	
 	def cache_key(self, key):
 		"""Return a prefixed version of the given key"""
 		if self.objcache_id is None:
 			return None
 		else:
 			return '%s.%s' % (self.objcache_id, key)
+	
+	def cache_clear(self):
+		"""
+		Clear the parameter cache for this object
+		Relies on the list contained in .objcache_keys
+		"""
+		if self.objcache_keys:
+			cache.delete_many(self.objcache_keys)
 	
 	def cache_get(self, key, fallback=None):
 		"""
@@ -361,6 +382,7 @@ class SecuredModel(models.Model):
 		if self.security < self.ACCESS_LEVEL_MINIMUM:
 			self.security = self.ACCESS_LEVEL_MINIMUM
 		
+		self.cache_clear()
 		super(SecuredModel, self).save(*args, **kwargs)
 	
 	class Meta:
