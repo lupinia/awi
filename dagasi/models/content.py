@@ -321,6 +321,15 @@ class SecuredModel(models.Model):
 		"""
 		return cache.set(self.cache_key(key), value, timeout)
 	
+	@cached_property
+	def sites_ids(self):
+		"""Cached IDs list for the sites this object is part of"""
+		siteids = self.cache_get('siteid_list')
+		if siteids is None:
+			siteids = list(self.sites.all().values_list('pk', flat=True))
+			self.cache_set('siteid_list', siteids)
+			return siteids
+	
 	
 	# System methods and overrides
 	def save(self, *args, **kwargs):
