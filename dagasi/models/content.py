@@ -139,20 +139,39 @@ class SecuredModel(models.Model):
 	groups = models.ManyToManyField('auth.Group', db_index=True, related_name="%(app_label)s_%(class)s_access")
 	access_code = models.OneToOneField('dagasi.access_code', null=True, blank=True, on_delete=models.SET_NULL, related_name='access_to')
 	
-	def create_code(self, age=30, desc=None, request=False):
-		if not self.is_public()[0]:
-			if request:
-				if request.user.is_authenticated() and request.user == self.owner:
-					self.access_code = access_code.objects.create(item_type=self.__class__.__name__, allowed_age=age, desc=desc, owner=request.user)
-					self.save()
-					return True
-				else:
-					return False
-			else:
-				return False
-		else:
-			return False
+	# Static calculated properties and states
+	def is_public(self):
+#		Returns a tuple.  First value is boolean, indicating whether non-authenticated users can view this or not.  Second value is a list of reasons why not.
+		restrictions = []
+		public = True
+		
+		if not self.published:
+			public = False
+			restrictions.append('Not published')
+		if self.security:
+			public = False
+			restrictions.append('Permissions set to %s' % self.get_security_display())
+		if self.mature:
+			public = False
+			restrictions.append('Mature content')
+		
+		return (public, restrictions)
 	
+	# Helper method for extracting a reason for non-public status that's easier to work with programmaticly
+	@property
+	def restriction(self):
+		ispublic = self.is_public()
+		if ispublic[0]:
+			return False
+		else:
+			if not self.published:
+				return 'draft'
+			elif self.security > 0:
+				return 'locked'
+			else:
+				return 'unknown'
+	
+	# Permission checks
 	def can_view(self, request=False):
 		"""
 		Primary permission check for viewing an object
@@ -225,38 +244,7 @@ class SecuredModel(models.Model):
 			else:
 				return (True,'')				#	All access checks passed, edit object.
 	
-	def is_public(self):
-#		Returns a tuple.  First value is boolean, indicating whether non-authenticated users can view this or not.  Second value is a list of reasons why not.
-		restrictions = []
-		public = True
-		
-		if not self.published:
-			public = False
-			restrictions.append('Not published')
-		if self.security:
-			public = False
-			restrictions.append('Permissions set to %s' % self.get_security_display())
-		if self.mature:
-			public = False
-			restrictions.append('Mature content')
-		
-		return (public, restrictions)
-	
-	# Helper method for extracting a reason for non-public status that's easier to work with programmaticly
-	@property
-	def restriction(self):
-		ispublic = self.is_public()
-		if ispublic[0]:
-			return False
-		else:
-			if not self.published:
-				return 'draft'
-			elif self.security > 0:
-				return 'locked'
-			else:
-				return 'unknown'
-	
-	# Quick-edit operations
+	# Editing operations
 	def quick_edit(self, field, value, refresh=True):
 		success = self.__class__.objects.filter(pk=self.pk).update(**{field:value})
 		if success and refresh:
@@ -286,6 +274,21 @@ class SecuredModel(models.Model):
 				cache.set(domain_cache_key, domain, 60*60*24*7)
 		
 		return domain
+	
+	# Access code operations
+	def create_code(self, age=30, desc=None, request=False):
+		if not self.is_public()[0]:
+			if request:
+				if request.user.is_authenticated() and request.user == self.owner:
+					self.access_code = access_code.objects.create(item_type=self.__class__.__name__, allowed_age=age, desc=desc, owner=request.user)
+					self.save()
+					return True
+				else:
+					return False
+			else:
+				return False
+		else:
+			return False
 	
 	
 	# System methods and overrides
