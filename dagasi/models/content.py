@@ -553,7 +553,11 @@ class access_code(models.Model):
 			self.valid = False
 		
 		if not self.code:
-			hash = hash_sha256('%s|%s' % (str(timezone.now()), self.item_type))
+			if not self.timestamp_post:
+				# Make sure this is set for code generation
+				self.timestamp_post = timezone.now()
+			
+			hash = hash_sha256('%s|%s|%s' % (str(self.timestamp_post), uuid.uuid4(), self.item_type))
 			self.code = slugify(hash)
 		
 		super(access_code, self).save(*args, **kwargs)
