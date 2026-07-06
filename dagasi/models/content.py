@@ -228,6 +228,52 @@ class SecuredModel(models.Model):
 			#	All access checks passed, show object.
 			return (True,'')
 	
+	def can_view_user(self, user=None, check_mature=False):
+		"""
+		SecuredModel.can_view_user(user, check_mature=False) -> status(result, reason)
+		
+		Permission check for a specific user, which can be performed independently of a request
+		Optionally pass check_mature=True if mature content access should be checked
+			This is usually handled per-request in can_view,
+			because it's very inefficient to check it here
+			But it's an option when needed
+		If user is not passed, this will return the results of SecuredModel.is_public
+		"""
+		if not user:
+			# If there's no user account to check, fall back on public permissions
+			access_check = self.is_public
+			if access_check:
+				access_check.update(self.same_site, 'access_404')
+			else:
+				access_check.reason = 'access_norequest'
+			return access_check
+		
+		if user.is_superuser or user.pk in self.contributors_ids:
+			# Superuser always has full permission
+			# Owner and contributors can always view
+			return status(True)
+		
+		elif self.security > 2 or not self.published:
+			# If item is unpublished and user is not owner, contributor, or superuser, item does not exist
+			# Private items are only available to owner, contributors, and superuser
+			return status(False, 'access_404')
+		
+		elif self.security == 2:
+			# Group access mode
+			if user.groups.filter(pk__in=self.groups_ids):
+				return status(True)
+			else:
+				return status(False, 'access_perms')
+		
+		elif check_mature and self.mature:
+			# This is an inefficient way to check the per-user mature settings
+			# We'll default to assuming this is checked elsewhere
+			return user.settings.show_mature
+		
+		else:
+			# No reason to deny them here!
+			return status(True)
+	
 	def can_edit(self, request=False, perm_check=''):
 #		Return a tuple; first value is boolean, can edit or not.  Second value is an error message if False, empty if True
 		if not request:
