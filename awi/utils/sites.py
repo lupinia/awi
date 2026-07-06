@@ -13,6 +13,19 @@ from django.core.cache import cache
 
 SITE_CACHE_PREFIX = 'awi.utils.sites'
 
+def get_site(pk=None):
+	"""Retrieve a specific Site object from cache if possible"""
+	if pk is None:
+		pk = settings.SITE_ID
+	
+	target_site = cache.get('%s.%d' % (SITE_CACHE_PREFIX, pk))
+	if target_site is None:
+		target_site = Site.objects.filter(pk=pk).first()
+		if target_site:
+			cache.set('%s.%d' % (SITE_CACHE_PREFIX, target_site.pk), target_site, None)
+			return target_site
+		else:
+			return None
 
 def get_current_site(request=None):
 	cur_site = cache.get('%s.%d' % (SITE_CACHE_PREFIX, settings.SITE_ID))
