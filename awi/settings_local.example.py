@@ -73,3 +73,14 @@ HAYSTACK_CONNECTIONS = {
 	},
 }
 
+# Dagasi
+#	Server headers for mTLS authentication, since those are server-specific
+X509_HEADER_IS_ENFORCED = ''
+X509_HEADER_VERIFICATION = ''
+X509_HEADER_FINGERPRINT = ''
+X509_HEADER_SUBJECT = ''
+X509_HEADER_DATE_EXPIRY = ''
+X509_HEADER_DATE_START = ''
+X509_HEADER_SERIALNUM = ''
+X509_HEADER_ISSUER = ''
+
