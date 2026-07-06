@@ -479,13 +479,13 @@ class SecuredModel(models.Model):
 class access_code(models.Model):
 	code = models.SlugField(max_length=255, editable=False, unique=True)
 	item_type = models.CharField(max_length=40, default='unknown', editable=False)
-	owner = models.ForeignKey(User, on_delete=models.CASCADE)
+	owner = models.ForeignKey('auth.User', related_name='+', on_delete=models.CASCADE)
 	desc = models.CharField(max_length=100, null=True, blank=True)
 	
 	allowed_age = models.PositiveSmallIntegerField(default=30, blank=True, help_text='The number of days for which this code should be valid.  Enter 0 for a code that does not expire.')
 	is_valid = models.BooleanField(default=True)
 	
-	timestamp_post = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='date/time created')
+	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, editable=False, verbose_name='date/time created')
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	hits = models.PositiveIntegerField(default=0, help_text='Number of times this code has been used.')
 	
@@ -496,7 +496,7 @@ class access_code(models.Model):
 		if self.allowed_age:
 			return self.timestamp_post + timedelta(days=self.allowed_age)
 		else:
-			return False
+			return None
 	
 	def valid(self):
 		"""Validity of this code, returns status(False) if revoked or expired"""
@@ -537,6 +537,10 @@ class access_code(models.Model):
 	def save(self, *args, **kwargs):
 		if self.pk and self.is_valid and not self.valid():
 			self.is_valid = False
+			# If this is an edit instead of a create,
+			# and it's set to valid,
+			# and it's expired,
+			# perform a revoke action
 		
 		if not self.code:
 			hash = hash_sha256('%s|%s' % (str(timezone.now()), self.item_type))

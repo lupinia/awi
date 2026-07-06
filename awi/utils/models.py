@@ -23,6 +23,7 @@ def dict_key_choices(source_dict):
 	
 	return tuple_list
 
+# Abstract model base classes
 class TimestampModel(models.Model):
 	"""
 	Abstract base class for standard timestamps in models
