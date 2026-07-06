@@ -100,7 +100,6 @@ TEMPLATES = [{
 			#	Non-standard ones
 			'awi.context_processors.site',
 			'awi.context_processors.meta',
-			'dagasi.context_processors.mature_check',
 			'deerconnect.context_processors.social_icons',
 		],
 		'loaders' : [
