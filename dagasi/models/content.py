@@ -330,6 +330,12 @@ class SecuredModel(models.Model):
 			self.cache_set('siteid_list', siteids)
 			return siteids
 	
+	@cached_property
+	def same_site(self):
+		"""Cached check on whether the current site matches the current object's sites"""
+		siteids = self.sites_ids
+		return settings.SITE_ID in siteids
+	
 	
 	# System methods and overrides
 	def save(self, *args, **kwargs):
