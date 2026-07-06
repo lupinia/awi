@@ -112,6 +112,9 @@ def access_search(sqs, request=False):
 
 # MODELS
 class SecuredModel(models.Model):
+	"""
+	Extendable base class for content-item security and authorization controls
+	"""
 	# Field choices constants
 	SECURITY_OPTIONS = (
 		(0, 'Public'),
@@ -146,7 +149,11 @@ class SecuredModel(models.Model):
 			return False
 	
 	def can_view(self, request=False):
-#		Return a tuple; first value is boolean, can view or not.  Second value is an error message if False, empty if True
+		"""
+		Primary permission check for viewing an object
+		Can check either a request, or a user
+			If both are provided, request will take priority
+		"""
 		public_check = self.is_public()
 		if public_check[0]:
 			# If it's public, then can_view is assumed to be true.
@@ -299,12 +306,14 @@ class access_code(models.Model):
 	# Static calculated properties and states
 	@property
 	def expiration_date(self):
+		"""Datetime for this code's expiration, or None if it does not expire"""
 		if self.allowed_age:
 			return self.timestamp_post + timedelta(days=self.allowed_age)
 		else:
 			return False
 	
 	def valid(self):
+		"""Validity of this code, returns status(False) if revoked or expired"""
 		if not self.is_valid:
 			return False
 		elif self.allowed_age > 0 and timezone.now() > self.expiration_date:
@@ -315,10 +324,16 @@ class access_code(models.Model):
 	
 	# Code operation methods
 	def record_hit(self):
+		"""Increment the hit counter for this code.  Performs a .save()"""
 		self.hits = self.hits + 1
 		self.save()
 	
 	def revoke(self):
+		"""
+		Set this code to invalid status.  Performs a .save()
+		Cannot be undone.
+		Counterpart operation is issuing a code, which is performed from the object the code is for
+		"""
 		self.is_valid = False
 		self.save()
 	
