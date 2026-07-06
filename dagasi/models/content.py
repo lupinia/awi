@@ -336,6 +336,16 @@ class SecuredModel(models.Model):
 		siteids = self.sites_ids
 		return settings.SITE_ID in siteids
 	
+	@cached_property
+	def contributors_ids(self):
+		"""Cached list of contributor users, with owner included"""
+		contrib_ids = self.cache_get('contributorid_list')
+		if contrib_ids is None:
+			contrib_ids = list(self.contributors.all().values_list('pk', flat=True))
+			contrib_ids.append(self.owner_id)
+			self.cache_set('contributorid_list', contrib_ids)
+			return contrib_ids
+	
 	
 	# System methods and overrides
 	def save(self, *args, **kwargs):
