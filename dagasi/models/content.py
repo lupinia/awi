@@ -127,7 +127,7 @@ class SecuredModel(models.Model):
 	ACCESS_LEVEL_MINIMUM = 0
 	
 	# Basic toggle fields
-	security = models.IntegerField(choices=ACCESS_LEVEL_OPTIONS, default=ACCESS_LEVEL_MINIMUM, db_index=True, blank=True)
+	security = models.PositiveSmallIntegerField(choices=ACCESS_LEVEL_OPTIONS, default=ACCESS_LEVEL_MINIMUM, db_index=True, blank=True)
 	published = models.BooleanField(db_index=True, help_text='Unpublished items can only be viewed by the creator, or users with Staff privileges, regardless of Security setting.')
 	featured = models.BooleanField(db_index=True, help_text='Display this item on the homepage, and at the top of the list elsewhere.')
 	mature = models.BooleanField(db_index=True, help_text='Mature content can only be viewed by users who verify their age.')
@@ -305,12 +305,12 @@ class access_code(models.Model):
 	owner = models.ForeignKey(User, on_delete=models.CASCADE)
 	desc = models.CharField(max_length=100, null=True, blank=True)
 	
-	allowed_age = models.IntegerField(default=30, blank=True, help_text='The number of days for which this code should be valid.  Enter 0 for a code that does not expire.')
+	allowed_age = models.PositiveSmallIntegerField(default=30, blank=True, help_text='The number of days for which this code should be valid.  Enter 0 for a code that does not expire.')
 	is_valid = models.BooleanField(default=True)
 	
 	timestamp_post = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='date/time created')
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	hits = models.IntegerField(default=0, help_text='Number of times this code has been used.')
+	hits = models.PositiveIntegerField(default=0, help_text='Number of times this code has been used.')
 	
 	# Static calculated properties and states
 	@property
