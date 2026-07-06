@@ -179,29 +179,6 @@ class access_code(models.Model):
 		super(access_code, self).save(*args, **kwargs)
 
 
-@python_2_unicode_compatible
-class user_settings(TimestampModel):
-	user = models.OneToOneField(User)
-	
-	mature_available = models.BooleanField(editable=False, default=False, help_text='System field:  If True, this user has provided a birthdate indicating an age >= 18 years.')
-	show_mature = models.BooleanField(default=False, help_text='Check this box to display mature content.')
-	age_check_date = models.DateTimeField(null=True, blank=True, editable=False, help_text='Date of last age check.')
-	
-	def check_mature(self):
-		if self.mature_available and self.show_mature:
-			return (True, '')
-		else:
-			if self.mature_available and not self.show_mature:
-				return (False, 'voluntary')
-			elif self.age_check_date and not self.mature_available:
-				return (False, 'denied')
-			else:
-				return (False, 'prompt')
-	
-	def __str__(self):
-		return self.user.username
-
-
 class access_control(models.Model):
 	SECURITY_OPTIONS = ((0,'Public'),(1,'Logged-In Users'),(2,'Staff'))
 	
@@ -359,21 +336,3 @@ class access_control(models.Model):
 				cache.set(domain_cache_key, domain, 60*60*24*7)
 		
 		return domain
-
-
-@python_2_unicode_compatible
-class blocked_ip(TimestampModel):
-	address = models.GenericIPAddressField(db_index=True, unique=True)
-	user_agent = models.TextField(null=True, blank=True)
-	active = models.BooleanField(default=True, blank=True, db_index=True)
-	notes = models.TextField(blank=True, null=True)
-	
-	def __str__(self):
-		return self.address
-	
-	def save(self, *args, **kwargs):
-		cache.set('blocked_ip_%s' % self.address, self.active, 60*60*24*7)
-		return super(blocked_ip, self).save(*args, **kwargs)
-	
-	class Meta:
-		verbose_name = 'blocked IP'

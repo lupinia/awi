@@ -6,4 +6,6 @@
 #	Models
 #	=================
 
-from .content import access_code, user_settings, blocked_ip
+from .content import access_code
+
+from .users import user_settings, blocked_ip
