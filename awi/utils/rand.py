@@ -9,12 +9,19 @@
 import random
 import string
 
-#	Generate a random integer sequence of a specific length.
-#		duplicates:  Boolean.  If True, sequential duplicates are allowed.
-#		first_zero:  Boolean.  If True, first digit in sequence can be a zero.
-#		exclude_zero:  Boolean.  If True, no zeros will be part of the sequence.
-#		exclude:  List.  If present, the specified digits will not be part of the sequence.
 def rand_int_list(length=1, duplicates=False, first_zero=False, exclude_zero=False, exclude=[]):
+	"""
+	rand_int_list(length, duplicates, first_zero, exclude_zero, exclude=[]) -> [...]
+	
+	Generate a random integer sequence of a specific length.
+	Returns a list, which can then be joined as a string.
+	Parameters:
+		length:  Integer, defaults to 1, maximum 1024
+		duplicates:  Boolean.  If True, sequential duplicates are allowed.
+		first_zero:  Boolean.  If True, first digit in sequence can be a zero.
+		exclude_zero:  Boolean.  If True, no zeros will be part of the sequence.
+		exclude:  List.  If present, the specified digits will not be part of the sequence.
+	"""
 	# Handle bad inputs, just in case
 	if length < 1:
 		return []
@@ -47,13 +54,21 @@ def rand_int_list(length=1, duplicates=False, first_zero=False, exclude_zero=Fal
 	
 	return int_list
 
-#	Generate a random letter sequence of a specific length.
-#		duplicates:  Boolean.  If True, sequential duplicates are allowed.
-#		mix_case:  Boolean.  If True, both upper and lowercase letters will be included.  Else, only uppercase will be returned.
-#		exclude:  List.  Any characters in this list will be removed from the possible selections, case-insensitively.
-#		include_digits:  Boolean.  If True, numbers will also be added to the selection pool.
-#		first_zero:  Boolean.  If True, first digit in sequence can be a zero.  Only has an effect if include_digits is also true.
 def rand_char_list(length=1, duplicates=False, mix_case=False, exclude=[], include_digits=False, first_zero=False):
+	"""
+	rand_char_list(length, duplicates, mix_case, exclude=[], include_digits, first_zero) -> [...]
+	
+	Generate a random alphanumeric string sequence of a specific length.
+	Returns a list, which can then be joined as a string.
+	Parameters:
+		length:  Integer, defaults to 1, maximum 1024
+		duplicates:  Boolean.  If True, sequential duplicates are allowed.
+		mix_case:  Boolean.  If True, both upper and lowercase letters will be included.
+								Else, only uppercase will be returned.
+		exclude:  List.  If present, the specified digits will not be part of the sequence.
+		include_digits:  Boolean.  If True, numbers will also be added to the selection pool.
+		first_zero:  Boolean.  If True, first digit in sequence can be a zero.
+	"""
 	# Handle bad inputs, just in case
 	if length < 1:
 		return []
