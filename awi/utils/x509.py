@@ -279,3 +279,286 @@ class DN(object):
 	
 	def __ne__(self, other):
 		return not self.__eq__(other)
+
+
+class x509Cert(object):
+	"""Defines an x.509 certificate as an object"""
+	
+	_date_start = None
+	_date_expiry = None
+	root_cert = False
+	validation_result = None
+	validation_reason = None
+	fingerprint = None
+	serialnum = 0
+	
+	_subject = DN()
+	_issuer = DN()
+	
+	def __init__(self, *args, **kwargs):
+		if len(args) > 1:
+			raise TypeError('only one positional argument accepted')
+		elif args:
+			# If we're here, we're typecasting, so this could be anything
+			if isinstance(args[0], x509Cert):
+				pass # TODO
+			
+			elif isinstance(args[0], dict):
+				# Should be a formality to just unpack this
+				raw_input = args.pop(0)
+				raw_input.update(kwargs)
+				kwargs = raw_input
+			
+			elif typeutils.is_string(args[0]):
+				raw_input = args.pop(0)
+				if raw_input.startswith('{') and raw_input.endswith('}'):
+					# If this raises an exception, we should pass it along, so no try/except block
+					self = type(self).from_json(raw_input, **kwargs)
+				else:
+					raise ValueError('unknown input string format')
+			
+			elif args[0] is None:
+				# Initialize an empty object
+				args.pop(0)
+				self = type(self)()
+			
+			else:
+				raise TypeError('unable to convert %s to x509Cert object' % type(args[0]))
+		
+		if kwargs:
+			self.fingerprint = kwargs.pop('fingerprint', self.fingerprint)
+			self.serialnum = kwargs.pop('serialnum', self.serialnum)
+			self.date_start = kwargs.pop('date_start', self.date_start)
+			self.date_expiry = kwargs.pop('date_expiry', self.date_expiry)
+			self.subject = kwargs.pop('subject', self.subject)
+			self.issuer = kwargs.pop('issuer', self.issuer)
+			self.validation_result = kwargs.pop('validation_result', self.validation_result)
+			self.validation_reason = kwargs.pop('validation_reason', self.validation_reason)
+		
+		super(x509Cert, self).__init__(*args, **kwargs)
+	
+	# Date fields
+	@property
+	def date_start(self):
+		return self._date_start
+	
+	@date_start.setter
+	def date_start(self, newval):
+		if newval is None or isinstance(newval, datetime):
+			self._date_start = newval
+		elif typeutils.is_string(newval):
+			self._date_start = dateparser.parse(newval)
+		else:
+			raise TypeError('date_start must be string, datetime, or None')
+	
+	@date_start.deleter
+	def date_start(self):
+		self._date_start = None
+	
+	@property
+	def date_expiry(self):
+		return self._date_expiry
+	
+	@date_expiry.setter
+	def date_expiry(self, newval):
+		if newval is None or isinstance(newval, datetime):
+			self._date_expiry = newval
+		elif typeutils.is_string(newval):
+			self._date_expiry = dateparser.parse(newval)
+		else:
+			raise TypeError('date_expiry must be string, datetime, or None')
+	
+	@date_expiry.deleter
+	def date_expiry(self):
+		self._date_expiry = None
+	
+	# Subject fields
+	@property
+	def subject(self):
+		return self._subject
+	
+	@subject.setter
+	def subject(self, newval):
+		if isinstance(newval, DN):
+			self._subject = newval
+		else:
+			self._subject = DN(newval)
+	
+	@subject.deleter
+	def subject(self):
+		self._subject = DN()
+	
+	@property
+	def issuer(self):
+		return self._issuer
+	
+	@issuer.setter
+	def issuer(self, newval):
+		if isinstance(newval, DN):
+			self._issuer = newval
+		else:
+			self._issuer = DN(newval)
+	
+	@issuer.deleter
+	def issuer(self):
+		self._issuer = DN()
+	
+	
+	# Validation
+	@property
+	def is_expired(self):
+		try:
+			if self.date_expiry >= timezone.now():
+				return False
+			else:
+				return True
+		except TypeError:
+			return True
+	
+	@property
+	def is_issued(self):
+		try:
+			if timezone.now() >= self.date_start:
+				return True
+			else:
+				return False
+		except TypeError:
+			return False
+	
+	@property
+	def is_selfsigned(self):
+		if self.root_cert:
+			return False
+		elif self.subject:
+			if self.subject == self.issuer:
+				return True
+			else:
+				return False
+		else:
+			return False
+	
+	@property
+	def is_valid(self):
+		if self.validation_result is not None:
+			return self.validation_result
+		
+		conditions = all([
+			self.fingerprint,
+			self.is_issued,
+			not self.is_expired,
+			not self.is_selfsigned,
+			getattr(self.subject, 'is_valid', False),
+			getattr(self.issuer, 'is_valid', False),
+		])
+		return conditions
+	
+	@property
+	def time_left(self):
+		if not self.is_expired:
+			return self.date_expiry - timezone.now()
+		else:
+			return timedelta()
+	
+	@property
+	def days_left(self):
+		timeleft = self.time_left
+		if timeleft:
+			if timeleft.days:
+				return timeleft.days
+			else:
+				return timeleft.seconds / 86400.0
+		else:
+			return 0
+	
+	
+	# Input
+	@classmethod
+	def from_json(cls, input_str, **kwargs):
+		"""Deserialize from a JSON string"""
+		parts = json.loads(input_str)
+		parts.update(kwargs)
+		return cls(**parts)
+	
+	@classmethod
+	def from_request(cls, request, **kwargs):
+		if request:
+			parts = {
+				'fingerprint': request.META.get(settings.X509_HEADER_FINGERPRINT, None),
+				'serialnum': request.META.get(settings.X509_HEADER_SERIALNUM, None),
+				'date_start': request.META.get(settings.X509_HEADER_DATE_START, None),
+				'date_expiry': request.META.get(settings.X509_HEADER_DATE_EXPIRY, None),
+				'subject': request.META.get(settings.X509_HEADER_SUBJECT, None),
+				'issuer': request.META.get(settings.X509_HEADER_ISSUER, None),
+			}
+			parts.update(kwargs)
+			return cls(**parts)
+		
+		else:
+			return cls()
+	
+	
+	# OUTPUT
+	def as_dict(self):
+		parts = {}
+		fields = [
+			'fingerprint',
+			'serialnum',
+			'date_start',
+			'date_expiry',
+			'validation_result',
+			'validation_reason',
+		]
+		
+		if self.subject:
+			parts['subject'] = self.subject.as_dict()
+		if self.issuer:
+			parts['issuer'] = self.issuer.as_dict()
+		if self.root_cert:
+			parts['root_cert'] = True
+		
+		for attr in fields:
+			a = getattr(self, attr, None)
+			if a is not None:
+				parts[attr] = a
+		
+		return parts
+	
+	def as_json(self):
+		return json.dumps(self.as_dict())
+	
+	
+	# TYPECASTING
+	def __repr__(self):
+		return self.display_label
+	
+	def __str__(self):
+		return self.__unicode__()
+	
+	def __unicode__(self):
+		n = self.display_label
+		if n:
+			return unicode(n) # type:ignore
+		elif self.city or self.state or self.country:
+			return u'Unnamed - %s' % self.display_location
+		else:
+			return u'Unnamed'
+	
+	
+	# LOGIC OPERATORS
+	def __bool__(self):
+		return self.is_valid
+	
+	def __nonzero__(self):
+		return self.is_valid
+	
+	def __not__(self):
+		return not self.is_valid
+	
+	def __eq__(self, other):
+		if not isinstance(other, x509Cert):
+			return NotImplemented
+		else:
+			return self.fingerprint == other.fingerprint
+	
+	def __ne__(self, other):
+		return not self.__eq__(other)
