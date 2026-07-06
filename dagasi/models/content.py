@@ -248,6 +248,7 @@ class SecuredModel(models.Model):
 				access_check.reason = 'access_norequest'
 			return access_check
 		
+		# If we made it this far, we have a user to check
 		if user.is_superuser or user.pk in self.contributors_ids:
 			# Superuser always has full permission
 			# Owner and contributors can always view
@@ -256,6 +257,12 @@ class SecuredModel(models.Model):
 		elif self.security > 2 or not self.published:
 			# If item is unpublished and user is not owner, contributor, or superuser, item does not exist
 			# Private items are only available to owner, contributors, and superuser
+			return status(False, 'access_404')
+		
+		elif not self.same_site and not user.has_perm('dagasi.view_cross_site'):
+			# If current object isn't attached to the current site,
+			# it doesn't technically exist to the current user,
+			# unless they have the view_cross_site permission
 			return status(False, 'access_404')
 		
 		elif self.security == 2:
