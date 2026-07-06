@@ -139,6 +139,9 @@ class SecuredModel(models.Model):
 	groups = models.ManyToManyField('auth.Group', db_index=True, related_name="%(app_label)s_%(class)s_access")
 	access_code = models.OneToOneField('dagasi.access_code', null=True, blank=True, on_delete=models.SET_NULL, related_name='access_to')
 	
+	# Helper fields
+	guid = models.UUIDField(default=uuid.uuid4, unique=True)
+	
 	# Static calculated properties and states
 	@property
 	def is_published(self):
