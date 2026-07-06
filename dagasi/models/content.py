@@ -291,6 +291,36 @@ class SecuredModel(models.Model):
 		else:
 			return False
 	
+	# Caching
+	@property
+	def objcache_id(self):
+		"""Unique prefix to use for this object in the cache"""
+		if self.guid:
+			return 'obj.%s' % self.guid
+		else:
+			return None
+	
+	def cache_key(self, key):
+		"""Return a prefixed version of the given key"""
+		if self.objcache_id is None:
+			return None
+		else:
+			return '%s.%s' % (self.objcache_id, key)
+	
+	def cache_get(self, key, fallback=None):
+		"""
+		Proxy for cache.get(), with a prefixed key unique to this object
+		Include a fallback value other than None to get a default
+		"""
+		return cache.get(self.cache_key(key), fallback)
+	
+	def cache_set(self, key, value, timeout=None):
+		"""
+		Proxy for cache.set(), with a prefixed key unique to this object
+		Defaults to permanent, set timeout for an expiration time
+		"""
+		return cache.set(self.cache_key(key), value, timeout)
+	
 	
 	# System methods and overrides
 	def save(self, *args, **kwargs):
