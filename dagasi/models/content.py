@@ -524,14 +524,23 @@ class access_code(models.Model):
 		self.valid = False
 		self.save()
 	
-	def check_code(self, check=False):
-		if check and self.valid():
-			if check == self.code:
-				return True
-			else:
-				return False
+	def check(self, raw_input=None, first_hit=False):
+		"""
+		access_code.check
+		Check whether a specified code is correct, if this code is valid
+		Returns status(result, reason)
+		Automatically records a hit on success
+		"""
+		if not self.is_valid:
+			return self.is_valid
+		elif not raw_input:
+			return status(False, 'access_code_nocheck')
+		elif raw_input == self.code:
+			if first_hit:
+				self.record_hit()
+			return status(True)
 		else:
-			return False
+			return status(False, 'access_code_invalid')
 	
 	
 	# System methods and overrides
