@@ -346,6 +346,15 @@ class SecuredModel(models.Model):
 			self.cache_set('contributorid_list', contrib_ids)
 			return contrib_ids
 	
+	@cached_property
+	def groups_ids(self):
+		"""Cached list of groups this object is set to"""
+		groupids = self.cache_get('groupid_list')
+		if groupids is None:
+			groupids = list(self.groups.all().values_list('pk', flat=True))
+			self.cache_set('groupid_list', groupids)
+			return groupids
+	
 	
 	# System methods and overrides
 	def save(self, *args, **kwargs):
