@@ -129,7 +129,6 @@ class SecuredModel(models.Model):
 	# Basic toggle fields
 	security = models.PositiveSmallIntegerField(choices=ACCESS_LEVEL_OPTIONS, default=ACCESS_LEVEL_MINIMUM, db_index=True, blank=True)
 	published = models.BooleanField(db_index=True, help_text='Unpublished items can only be viewed by the creator, or users with Staff privileges, regardless of Security setting.')
-	featured = models.BooleanField(db_index=True, help_text='Display this item on the homepage, and at the top of the list elsewhere.')
 	mature = models.BooleanField(db_index=True, help_text='Mature content can only be viewed by users who verify their age.')
 	sites = models.ManyToManyField('sites.Site', db_index=True, help_text='Sites/domains on which this item will appear.')
 	
