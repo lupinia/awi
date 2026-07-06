@@ -50,6 +50,29 @@ class user_settings(models.Model):
 				# This user has not yet submitted the form, so show it to them
 				return status(False, 'access_mature_prompt')
 	
+	def verify_age(self, dob):
+		"""
+		user_settings.verify_age(date) -> success
+		
+		Performs minimal necessary age verification for a logged-in user
+		Always records results and cannot be repeated
+		Birthdate is not recorded, it is only used in calculations
+		"""
+		if self.age_check_date:
+			return status(False, 'already_submitted')
+		
+		cur = timezone.now().date()
+		min_age = cur.replace(year=cur.year-18)
+		
+		if dob < min_age:
+			self.is_adult = True
+		else:
+			self.is_adult = False
+		
+		self.age_check_date = timezone.now()
+		self.save()
+		return status(self.is_adult, 'form_verify')
+	
 	def __str__(self):
 		return self.user.username
 
