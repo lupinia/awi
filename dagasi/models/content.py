@@ -323,6 +323,44 @@ class SecuredModel(models.Model):
 		return domain
 	
 	# Access code operations
+	def access_code_check(self, check, first_hit=False):
+		"""
+		SecuredModel.access_code_check(str or list, first_hit=False) -> status(result, reason) or None
+		
+		Tests whether the specified code(s) are valid and grant access to this object
+		If first_hit is True, the code's hit counter will be incremented
+		Returns None if this object has no access code, because that's neither a pass nor fail
+		"""
+		if not check:
+			return status(False, 'access_code_nocheck')
+		
+		if not self.access_code:
+			# Weird corner-case where this neither passes nor fails because there's no code
+			# Forcing this to be handled uniquely by returning None
+			return None
+		
+		if typeutils.is_string(check):
+			# Single-check mode
+			return self.access_code.check(check, first_hit)
+		
+		elif typeutils.is_iterable(check):
+			# Assuming this is a list
+			# We have to do a little extra work ourselves for this one
+			# This is also more likely to be ambiguous
+			check_result = self.access_code.is_valid
+			if not check_result:
+				return check_result
+			elif self.access_code.code in check:
+				if first_hit:
+					# This makes no sense, but sure I guess
+					self.access_code.record_hit()
+				return status(True)
+			else:
+				return status(False, 'access_code_nomatch')
+		
+		else:
+			return status(False, 'access_code_invalid')
+	
 	def create_code(self, age=30, desc=None, request=False):
 		if not self.is_public()[0]:
 			if request:
