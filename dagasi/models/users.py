@@ -50,17 +50,6 @@ class user_settings(models.Model):
 				# This user has not yet submitted the form, so show it to them
 				return status(False, 'access_mature_prompt')
 	
-	def check_mature(self):
-		if self.mature_available and self.show_mature:
-			return (True, '')
-		else:
-			if self.mature_available and not self.show_mature:
-				return (False, 'voluntary')
-			elif self.age_check_date and not self.mature_available:
-				return (False, 'denied')
-			else:
-				return (False, 'prompt')
-	
 	def __str__(self):
 		return self.user.username
 
