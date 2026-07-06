@@ -123,6 +123,7 @@ middleware_main = (
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'awi.utils.sites.CurrentSiteMiddleware', # Replace django.contrib.sites.middleware.CurrentSiteMiddleware
+	'dagasi.middleware.UserPrefsMiddleware',
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
