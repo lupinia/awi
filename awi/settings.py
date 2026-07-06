@@ -114,27 +114,6 @@ TEMPLATES = [{
 	},
 },]
 
-#	Middleware got a little interesting, to get the caching middleware inserted in the correct order, but not on the dev server.
-middleware_first = (
-	'debug_toolbar.middleware.DebugToolbarMiddleware',
-)
-
-middleware_main = (
-	'django.contrib.sessions.middleware.SessionMiddleware',
-	'django.contrib.auth.middleware.AuthenticationMiddleware',
-	'awi.utils.sites.CurrentSiteMiddleware', # Replace django.contrib.sites.middleware.CurrentSiteMiddleware
-	'dagasi.middleware.UserPrefsMiddleware',
-	'django.middleware.common.CommonMiddleware',
-	'django.middleware.csrf.CsrfViewMiddleware',
-	'django.contrib.messages.middleware.MessageMiddleware',
-	'django.middleware.security.SecurityMiddleware',
-	'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
-
-middleware_cache_update = ('django.middleware.cache.UpdateCacheMiddleware',)
-middleware_cache_fetch = ('django.middleware.cache.FetchFromCacheMiddleware',)
-#	End Middleware
-
 STATICFILES_FINDERS = (
 	'django.contrib.staticfiles.finders.FileSystemFinder',
 	'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -144,6 +123,19 @@ STATICFILES_FINDERS = (
 
 # =================
 # Middleware Config
+
+MIDDLEWARE_CLASSES = (
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'dagasi.middleware.UserPrefsMiddleware',
+	'awi.utils.sites.CurrentSiteMiddleware',
+	'awi.utils.cache.CacheKeyPrefixMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.security.SecurityMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
 
 
 # =================
