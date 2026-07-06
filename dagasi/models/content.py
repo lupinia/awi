@@ -148,36 +148,26 @@ class SecuredModel(models.Model):
 		else:
 			return status(False, 'draft')
 	
-	def is_public(self):
-#		Returns a tuple.  First value is boolean, indicating whether non-authenticated users can view this or not.  Second value is a list of reasons why not.
-		restrictions = []
-		public = True
-		
-		if not self.published:
-			public = False
-			restrictions.append('Not published')
-		if self.security:
-			public = False
-			restrictions.append('Permissions set to %s' % self.get_security_display())
-		if self.mature:
-			public = False
-			restrictions.append('Mature content')
-		
-		return (public, restrictions)
-	
-	# Helper method for extracting a reason for non-public status that's easier to work with programmaticly
 	@property
-	def restriction(self):
-		ispublic = self.is_public()
-		if ispublic[0]:
-			return False
-		else:
-			if not self.published:
-				return 'draft'
-			elif self.security > 0:
-				return 'locked'
-			else:
-				return 'unknown'
+	def is_public(self):
+		cur_state = status(True)
+		if self.hidden:
+			cur_state.update(False, 'hidden')
+		if self.mature:
+			cur_state.update(False, 'mature')
+		if self.security:
+			cur_state.update(False, 'locked-%s' % self.get_security_display().lower())
+		if self.published:
+			cur_state.update(False, 'draft')
+		
+		return cur_state
+	
+	@property
+	def state(self):
+		"""
+		Short code indicating primary publication/security status.
+		"""
+		return self.is_public.reason
 	
 	# Permission checks
 	def can_view(self, request=False):
