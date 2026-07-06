@@ -140,6 +140,14 @@ class SecuredModel(models.Model):
 	access_code = models.OneToOneField('dagasi.access_code', null=True, blank=True, on_delete=models.SET_NULL, related_name='access_to')
 	
 	# Static calculated properties and states
+	@property
+	def is_published(self):
+		"""Publication status, to make it easier to override with additional logic"""
+		if self.published:
+			return status(True)
+		else:
+			return status(False, 'draft')
+	
 	def is_public(self):
 #		Returns a tuple.  First value is boolean, indicating whether non-authenticated users can view this or not.  Second value is a list of reasons why not.
 		restrictions = []
