@@ -30,10 +30,26 @@ class user_settings(models.Model):
 	
 	# Mature content settings
 	is_adult = models.BooleanField(editable=False, default=False, help_text='System field:  If True, this user has provided a birthdate indicating an age >= 18 years.')
-	show_mature = models.BooleanField(default=False, help_text='Check this box to display mature content.')
+	_show_mature = models.BooleanField(default=False, help_text='Check this box to display mature content.')
 	age_check_date = models.DateTimeField(null=True, blank=True, editable=False, help_text='Date of last age check.')
 	
 	# Mature content properties and methods
+	@property
+	def show_mature(self):
+		"""Whether to show mature content to the current user"""
+		if self.is_adult and self._show_mature:
+			return status(True, '')
+		else:
+			if self.is_adult and not self._show_mature:
+				# This user has already passed the form and opted not to show mature content
+				return status(False, 'access_mature_voluntary')
+			elif self.age_check_date and not self.is_adult:
+				# This user submitted the form but did not pass
+				return status(False, 'access_mature_denied')
+			else:
+				# This user has not yet submitted the form, so show it to them
+				return status(False, 'access_mature_prompt')
+	
 	def check_mature(self):
 		if self.mature_available and self.show_mature:
 			return (True, '')
