@@ -20,15 +20,20 @@ from django.utils.text import slugify
 
 from awi.utils.hash import hash_sha256
 from awi.utils.models import TimestampModel
+from dagasi.types import status
 
 @python_2_unicode_compatible
-class user_settings(TimestampModel):
+class user_settings(models.Model):
+	# Core fields
 	user = models.OneToOneField(User)
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified', help_text="Timestamp showing when this item was last edited.  Automatically set with every save operation, can't be overridden.")
 	
+	# Mature content settings
 	mature_available = models.BooleanField(editable=False, default=False, help_text='System field:  If True, this user has provided a birthdate indicating an age >= 18 years.')
 	show_mature = models.BooleanField(default=False, help_text='Check this box to display mature content.')
 	age_check_date = models.DateTimeField(null=True, blank=True, editable=False, help_text='Date of last age check.')
 	
+	# Mature content properties and methods
 	def check_mature(self):
 		if self.mature_available and self.show_mature:
 			return (True, '')
