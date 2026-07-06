@@ -81,8 +81,14 @@ class user_settings(models.Model):
 		}
 		return prefs
 	
+	# System methods and overrides
 	def __str__(self):
 		return self.user.username
+	
+	class Meta:
+		permissions = (
+			('list_hidden', 'Can enable hidden content in list views'),
+		)
 
 
 @python_2_unicode_compatible
