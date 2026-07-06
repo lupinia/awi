@@ -13,14 +13,12 @@ from django.core.cache import cache
 
 SITE_CACHE_PREFIX = 'awi.utils.sites'
 
-def get_cache_prefix(pk):
-	return '%s.%d' % (SITE_CACHE_PREFIX, pk)
 
 def get_current_site(request=None):
-	cur_site = cache.get(get_cache_prefix(settings.SITE_ID))
+	cur_site = cache.get('%s.%d' % (SITE_CACHE_PREFIX, settings.SITE_ID))
 	if cur_site is None:
 		cur_site = Site.objects.get_current()
-		cache.set(get_cache_prefix(cur_site.pk), cur_site, None)
+		cache.set('%s.%d' % (SITE_CACHE_PREFIX, cur_site.pk), cur_site, None)
 	
 	return cur_site
 
