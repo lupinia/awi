@@ -73,6 +73,14 @@ class user_settings(models.Model):
 		self.save()
 		return status(self.is_adult, 'form_verify')
 	
+	# Output
+	def as_dict(self):
+		"""Return various settings as a dictionary to add to session data"""
+		prefs = {
+			'show_mature': self.show_mature,
+		}
+		return prefs
+	
 	def __str__(self):
 		return self.user.username
 
