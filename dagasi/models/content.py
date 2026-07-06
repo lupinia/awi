@@ -471,6 +471,7 @@ class SecuredModel(models.Model):
 	
 	class Meta:
 		abstract = True
+		default_permissions = ('add', 'change', 'change_contrib', 'change_group', 'delete',)
 
 
 # Access Codes
@@ -548,3 +549,6 @@ class access_code(models.Model):
 			return '%d-day code for %s' % (self.allowed_age, self.item_type)
 		else:
 			return 'permanent code for %s' (self.item_type)
+	
+	class Meta:
+		default_permissions = ()

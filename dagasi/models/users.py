@@ -86,8 +86,10 @@ class user_settings(models.Model):
 		return self.user.username
 	
 	class Meta:
+		default_permissions = ()
 		permissions = (
 			('list_hidden', 'Can enable hidden content in list views'),
+			('view_cross_site', 'Can always view regardless of Sites setting'),
 		)
 
 
