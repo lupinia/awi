@@ -483,7 +483,7 @@ class access_code(models.Model):
 	desc = models.CharField(max_length=100, null=True, blank=True)
 	
 	allowed_age = models.PositiveSmallIntegerField(default=30, blank=True, help_text='The number of days for which this code should be valid.  Enter 0 for a code that does not expire.')
-	is_valid = models.BooleanField(default=True)
+	valid = models.BooleanField(default=True)
 	
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, editable=False, verbose_name='date/time created')
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
@@ -498,14 +498,15 @@ class access_code(models.Model):
 		else:
 			return None
 	
-	def valid(self):
+	@property
+	def is_valid(self):
 		"""Validity of this code, returns status(False) if revoked or expired"""
-		if not self.is_valid:
-			return False
-		elif self.allowed_age > 0 and timezone.now() > self.expiration_date:
-			return False
+		if not self.valid:
+			return status(False, 'access_code_revoked')
+		elif self.expiration_date and timezone.now() > self.expiration_date:
+			return status(False, 'access_code_expired')
 		else:
-			return True
+			return status(True)
 	
 	
 	# Code operation methods
@@ -520,7 +521,7 @@ class access_code(models.Model):
 		Cannot be undone.
 		Counterpart operation is issuing a code, which is performed from the object the code is for
 		"""
-		self.is_valid = False
+		self.valid = False
 		self.save()
 	
 	def check_code(self, check=False):
@@ -535,12 +536,12 @@ class access_code(models.Model):
 	
 	# System methods and overrides
 	def save(self, *args, **kwargs):
-		if self.pk and self.is_valid and not self.valid():
-			self.is_valid = False
+		if self.pk and self.valid and not self.is_valid:
 			# If this is an edit instead of a create,
 			# and it's set to valid,
 			# and it's expired,
 			# perform a revoke action
+			self.valid = False
 		
 		if not self.code:
 			hash = hash_sha256('%s|%s' % (str(timezone.now()), self.item_type))
