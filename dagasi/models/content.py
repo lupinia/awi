@@ -131,6 +131,7 @@ class SecuredModel(models.Model):
 	published = models.BooleanField(db_index=True, help_text='Unpublished items can only be viewed by the creator, or users with Staff privileges, regardless of Security setting.')
 	mature = models.BooleanField(db_index=True, help_text='Mature content can only be viewed by users who verify their age.')
 	sites = models.ManyToManyField('sites.Site', db_index=True, help_text='Sites/domains on which this item will appear.')
+	hidden = models.BooleanField(default=False, db_index=True, help_text='Omit from directory listings even if published is checked.')
 	
 	# Ownership and conditional access grants
 	owner = models.ForeignKey('auth.User', on_delete=models.PROTECT)
