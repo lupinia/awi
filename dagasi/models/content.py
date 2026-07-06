@@ -128,8 +128,8 @@ class SecuredModel(models.Model):
 	
 	# Basic toggle fields
 	security = models.PositiveSmallIntegerField(choices=ACCESS_LEVEL_OPTIONS, default=ACCESS_LEVEL_MINIMUM, db_index=True, blank=True)
-	published = models.BooleanField(db_index=True, help_text='Unpublished items can only be viewed by the creator, or users with Staff privileges, regardless of Security setting.')
-	mature = models.BooleanField(db_index=True, help_text='Mature content can only be viewed by users who verify their age.')
+	published = models.BooleanField(default=False, db_index=True, help_text='Unpublished items can only be viewed by the creator and contributors, or administrative users.')
+	mature = models.BooleanField(default=False, db_index=True, help_text='Mature content can only be viewed by users who verify their age.')
 	hidden = models.BooleanField(default=False, db_index=True, help_text='Omit from directory listings even if published is checked.')
 	sites = models.ManyToManyField('sites.Site', db_index=True, related_name='+', help_text='Sites/domains on which this item will appear.')
 	
