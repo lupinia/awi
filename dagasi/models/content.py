@@ -4,29 +4,24 @@
 #	
 #	=================
 #	Models
-#	class access_code:  Temporary codes to bypass access restrictions
-#	class access_control:  This is just a meta class to be extended by other models in other apps, providing access restrictions and access checks.
-#	class user_meta:  User-specific settings for logged-in users.
-#	
-#	Helper Functions
-#	def check_mature:  Checks whether mature content can be accessed by the current user.
-#	def access_query:  Returns Q objects corresponding to the access level of the current request.  Example usage:  access_control.objects.filter({main condition}).filter(access_query(request))
 #	=================
 
+import uuid
 from datetime import timedelta
 
 from django.db import models
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
 from django.core.cache import cache
-from django.utils import dateparse
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.functional import cached_property
 from django.utils.text import slugify
 
+from awi.utils import types as typeutils
 from awi.utils.hash import hash_sha256
-from awi.utils.models import TimestampModel
+from dagasi.types import status
 
 #	Helper Functions
 def check_mature(request=False):
@@ -115,80 +110,26 @@ def access_search(sqs, request=False):
 	return sqs
 
 
-#	Models
-@python_2_unicode_compatible
-class access_code(models.Model):
-	code = models.SlugField(max_length=255, editable=False, unique=True)
-	item_type = models.CharField(max_length=40, default='unknown', editable=False)
-	owner = models.ForeignKey(User, on_delete=models.CASCADE)
-	
-	allowed_age = models.IntegerField(default=30, blank=True, help_text='The number of days for which this code should be valid.  Enter 0 for a code that does not expire.')
-	desc = models.CharField(max_length=100, null=True, blank=True)
-	is_valid = models.BooleanField(default=True)
-	
-	timestamp_post = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='date/time created')
-	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
-	hits = models.IntegerField(default=0, help_text='Number of times this code has been used.')
-	
-	def __str__(self):
-		if self.allowed_age:
-			return '%d-day code for %s' % (self.allowed_age, self.item_type)
-		else:
-			return 'permanent code for %s' (self.item_type)
-	
-	@property
-	def expiration_date(self):
-		if self.allowed_age:
-			return self.timestamp_post + timedelta(days=self.allowed_age)
-		else:
-			return False
-	
-	def check_code(self, check=False):
-		if check and self.valid():
-			if check == self.code:
-				return True
-			else:
-				return False
-		else:
-			return False
-	
-	def valid(self):
-		if not self.is_valid:
-			return False
-		elif self.allowed_age > 0 and timezone.now() > self.expiration_date:
-			return False
-		else:
-			return True
-	
-	def record_hit(self):
-		self.hits = self.hits + 1
-		self.save()
-	
-	def revoke(self):
-		self.is_valid = False
-		self.save()
-	
-	def save(self, *args, **kwargs):
-		if self.pk and self.is_valid and not self.valid():
-			self.is_valid = False
-		
-		if not self.code:
-			hash = hash_sha256('%s|%s' % (str(timezone.now()), self.item_type))
-			self.code = slugify(hash)
-		
-		super(access_code, self).save(*args, **kwargs)
-
-
+# MODELS
 class access_control(models.Model):
-	SECURITY_OPTIONS = ((0,'Public'),(1,'Logged-In Users'),(2,'Staff'))
+	# Field choices constants
+	SECURITY_OPTIONS = (
+		(0, 'Public'),
+		(1, 'Users'),
+		(2, 'Group'),
+		(3, 'Private'),
+	)
 	
+	# Basic toggle fields
+	security = models.IntegerField(choices=SECURITY_OPTIONS, default=0, db_index=True, blank=True)
 	published = models.BooleanField(db_index=True, help_text='Unpublished items can only be viewed by the creator, or users with Staff privileges, regardless of Security setting.')
 	featured = models.BooleanField(db_index=True, help_text='Display this item on the homepage, and at the top of the list elsewhere.')
 	mature = models.BooleanField(db_index=True, help_text='Mature content can only be viewed by users who verify their age.')
-	security = models.IntegerField(choices=SECURITY_OPTIONS, default=0, db_index=True, blank=True)
-	owner = models.ForeignKey(User, on_delete=models.PROTECT)
-	sites = models.ManyToManyField(Site, db_index=True, help_text='Sites/domains on which this item will appear.')
-	access_code = models.ForeignKey(access_code, null=True, blank=True, on_delete=models.SET_NULL)
+	sites = models.ManyToManyField('sites.Site', db_index=True, help_text='Sites/domains on which this item will appear.')
+	
+	# Ownership and conditional access grants
+	owner = models.ForeignKey('auth.User', on_delete=models.PROTECT)
+	access_code = models.ForeignKey('dagasi.access_code', null=True, blank=True, on_delete=models.SET_NULL)
 	
 	def create_code(self, age=30, desc=None, request=False):
 		if not self.is_public()[0]:
@@ -311,9 +252,6 @@ class access_control(models.Model):
 		
 		return success
 	
-	class Meta:
-		abstract = True
-	
 	def get_url_domain(self, request=None):
 		"""
 		Get a domain name for building canonical URLs.
@@ -336,3 +274,77 @@ class access_control(models.Model):
 				cache.set(domain_cache_key, domain, 60*60*24*7)
 		
 		return domain
+	
+	
+	# System methods and overrides
+	class Meta:
+		abstract = True
+
+
+# Access Codes
+@python_2_unicode_compatible
+class access_code(models.Model):
+	code = models.SlugField(max_length=255, editable=False, unique=True)
+	item_type = models.CharField(max_length=40, default='unknown', editable=False)
+	owner = models.ForeignKey(User, on_delete=models.CASCADE)
+	desc = models.CharField(max_length=100, null=True, blank=True)
+	
+	allowed_age = models.IntegerField(default=30, blank=True, help_text='The number of days for which this code should be valid.  Enter 0 for a code that does not expire.')
+	is_valid = models.BooleanField(default=True)
+	
+	timestamp_post = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='date/time created')
+	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	hits = models.IntegerField(default=0, help_text='Number of times this code has been used.')
+	
+	# Static calculated properties and states
+	@property
+	def expiration_date(self):
+		if self.allowed_age:
+			return self.timestamp_post + timedelta(days=self.allowed_age)
+		else:
+			return False
+	
+	def valid(self):
+		if not self.is_valid:
+			return False
+		elif self.allowed_age > 0 and timezone.now() > self.expiration_date:
+			return False
+		else:
+			return True
+	
+	
+	# Code operation methods
+	def record_hit(self):
+		self.hits = self.hits + 1
+		self.save()
+	
+	def revoke(self):
+		self.is_valid = False
+		self.save()
+	
+	def check_code(self, check=False):
+		if check and self.valid():
+			if check == self.code:
+				return True
+			else:
+				return False
+		else:
+			return False
+	
+	
+	# System methods and overrides
+	def save(self, *args, **kwargs):
+		if self.pk and self.is_valid and not self.valid():
+			self.is_valid = False
+		
+		if not self.code:
+			hash = hash_sha256('%s|%s' % (str(timezone.now()), self.item_type))
+			self.code = slugify(hash)
+		
+		super(access_code, self).save(*args, **kwargs)
+	
+	def __str__(self):
+		if self.allowed_age:
+			return '%d-day code for %s' % (self.allowed_age, self.item_type)
+		else:
+			return 'permanent code for %s' (self.item_type)
