@@ -135,6 +135,8 @@ class SecuredModel(models.Model):
 	
 	# Ownership and conditional access grants
 	owner = models.ForeignKey('auth.User', on_delete=models.PROTECT, related_name="%(app_label)s_%(class)s_owned")
+	contributors = models.ManyToManyField('auth.User', db_index=True, related_name="%(app_label)s_%(class)s_contributed")
+	groups = models.ManyToManyField('auth.Group', db_index=True, related_name="%(app_label)s_%(class)s_access")
 	access_code = models.OneToOneField('dagasi.access_code', null=True, blank=True, on_delete=models.SET_NULL, related_name='access_to')
 	
 	def create_code(self, age=30, desc=None, request=False):
