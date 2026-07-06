@@ -28,6 +28,7 @@ def get_site(pk=None):
 			return None
 
 def get_current_site(request=None):
+	"""Retrieve the current Site object from cache if possible"""
 	cur_site = cache.get('%s.%d' % (SITE_CACHE_PREFIX, settings.SITE_ID))
 	if cur_site is None:
 		cur_site = Site.objects.get_current()
@@ -36,6 +37,7 @@ def get_current_site(request=None):
 	return cur_site
 
 def get_site_pks():
+	"""Retrieve a list of all Site object primary keys"""
 	pk_list = cache.get('%s.all.pklist' % SITE_CACHE_PREFIX)
 	if pk_list is None:
 		pk_list = list(Site.objects.all().values_list('pk', flat=True))
