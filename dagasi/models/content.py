@@ -116,15 +116,18 @@ class SecuredModel(models.Model):
 	Extendable base class for content-item security and authorization controls
 	"""
 	# Field choices constants
-	SECURITY_OPTIONS = (
+	ACCESS_LEVEL_OPTIONS = (
 		(0, 'Public'),
 		(1, 'Users'),
 		(2, 'Group'),
 		(3, 'Private'),
 	)
 	
+	# Other constants
+	ACCESS_LEVEL_MINIMUM = 0
+	
 	# Basic toggle fields
-	security = models.IntegerField(choices=SECURITY_OPTIONS, default=0, db_index=True, blank=True)
+	security = models.IntegerField(choices=ACCESS_LEVEL_OPTIONS, default=ACCESS_LEVEL_MINIMUM, db_index=True, blank=True)
 	published = models.BooleanField(db_index=True, help_text='Unpublished items can only be viewed by the creator, or users with Staff privileges, regardless of Security setting.')
 	featured = models.BooleanField(db_index=True, help_text='Display this item on the homepage, and at the top of the list elsewhere.')
 	mature = models.BooleanField(db_index=True, help_text='Mature content can only be viewed by users who verify their age.')
@@ -284,6 +287,12 @@ class SecuredModel(models.Model):
 	
 	
 	# System methods and overrides
+	def save(self, *args, **kwargs):
+		if self.security < self.ACCESS_LEVEL_MINIMUM:
+			self.security = self.ACCESS_LEVEL_MINIMUM
+		
+		super(SecuredModel, self).save(*args, **kwargs)
+	
 	class Meta:
 		abstract = True
 
