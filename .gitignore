@@ -1,6 +1,7 @@
 # Custom
 awi/settings_local.py
 awi/fur_*.py
+awi/fur
 *.svn
 HISTORY.md
 
