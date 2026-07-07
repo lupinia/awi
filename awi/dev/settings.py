@@ -9,8 +9,7 @@
 #	=================
 
 SITE_ID = 1
-ADMIN_FOR = ('awi.fur_settings',)
-WSGI_APPLICATION = 'awi.dev_wsgi.application'
+WSGI_APPLICATION = 'awi.dev.wsgi.application'
 DEBUG = True
 
 #	Site-specific metadata values and defaults
@@ -20,7 +19,7 @@ DEFAULT_AUTHOR_NAME = 'Natasha L.'
 DEFAULT_AUTHOR_TWITTER = '@lupinia'
 DEFAULT_AUTHOR_MASTODON = '@lupinia@infosec.exchange'
 
-from settings import *
+from awi.settings import *
 
 #	Middleware got a little interesting, to get the caching middleware inserted in the correct order, but not on the dev server.
 middleware_cache_update = ()
