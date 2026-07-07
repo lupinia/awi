@@ -86,7 +86,10 @@ INSTALLED_APPS = (
 # Template Config
 TEMPLATES = [{
 	'BACKEND': 'django.template.backends.django.DjangoTemplates',
-	'DIRS' : [os.path.abspath(os.path.join(BASE_DIR,'./templates')),],
+	'DIRS' : [
+		os.path.abspath(os.path.join(BASE_DIR,'./templates/showcase')),	# Per-theme directory
+		os.path.abspath(os.path.join(BASE_DIR,'./templates/global')),	# Templates for all themes
+	],
 	'OPTIONS' : {
 		'context_processors' : [
 			'awi.context_processors.core',
