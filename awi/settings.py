@@ -5,9 +5,11 @@
 #	=================
 #	Django Settings File - Main
 #	Primary Django settings
+#	
+#	Objects referenced here but defined in other settings files:
+#		import os (settings_apps)
+#		BASE_DIR (settings_apps)
 #	=================
-
-import os
 
 from settings_local import *
 from settings_apps import *
