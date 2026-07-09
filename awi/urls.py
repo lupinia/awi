@@ -26,7 +26,6 @@ from deerfind.views import not_found, search_view, shortcode_redirect
 from deertrees import views as deertrees_views
 from sunset import views as sunset_views
 
-admin.autodiscover()
 handler400 = request_error
 handler404 = not_found
 handler500 = system_error
