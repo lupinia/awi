@@ -8,6 +8,8 @@
 #	Site-specific Django settings
 #	=================
 
+from awi.settings import *
+
 SITE_ID = 1
 WSGI_APPLICATION = 'awi.prod.wsgi.application'
 DEBUG = False
@@ -19,8 +21,5 @@ DEFAULT_AUTHOR_NAME = 'Natasha L.'
 DEFAULT_AUTHOR_TWITTER = '@lupinia'
 DEFAULT_AUTHOR_MASTODON = '@lupinia@infosec.exchange'
 
-from awi.settings import *
-
 #	Middleware got a little interesting, to get the caching middleware inserted in the correct order, but not on the dev server.
-middleware_first = ()
-MIDDLEWARE_CLASSES = middleware_first + middleware_cache_update + middleware_main + middleware_cache_fetch
+MIDDLEWARE_CLASSES = ('django.middleware.cache.UpdateCacheMiddleware',) + MIDDLEWARE_CLASSES + ('django.middleware.cache.FetchFromCacheMiddleware',)
