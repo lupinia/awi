@@ -11,9 +11,6 @@
 #		BASE_DIR (settings_apps)
 #	=================
 
-from settings_local import *
-from settings_apps import *
-
 # =================
 # Localization
 USE_I18N = True

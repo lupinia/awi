@@ -8,6 +8,9 @@
 #	=================
 import os
 
+from .core import *
+from .secrets import *
+
 # Not external settings, but they're used in this file, so they need to be here.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATICFILES_DIRS = (os.path.abspath(os.path.join(BASE_DIR,'static/')),)

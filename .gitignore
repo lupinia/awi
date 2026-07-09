@@ -1,5 +1,6 @@
 # Custom
 awi/settings_local.py
+awi/settings/secrets.py
 awi/fur_*.py
 awi/fur
 *.svn
