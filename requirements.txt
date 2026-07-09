@@ -30,7 +30,6 @@ boto
 certifi
 dicttoxml
 django-admin-tools
-django-cookie-law
 django-debug-toolbar-line-profiler	# Required for dev, not required for prod
 django-haystack-panel				# Required for dev, not required for prod
 django-honeypot

@@ -62,7 +62,6 @@
 	
 	<!-- CSS and JS -->
 	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase.css" type="text/css" rel="stylesheet" id="main_css" title="Purple" />
-	{% block cookielaw_js %}<script src="{{STATIC_PREFIX}}cookielaw/js/cookielaw.js" type="text/javascript"></script>{% endblock %}
 	{% if js_strip_params %}<script>
 		// Remove extraneous URL query parameters
 		var params_to_strip = ["{{js_strip_params|join:'","'}}"];

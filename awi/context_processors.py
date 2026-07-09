@@ -54,7 +54,6 @@ def site(request):
 	
 	Values:
 		site:  The entire current django.contrib.sites.Site object
-		cookie_banner:  Boolean, True if the current domain is European
 		ssl:  Boolean, True if this is an SSL connection
 		domain_name:  Just the current domain name
 		site_root:  Current domain name plus scheme, with a trailing slash
@@ -63,11 +62,9 @@ def site(request):
 		cwd_absolute:  CWD plus domain and scheme, to reference files in the same directory
 	"""
 	
-	site_data = {'site':request.site, 'cookie_banner':False, 'ssl':False, 'certauth':False,}
+	site_data = {'site':request.site, 'ssl':False, 'certauth':False,}
 	
 	site_data['domain_name'] = request.get_host()
-	if '.eu' in site_data['domain_name']:
-		site_data['cookie_banner'] = True
 	
 	if request.scheme.lower() == 'https':
 		site_data['ssl'] = True

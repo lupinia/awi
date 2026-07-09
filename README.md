@@ -38,7 +38,6 @@ Third-Party Apps/Modules Used
 
 - **[BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/)**:  A Python library for parsing and manipulating HTML.
 - **[Django Admin Tools](https://github.com/django-admin-tools/django-admin-tools)**:  Improvements to the Django administrative dashboard.
-- **[Django Cookielaw](https://github.com/TyMaszWeb/django-cookie-law)**:  Easy tool for compliance with EU cookie law.
 - **[Django Debug Toolbar](https://github.com/django-debug-toolbar/django-debug-toolbar)**:  Profiling and debugging tools for Django.  *(Dev only)*
 - **[Django Haystack](https://github.com/django-haystack/django-haystack)**:  Powerful tool for integrating search indexing servers into Django.
 - **[Django Honeypot](https://github.com/jamesturk/django-honeypot/)**:  Provides tools to reduce automated form spam.

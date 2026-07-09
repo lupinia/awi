@@ -1,10 +1,8 @@
 {% extends "base_blank.html" %}
-{% load cookielaw_tags %}
 {% load sunset_bg %}
 {% get_bg_data as bg %}
 
 {% block page_structure %}
-{% block cookiebanner %}{% if cookie_banner %}{% cookielaw_banner %}{% endif %}{% endblock %}
 <div id="mainwrap" {% block mainwrap_extra %}{% endblock %}>
 	<header>
 		<div id="header_logo" role="banner">

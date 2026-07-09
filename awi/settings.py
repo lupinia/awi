@@ -51,7 +51,6 @@ INSTALLED_APPS = (
 	'django.contrib.sitemaps',
 	
 	#	Third-party apps
-	'cookielaw', 
 	'debug_toolbar',
 	'haystack', 'haystack_panel', 
 	'honeypot',
