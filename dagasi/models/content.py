@@ -9,11 +9,11 @@
 import uuid
 from datetime import timedelta
 
-from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
 from django.core.cache import cache
+from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
@@ -340,6 +340,15 @@ class SecuredModel(models.Model):
 	def state(self):
 		"""
 		Short code indicating primary publication/security status.
+		Proxy for reason field for is_public
+		Used to answer the question 'if you have to pick just one restriction, which is it?'
+		Possible return values, in order of precedence:
+			draft (published==False)
+			locked-private (security==3)
+			locked-group (security==2)
+			locked-users (security==1)
+			mature (mature==True)
+			hidden (hidden==True)
 		"""
 		return self.is_public.reason
 	

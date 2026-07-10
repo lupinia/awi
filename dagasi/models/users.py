@@ -8,12 +8,12 @@
 
 from datetime import timedelta
 
-from django.db import models
 from django.conf import settings
 from django.contrib.auth import User, Group
 from django.contrib.sites.models import Site
 from django.core.cache import cache
 from django.utils import dateparse
+from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import slugify
