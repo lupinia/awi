@@ -28,10 +28,25 @@ class user_settings(models.Model):
 	user = models.OneToOneField('auth.User', related_name='settings', on_delete=models.CASCADE)
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified', help_text="Timestamp showing when this item was last edited.  Automatically set with every save operation, can't be overridden.")
 	
+	# Content display settings
+	_show_hidden = models.BooleanField(default=False, blank=True, verbose_name='list hidden?', help_text='Check this box to always display hidden content in list views.')
+	
 	# Mature content settings
 	is_adult = models.BooleanField(editable=False, default=False, help_text='System field:  If True, this user has provided a birthdate indicating an age >= 18 years.')
 	_show_mature = models.BooleanField(default=False, blank=True, verbose_name='show mature?', help_text='Check this box to display mature content.')
 	age_check_date = models.DateTimeField(null=True, blank=True, editable=False, help_text='Date of last age check.')
+	
+	# General content display properties and methods
+	@property
+	def show_hidden(self):
+		"""Whether to display hidden content in list views to the current user"""
+		if self._show_hidden:
+			if self.user.has_perm('dagasi.list_hidden'):
+				return True
+			else:
+				return False
+		else:
+			return False
 	
 	# Mature content properties and methods
 	@property
@@ -78,6 +93,7 @@ class user_settings(models.Model):
 		"""Return various settings as a dictionary to add to session data"""
 		prefs = {
 			'show_mature': self.show_mature,
+			'show_hidden': self.show_hidden,
 		}
 		return prefs
 	
