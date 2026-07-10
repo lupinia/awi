@@ -23,6 +23,25 @@ def dict_key_choices(source_dict):
 	
 	return tuple_list
 
+def params_to_Q(params):
+	"""
+	params_to_Q(dict) -> (models.Q(key=value) & ...)
+	
+	Turns a dictionary of query parameters into a chain of AND-joined Q objects
+	Useful when parameters usually defined as a dictionary need to be appended to another query
+	"""
+	chain = None
+	for k, v in params.iteritems():
+		if chain is None:
+			# First iteration
+			chain = models.Q(**{k:v,})
+		else:
+			# Subsequent iterations
+			chain = chain & models.Q(**{k:v,})
+	
+	return chain
+
+
 # Abstract model base classes
 class TimestampModel(models.Model):
 	"""
