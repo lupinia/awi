@@ -21,6 +21,7 @@ from django.utils.text import slugify
 
 from awi.utils import types as typeutils
 from awi.utils.hash import hash_sha256
+from awi.utils.models import params_to_Q
 from dagasi.types import status
 
 #	Helper Functions
@@ -48,35 +49,6 @@ def check_mature(request=False):
 			return (False,'access_mature_prompt')
 	else:
 		return (False,'access_norequest')
-
-
-#	Automatically build database constraints based on the current request.
-#	Returns a set of Q objects that can be directly added to the parameters of a .filter() in a QuerySet.
-#	Alternately, you can chain it together with your own Q objects.
-#	Usage examples:
-#		queryset.filter(access_query(self.request)).filter(parent__slug=self.kwargs.get('slug'))
-#		queryset.filter(Q(parent__slug=self.kwargs.get('slug')) & access_query(self.request))
-def access_query(request=False):
-	returned_query = models.Q(sites__id = settings.SITE_ID)
-	
-	if request:
-		if request.user.is_authenticated():
-			if not request.user.is_superuser and not request.user.is_staff:
-				#	Regular User
-				published_query = models.Q(published = True) or models.Q(owner = request.user)
-				returned_query = returned_query & models.Q(security__lt = 2) & published_query
-		else:
-			#	Guest
-			returned_query = returned_query & models.Q(security__lt = 1) & models.Q(published = True)
-		
-		mature_check = check_mature(request)
-		if not mature_check[0]:
-			returned_query = returned_query & models.Q(mature = False)
-	else:
-		#	No request to check, assume least permissions.
-		returned_query = returned_query & models.Q(security__lt = 1) & models.Q(published = True) & models.Q(mature = False)
-	
-	return returned_query
 
 
 #	A version of access_query modified for Haystack.
@@ -110,6 +82,202 @@ def access_search(sqs, request=False):
 	return sqs
 
 
+# QUERYSETS AND MANAGERS
+class SecuredQuerySet(models.QuerySet):
+	def public(self, include_hidden=False, include_mature=False):
+		"""
+		Retrieve only content that's publicly visible
+		Additional parameters for selectively overriding hidden or mature settings
+		"""
+		params = self._params_public(include_hidden, include_mature)
+		
+		return self.filter(**params)
+	
+	def for_user(self, user=None, include_hidden=False, include_mature=False):
+		"""
+		Retrieve only content that the specified user can view
+		Additional parameters for selectively overriding hidden or mature settings
+		"""
+		if user and user.is_active:
+			if user.is_superuser:
+				# No restrictions on superusers
+				return self
+			else:
+				# TODO: Use cache to get mature and hidden settings for current user?
+				return self.filter(self._Qchain_user(user, include_hidden, include_mature))
+		
+		else:
+			return self.public(include_hidden, include_mature)
+	
+	def for_request(self, request=None, force_hidden=None):
+		"""
+		Retrieve only content that the specified request can view, including user access
+		Pass force_hidden parameter to override hidden content preferences from request.userprefs
+		"""
+		if request:
+			include_mature = request.userprefs.get('show_mature', False)
+			include_hidden = request.userprefs.get('show_hidden', False)
+			if force_hidden is not None:
+				include_hidden = force_hidden
+			
+			check_access_codes = request.session.get('dagasi_access_codes', [])
+			if request.GET.get('access_code', False):
+				if not request.GET['access_code'] in check_access_codes:
+					check_access_codes.append(request.GET['access_code'])
+			
+			if request.user.is_authenticated():
+				if check_access_codes and request.user.is_active and not request.user.is_superuser:
+					# Include access codes in filter, but only if it's relevant
+					return self.filter(self._Qchain_user(request.user, include_hidden=include_hidden, include_mature=include_mature) | (models.Q(access_code__in=check_access_codes) & models.Q(access_code__valid=True) & (models.Q(access_code__expiration_date__isnull=True) | models.Q(access_code__expiration_date__gt=timezone.now()))))
+				else:
+					return self.for_user(request.user, include_hidden=include_hidden, include_mature=include_mature)
+			else:
+				return self.public(include_hidden=include_hidden, include_mature=include_mature)
+		
+		else:
+			return self.public()
+	
+	def created_by(self, user, include_contributors=True):
+		"""
+		Performs a query filtering only objects created or contributed to by the specified user.
+		Pass include_contributors=False to only get the specified user's objects
+		Returns queryset.none() if user does not exist
+		"""
+		if user:
+			if include_contributors:
+				return self.filter(self._Qchain_contributor(user))
+			else:
+				return self.filter(owner=user)
+		else:
+			return self.none()
+	
+	
+	# Begin private methods
+	def _params_public(self, include_hidden=False, include_mature=False):
+		"""
+		Return a dictionary of query parameters that can be passed as kwargs to a single .filter()
+		Used in .public() method, separate for easier overriding
+		Includes the parameters defined in _params_published()
+		"""
+		params = self._params_published()
+		params['sites__id'] = settings.SITE_ID
+		params['security__lt'] = 1
+		
+		if not include_hidden:
+			params['hidden'] = False
+		if not include_mature:
+			params['mature'] = False
+		
+		return params
+	
+	def _params_published(self, **kwargs):
+		"""
+		Returns a dictionary of query parameters defining what's published
+		Override for content types that have additional constraints on publication status
+		Additional kwargs will be appended to the output params,
+		and will overwrite them if the keys are the same.
+		"""
+		params = {
+			'published': True,
+		}
+		
+		if kwargs:
+			params.update(kwargs)
+		
+		return params
+	
+	
+	def _Qchain_contributor(self, user):
+		"""Return the Q objects defining whether a user is the owner or a contributor"""
+		return (models.Q(owner=user) | models.Q(contributors=user))
+	
+	def _Qchain_user(self, user, include_hidden=False, include_mature=False):
+		"""
+		Returns the Q filter parameters for the specified user
+		If user does not exists or is not active, return the public restrictions
+		If user is superuser, returns an empty filter set (no restrictions)
+		Else, return the following query restrictions:
+			(user is owner OR user is in contributors)
+			OR (security <= 2 AND groups in user groups AND is published)
+			OR (security <= 1 AND is published)
+		"""
+		if user and user.is_active:
+			if user.is_superuser:
+				return models.Q()
+			else:
+				# Here's where things get complicated
+				published_params_extra = {}
+				group_params_extra = {}
+				if user.has_perm('dagasi.view_cross_site'):
+					published_params_extra['sites__id'] = settings.SITE_ID
+				
+				if not include_hidden:
+					published_params_extra['hidden'] = False
+					group_params_extra['hidden'] = False
+				
+				if not include_mature:
+					published_params_extra['mature'] = False
+					group_params_extra['mature'] = False
+				
+				q_objs = self._Qchain_contributor(user)
+				q_objs = q_objs | (models.Q(security__lte=2) & models.Q(groups__user=user) & params_to_Q(self._params_published(**group_params_extra)))
+				q_objs = q_objs | (models.Q(security__lte=1) & params_to_Q(self._params_published(**published_params_extra)))
+				return q_objs
+		
+		else:
+			return params_to_Q(self._params_public())
+
+
+class SecuredManager(models.Manager):
+	@property
+	def related_fieldnames(self):
+		"""
+		Shortcut for standard select_related field names, as a list.
+		Override in child classes to include more.
+		"""
+		return ['owner', 'access_code', ]
+	
+	@property
+	def prefetch_fieldnames(self):
+		"""
+		Shortcut for standard prefetch_related field names, as a list.
+		Override in child classes to include more.
+		"""
+		return ['contributors', 'groups', 'sites', ]
+	
+	def get_queryset(self):
+		return SecuredQuerySet(self.model, using=self._db).select_related(*self.related_fieldnames).prefetch_related(*self.prefetch_fieldnames)
+	
+	def public(self, include_hidden=False, include_mature=False):
+		"""
+		Retrieve only content that's publicly visible
+		Additional parameters for selectively overriding hidden or mature settings
+		"""
+		return self.get_queryset().public(include_hidden=include_hidden, include_mature=include_mature)
+	
+	def for_user(self, user=None, include_hidden=False, include_mature=False):
+		"""
+		Retrieve only content that the specified user can view
+		Additional parameters for selectively overriding hidden or mature settings
+		"""
+		return self.get_queryset().for_user(user=user, include_hidden=include_hidden, include_mature=include_mature)
+	
+	def for_request(self, request=None, force_hidden=False):
+		"""
+		Retrieve only content that the specified request can view, including user access
+		Pass force_hidden parameter to override hidden content preferences from request.userprefs
+		"""
+		return self.get_queryset().for_request(request=request, force_hidden=force_hidden)
+	
+	def created_by(self, user=None, include_contributors=True):
+		"""
+		Performs a query filtering only objects created or contributed to by the specified user.
+		Pass include_contributors=False to only get the specified user's objects
+		Returns queryset.none() if user does not exist
+		"""
+		return self.get_queryset().created_by(user=user, include_contributors=include_contributors)
+
+
 # MODELS
 class SecuredModel(models.Model):
 	"""
@@ -141,6 +309,9 @@ class SecuredModel(models.Model):
 	
 	# Helper fields
 	guid = models.UUIDField(default=uuid.uuid4, unique=True)
+	
+	# Managers
+	objects = SecuredManager()
 	
 	# Static calculated properties and states
 	@property
