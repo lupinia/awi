@@ -30,7 +30,7 @@ class user_settings(models.Model):
 	
 	# Mature content settings
 	is_adult = models.BooleanField(editable=False, default=False, help_text='System field:  If True, this user has provided a birthdate indicating an age >= 18 years.')
-	_show_mature = models.BooleanField(default=False, help_text='Check this box to display mature content.')
+	_show_mature = models.BooleanField(default=False, blank=True, verbose_name='show mature?', help_text='Check this box to display mature content.')
 	age_check_date = models.DateTimeField(null=True, blank=True, editable=False, help_text='Date of last age check.')
 	
 	# Mature content properties and methods
