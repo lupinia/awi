@@ -138,17 +138,3 @@ urlpatterns = [
 		url(r'^$', deertrees_views.category_list.as_view(), name='category'),
 	])),
 ]
-
-#	django-debug-toolbar
-#	This varies a bit from the documentation, because these need to come before any wildcard URL maps
-if settings.DEBUG:
-	import debug_toolbar
-	
-	urlpatterns_debug = [
-		url(r'^__debug__/', include(debug_toolbar.urls)),
-		url(r'^intentional500/', system_error, name='intentional500'),
-		url(r'^intentional400/', request_error, name='intentional400'),
-		url(r'^intentional404/', not_found, name='intentional404'),
-		url(r'^intentional403/', access_views.denied_error, name='intentional403'),
-	]
-	urlpatterns = urlpatterns_debug + urlpatterns

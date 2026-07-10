@@ -14,6 +14,9 @@ SITE_ID = 1
 WSGI_APPLICATION = 'awi.dev.wsgi.application'
 DEBUG = True
 
+#	Dev-specific URL overrides
+ROOT_URLCONF = 'awi.dev.urls'
+
 #	Site-specific metadata values and defaults
 SITE_TITLE = 'Lupinia Studios (Dev)'
 SITE_TITLE_IMG_CODE = 'fr' # Set to 'fr' unless you know what this does
