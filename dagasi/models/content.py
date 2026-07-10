@@ -665,17 +665,10 @@ class access_code(models.Model):
 	
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, editable=False, verbose_name='date/time created')
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
+	expiration_date = models.DateTimeField(null=True, db_index=True, editable=False, verbose_name='date/time expires')
 	hits = models.PositiveIntegerField(default=0, help_text='Number of times this code has been used.')
 	
 	# Static calculated properties and states
-	@property
-	def expiration_date(self):
-		"""Datetime for this code's expiration, or None if it does not expire"""
-		if self.allowed_age:
-			return self.timestamp_post + timedelta(days=self.allowed_age)
-		else:
-			return None
-	
 	@property
 	def is_valid(self):
 		"""Validity of this code, returns status(False) if revoked or expired"""
@@ -723,6 +716,11 @@ class access_code(models.Model):
 	
 	# System methods and overrides
 	def save(self, *args, **kwargs):
+		if self.allowed_age:
+			self.expiration_date = self.timestamp_post + timedelta(days=self.allowed_age)
+		else:
+			self.expiration_date = None
+		
 		if self.pk and self.valid and not self.is_valid:
 			# If this is an edit instead of a create,
 			# and it's set to valid,
