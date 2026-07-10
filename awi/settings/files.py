@@ -62,13 +62,13 @@ SUNSET_IMAGE_ASSET_SIZES = {
 	},
 	'full':{
 		'label':'Public Full-Size Image',
-		'size':(1920,1300),
+		'size':(1920,1920),
 		'watermark':True,
 		'exact':False,
 	},
 	'bg':{
 		'label':'Site Background',
-		'size':(1700,1000),
+		'size':(1920,1080),
 		'watermark':False,
 		'exact':True,
 	},
@@ -78,7 +78,12 @@ SUNSET_IMAGE_ASSET_SIZES = {
 		'watermark':True,
 		'exact':True,
 	},
-	'twitter':{'label':'Twitter Card Image','size':(1200,600),'watermark':True,'exact':True,},
+	'twitter':{
+		'label':'Twitter Card Image',
+		'size':(1200,600),
+		'watermark':True,
+		'exact':True,
+	},
 }
 
 
