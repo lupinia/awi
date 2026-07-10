@@ -331,8 +331,8 @@ class SecuredModel(models.Model):
 			cur_state.update(False, 'mature')
 		if self.security:
 			cur_state.update(False, 'locked-%s' % self.get_security_display().lower())
-		if self.published:
-			cur_state.update(False, 'draft')
+		if not self.is_published:
+			cur_state.update(False, self.is_published.reason)
 		
 		return cur_state
 	
