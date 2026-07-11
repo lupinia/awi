@@ -19,11 +19,10 @@ from django.http import Http404, HttpResponsePermanentRedirect, HttpResponseNotF
 from django.template import loader
 from django.utils.module_loading import import_string
 
-from haystack.generic_views import FacetedSearchView
 from haystack.query import SearchQuerySet, SQ
 from haystack.inputs import AutoQuery
 
-from awi.utils.search import FacetedSearchForm
+from awi.utils.search import FacetedSearchForm, FacetedSearchView
 from awi_access.models import check_mature, access_search
 from awi_access.utils import add_new_block
 from awi_access.views import denied_error
@@ -159,7 +158,7 @@ def g2_finder(request):
 
 #	Primary Search View
 class search_view(FacetedSearchView):
-	form_class = FacetedSearchForm
+	title_page = "Search"
 	facet_fields = ['pub_date', 'category', 'tags']
 	
 	def get_queryset(self):
@@ -168,44 +167,9 @@ class search_view(FacetedSearchView):
 	
 	def get_context_data(self, *args, **kwargs):
 		context = super(search_view, self).get_context_data(*args, **kwargs)
-		context['highlight_featured'] = True
-		context['title_page'] = "Search"
-		
-		if context.get('query',False):
-			context['paginator_vars'] = [('q', context.get('query',False)), ]
-			context['title_page'] += ": " + context.get('query','')
-			
-			if context.get('is_paginated',False) and context.get('object_list',False):
-				try:
-					page_cur = context['page_obj'].number
-					page_total = context['page_obj'].paginator.num_pages
-					context['title_page'] += " (Page %d of %d)" % (page_cur, page_total)
-				except KeyError:
-					# Something went wrong, and this isn't that important anyway, so do nothing
-					pass
-		
-		if not context.get('breadcrumbs',False):
-			context['breadcrumbs'] = []
 		context['breadcrumbs'].append({'url':reverse('haystack_search'), 'title':'Search'})
 		
 		return context
-	
-	def form_valid(self, form):
-		# Dear Haystack:
-		# Why do I have to override and re-write this to make suggestions work correctly?
-		# You're starting to get on my nerves.
-		
-		# Copied from Haystack source
-		self.queryset = form.search()
-		context = self.get_context_data(**{
-			self.form_name: form,
-			'query': form.cleaned_data.get(self.search_field),
-			'object_list': self.queryset,
-			
-			# Adding this here, since it didn't work from within get_context_data
-			'spelling_suggestion':self.queryset.spelling_suggestion(form.cleaned_data.get(self.search_field)),
-		})
-		return self.render_to_response(context)
 
 
 #	Shortcode Handler

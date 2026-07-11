@@ -9,6 +9,7 @@
 from django.conf import settings
 
 from haystack.forms import FacetedSearchForm as BaseFacetedSearchForm
+from haystack.generic_views import FacetedSearchView as BaseFacetedSearchView
 from haystack.inputs import AutoQuery
 from haystack.query import SQ
 
@@ -76,3 +77,50 @@ class FacetedSearchForm(BaseFacetedSearchForm):
 				sqs = sqs.narrow(u'%s:"%s"' % (field, sqs.query.clean(value)))
 		
 		return sqs
+
+class FacetedSearchView(BaseFacetedSearchView):
+	form_class = FacetedSearchForm
+	title_page = "Search"
+	
+	def get_context_data(self, *args, **kwargs):
+		context = super(FacetedSearchView, self).get_context_data(*args, **kwargs)
+		
+		# Setting sensible defaults for this site
+		context['highlight_featured'] = True
+		context['title_page'] = self.title_page
+		
+		if not context.get('breadcrumbs',False):
+			# Append the rest in the actual view
+			context['breadcrumbs'] = []
+		
+		if context.get('query',False):
+			context['paginator_vars'] = [('q', context.get('query',False)), ]
+			context['title_page'] += ": " + context.get('query','')
+			
+			if context.get('is_paginated',False) and context.get('object_list',False):
+				try:
+					page_cur = context['page_obj'].number
+					page_total = context['page_obj'].paginator.num_pages
+					context['title_page'] += " (Page %d of %d)" % (page_cur, page_total)
+				except KeyError:
+					# Something went wrong, and this isn't that important anyway, so do nothing
+					pass
+		
+		return context
+	
+	def form_valid(self, form):
+		# Dear Haystack:
+		# Why do I have to override and re-write this to make suggestions work correctly?
+		# You're starting to get on my nerves.
+		
+		# Copied from Haystack source
+		self.queryset = form.search()
+		context = self.get_context_data(**{
+			self.form_name: form,
+			'query': form.cleaned_data.get(self.search_field),
+			'object_list': self.queryset,
+			
+			# Adding this here, since it didn't work from within get_context_data
+			'spelling_suggestion':self.queryset.spelling_suggestion(form.cleaned_data.get(self.search_field)),
+		})
+		return self.render_to_response(context)
