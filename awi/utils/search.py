@@ -13,6 +13,25 @@ from haystack.generic_views import FacetedSearchView as BaseFacetedSearchView
 from haystack.inputs import AutoQuery
 from haystack.query import SQ
 
+def params_to_SQ(params):
+	"""
+	params_to_SQ(dict) -> (SQ(key=value) & ...)
+	
+	Turns a dictionary of query parameters into a chain of AND-joined SQ objects
+	Useful when parameters usually defined as a dictionary need to be appended to another query
+	"""
+	chain = None
+	for k, v in params.iteritems():
+		if chain is None:
+			# First iteration
+			chain = SQ(**{k:v,})
+		else:
+			# Subsequent iterations
+			chain = chain & SQ(**{k:v,})
+	
+	return chain
+
+
 # Abstract base classes
 class FacetedSearchForm(BaseFacetedSearchForm):
 	def __init__(self, *args, **kwargs):
