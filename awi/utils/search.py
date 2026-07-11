@@ -1,21 +1,22 @@
-#	DeerFind (Django App)
+#	Lupinia Studios
 #	By Natasha L.
 #	www.lupinia.net | github.com/lupinia
 #	
 #	=================
-#	Forms
+#	Utility functions/objects for Haystack search
 #	=================
 
 from django.conf import settings
 
-from haystack.forms import FacetedSearchForm
+from haystack.forms import FacetedSearchForm as BaseFacetedSearchForm
 from haystack.inputs import AutoQuery
 from haystack.query import SQ
 
-class simple_search_form(FacetedSearchForm):
+# Abstract base classes
+class FacetedSearchForm(BaseFacetedSearchForm):
 	def __init__(self, *args, **kwargs):
 		# I shouldn't have to override this to set a placeholder for the search form's main field.
-		super(simple_search_form, self).__init__(*args, **kwargs)
+		super(FacetedSearchForm, self).__init__(*args, **kwargs)
 		self.fields['q'].widget.attrs['placeholder'] = 'Search...'
 	
 	def search(self):

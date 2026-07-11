@@ -23,10 +23,10 @@ from haystack.generic_views import FacetedSearchView
 from haystack.query import SearchQuerySet, SQ
 from haystack.inputs import AutoQuery
 
+from awi.utils.search import FacetedSearchForm
 from awi_access.models import check_mature, access_search
 from awi_access.utils import add_new_block
 from awi_access.views import denied_error
-from deerfind.forms import simple_search_form
 from deerfind.models import pointer
 from deerfind.utils import g2_lookup, shortcode_lookup
 
@@ -159,7 +159,7 @@ def g2_finder(request):
 
 #	Primary Search View
 class search_view(FacetedSearchView):
-	form_class = simple_search_form
+	form_class = FacetedSearchForm
 	facet_fields = ['pub_date', 'category', 'tags']
 	
 	def get_queryset(self):
