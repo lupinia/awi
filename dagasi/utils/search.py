@@ -80,7 +80,11 @@ class SecuredSearchQuerySet(SearchQuerySet):
 		so this is basically just a proxy for .filter
 		Included only for API compatibility
 		"""
-		pass
+		self = self._site_filter(for_site)
+		if kwargs:
+			self = self.filter(**kwargs)
+		
+		return self
 	
 	# Private methods
 	def _site_filter(self, for_site=None):
