@@ -69,3 +69,26 @@ class SecuredSearchQuerySet(SearchQuerySet):
 		Included only for API compatibility
 		"""
 		pass
+	
+	# Private methods
+	def _site_filter(self, for_site=None):
+		"""
+		Performs a query filtering only items attached to the current site
+		Override using for_site parameter:
+			None (default):  Use settings.SITE_ID
+			List:  Multiple options using sites__in
+			Integer > 0:  Use a specific value as an override
+			Integer == 0:  No restriction
+		"""
+		if for_site is None:
+			return self.filter(sites=settings.SITE_ID)
+		elif typeutils.is_iterable(for_site):
+			# Corner case: We're using a list to override this
+			return self.filter(sites__in=for_site)
+		elif for_site:
+			# We've been given a specific number, so use that
+			return self.filter(sites=for_site)
+		else:
+			# If we're passed zero, this should be unrestricted,
+			# so we just do nothing if for_site evals to False
+			return self
