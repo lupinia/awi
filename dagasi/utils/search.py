@@ -56,7 +56,19 @@ class SecuredSearchQuerySet(SearchQuerySet):
 		Performs a query filtering only objects created or contributed to by the specified user.
 		Returns queryset.none() if user does not exist
 		"""
-		pass
+		if include_contributors is not None:
+			return NotImplemented
+		
+		if user:
+			if hasattr(user, 'pk'):
+				return self.filter(contributors=user.pk)
+			elif typeutils.is_int(user):
+				return self.filter(contributors=user)
+			else:
+				raise TypeError('user must be integer or User instance')
+		
+		else:
+			return self.none()
 	
 	def published(self, for_site=None, **kwargs):
 		"""
