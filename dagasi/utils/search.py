@@ -96,15 +96,35 @@ class SecuredSearchQuerySet(SearchQuerySet):
 			Integer > 0:  Use a specific value as an override
 			Integer == 0:  No restriction
 		"""
-		if for_site is None:
-			return self.filter(sites=settings.SITE_ID)
-		elif typeutils.is_iterable(for_site):
-			# Corner case: We're using a list to override this
-			return self.filter(sites__in=for_site)
-		elif for_site:
-			# We've been given a specific number, so use that
-			return self.filter(sites=for_site)
+		params = self._params_sites(for_site)
+		if params:
+			return self.filter(**params)
 		else:
 			# If we're passed zero, this should be unrestricted,
 			# so we just do nothing if for_site evals to False
 			return self
+	
+	def _params_sites(self, for_site=None):
+		"""
+		Return parameters for a same-site restriction
+		Can be overridden with the for_site parameter:
+			None (default):  Use the value of settings.SITE_ID
+			List:  Multiple values, returns the parameter sites__id__in
+			Integer > 0:  Use a specific single value for sites__id
+			Integer == 0:  No restriction (returns an empty dict)
+		"""
+		params = {}
+		if for_site is None:
+			# If this is None, use the current site from settings
+			params['sites'] = settings.SITE_ID
+		else:
+			if typeutils.is_iterable(for_site):
+				# Corner case: We're using a list to override this
+				params['sites__in'] = for_site
+			elif for_site:
+				# We've been given a specific number, so use that
+				# If we're passed zero, this should be unrestricted,
+				# so we just do nothing if for_site evals to False
+				params['sites'] = for_site
+		
+		return params
