@@ -27,7 +27,15 @@ class SecuredSearchQuerySet(SearchQuerySet):
 		Retrieve only content that's publicly visible
 		Additional parameters for selectively overriding hidden or mature settings
 		"""
-		pass
+		self = self._site_filter(for_site)
+		exclusions = {'security__gt':0,}
+		
+		if not include_hidden:
+			exclusions['hidden'] = True
+		if not include_mature:
+			exclusions['mature'] = True
+		
+		return self.exclude(**exclusions)
 	
 	def for_user(self, user=None, include_hidden=False, include_mature=False, for_site=None):
 		"""
