@@ -275,6 +275,14 @@ class SecuredManager(models.Manager):
 		Returns queryset.none() if user does not exist
 		"""
 		return self.get_queryset().created_by(user=user, include_contributors=include_contributors)
+	
+	def published(self, for_site=None, **kwargs):
+		"""
+		Performs a query filtering all items that are published, regardless of other factors.
+		Pass for_site parameter to override site restriction
+		Pass other kwargs to add to the query
+		"""
+		return self.get_queryset().published(for_site=for_site, **kwargs)
 
 
 # MODELS
