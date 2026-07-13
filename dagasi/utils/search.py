@@ -188,3 +188,31 @@ class SecuredSearchQuerySet(SearchQuerySet):
 				params['sites'] = for_site
 		
 		return params
+
+
+# Abstract base class for search indexes
+class SecuredSearchIndex(indexes.SearchIndex):
+	# Primary content fields will be defined on a per-model basis:
+	#	Title
+	#	Summary
+	#	Text
+	#	URL
+	
+	# Security filters
+	security = indexes.IntegerField(model_attr='security', faceted=True)
+	hidden = indexes.BooleanField(model_attr='hidden', faceted=True)
+	mature = indexes.BooleanField(model_attr='mature', faceted=True)
+	
+	# Security relationships
+	sites = indexes.MultiValueField(model_attr='sites_ids', faceted=True)
+	contributors = indexes.MultiValueField(model_attr='contributors_ids', faceted=True)
+	groups = indexes.MultiValueField(model_attr='groups_ids', faceted=True)
+	
+	# Methods
+	def index_queryset(self, using=None):
+		"""
+		Query used to select items for indexing
+		Must be published
+		Assumes models using this will extend SecuredQuerySet
+		"""
+		return super(SecuredSearchIndex, self).index_queryset(using).published(for_site=0)
