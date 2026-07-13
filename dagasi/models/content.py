@@ -120,6 +120,11 @@ class SecuredQuerySet(models.QuerySet):
 			if force_hidden is not None:
 				include_hidden = force_hidden
 			
+			# Site restriction is pre-cached when we have a request
+			for_site = settings.SITE_ID
+			if request.userprefs.get('view_cross_site', False):
+				for_site = 0
+			
 			check_access_codes = request.session.get('dagasi_access_codes', [])
 			if request.GET.get('access_code', False):
 				if not request.GET['access_code'] in check_access_codes:
@@ -128,11 +133,11 @@ class SecuredQuerySet(models.QuerySet):
 			if request.user.is_authenticated():
 				if check_access_codes and request.user.is_active and not request.user.is_superuser:
 					# Include access codes in filter, but only if it's relevant
-					return self.filter(self._Qchain_user(request.user, include_hidden=include_hidden, include_mature=include_mature) | (models.Q(access_code__in=check_access_codes) & models.Q(access_code__valid=True) & (models.Q(access_code__expiration_date__isnull=True) | models.Q(access_code__expiration_date__gt=timezone.now()))))
+					return self.filter(self._Qchain_user(request.user, include_hidden=include_hidden, include_mature=include_mature, for_site=for_site) | (models.Q(access_code__in=check_access_codes) & models.Q(access_code__valid=True) & (models.Q(access_code__expiration_date__isnull=True) | models.Q(access_code__expiration_date__gt=timezone.now()))))
 				else:
-					return self.for_user(request.user, include_hidden=include_hidden, include_mature=include_mature)
+					return self.for_user(request.user, include_hidden=include_hidden, include_mature=include_mature, for_site=for_site)
 			else:
-				return self.public(include_hidden=include_hidden, include_mature=include_mature)
+				return self.public(include_hidden=include_hidden, include_mature=include_mature, for_site=for_site)
 		
 		else:
 			return self.public()
@@ -246,8 +251,13 @@ class SecuredQuerySet(models.QuerySet):
 				# Here's where things get complicated
 				published_params_extra = {}
 				group_params_extra = {}
-				if not user.has_perm('dagasi.view_cross_site'):
-					published_params_extra.update(self._params_sites(for_site))
+				
+				if for_site is None:
+					# This permission check is unnecessary if it's pre-cached
+					if user.has_perm('dagasi.view_cross_site'):
+						for_site = 0
+				
+				published_params_extra.update(self._params_sites(for_site))
 				
 				if not include_hidden:
 					published_params_extra['hidden'] = False

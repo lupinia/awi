@@ -13,5 +13,6 @@ def default_userprefs():
 	prefs = {
 		'show_mature': status(False, 'access_mature_prompt'),
 		'show_hidden': False,
+		'view_cross_site': False,
 	}
 	return prefs

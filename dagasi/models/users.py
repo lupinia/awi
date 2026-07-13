@@ -95,6 +95,10 @@ class user_settings(models.Model):
 			'show_mature': self.show_mature,
 			'show_hidden': self.show_hidden,
 		}
+		
+		# Pre-cache cross-site permission, since that's used on most pages
+		prefs['view_cross_site'] = self.user.has_perm('dagasi.view_cross_site')
+		
 		return prefs
 	
 	# System methods and overrides
