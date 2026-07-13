@@ -51,37 +51,6 @@ def check_mature(request=False):
 		return (False,'access_norequest')
 
 
-#	A version of access_query modified for Haystack.
-#	Expects a SearchQuerySet object.
-#	Unpublished items should not be indexed by Haystack at all, so this assumes they won't be.
-#	Because SearchQuerySets work a little differently from QuerySets, it's more reliable to use .exclude() for most of this.
-#	This is also why this function adds to the SearchQuerySet chain directly, instead of returning .filter() parameters.
-#	Usage example:
-#		queryset = access_search(queryset, self.request)
-def access_search(sqs, request=False):
-	sqs = sqs.filter(sites=settings.SITE_ID)
-	
-	if request:
-		if request.user.is_authenticated():
-			if not request.user.is_superuser and not request.user.is_staff:
-				# Regular User
-				sqs = sqs.exclude(security__gt = 1)
-		
-		else:
-			# Guest
-			sqs = sqs.exclude(security__gt = 0)
-		
-		mature_check = check_mature(request)
-		if not mature_check[0]:
-			sqs = sqs.exclude(mature=True)
-	
-	else:
-		# No request to check, assume least permissions.
-		sqs = sqs.exclude(mature=True, security__gt=0)
-	
-	return sqs
-
-
 # QUERYSETS AND MANAGERS
 class SecuredQuerySet(models.QuerySet):
 	def public(self, include_hidden=False, include_mature=False, for_site=None):
