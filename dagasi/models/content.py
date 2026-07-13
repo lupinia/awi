@@ -151,6 +151,16 @@ class SecuredQuerySet(models.QuerySet):
 		else:
 			return self.none()
 	
+	def published(self, for_site=None, **kwargs):
+		"""
+		Performs a query filtering all items that are published, regardless of other factors.
+		Pass for_site parameter to override site restriction
+		Pass other kwargs to add to the query
+		"""
+		params = self._params_published(**kwargs)
+		params.update(self._params_sites(for_site))
+		return self.filter(**params)
+	
 	
 	# Begin private methods
 	def _params_public(self, include_hidden=False, include_mature=False, for_site=None):
