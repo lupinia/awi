@@ -24,33 +24,6 @@ from awi.utils.hash import hash_sha256
 from awi.utils.models import params_to_Q
 from dagasi.types import status
 
-#	Helper Functions
-def check_mature(request=False):
-	if request:
-		if request.user.is_authenticated():
-			if not hasattr(request.user, 'user_settings'):
-				user_settings.objects.create(user=request.user)
-			mature_auth_check = request.user.user_settings.check_mature()
-			if mature_auth_check[0]:
-				return (True, '')
-			else:
-				return (False, 'access_mature_%s' % mature_auth_check[1])
-		
-		elif request.session.get('awi_mature_denied', False):
-			return (False, 'access_mature_denied')
-		
-		elif request.session.get('awi_mature_access', False):
-			if dateparse.parse_datetime(request.session.get('awi_mature_access', False)) > timezone.now():
-				return (True, '')
-			else:
-				return (False,'access_mature_prompt')
-		
-		else:
-			return (False,'access_mature_prompt')
-	else:
-		return (False,'access_norequest')
-
-
 # QUERYSETS AND MANAGERS
 class SecuredQuerySet(models.QuerySet):
 	def public(self, include_hidden=False, include_mature=False, for_site=None):
