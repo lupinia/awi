@@ -247,19 +247,19 @@ class SecuredManager(models.Manager):
 	def get_queryset(self):
 		return SecuredQuerySet(self.model, using=self._db).select_related(*self.related_fieldnames).prefetch_related(*self.prefetch_fieldnames)
 	
-	def public(self, include_hidden=False, include_mature=False):
+	def public(self, include_hidden=False, include_mature=False, for_site=None):
 		"""
 		Retrieve only content that's publicly visible
 		Additional parameters for selectively overriding hidden or mature settings
 		"""
-		return self.get_queryset().public(include_hidden=include_hidden, include_mature=include_mature)
+		return self.get_queryset().public(include_hidden=include_hidden, include_mature=include_mature, for_site=for_site)
 	
-	def for_user(self, user=None, include_hidden=False, include_mature=False):
+	def for_user(self, user=None, include_hidden=False, include_mature=False, for_site=None):
 		"""
 		Retrieve only content that the specified user can view
 		Additional parameters for selectively overriding hidden or mature settings
 		"""
-		return self.get_queryset().for_user(user=user, include_hidden=include_hidden, include_mature=include_mature)
+		return self.get_queryset().for_user(user=user, include_hidden=include_hidden, include_mature=include_mature, for_site=for_site)
 	
 	def for_request(self, request=None, force_hidden=False):
 		"""
