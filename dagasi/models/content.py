@@ -84,16 +84,16 @@ def access_search(sqs, request=False):
 
 # QUERYSETS AND MANAGERS
 class SecuredQuerySet(models.QuerySet):
-	def public(self, include_hidden=False, include_mature=False):
+	def public(self, include_hidden=False, include_mature=False, for_site=None):
 		"""
 		Retrieve only content that's publicly visible
 		Additional parameters for selectively overriding hidden or mature settings
 		"""
-		params = self._params_public(include_hidden, include_mature)
+		params = self._params_public(include_hidden, include_mature, for_site)
 		
 		return self.filter(**params)
 	
-	def for_user(self, user=None, include_hidden=False, include_mature=False):
+	def for_user(self, user=None, include_hidden=False, include_mature=False, for_site=None):
 		"""
 		Retrieve only content that the specified user can view
 		Additional parameters for selectively overriding hidden or mature settings
@@ -104,10 +104,10 @@ class SecuredQuerySet(models.QuerySet):
 				return self
 			else:
 				# TODO: Use cache to get mature and hidden settings for current user?
-				return self.filter(self._Qchain_user(user, include_hidden, include_mature))
+				return self.filter(self._Qchain_user(user, include_hidden, include_mature, for_site))
 		
 		else:
-			return self.public(include_hidden, include_mature)
+			return self.public(include_hidden, include_mature, for_site)
 	
 	def for_request(self, request=None, force_hidden=None):
 		"""
@@ -153,20 +153,48 @@ class SecuredQuerySet(models.QuerySet):
 	
 	
 	# Begin private methods
-	def _params_public(self, include_hidden=False, include_mature=False):
+	def _params_public(self, include_hidden=False, include_mature=False, for_site=None):
 		"""
 		Return a dictionary of query parameters that can be passed as kwargs to a single .filter()
 		Used in .public() method, separate for easier overriding
 		Includes the parameters defined in _params_published()
 		"""
 		params = self._params_published()
-		params['sites__id'] = settings.SITE_ID
 		params['security__lt'] = 1
 		
+		# Overrides for partial restrictions
 		if not include_hidden:
 			params['hidden'] = False
 		if not include_mature:
 			params['mature'] = False
+		
+		# Override for site ID
+		params.update(self._params_sites(for_site))
+		
+		return params
+	
+	def _params_sites(self, for_site=None):
+		"""
+		Return parameters for a same-site restriction
+		Can be overridden with the for_site parameter:
+			None (default):  Use the value of settings.SITE_ID
+			List:  Multiple values, returns the parameter sites__id__in
+			Integer > 0:  Use a specific single value for sites__id
+			Integer == 0:  No restriction (returns an empty dict)
+		"""
+		params = {}
+		if for_site is None:
+			# If this is None, use the current site from settings
+			params['sites__id'] = settings.SITE_ID
+		else:
+			if typeutils.is_iterable(for_site):
+				# Corner case: We're using a list to override this
+				params['sites__id__in'] = for_site
+			elif for_site:
+				# We've been given a specific number, so use that
+				# If we're passed zero, this should be unrestricted,
+				# so we just do nothing if for_site evals to False
+				params['sites__id'] = for_site
 		
 		return params
 	
@@ -191,7 +219,7 @@ class SecuredQuerySet(models.QuerySet):
 		"""Return the Q objects defining whether a user is the owner or a contributor"""
 		return (models.Q(owner=user) | models.Q(contributors=user))
 	
-	def _Qchain_user(self, user, include_hidden=False, include_mature=False):
+	def _Qchain_user(self, user, include_hidden=False, include_mature=False, for_site=None):
 		"""
 		Returns the Q filter parameters for the specified user
 		If user does not exists or is not active, return the public restrictions
@@ -208,8 +236,8 @@ class SecuredQuerySet(models.QuerySet):
 				# Here's where things get complicated
 				published_params_extra = {}
 				group_params_extra = {}
-				if user.has_perm('dagasi.view_cross_site'):
-					published_params_extra['sites__id'] = settings.SITE_ID
+				if not user.has_perm('dagasi.view_cross_site'):
+					published_params_extra.update(self._params_sites(for_site))
 				
 				if not include_hidden:
 					published_params_extra['hidden'] = False
@@ -220,12 +248,12 @@ class SecuredQuerySet(models.QuerySet):
 					group_params_extra['mature'] = False
 				
 				q_objs = self._Qchain_contributor(user)
-				q_objs = q_objs | (models.Q(security__lte=2) & models.Q(groups__user=user) & params_to_Q(self._params_published(**group_params_extra)))
-				q_objs = q_objs | (models.Q(security__lte=1) & params_to_Q(self._params_published(**published_params_extra)))
+				q_objs = q_objs | (models.Q(security__lte=2) & models.Q(groups__user=user) & params_to_Q(self._params_published(group_params_extra)))
+				q_objs = q_objs | (models.Q(security__lte=1) & params_to_Q(self._params_published(published_params_extra)))
 				return q_objs
 		
 		else:
-			return params_to_Q(self._params_public())
+			return params_to_Q(self._params_public(include_hidden, include_mature, for_site))
 
 
 class SecuredManager(models.Manager):
