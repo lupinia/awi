@@ -125,15 +125,13 @@ class SecuredQuerySet(models.QuerySet):
 			if request.userprefs.get('view_cross_site', False):
 				for_site = 0
 			
+			# Only include the access codes that have been validated for this session
 			check_access_codes = request.session.get('dagasi_access_codes', [])
-			if request.GET.get('access_code', False):
-				if not request.GET['access_code'] in check_access_codes:
-					check_access_codes.append(request.GET['access_code'])
 			
 			if request.user.is_authenticated():
 				if check_access_codes and request.user.is_active and not request.user.is_superuser:
 					# Include access codes in filter, but only if it's relevant
-					return self.filter(self._Qchain_user(request.user, include_hidden=include_hidden, include_mature=include_mature, for_site=for_site) | (models.Q(access_code__in=check_access_codes) & models.Q(access_code__valid=True) & (models.Q(access_code__expiration_date__isnull=True) | models.Q(access_code__expiration_date__gt=timezone.now()))))
+					return self.filter(self._Qchain_user(request.user, include_hidden=include_hidden, include_mature=include_mature, for_site=for_site) | self._Qchain_accesscodes(check_access_codes))
 				else:
 					return self.for_user(request.user, include_hidden=include_hidden, include_mature=include_mature, for_site=for_site)
 			else:
@@ -233,6 +231,17 @@ class SecuredQuerySet(models.QuerySet):
 	def _Qchain_contributor(self, user):
 		"""Return the Q objects defining whether a user is the owner or a contributor"""
 		return (models.Q(owner=user) | models.Q(contributors=user))
+	
+	def _Qchain_accesscodes(self, codes=[]):
+		"""Return the Q objects defining valid access codes"""
+		if len(codes) > 1:
+			q_objs = models.Q(access_code__code__in=codes)
+		else:
+			q_objs = models.Q(access_code__code=codes[0])
+		
+		q_objs = q_objs & models.Q(access_code__valid=True)
+		
+		return (q_objs & (models.Q(access_code__expiration_date__isnull=True) | models.Q(access_code__expiration_date__gt=timezone.now())))
 	
 	def _Qchain_user(self, user, include_hidden=False, include_mature=False, for_site=None):
 		"""
