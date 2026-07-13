@@ -20,6 +20,7 @@ from django.utils.functional import cached_property
 from django.utils.text import slugify
 
 from awi.utils import types as typeutils
+from awi.utils.sites import get_current_site
 from awi.utils.hash import hash_sha256
 from awi.utils.models import params_to_Q
 from dagasi.types import status
@@ -493,28 +494,6 @@ class SecuredModel(models.Model):
 		
 		return success
 	
-	def get_url_domain(self, request=None):
-		"""
-		Get a domain name for building canonical URLs.
-		Optionally pass the request object to use the same hostname.
-		"""
-		if request:
-			domain = request.get_host()
-		else:
-			domain_cache_key = 'model_urldomain.%s.%d' % (self.__class__.__name__, self.pk)
-			domain = cache.get(domain_cache_key)
-			if domain is None:
-				primary_site = self.sites.all().order_by('pk').first()
-				if not primary_site:
-					primary_site = get_current_site()
-				
-				domain = primary_site.domain
-				if not domain.startswith('www.'):
-					domain = 'www.%s' % domain
-				
-				cache.set(domain_cache_key, domain, 60*60*24*7)
-		
-		return domain
 	
 	# Access code operations
 	def access_code_check(self, check, first_hit=False):
@@ -588,6 +567,7 @@ class SecuredModel(models.Model):
 			'siteid_list',
 			'contributorid_list',
 			'groupid_list',
+			'canonical_domain',
 		]
 		return [self.cache_key(x) for x in keylist]
 	
@@ -654,6 +634,29 @@ class SecuredModel(models.Model):
 			groupids = list(self.groups.all().values_list('pk', flat=True))
 			self.cache_set('groupid_list', groupids)
 			return groupids
+	
+	def get_url_domain(self, request=None):
+		"""
+		Get a domain name for building canonical URLs.
+		Optionally pass the request object to use the same hostname.
+		"""
+		if request:
+			return request.get_host()
+		else:
+			domain_cache_key = 'canonical_domain'
+			domain = self.cache_get('canonical_domain')
+			if domain is None:
+				primary_site = self.sites.all().order_by('pk').first()
+				if not primary_site:
+					primary_site = get_current_site()
+				
+				domain = primary_site.domain
+				if not domain.startswith('www.'):
+					domain = 'www.%s' % domain
+				
+				self.cache_set(domain_cache_key, domain)
+			
+			return domain
 	
 	
 	# System methods and overrides
