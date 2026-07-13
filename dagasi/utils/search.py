@@ -41,8 +41,50 @@ class SecuredSearchQuerySet(SearchQuerySet):
 		"""
 		Retrieve only content that the specified user can view
 		Additional parameters for selectively overriding hidden or mature settings
+		If user does not exist or is not active, return the public queryset
+		If user is superuser, unfiltered queryset (no restrictions)
+		Else, return the following query restrictions:
+			(user is owner OR user is in contributors)
+			OR (security <= 2 AND groups in user groups AND is published)
+			OR (security <= 1 AND is published)
 		"""
-		pass
+		if user and user.is_active:
+			if user.is_superuser:
+				# No restrictions on superusers
+				return self
+			else:
+				params_extra = {}
+				
+				if for_site is None:
+					# This permission check is unnecessary if it's pre-cached
+					if user.has_perm('dagasi.view_cross_site'):
+						for_site = 0
+				
+				if not include_hidden:
+					params_extra['hidden'] = False
+				
+				if not include_mature:
+					params_extra['mature'] = False
+				
+				# Start building a query chain
+				q_objs = SQ(contributors=user.pk)
+				
+				# TODO: Cache group pks for user
+				if user.groups.exists():
+					q_objs_grp = SQ(security__lte=2) & SQ(groups__in=user.groups.all().values_list('pk', flat=True))
+					if params_extra:
+						q_objs_grp = q_objs_grp & params_to_SQ(params_extra)
+					
+					q_objs = q_objs | (q_objs_grp)
+				
+				# Add in the site filter only for public or all-users content
+				params_extra.update(self._params_sites(for_site))
+				q_objs = q_objs | (SQ(security__lte=1) & params_to_SQ(params_extra))
+				
+				return self.filter(q_objs)
+		
+		else:
+			return self.public(include_hidden, include_mature, for_site)
 	
 	def for_request(self, request=None, force_hidden=None):
 		"""
