@@ -91,7 +91,25 @@ class SecuredSearchQuerySet(SearchQuerySet):
 		Retrieve only content that the specified request can view, including user access
 		Pass force_hidden parameter to override hidden content preferences from request.userprefs
 		"""
-		pass
+		if request:
+			include_mature = request.userprefs.get('show_mature', False)
+			include_hidden = request.userprefs.get('show_hidden', False)
+			if force_hidden is not None:
+				include_hidden = force_hidden
+			
+			# Site restriction is pre-cached when we have a request
+			for_site = settings.SITE_ID
+			if request.userprefs.get('view_cross_site', False):
+				for_site = 0
+			
+			# Not messing with access codes in search views, so this is simpler
+			if request.user.is_authenticated():
+				return self.for_user(request.user, include_hidden=include_hidden, include_mature=include_mature, for_site=for_site)
+			else:
+				return self.public(include_hidden=include_hidden, include_mature=include_mature, for_site=for_site)
+		
+		else:
+			return self.public()
 	
 	def created_by(self, user, include_contributors=None):
 		"""
