@@ -672,7 +672,8 @@ class SecuredModel(models.Model):
 		contrib_ids = self.cache_get('contributorid_list')
 		if contrib_ids is None:
 			contrib_ids = list(self.contributors.all().values_list('pk', flat=True))
-			contrib_ids.append(self.owner_id)
+			if self.owner_id not in contrib_ids:
+				contrib_ids.append(self.owner_id)
 			self.cache_set('contributorid_list', contrib_ids)
 			return contrib_ids
 	
