@@ -139,5 +139,6 @@ STATIC_PRECOMPILER_COMPILERS = (
 	('static_precompiler.compilers.libsass.SCSS', {
 		"sourcemap_enabled": False,
 		"precision": 8,
+		"load_paths": ["static/css/showcase"],
 	}),
 )

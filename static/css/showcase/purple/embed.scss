@@ -1,10 +1,12 @@
-/*	Lupinia Studios Main Theme - "Showcase"	*/
+/*	Lupinia Studios Main Theme - "Showcase"		*/
+/*	Color Scheme:  Purple (Lupinia Standard)	*/
 //	Primary SASS Stylesheet
 //	By Natasha L.
 //	www.lupinia.net | github.com/lupinia
 
 /*	Generated from SASS	*/
-@import 'base';
+@import 'colors';
+@import 'includes/base';
 
 #djDebug { display:none !important; }
 

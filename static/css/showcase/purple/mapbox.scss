@@ -1,5 +1,8 @@
-@import 'colors_purple';
-@import 'mixins';
+/*	Lupinia Studios Main Theme - "Showcase"		*/
+/*	Color Scheme:  Purple (Lupinia Standard)	*/
+
+@import 'colors';
+@import 'includes/mixins';
 
 .leaflet-container {
     background: $color_bgwhite;

@@ -20,6 +20,8 @@ def core(request):
 	Values:
 		debug_check:  Bool, value of settings.DEBUG
 		debug_white_bg:  Bool, True if settings.DEBUG is True and ?nobg=1 in URL
+		theme_name:  Currently-selected theme name
+		theme_color:  Currently-selected color scheme
 		mapbox_token:  Value of settings.MAPBOX_KEY
 		locale:  Value of settings.LANGUAGE_CODE
 		server_canonical_name:  Value of settings.SERVER_CANONICAL_NAME
@@ -37,6 +39,8 @@ def core(request):
 	return {
 		'debug_check': settings.DEBUG,
 		'debug_white_bg': bg_white,
+		'theme_name': settings.DEFAULT_THEME,
+		'theme_color': settings.DEFAULT_THEME_COLOR,
 		'mapbox_token': settings.MAPBOX_KEY,
 		'locale': settings.LANGUAGE_CODE,
 		'server_canonical_name': settings.SERVER_CANONICAL_NAME,

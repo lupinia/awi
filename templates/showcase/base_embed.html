@@ -9,7 +9,7 @@
 	<title>{% block title %}{% if title_site and title_page %}{{title_page}} - {{title_site}}{% elif title_site %}{{title_site}}{% else %}Lupinia Studios{% endif %}{% endblock %}</title>
 	
 	{% block extra_head %}{% endblock %}
-	<link href="{{STATIC_PREFIX}}css/showcase_embed.css" type="text/css" rel="stylesheet" id="main_css" />
+	<link href="{{STATIC_PREFIX}}css/showcase/{{theme_color}}/embed.css" type="text/css" rel="stylesheet" id="main_css" />
 </head>
 
 	<body>

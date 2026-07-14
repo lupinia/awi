@@ -61,7 +61,7 @@
 	<meta name="twitter:card" content="{{sitemeta_is_image|yesno:"summary_large_image,summary"}}" />
 	
 	<!-- CSS and JS -->
-	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase.css" type="text/css" rel="stylesheet" id="main_css" title="Purple" />
+	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase/{{theme_color}}/main.css" type="text/css" rel="stylesheet" id="main_css" title="Purple" />
 	{% if js_strip_params %}<script>
 		// Remove extraneous URL query parameters
 		var params_to_strip = ["{{js_strip_params|join:'","'}}"];

@@ -1,7 +1,7 @@
 {% extends "base_core.html" %}
 
 {% block extra_head %}
-	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase_mapbox.css" type="text/css" rel="stylesheet" id="map_css" />
+	<link href="{% if debug_check %}/{% else %}{{STATIC_PREFIX}}{% endif %}css/showcase/{{theme_color}}/mapbox.css" type="text/css" rel="stylesheet" id="map_css" />
 	<script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>
 {% endblock %}
 

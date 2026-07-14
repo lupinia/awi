@@ -1,10 +1,12 @@
-//	Lupinia Studios Main Theme - "Showcase"
+/*	Lupinia Studios Main Theme - "Showcase"		*/
+/*	Color Scheme:  Purple (Lupinia Standard)	*/
 //	Primary SASS Stylesheet
 //	By Natasha L.
 //	www.lupinia.net | github.com/lupinia
 
 /*	Generated from SASS	*/
-@import 'base';
+@import 'colors';
+@import 'includes/base';
 
 /*	Primary Content and Structure	*/
 body {
@@ -617,19 +619,19 @@ code.hljs {
 
 
 /*	Headers and Footers	*/
-@import 'headers_footers';
+@import 'includes/headers_footers';
 /*	=====	*/
 
 
 /*	App-Specific CSS	*/
-@import 'app_deerattend';
-@import 'app_deerbooks';
-@import 'app_deerbuild';
-@import 'app_deerconnect';
-@import 'app_deerfind';
-@import 'app_deertrees';
-@import 'app_deersky';
-@import 'app_sunset';
+@import 'apps/deerattend';
+@import 'apps/deerbooks';
+@import 'apps/deerbuild';
+@import 'apps/deerconnect';
+@import 'apps/deerfind';
+@import 'apps/deertrees';
+@import 'apps/deersky';
+@import 'apps/sunset';
 
 //	Django Auth
 .loginform {
