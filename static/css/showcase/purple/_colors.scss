@@ -1,28 +1,7 @@
 //	Lupinia Studios Main Theme - "Showcase"
-//	SASS Color and Font Variables
+//	SASS Color Palette:  Purple (Lupinia Standard)
 //	By Natasha L.
 //	www.lupinia.net | github.com/lupinia
-
-//	Fonts
-$font_en_serif:  Cambria,'Palatino Linotype','Book Antiqua','URW Palladio L',serif;
-$font_en:  'Noto Sans', "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-$font_chr:  'Noto Sans', 'Noto Sans Cherokee', "Digohweli", sans-serif;
-
-//	Screen Sizes
-$scr_tall: "screen and (min-height: 1000px)";
-$scr_short: "screen and (max-height: 800px)";
-$scr_midwidth: "screen and (max-width: 1170px)";
-$scr_smallwidth: "screen and (max-width: 800px)";
-$scr_mobile: "screen and (max-width: 660px)";
-$scr_micro: "screen and (max-width: 400px)";
-
-$scr_and_tall: "and (min-height: 1000px)";
-
-$scr_midwidth_lightbox: "screen and (max-width: 1020px)";
-$scr_micro_lightbox: "screen and (max-width: 450px)";
-
-
-//	Colors
 
 //	Primary Text
 $color_maintext:  #fff2ff;
@@ -87,17 +66,14 @@ $color_bgalt_light:  #fceeff;
 $color_border_err_crit:  #AA5555;
 $color_bg_err_crit:  rgba(100, 0, 0, 0.25);
 $color_text_err_crit:  #FFAAAA;
-$img_bg_err_crit:  url(https://cdn.fur.vc/awi-hagata/images/icons/error.png);
 
 $color_border_err_warn:  #AA8855;
 $color_bg_err_warn:  rgba(100, 50, 0, 0.25);
 $color_text_err_warn:  #FFCCAA;
-$img_bg_err_warn:  url(https://cdn.fur.vc/awi-hagata/images/icons/warning.png);
 
 $color_border_err_info:  #5555AA;
 $color_bg_err_info:  rgba(0, 0, 100, 0.25);
 $color_text_err_info:  #AAAAFF;
-$img_bg_err_info:  url(https://cdn.fur.vc/awi-hagata/images/icons/info.png);
 
 
 //	Other Colors
