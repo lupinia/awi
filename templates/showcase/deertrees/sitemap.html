@@ -43,7 +43,7 @@
 			{% endif %}
 			<ul class="tree">
 			{% recursetree cats %}
-				<li><a href="{% if return_to %}{{return_to}}{{node.pk}}{% else %}{% url 'category' node.cached_url %}{% endif %}">{% url 'category' node.cached_url %}</a> <em>(Category:  {{node.title}})  {% if node.num_leaves %}({{node.num_leaves}} content item{{node.num_leaves|pluralize}}){% endif %}</em>
+				<li><a href="{% if return_to %}{{return_to}}{{node.pk}}{% else %}{% url 'category' node.cached_url %}{% endif %}">{% url 'category' node.cached_url %}</a> <em>(Category:  {{node.title}})  {% if node.num_leaves %}({{node.num_leaves}} item{{node.num_leaves|pluralize}}){% endif %}</em>
 					{% if view == 'sitemap' and node.pk in has_special_features %}
 						<ul>{% for feature in special_features|get_item:node.pk %}
 							{% include 'deertrees/sitemap_special_feature.html' with element=feature only %}
@@ -66,7 +66,7 @@
 				<li><a href="{% url 'all_tags' %}">/tags/</a> <em>(Tag list)</em>
 					<ul>
 					{% for tag in tags %}
-						{% if tag.num_leaves %}<li><a href="{% url 'tag' tag.slug %}">{% url 'tag' tag.slug %}</a> <em>(Tag:  {{tag}})  ({{tag.num_leaves}} content items)</em></li>{% endif %}
+						{% if tag.num_leaves %}<li><a href="{% url 'tag' tag.slug %}">{% url 'tag' tag.slug %}</a> <em>(Tag:  {{tag}})  ({{tag.num_leaves}} item{{tag.num_leaves|pluralize}})</em></li>{% endif %}
 					{% endfor %}
 					</ul>
 				</li>
