@@ -7,13 +7,18 @@
 #	Normally, I'm all for duck typing, but sometimes that's just not good enough.
 #	=================
 
-def is_iterable(test_obj):
+def is_iterable(test_obj, allow_str=False):
 	"""
-	is_iterable(obj) -> bool
+	is_iterable(obj, allow_str=False) -> bool
 	Tests whether an unknown object is iterable without an exception
 	Always returns True (if yes) or False
+	Optional parameter to accept standard Python behavior of treating all strings as iterables
 	"""
 	try:
+		# Start by checking whether this is a string
+		if not allow_str and is_string(test_obj):
+			return False
+		
 		type_test = iter(test_obj)
 	except TypeError:
 		return False
