@@ -9,6 +9,8 @@
 from django.db import models
 from django.utils import timezone
 
+from awi.utils import types as typeutils
+
 def dict_key_choices(source_dict):
 	"""
 	dict_key_choices(dict) -> [(key, key),]
@@ -42,7 +44,93 @@ def params_to_Q(params):
 	return chain
 
 
-# Abstract model base classes
+# Abstract model base classes and mixin classes
+class ChoicesMixin():
+	"""
+	Special model mixin for working with field choices.
+	Provides convenience methods for splitting any attributes that define 
+	field choices in the standard Django format (list of tuple pairs, values then labels). 
+	Adds the following additional attributes: 
+		attrname_SPLIT:  If attrname is iterable, returns two lists: values, and labels 
+		attrname_VALUES:  If attrname is iterable, returns only the values list 
+		attrname_LABELS:  If attrname is iterable, returns only the labels list 
+	"""
+	def _choices_attr_is_iter(self, name):
+		"""Check whether the specified attribute defines choices (an iterable of tuple pairs)"""
+		return typeutils.is_iterable(getattr(self, name, None))
+	
+	def _choices_attr_has_labels(self, name):
+		"""
+		Check whether the specified attribute defines choices with labels 
+		(an iterable of tuple pairs)
+		Returns None if specified attribute is not iterable
+		"""
+		if self._choices_attr_is_iter(name):
+			# The underlying attribute exists and is an iterable
+			# Let's see if it's the right kind of iterable
+			testattr = getattr(self, name, [None])
+			if typeutils.is_iterable(testattr[0]) and len(testattr[0]) > 1:
+				# First element of this list is also iterable and contains more than one element
+				return True
+			else:
+				return False
+		
+		else:
+			# Specified attribute does not exist or is not iterable
+			return None
+	
+	def _choices_attr_split(self, name):
+		"""
+		Split the specified attribute into two lists, values and labels
+		If attribute has no labels, second return value will be None
+		If attribute is not iterable, both values will be None
+		"""
+		attrcheck = self._choices_attr_has_labels(name)
+		if attrcheck is None:
+			# Specified attribute is not iterable
+			# Not sure how you even managed this
+			return (None, None)
+		
+		elif attrcheck:
+			# Specified attribute is an iterable and appears to have labels
+			return zip(*getattr(self, name, None))
+		
+		else:
+			# Specified attribute is iterable, but does not have labels
+			return (getattr(self, name, None), None)
+	
+	def _choices_attr_values(self, name):
+		"""Retrieve only the values of the specified attribute, stripped of labels"""
+		values, labels = self._choices_attr_split(name)
+		return values
+	
+	def _choices_attr_labels(self, name):
+		"""Retrieve only the labels of the specified attribute, if any exist"""
+		values, labels = self._choices_attr_split(name)
+		return labels
+	
+	# System method override
+	def __getattr__(self, name):
+		if name.endswith(('_SPLIT', '_VALUES', '_LABELS')):
+			# We're specifically trying to use this mixin, so let's check it
+			attrname, action = name.rsplit('_', 1)
+			if self._choices_attr_is_iter(attrname):
+				# The underlying attribute exists and is an iterable
+				# Whether it's the right *kind* of iterable is a "you" problem
+				if action == 'VALUES':
+					return self._choices_attr_values(attrname)
+				elif action == 'SPLIT':
+					return self._choices_attr_split(attrname)
+				elif action == 'LABELS':
+					return self._choices_attr_labels(attrname)
+			
+			else:
+				# Not an iterable, so not sure what you're doing here
+				raise AttributeError('%s is not formatted as a field choices attribute' % attrname)
+		
+		# Nothing to do here, so pass the request down the chain
+		return super(ChoicesMixin, self).__getattr__(name)
+
 class TimestampModel(models.Model):
 	"""
 	Abstract base class for standard timestamps in models
