@@ -138,10 +138,30 @@ class TimestampModel(models.Model):
 		timestamp_mod:  Auto-updated with every call to model.save()
 		timestamp_create:  Defaults to timezone.now() on creation, non-editable
 		timestamp_post:  Defaults to timezone.now() on creation, editable
+		timedisp:  Selects which timestamp is considered the "default".  Override TIMEDISP_OPTIONS_EXTRA to add more
+	
+	Static attributes for model settings in classes that inherit TimestampModel:
+		TIMESTAMP_DEFAULT:  Set the default value of timedisp
+		TIMEDISP_OPTIONS:  Add more timestamps and change priority order
+			(Be careful not to delete the existing entries!)
 	"""
+	# Field choices constants
+	TIMEDISP_OPTIONS = (
+		('post', 'Published'),
+		('create', 'Created'),
+		('mod', 'Modified'),
+	)
+	
+	# Other constants
+	TIMESTAMP_DEFAULT = 'post'
+	
+	# Timestamp fields
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified')
 	timestamp_create = models.DateTimeField(default=timezone.now, db_index=True, editable=False, verbose_name='date/time created')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time published')
+	
+	# System fields
+	timedisp = models.CharField(max_length=10, choices=TIMEDISP_OPTIONS, default=TIMESTAMP_DEFAULT, verbose_name='primary timestamp', help_text='Determines which timestamp will be displayed as the primary timestamp in situations where only one is shown.')
 	
 	# Calculated properties and states
 	@property
