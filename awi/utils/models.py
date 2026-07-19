@@ -143,6 +143,16 @@ class TimestampModel(models.Model):
 	timestamp_create = models.DateTimeField(default=timezone.now, db_index=True, editable=False, verbose_name='date/time created')
 	timestamp_post = models.DateTimeField(default=timezone.now, db_index=True, verbose_name='date/time published')
 	
+	# Calculated properties and states
+	@property
+	def is_future(self):
+		"""Boolean indicating whether this object has a publication date in the future"""
+		if self.timestamp_post > timezone.now():
+			return True
+		else:
+			return False
+	
+	
 	class Meta:
 		abstract = True
 		get_latest_by = 'timestamp_post'
