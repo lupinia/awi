@@ -140,6 +140,9 @@ class TimestampModel(models.Model):
 		timestamp_post:  Defaults to timezone.now() on creation, editable
 		timedisp:  Selects which timestamp is considered the "default".  Override TIMEDISP_OPTIONS_EXTRA to add more
 	
+	Additionally defines a 'timestamp' system field, for use in queries and sorting, 
+	which will be automatically populated from other fields based on the value of timedisp.
+	
 	Static attributes for model settings in classes that inherit TimestampModel:
 		TIMESTAMP_DEFAULT:  Set the default value of timedisp
 		TIMEDISP_OPTIONS:  Add more timestamps and change priority order
@@ -162,6 +165,7 @@ class TimestampModel(models.Model):
 	
 	# System fields
 	timedisp = models.CharField(max_length=10, choices=TIMEDISP_OPTIONS, default=TIMESTAMP_DEFAULT, verbose_name='primary timestamp', help_text='Determines which timestamp will be displayed as the primary timestamp in situations where only one is shown.')
+	timestamp = models.DateTimeField(null=True, db_index=True, editable=False, verbose_name='primary date/time', help_text="Stores the value of the primary date/time field, as defined by timedisp.")
 	
 	# Calculated properties and states
 	@property
@@ -192,6 +196,52 @@ class TimestampModel(models.Model):
 		"""Primary timestamp, as defined by timedisp"""
 		return getattr(self, self.timestamp_primary_field, None)
 	
+	def update_timestamp(self):
+		"""
+		Update the database to set the value of timestamp field
+		based on the current value of timedisp.
+		Performs an update instead of a save.
+		Should be called after any change to timedisp.
+		"""
+		return self.objects.filter(pk=self.pk).update(timestamp=self.timestamp_primary)
+	
+	def update_timedisp(self, value=None, *args, **kwargs):
+		"""
+		TimestampModel.update_timedisp(value) -> status(success, reason)
+		
+		Set a new value for the timedisp field. 
+		Performs an update instead of a save. 
+		Pass a value of None to reset to default. 
+		If value matches the current value, success will be True but 
+		no update will be performed. 
+		Accepts arbitrary args and kwargs so other models can 
+		impose other criteria and restrictions on this method. 
+		Automatically calls TimestampModel.update_timestamp() on success. 
+		Returns a tuple: 
+			success:  True if update succeeded, False if failed 
+			reason:  String, contains a code explaining the results
+		"""
+		if value is None:
+			value = self.TIMESTAMP_DEFAULT
+		
+		if self.timedisp == value:
+			return (True, 'timedisp_nochange')
+		elif value not in self.TIMEDISP_OPTIONS_VALUES:
+			return (False, 'timedisp_invalid')
+		
+		success = self.objects.filter(pk=self.pk).update(timedisp=value)
+		reason = 'timedisp_update'
+		if success:
+			success = self.update_timestamp()
+			reason = 'timestamp_refresh'
+		
+		return (success, reason)
+	
+	def save(self, *args, **kwargs):
+		super(TimestampModel, self).save(*args, **kwargs)
+		self.update_timestamp()
+	
 	class Meta:
 		abstract = True
-		get_latest_by = 'timestamp_post'
+		get_latest_by = 'timestamp'
+		ordering = ['-timestamp']
