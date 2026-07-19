@@ -173,6 +173,25 @@ class TimestampModel(models.Model):
 			return False
 	
 	
+	# Primary timestamp properties amd methods
+	@property
+	def timestamp_primary_field(self):
+		"""Field name of the primary timestamp"""
+		if self.timedisp:
+			return 'timestamp_%s' % self.timedisp
+		else:
+			return 'timestamp_%s' % self.TIMESTAMP_DEFAULT
+	
+	@property
+	def timestamp_primary_label(self):
+		"""User-friendly label for primary timestamp"""
+		return self.get_timedisp_display()
+	
+	@property
+	def timestamp_primary(self):
+		"""Primary timestamp, as defined by timedisp"""
+		return getattr(self, self.timestamp_primary_field, None)
+	
 	class Meta:
 		abstract = True
 		get_latest_by = 'timestamp_post'
