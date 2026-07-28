@@ -103,7 +103,7 @@ class election_seats(TimestampModel):
 	def __str__(self):
 		return '%s - %d' % (self.state.abbr, self.election_year.year)
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		unique_together = (('state', 'election_year'),)
 		ordering = ['-election_year','state']
 
@@ -157,7 +157,7 @@ class results(TimestampModel):
 		else:
 			return input
 		
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		abstract = True
 		ordering = ['state', '-certified', 'projected']
 

@@ -127,7 +127,7 @@ class attendance_flag(TimestampModel):
 		else:
 			return None
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		verbose_name = 'flag'
 
 @python_2_unicode_compatible
@@ -160,7 +160,7 @@ class event_type(TimestampModel):
 	def summary_long(self):
 		return self.get_summary(512)
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		verbose_name = 'type'
 
 @python_2_unicode_compatible
@@ -301,5 +301,5 @@ class event_instance(TimestampModel):
 		
 		return summarize(body=self.notes, length=255, fallback=fallback)
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		verbose_name = 'event instance'

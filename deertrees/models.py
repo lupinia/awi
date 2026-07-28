@@ -223,7 +223,7 @@ class category(MPTTModel, access_control, TimestampModel):
 	class MPTTMeta:
 		order_insertion_by = ['title']
 	
-	class Meta:
+	class Meta(MPTTModel.Meta, access_control.Meta, TimestampModel.Meta):
 		verbose_name_plural = 'categories'
 
 @python_2_unicode_compatible
@@ -473,7 +473,7 @@ class tag(TimestampModel):
 		else:
 			return False
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		ordering = ['slug',]
 
 @python_2_unicode_compatible
@@ -487,7 +487,7 @@ class tag_synonym(TimestampModel):
 	def __str__(self):
 		return self.slug
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		ordering = ['slug',]
 
 @python_2_unicode_compatible
@@ -583,7 +583,7 @@ class external_link(TimestampModel):
 			raise ValidationError('Either a full URL or a remote ID are required.')
 		return super(external_link,self).clean()
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		verbose_name = 'external platform link'
 		ordering = ['-link_type__featured']
 
@@ -837,7 +837,7 @@ class leaf(access_control):
 	def tags_list(self):
 		return self.tags.filter(public=True).values_list('slug', flat=True)
 	
-	class Meta:
+	class Meta(access_control.Meta):
 		unique_together = ('basename', 'cat')
 
 
@@ -895,5 +895,5 @@ class special_feature(leaf):
 	def rss_description(self):
 		return self.summary_short
 	
-	class Meta:
+	class Meta(leaf.Meta):
 		verbose_name = 'special feature'

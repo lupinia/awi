@@ -35,7 +35,7 @@ class license_plate_region_group(TimestampModel):
 	def is_active(self):
 		return self.active
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		verbose_name = 'plate region group'
 		ordering = ['slug',]
 
@@ -63,7 +63,7 @@ class license_plate_region(TimestampModel):
 		else:
 			return self.active
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		verbose_name = 'plate region'
 		ordering = ['code',]
 
@@ -207,7 +207,7 @@ class license_plate(TimestampModel):
 		# All done!
 		return ''.join(plate_number)
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		verbose_name = 'license plate'
 		unique_together = ('design_code', 'territory',)
 		ordering = ['territory__code', 'design_code',]

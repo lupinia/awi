@@ -26,7 +26,7 @@ class menu_section(TimestampModel):
 	def get_absolute_url(self):
 		return reverse('deerfood:menu_section', kwargs={'slug':self.slug,})
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		verbose_name = 'menu section'
 
 
@@ -72,7 +72,7 @@ class menu_flag(TimestampModel):
 		else:
 			return None
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		verbose_name = 'menu item flag'
 
 
@@ -106,5 +106,5 @@ class menu_item(TimestampModel):
 	def rss_description(self):
 		return self.summary_short
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		verbose_name = 'menu item'

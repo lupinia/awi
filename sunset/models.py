@@ -61,7 +61,7 @@ class background_tag(TimestampModel):
 	def get_absolute_url(self):
 		return reverse('sunset_bgtag', kwargs={'slug': self.tag})
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		verbose_name = 'background tag'
 
 @python_2_unicode_compatible
@@ -603,7 +603,7 @@ class image_asset(TimestampModel):
 			self.parent.save()
 		super(image_asset, self).save(*args, **kwargs)
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		verbose_name = 'image asset'
 
 @python_2_unicode_compatible
@@ -952,7 +952,7 @@ class batch_import(access_control, TimestampModel):
 			import_log.objects.create(command='batch_import.process_folder', message='batch_import.check_folder() returned False; nothing to do.', batch=self)
 			return False
 	
-	class Meta:
+	class Meta(access_control.Meta, TimestampModel.Meta):
 		verbose_name = 'batch import folder'
 
 

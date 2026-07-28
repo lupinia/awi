@@ -89,7 +89,7 @@ class city(TimestampModel):
 		cache.set('deersky_city_%d' % self.pk, self, None)
 		super(city, self).save(*args, **kwargs)
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		unique_together = (('label', 'timezone'),)
 		ordering = ['timezone_order', 'long']
 

@@ -240,7 +240,7 @@ class contact_link(link_base, access_control, TimestampModel):
 	def get_absolute_url(self):
 		return self.url
 	
-	class Meta:
+	class Meta(link_base.Meta, access_control.Meta, TimestampModel.Meta):
 		verbose_name = 'contact link'
 
 
@@ -376,7 +376,7 @@ class spam_word(TimestampModel):
 		
 		return (success, reason)
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		verbose_name = 'spam keyword'
 
 @python_2_unicode_compatible
@@ -395,7 +395,7 @@ class spam_sender(TimestampModel):
 		self.email = fix_email(self.email)
 		super(spam_sender, self).save(*args, **kwargs)
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		verbose_name = 'spam sender'
 
 @python_2_unicode_compatible
@@ -413,5 +413,5 @@ class spam_domain(TimestampModel):
 		self.domain = self.domain.lower()
 		super(spam_domain, self).save(*args, **kwargs)
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		verbose_name = 'spam domain'
