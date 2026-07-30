@@ -139,10 +139,12 @@ class status(object):
 		"""Number of reason codes attached to this status"""
 		return len(self._reasons)
 	
-	def update(self, outcome=False, reason=None):
+	def update(self, outcome=None, reason=None):
 		"""Set both parameters fresh, without reinitializing"""
-		self.outcome = outcome
-		if reason:
+		if outcome is not None:
+			self.outcome = outcome
+		
+		if reason is not None:
 			self.reason = reason
 		
 		return self
