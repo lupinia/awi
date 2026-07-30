@@ -150,7 +150,7 @@ class status(object):
 	# OUTPUT
 	def as_tuple(self):
 		"""Old-style behavior, returns outcome and reason as a tuple"""
-		return (self.outcome, self.reasons)
+		return (self.outcome, self.reason)
 	
 	# LOGIC OPERATORS
 	def __bool__(self):
