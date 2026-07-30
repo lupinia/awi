@@ -123,8 +123,15 @@ class status(object):
 	def _set_reasons(self, newval):
 		"""Reusable setter for both types of reason access"""
 		if typeutils.is_string(newval):
+			if newval in self._reasons:
+				# Remove duplicates
+				self._reasons.remove(newval)
 			self._reasons.append(newval)
 		elif typeutils.is_iterable(newval):
+			for val in newval:
+				# Remove duplicates
+				if val in self._reasons:
+					self._reasons.remove(val)
 			self._reasons = self._reasons + newval
 		else:
 			raise TypeError('reason must be string or list')
