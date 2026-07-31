@@ -10,8 +10,6 @@ import uuid
 from datetime import timedelta
 
 from django.conf import settings
-from django.contrib.auth.models import User, Group
-from django.contrib.sites.models import Site
 from django.core.cache import cache
 from django.db import models
 from django.utils import timezone
@@ -190,7 +188,7 @@ class SecuredQuerySet(models.QuerySet):
 	def _Qchain_user(self, user, include_hidden=False, include_mature=False, for_site=None):
 		"""
 		Returns the Q filter parameters for the specified user
-		If user does not exists or is not active, return the public restrictions
+		If user does not exist or is not active, return the public restrictions
 		If user is superuser, returns an empty filter set (no restrictions)
 		Else, return the following query restrictions:
 			(user is owner OR user is in contributors)
@@ -333,6 +331,10 @@ class SecuredModel(models.Model, ModelCacheMixin):
 	
 	@property
 	def is_public(self):
+		"""
+		Simple check establishing whether this object is public.
+		Does not perform a same-site check.
+		"""
 		cur_state = status(True)
 		if self.hidden:
 			cur_state.update(False, 'hidden')
@@ -580,6 +582,7 @@ class SecuredModel(models.Model, ModelCacheMixin):
 		return super(SecuredModel, self).objcache_keys(*keylist)
 	
 	
+	# Pre-caching field values
 	@cached_property
 	def sites_ids(self):
 		"""Cached IDs list for the sites this object is part of"""
@@ -587,7 +590,8 @@ class SecuredModel(models.Model, ModelCacheMixin):
 		if siteids is None:
 			siteids = list(self.sites.all().values_list('pk', flat=True))
 			self.cache_set('siteid_list', siteids)
-			return siteids
+		
+		return siteids
 	
 	@cached_property
 	def same_site(self):
@@ -604,7 +608,8 @@ class SecuredModel(models.Model, ModelCacheMixin):
 			if self.owner_id not in contrib_ids:
 				contrib_ids.append(self.owner_id)
 			self.cache_set('contributorid_list', contrib_ids)
-			return contrib_ids
+		
+		return contrib_ids
 	
 	@cached_property
 	def groups_ids(self):
@@ -613,7 +618,8 @@ class SecuredModel(models.Model, ModelCacheMixin):
 		if groupids is None:
 			groupids = list(self.groups.all().values_list('pk', flat=True))
 			self.cache_set('groupid_list', groupids)
-			return groupids
+		
+		return groupids
 	
 	def get_url_domain(self, request=None):
 		"""
