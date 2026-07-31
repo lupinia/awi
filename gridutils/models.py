@@ -210,7 +210,7 @@ class avatar(TimestampModel):
 	def __str__(self):
 		return '%s (%s)' % (self.display_name, self.grid_username)
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		unique_together = (('key', 'grid'),)
 
 
@@ -266,7 +266,7 @@ class group(TimestampModel):
 				self.slug = slugify(self.name)
 		super(group, self).save(*args, **kwargs)
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		unique_together = (('key', 'grid'),)
 
 @python_2_unicode_compatible
@@ -336,7 +336,7 @@ class estate(TimestampModel):
 	def __str__(self):
 		return '%s (%s)' % (self.name, self.grid.name)
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		unique_together = (('grid_estate_id', 'grid'),)
 
 @python_2_unicode_compatible
@@ -394,7 +394,7 @@ class region(location_model, TimestampModel):
 			self.slug = slugify(self.name)
 		super(region, self).save(*args, **kwargs)
 	
-	class Meta:
+	class Meta(location_model.Meta, TimestampModel.Meta):
 		unique_together = (('name', 'estate'),)
 
 @python_2_unicode_compatible
@@ -943,7 +943,7 @@ class device_authorization_token(TimestampModel):
 			self.init_secret = psv_hash256(self.init_key_str, str(self.timestamp_post))
 		super(device_authorization_token, self).save(*args, **kwargs)
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		unique_together = (('parent', 'version'),)
 
 class device_authorization(TimestampModel):
@@ -1141,7 +1141,7 @@ class device_approval_request(TimestampModel):
 		
 		super(device_approval_request, self).save(*args, **kwargs)
 	
-	class Meta:
+	class Meta(TimestampModel.Meta):
 		ordering = ['-timestamp_post', ]
 
 
