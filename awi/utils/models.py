@@ -131,7 +131,7 @@ class ModelChoicesMixin(object):
 		# Nothing to do here, so pass the request down the chain
 		return super(ModelChoicesMixin, self).__getattr__(name)
 
-class TimestampModel(models.Model):
+class TimestampModel(models.Model, ModelChoicesMixin):
 	"""
 	Abstract base class for standard timestamps in models
 	Includes the following fields: 
@@ -236,6 +236,72 @@ class TimestampModel(models.Model):
 			reason = 'timestamp_refresh'
 		
 		return (success, reason)
+	
+	
+	# Properties and methods for working with multiple timestamps
+	def timestamps(self, include_primary=False, include_labels=True):
+		"""
+		TimestampModel.timestamps(include_primary=False, include_labels=True) -> [(str, datetime), ...]
+		
+		Return a list of all timestamps, in the order they appear in TIMEDISP_OPTIONS
+		If include_primary is False (default), the timestamp selected in timedisp will be omitted
+		If include_labels is True, this method will return a tuple list of labels followed by timestamps:
+		[
+			('Published', TimestampModel.timestamp_post),
+			('Created', TimestampModel.timestamp_create),
+			('Modified', TimestampModel.timestamp_mod),
+		]
+		
+		If include_labels is False, this method will return a flat list with only timestamps:
+		[
+			TimestampModel.timestamp_post,
+			TimestampModel.timestamp_create,
+			TimestampModel.timestamp_mod,
+		]
+		"""
+		output = []
+		for t, l in self.TIMEDISP_OPTIONS:
+			if t == self.timedisp and not include_primary:
+				pass
+			else:
+				if include_labels:
+					output.append((l, getattr(self, 'timestamp_%s' % t, None)))
+				else:
+					output.append(getattr(self, 'timestamp_%s' % t, None))
+		
+		return output
+	
+	def timestamps_dict(self, include_primary=False):
+		"""
+		TimestampModel.timestamps_dict(include_primary=False) -> {'create': {'timestamp':datetime, 'label':str}, ...}
+		
+		Returns a dictionary of all timestamps (unordered)
+		If include_primary is False (default), the timestamp selected in timedisp will be omitted
+		Labels will always be included
+		Return structure is a nested dictionary, using TIMEDISP_OPTIONS as keys.  Example:
+		{
+			'post': {
+				'timestamp': TimestampModel.timestamp_post,
+				'label': 'Published',
+			},
+			'create': {
+				'timestamp': TimestampModel.timestamp_create,
+				'label': 'Created',
+			},
+			'mod': {
+				'timestamp': TimestampModel.timestamp_mod,
+				'label': 'Modified',
+			},
+		}
+		"""
+		output = {}
+		for t, l in self.TIMEDISP_OPTIONS:
+			if t == self.timedisp and not include_primary:
+				pass
+			else:
+				output[t] = {'timestamp': getattr(self, 'timestamp_%s' % t, None), 'label': l,}
+		
+		return output
 	
 	def save(self, *args, **kwargs):
 		super(TimestampModel, self).save(*args, **kwargs)
