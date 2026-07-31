@@ -497,6 +497,14 @@ class SecuredModel(models.Model, ModelCacheMixin):
 	
 	
 	# Access code operations
+	@property
+	def access_codes_allowed(self):
+		"""
+		Quick check for whether access codes can be created for this object. 
+		Override to change the criteria for this. 
+		"""
+		return self.security or not self.is_published
+	
 	def access_code_check(self, check, first_hit=False):
 		"""
 		SecuredModel.access_code_check(str or list, first_hit=False) -> status(result, reason) or None
