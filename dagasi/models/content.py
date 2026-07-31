@@ -20,6 +20,7 @@ from django.utils.functional import cached_property
 from django.utils.text import slugify
 
 from awi.utils import types as typeutils
+from awi.utils.cache import ModelCacheMixin
 from awi.utils.sites import get_current_site
 from awi.utils.hash import hash_sha256
 from awi.utils.models import params_to_Q
@@ -287,7 +288,7 @@ class SecuredManager(models.Manager):
 
 
 # MODELS
-class SecuredModel(models.Model):
+class SecuredModel(models.Model, ModelCacheMixin):
 	"""
 	Extendable base class for content-item security and authorization controls
 	"""
@@ -553,52 +554,23 @@ class SecuredModel(models.Model):
 	def objcache_id(self):
 		"""Unique prefix to use for this object in the cache"""
 		if self.guid:
-			return 'obj.%s' % self.guid
+			return 'dagasi.obj.%s' % self.guid
 		else:
 			return None
 	
-	@property
-	def objcache_keys(self):
+	def objcache_keys(self, *extra_keys):
 		"""Retrieve a list of keys to clear when resetting the cache for this object"""
-		if self.objcache_id is None:
-			return None
-		
 		keylist = [
 			'siteid_list',
 			'contributorid_list',
 			'groupid_list',
 			'canonical_domain',
 		]
-		return [self.cache_key(x) for x in keylist]
+		if len(extra_keys):
+			keylist = keylist + extra_keys
+		
+		return super(SecuredModel, self).objcache_keys(*keylist)
 	
-	def cache_key(self, key):
-		"""Return a prefixed version of the given key"""
-		if self.objcache_id is None:
-			return None
-		else:
-			return '%s.%s' % (self.objcache_id, key)
-	
-	def cache_clear(self):
-		"""
-		Clear the parameter cache for this object
-		Relies on the list contained in .objcache_keys
-		"""
-		if self.objcache_keys:
-			cache.delete_many(self.objcache_keys)
-	
-	def cache_get(self, key, fallback=None):
-		"""
-		Proxy for cache.get(), with a prefixed key unique to this object
-		Include a fallback value other than None to get a default
-		"""
-		return cache.get(self.cache_key(key), fallback)
-	
-	def cache_set(self, key, value, timeout=None):
-		"""
-		Proxy for cache.set(), with a prefixed key unique to this object
-		Defaults to permanent, set timeout for an expiration time
-		"""
-		return cache.set(self.cache_key(key), value, timeout)
 	
 	@cached_property
 	def sites_ids(self):
@@ -664,7 +636,6 @@ class SecuredModel(models.Model):
 		if self.security < self.ACCESS_LEVEL_MINIMUM:
 			self.security = self.ACCESS_LEVEL_MINIMUM
 		
-		self.cache_clear()
 		super(SecuredModel, self).save(*args, **kwargs)
 	
 	class Meta:
