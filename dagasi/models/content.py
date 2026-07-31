@@ -310,8 +310,8 @@ class SecuredModel(models.Model):
 	sites = models.ManyToManyField('sites.Site', db_index=True, related_name='+', help_text='Sites/domains on which this item will appear.')
 	
 	# Ownership and conditional access grants
-	owner = models.ForeignKey('auth.User', on_delete=models.PROTECT, related_name="%(app_label)s_%(class)s_owned")
-	contributors = models.ManyToManyField('auth.User', db_index=True, related_name="%(app_label)s_%(class)s_contributed")
+	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="%(app_label)s_%(class)s_owned")
+	contributors = models.ManyToManyField(settings.AUTH_USER_MODEL, db_index=True, related_name="%(app_label)s_%(class)s_contributed")
 	groups = models.ManyToManyField('auth.Group', db_index=True, related_name="%(app_label)s_%(class)s_access")
 	access_code = models.OneToOneField('dagasi.access_code', null=True, blank=True, on_delete=models.SET_NULL, related_name='access_to')
 	
@@ -677,7 +677,7 @@ class SecuredModel(models.Model):
 class access_code(models.Model):
 	code = models.SlugField(max_length=255, editable=False, unique=True)
 	item_type = models.CharField(max_length=40, default='unknown', editable=False)
-	owner = models.ForeignKey('auth.User', related_name='+', on_delete=models.CASCADE)
+	owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='+', on_delete=models.CASCADE)
 	desc = models.CharField(max_length=100, null=True, blank=True)
 	
 	allowed_age = models.PositiveSmallIntegerField(default=30, blank=True, help_text='The number of days for which this code should be valid.  Enter 0 for a code that does not expire.')

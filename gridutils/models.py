@@ -65,7 +65,7 @@ class name_history(TimestampModel):
 
 @python_2_unicode_compatible
 class avatar(TimestampModel):
-	account = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='grid_avatars')
+	account = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True, related_name='grid_avatars')
 	key = models.UUIDField(db_index=True, help_text=mark_safe('The unique identifier for this user.  <a href="http://wiki.secondlife.com/wiki/Category:LSL_Key" target="_BLANK">More info</a>.'))
 	grid = models.ForeignKey(grid, on_delete=models.PROTECT, help_text='Select the virtual world/"grid" for this user.')
 	active = models.BooleanField(blank=True, default=True, db_index=True, help_text='If unchecked, user no longer exists.')
@@ -490,7 +490,7 @@ class parcel(location_model, TimestampModel):
 class parcel_stream(TimestampModel):
 	name = models.CharField(max_length=255, blank=True, null=True)
 	url = models.URLField(max_length=1024)
-	owner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='music_streams')
+	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True, related_name='music_streams')
 	
 	shared = models.BooleanField(blank=True, default=False, db_index=True)
 	active = models.BooleanField(blank=True, default=True, db_index=True, help_text='If unchecked, stream URL no longer exists.')
@@ -948,7 +948,7 @@ class device_authorization_token(TimestampModel):
 
 class device_authorization(TimestampModel):
 	name = models.CharField(max_length=64)
-	owner = models.ForeignKey(User, on_delete=models.PROTECT)
+	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
 	notes = models.TextField(blank=True, null=True)
 	type = models.CharField(max_length=24, choices=device_type_choices(), blank=True, null=True)
 	
@@ -1007,7 +1007,7 @@ class device_approval_request(TimestampModel):
 	)
 	
 	device = models.ForeignKey(device, on_delete=models.CASCADE, related_name='approvals')
-	approver_account = models.ForeignKey(User, null=True, editable=False, on_delete=models.SET_NULL, related_name='device_approval_requests')
+	approver_account = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, editable=False, on_delete=models.SET_NULL, related_name='device_approval_requests')
 	approver = models.ForeignKey(avatar, editable=False, on_delete=models.CASCADE, related_name='device_approval_requests')
 	
 	request_key = models.UUIDField(default=uuid.uuid4)

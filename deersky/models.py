@@ -98,7 +98,7 @@ class homepage(TimestampModel):
 	title = models.CharField(max_length=250, default="New Tab - Lupinia Studios")
 	list_label = models.CharField(max_length=128, null=True, blank=True, verbose_name='label', help_text="Override city label for this homepage in list views")
 	slug = models.SlugField(max_length=64, unique=True)
-	owner = models.ForeignKey('auth.User', on_delete=models.PROTECT)
+	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
 	public = models.BooleanField(default=False, blank=True, db_index=True, help_text="Check this box to show this homepage in a public list of available options.  When unchecked, it will still be available to anyone with the URL.")
 	
 	main_city = models.ForeignKey(city, on_delete=models.PROTECT, related_name='primary_for', verbose_name='city')

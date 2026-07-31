@@ -236,7 +236,7 @@ class access_view(DetailView):
 		elif cmd == 'chown':
 			if is_int(target) and obj.owner.pk != int(target):
 				self.request.session['deerfind_norecover'] = True
-				new_owner = get_object_or_404(User, pk=int(target))
+				new_owner = get_object_or_404(settings.AUTH_USER_MODEL, pk=int(target))
 				self.request.session['deerfind_norecover'] = False
 				self.edit_success = obj.quick_edit('owner', new_owner)
 			else:

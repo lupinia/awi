@@ -115,7 +115,7 @@ class data_source(TimestampModel):
 	notes = models.TextField(null=True, blank=True)
 	projected = models.BooleanField(default=False, blank=True, db_index=True)
 	certified = models.BooleanField(default=False, blank=True, db_index=True)
-	owner = models.ForeignKey(User, on_delete=models.PROTECT, related_name='election_data_sources')
+	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='election_data_sources')
 	
 	def __str__(self):
 		return self.name

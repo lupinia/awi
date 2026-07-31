@@ -25,7 +25,7 @@ from dagasi.types import status
 @python_2_unicode_compatible
 class user_settings(models.Model):
 	# Core fields
-	user = models.OneToOneField('auth.User', related_name='settings', on_delete=models.CASCADE)
+	user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='settings', on_delete=models.CASCADE)
 	timestamp_mod = models.DateTimeField(auto_now=True, db_index=True, verbose_name='date/time modified', help_text="Timestamp showing when this item was last edited.  Automatically set with every save operation, can't be overridden.")
 	
 	# Content display settings
