@@ -45,7 +45,7 @@ def params_to_Q(params):
 
 
 # Abstract model base classes and mixin classes
-class ChoicesMixin():
+class ModelChoicesMixin(object):
 	"""
 	Special model mixin for working with field choices.
 	Provides convenience methods for splitting any attributes that define 
@@ -129,7 +129,7 @@ class ChoicesMixin():
 				raise AttributeError('%s is not formatted as a field choices attribute' % attrname)
 		
 		# Nothing to do here, so pass the request down the chain
-		return super(ChoicesMixin, self).__getattr__(name)
+		return super(ModelChoicesMixin, self).__getattr__(name)
 
 class TimestampModel(models.Model):
 	"""
