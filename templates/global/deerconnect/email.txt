@@ -1,5 +1,5 @@
 Sender IP:  {{IP}}  
-Sender:  {{name}} ({{email}})  
+{% if user.is_authenticated %}User:{% else %}Sender:{% endif %}  {% if user.is_authenticated %}{{user.get_username}} ({{name}} - {{email}}){% else %}{{name}} ({{email}}){% endif %}  
 Domain:  {{domain}}  
 Subject:  {{subject}}  {% if reply_path %}
 Reply To:  {{reply_path}}{% endif %}

@@ -60,6 +60,7 @@ class contact_form(forms.Form):
 			'name': sender_name, 
 			'email': sender_addr, 
 			'subject': msg.subject,
+			'user': request.user,
 		}
 		
 		if self.cleaned_data.get('reply_to', None):

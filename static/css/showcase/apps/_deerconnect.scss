@@ -17,6 +17,14 @@ form table.contactform {
 		vertical-align:bottom;
 	}
 	
+	tr.userdata {
+		th, td {
+			font-size: smaller;
+			font-style: italic;
+			color: $color_breadcrumbs;
+		}
+	}
+	
 	td {
 		width:280px;
 		

@@ -26,6 +26,7 @@ class contact_page(FormView):
 	reply_title = None
 	reply_path = None
 	send_status = None
+	from_user = None
 	
 	def dispatch(self, *args, **kwargs):
 		# Check whether the IP address is blocked
@@ -33,6 +34,9 @@ class contact_page(FormView):
 		return super(contact_page,self).dispatch(*args, **kwargs)
 	
 	def get(self, request, *args, **kwargs):
+		if request.user.is_authenticated:
+			self.from_user = request.user
+		
 		if request.GET.get('reply_to', False):
 			reply_parsed = request.GET.get('reply_to', '').split('-')
 			if len(reply_parsed) > 1:
@@ -62,6 +66,12 @@ class contact_page(FormView):
 	
 	def get_initial(self):
 		initial = super(contact_page, self).get_initial()
+		if self.from_user:
+			if not initial.get('email', False) and self.from_user.email:
+				initial['email'] = self.from_user.email
+			if not initial.get('name', False) and self.from_user.get_full_name():
+				initial['name'] = self.from_user.get_full_name()
+		
 		if self.reply_form and self.reply_path:
 			initial['reply_to'] = self.reply_path
 			if not initial.get('subject', False):
