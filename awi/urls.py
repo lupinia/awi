@@ -9,7 +9,6 @@
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.views import login as login_view
 from django.contrib.auth.views import logout as logout_view
 from django.contrib.sitemaps.views import sitemap
@@ -77,7 +76,7 @@ urlpatterns = [
 	# /tools/ - Special subdirectory for utility views
 	url(r'^tools/', include([
 		# DeerTrees: Full category list
-		url(r'^category_list\.ashx$', permission_required('deertrees.change_leaf')(deertrees_views.all_cats.as_view()), name='all_cats'),
+		url(r'^category_list\.ashx$', deertrees_views.all_cats.as_view(), name='all_cats'),
 		
 		# Sunset: GeoJSON API (deprecated)
 		url(r'^sunset/(?P<slug>.*)\.json$', sunset_views.geojson_image, name='sunset_geojson'),

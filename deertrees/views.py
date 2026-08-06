@@ -7,6 +7,7 @@
 #	=================
 
 from django.conf import settings
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.syndication.views import Feed
 from django.urls import reverse
 from django.db.models import Case, Count, IntegerField, Sum, When
@@ -793,8 +794,9 @@ class special_feature_view():
 
 
 #	Views that don't use the leaf system.
-class all_cats(TemplateView, special_feature_view):
+class all_cats(PermissionRequiredMixin, TemplateView, special_feature_view):
 	template_name = 'deertrees/sitemap.html'
+	permission_required = 'deertrees.change_leaf'
 	
 	def dispatch(self, *args, **kwargs):
 		# Stupid corner cases where stupid AI bots love to throw wrong query arguments at every URL
