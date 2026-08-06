@@ -38,7 +38,7 @@ urlpatterns = [
 	url(r'^sitemap\.xml$', cache_control(max_age=60*60*48)(sitemap), {'sitemaps': SITEMAP_OBJECTS}, name='django.contrib.sitemaps.views.sitemap'),
 	
 	# Django admin views: Block without x509 cert
-	url(r'^admin/', include(admin.site.urls)),
+	url(r'^admin/', admin.site.urls),
 	url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 	url(r'^admin_tools/', include('admin_tools.urls')),
 	
