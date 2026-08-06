@@ -7,7 +7,7 @@
 #	=================
 
 from django.contrib.sitemaps import Sitemap
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Count
 
 from deerattend.models import attendance_flag, event, event_type, venue

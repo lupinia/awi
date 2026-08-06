@@ -7,7 +7,7 @@
 #	=================
 
 from django.views.generic import ListView
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
 
@@ -42,7 +42,7 @@ class menu_item_list(special_feature_view, ListView):
 			return False
 	
 	def can_edit(self):
-		if self.request.user.is_authenticated():
+		if self.request.user.is_authenticated:
 			if self.request.user.has_perm('deerfood.change_menu_item'):
 				return True
 			else:

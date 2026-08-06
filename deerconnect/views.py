@@ -7,7 +7,7 @@
 #	=================
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.views.generic.edit import FormView
 
 from awi_access.models import access_query
@@ -98,7 +98,7 @@ class contact_page(FormView):
 		
 		# Apparently there's no way around using a session variable for this, so we still have to handle that.
 		if self.request.session.get('deerconnect_contact_form_success', False):
-			if not self.request.user.is_authenticated():
+			if not self.request.user.is_authenticated:
 				context['form'] = ''
 			context['error'] = 'mailform_success'
 			self.request.session['deerconnect_contact_form_success'] = False
@@ -106,7 +106,7 @@ class contact_page(FormView):
 			context['error'] = self.send_status
 			if self.send_status in ['mailform_success', 'mailform_spamaddr', 'mailform_spamword', 'mailform_toosoon']:
 				context['form'] = ''
-		elif form_too_soon(self.request) and not self.request.user.is_authenticated():
+		elif form_too_soon(self.request) and not self.request.user.is_authenticated:
 			context['form'] = ''
 			context['error'] = 'mailform_toosoon'
 		

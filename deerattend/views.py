@@ -7,7 +7,7 @@
 #	=================
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Count, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -82,7 +82,7 @@ class event_list(special_feature_view, ListView):
 			return False
 	
 	def can_edit(self):
-		if self.request.user.is_authenticated():
+		if self.request.user.is_authenticated:
 			if self.request.user.has_perm('deertrees.change_event'):
 				return True
 			else:

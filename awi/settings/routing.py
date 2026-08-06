@@ -14,7 +14,7 @@ ROOT_URLCONF = 'awi.urls'
 
 # =================
 #	Middleware Config
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'dagasi.middleware.UserPrefsMiddleware',
@@ -25,7 +25,7 @@ MIDDLEWARE_CLASSES = (
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.security.SecurityMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+]
 
 
 # =================
@@ -36,12 +36,12 @@ MIDDLEWARE_CLASSES = (
 #	Finder functions should return a tuple; first value boolean (match found), second value a string (empty if no match, root-relative URL if match)
 #	Can be on a per-app basis, not necessarily per-model
 #	Ordering based on frequency of use is recommended, for increased efficiency
-DEERFIND_FINDERS = (
+DEERFIND_FINDERS = [
 	'deerfind.views.g2_finder',
 	'deerbooks.views.finder',
 	'deertrees.views.finder',
 	'sunset.views.finder',
-)
+]
 
 #	Shortcode model map
 DEERFIND_SHORTCODE_TYPES = {

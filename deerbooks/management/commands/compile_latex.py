@@ -15,7 +15,6 @@ from django.conf import settings
 from django.core.files import File
 from django.core.mail import mail_admins
 from django.core.management.base import BaseCommand, CommandError
-from django.core.urlresolvers import reverse
 from django.db.models import Q
 
 from deerbooks.models import export_file, page, export_log

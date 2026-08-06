@@ -282,5 +282,5 @@ class euro(models.Model):
 	value = models.DecimalField(max_digits=5, decimal_places=2, choices=CHOICES_VALUE)
 	country = models.CharField(max_length=3, choices=CHOICES_COUNTRY)
 	status = models.CharField(max_length=10, choices=CHOICES_STATUS, default='need')
-	coin = models.ForeignKey(coin, blank=True, null=True)
+	coin = models.ForeignKey(coin, blank=True, null=True, on_delete=models.SET_NULL)
 	notes = models.TextField(blank=True, null=True)

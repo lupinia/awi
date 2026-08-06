@@ -104,16 +104,16 @@ STATIC_URL = 'https://cdn.fur.vc/awi-hagata/'
 DEFAULT_FILE_STORAGE = 's3_folder_storage.s3.DefaultStorage'
 STATICFILES_STORAGE = 's3_folder_storage.s3.StaticStorage'
 
-STATICFILES_DIRS = (
+STATICFILES_DIRS = [
 	os.path.abspath(os.path.join(BASE_DIR,'static/')),
-)
+]
 
-STATICFILES_FINDERS = (
+STATICFILES_FINDERS = [
 	'django.contrib.staticfiles.finders.FileSystemFinder',
 	'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 	
 	'static_precompiler.finders.StaticPrecompilerFinder',
-)
+]
 
 
 # =================
@@ -135,10 +135,10 @@ AWS_DEFAULT_ACL = None
 STATIC_PRECOMPILER_DISABLE_AUTO_COMPILE = True
 STATIC_PRECOMPILER_ROOT = os.path.abspath(os.path.join(STATICFILES_DIRS[0],'css/'))
 STATIC_PRECOMPILER_OUTPUT_DIR = STATICFILES_DIRS[0]
-STATIC_PRECOMPILER_COMPILERS = ( 
-	('static_precompiler.compilers.libsass.SCSS', {
+STATIC_PRECOMPILER_COMPILERS = [ 
+	['static_precompiler.compilers.libsass.SCSS', {
 		"sourcemap_enabled": False,
 		"precision": 8,
 		"load_paths": ["static/css/showcase"],
-	}),
-)
+	}],
+]

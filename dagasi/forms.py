@@ -9,7 +9,6 @@
 import datetime
 
 from django import forms
-from django.forms import extras
 from django.utils import dateparse
 from django.utils import timezone
 
@@ -18,7 +17,7 @@ years_list = sorted(range(timezone.now().year-80, timezone.now().year+1), revers
 class age_verify_form(forms.Form):
 	error_css_class = 'has_error'
 	
-	birthdate = forms.DateField(label='Your Birthdate', widget=extras.SelectDateWidget(years=years_list))
+	birthdate = forms.DateField(label='Your Birthdate', widget=forms.SelectDateWidget(years=years_list))
 	
 	def validate_age(self):
 		dob = self.cleaned_data['birthdate']

@@ -8,7 +8,7 @@
 
 from django.contrib import admin
 from django.contrib.messages import constants as messages
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from django_mptt_admin.admin import DjangoMpttAdmin
 from awi.utils.admin import imgfield_as_html

@@ -7,7 +7,6 @@
 #	=================
 
 from django.contrib import admin
-from django.core.urlresolvers import reverse
 
 from awi.utils.admin import imgfield_as_html
 from awi_access.admin import access_admin

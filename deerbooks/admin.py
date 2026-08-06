@@ -7,7 +7,7 @@
 #	=================
 
 from django.contrib import admin
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from deertrees.admin import leaf_admin
 

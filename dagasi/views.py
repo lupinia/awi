@@ -12,7 +12,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import Http404, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template import loader
@@ -39,7 +39,7 @@ class age_verify(FormView):
 	def form_valid(self, form):
 		dob_valid = form.validate_age()
 		
-		if self.request.user.is_authenticated():
+		if self.request.user.is_authenticated:
 			meta, meta_status = user_settings.objects.get_or_create(user=self.request.user)
 			meta.mature_available = dob_valid
 			meta.show_mature = dob_valid
@@ -106,7 +106,7 @@ class settings_page(TemplateView):
 		context['breadcrumbs'].append({'url':reverse('settings'), 'title':'Settings'})
 		
 		mature_check = check_mature(self.request)
-		if self.request.user.is_authenticated():
+		if self.request.user.is_authenticated:
 			context['user_meta'], meta_status = user_settings.objects.get_or_create(user=self.request.user)
 		
 		if context.get('user_meta',False):

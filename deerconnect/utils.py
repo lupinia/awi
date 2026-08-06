@@ -100,7 +100,7 @@ def record_spammer(sender, name, words=[]):
 
 #	Check whether the contact form has already been submitted
 def form_too_soon(request):
-	if request.user.is_authenticated():
+	if request.user.is_authenticated:
 		# Authenticated users never have a timeout
 		return False
 	

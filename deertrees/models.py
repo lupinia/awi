@@ -9,7 +9,7 @@
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
@@ -38,7 +38,7 @@ class category(MPTTModel, access_control, TimestampModel):
 	
 	title = models.CharField(max_length=60)
 	slug = models.SlugField()
-	parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+	parent = TreeForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.PROTECT)
 	summary = models.CharField(max_length=255, null=True, blank=True)
 	desc = models.TextField(null=True, blank=True, verbose_name='description body text')
 	
@@ -778,7 +778,7 @@ class leaf(access_control):
 		if request:
 			if self.can_edit(request)[0]:
 				return link_query.all()
-			elif request.user.is_authenticated():
+			elif request.user.is_authenticated:
 				return link_query.filter(link_type__sites__id=settings.SITE_ID, published=True)
 		
 		return link_query.filter(link_type__sites__id=settings.SITE_ID, published=True, link_type__public=True)

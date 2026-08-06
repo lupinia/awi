@@ -17,10 +17,20 @@ LANGUAGE_CODE = 'en-us'
 
 
 # =================
-#	Sessions/Auth
+#	Sessions/Auth/Security
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
+CSRF_USE_SESSIONS = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 LOGIN_REDIRECT_URL = '/'
+AUTH_PASSWORD_VALIDATORS = [
+	{'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
+	{'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
+	{'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
+	{
+		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+		'OPTIONS': {'min_length': 12,},
+	},
+]
 
 
 # =================

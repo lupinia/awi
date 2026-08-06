@@ -103,7 +103,7 @@ class SecuredSearchQuerySet(SearchQuerySet):
 				for_site = 0
 			
 			# Not messing with access codes in search views, so this is simpler
-			if request.user.is_authenticated():
+			if request.user.is_authenticated:
 				return self.for_user(request.user, include_hidden=include_hidden, include_mature=include_mature, for_site=for_site)
 			else:
 				return self.public(include_hidden=include_hidden, include_mature=include_mature, for_site=for_site)

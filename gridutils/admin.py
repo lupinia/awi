@@ -7,7 +7,6 @@
 #	=================
 
 from django.contrib import admin
-from django.core.urlresolvers import reverse
 
 from gridutils.models import (
 	grid,

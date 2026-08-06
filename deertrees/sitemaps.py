@@ -7,7 +7,7 @@
 #	=================
 
 from django.contrib.sitemaps import Sitemap
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from awi_access.models import access_query
 from deertrees.models import category, tag, special_feature

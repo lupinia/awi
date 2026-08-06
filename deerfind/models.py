@@ -83,7 +83,7 @@ class g2map(models.Model):
 class g2raw(MPTTModel):
 	g2id = models.IntegerField(unique=True, verbose_name='G2 item ID')
 	type = models.CharField(max_length=255, default='Unknown', db_index=True)
-	parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+	parent = TreeForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, related_name='children')
 	title = models.CharField(max_length=255, null=True, blank=True)
 	matched = models.BooleanField(default=False, db_index=True)
 	filename = models.CharField(max_length=255, null=True, blank=True)

@@ -7,7 +7,7 @@
 #	=================
 
 from django.views.generic import DetailView, ListView
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Q
 
 from deersky.models import homepage
@@ -36,7 +36,7 @@ class homepage_list(ListView):
 	def get_queryset(self):
 		queryset = super(homepage_list, self).get_queryset()
 		ordering = ['main_city__label',]
-		if self.request.user.is_authenticated():
+		if self.request.user.is_authenticated:
 			if not self.request.user.is_superuser and not self.request.user.is_staff:
 				# Regular user
 				queryset = queryset.filter(Q(public=True) | Q(owner=self.request.user))

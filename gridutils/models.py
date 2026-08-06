@@ -49,7 +49,7 @@ class grid(models.Model):
 #	Users and Accounts
 @python_2_unicode_compatible
 class name_history(TimestampModel):
-	profile = models.ForeignKey('avatar', related_name='past_names')
+	profile = models.ForeignKey('avatar', related_name='past_names', on_delete=models.CASCADE)
 	
 	grid_name_first = models.CharField(max_length=50)
 	grid_name_last = models.CharField(max_length=50)

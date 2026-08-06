@@ -14,7 +14,7 @@
 import os
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import Http404, HttpResponsePermanentRedirect, HttpResponseNotFound
 from django.template import loader
 from django.utils.module_loading import import_string

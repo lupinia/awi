@@ -70,7 +70,7 @@ class SecuredQuerySet(models.QuerySet):
 			# Only include the access codes that have been validated for this session
 			check_access_codes = request.session.get('dagasi_access_codes', [])
 			
-			if request.user.is_authenticated():
+			if request.user.is_authenticated:
 				if check_access_codes and request.user.is_active and not request.user.is_superuser:
 					# Include access codes in filter, but only if it's relevant
 					return self.filter(self._Qchain_user(request.user, include_hidden=include_hidden, include_mature=include_mature, for_site=for_site) | self._Qchain_accesscodes(check_access_codes))
@@ -399,7 +399,7 @@ class SecuredModel(models.Model, ModelCacheMixin):
 						return (True, '')
 		
 		# Begin normal checks.
-		if (not request.user.is_staff and self.security > 1) or (not request.user.is_authenticated() and self.security > 0):
+		if (not request.user.is_staff and self.security > 1) or (not request.user.is_authenticated and self.security > 0):
 			#	If insufficient permissions, show permission error
 			return (False,'access_perms')
 		
@@ -548,7 +548,7 @@ class SecuredModel(models.Model, ModelCacheMixin):
 	def create_code(self, age=30, desc=None, request=False):
 		if not self.is_public()[0]:
 			if request:
-				if request.user.is_authenticated() and request.user == self.owner:
+				if request.user.is_authenticated and request.user == self.owner:
 					self.access_code = access_code.objects.create(item_type=self.__class__.__name__, allowed_age=age, desc=desc, owner=request.user)
 					self.save()
 					return True

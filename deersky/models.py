@@ -15,7 +15,7 @@ from datetime import datetime
 from django.conf import settings
 from django.core.cache import cache
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible

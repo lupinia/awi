@@ -28,14 +28,14 @@ class contact_form(forms.Form):
 	body = forms.CharField(label='Message Body', max_length=10000, widget=forms.Textarea)
 	
 	def send_email(self, request):
-		if form_too_soon(request) and not request.user.is_authenticated():
+		if form_too_soon(request) and not request.user.is_authenticated:
 			return (False, 'mailform_toosoon')
 		
 		sender_name = bleach.clean(self.cleaned_data['name'], tags=[], strip=True)
 		sender_addr = bleach.clean(self.cleaned_data['email'], tags=[], strip=True)
 		
 		# Only do spam checks for anonymous users
-		if not request.user.is_authenticated():
+		if not request.user.is_authenticated:
 			spam_check_sender = is_spammer(sender_addr)
 			if spam_check_sender:
 				if request.META.get('REMOTE_ADDR', False):
@@ -70,7 +70,7 @@ class contact_form(forms.Form):
 		msg.to = [settings.DEERCONNECT_TO_EMAIL,]
 		
 		# Only do spam checks for anonymous users
-		if not request.user.is_authenticated():
+		if not request.user.is_authenticated:
 			spam_check_message, w = is_spam(msg.body)
 			if spam_check_message:
 				record_spammer(sender_addr, sender_name, w)

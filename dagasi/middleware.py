@@ -18,7 +18,7 @@ class UserPrefsMiddleware(MiddlewareMixin):
 			# If we already customized something, pull it from the session data
 			request.userprefs = request.session['userprefs']
 		
-		elif request.user.is_authenticated():
+		elif request.user.is_authenticated:
 			# Logged-in users are easy, just pull from user settings
 			request.session['userprefs'] = request.user.settings.as_dict()
 			request.userprefs = request.session['userprefs']

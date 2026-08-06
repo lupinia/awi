@@ -7,7 +7,6 @@
 #	=================
 
 from django.contrib import admin
-from django.core.urlresolvers import reverse
 
 from deerguard_sl.models import security_system, security_server, security_zone
 

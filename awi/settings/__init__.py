@@ -22,7 +22,7 @@ from .secrets import *
 
 # =================
 #	App Config
-INSTALLED_APPS = (
+INSTALLED_APPS = [
 	'django.contrib.contenttypes',
 	
 	#	Admin Tools (Has to go first)
@@ -47,4 +47,4 @@ INSTALLED_APPS = (
 	
 	#	My Apps - System/Core
 	'dagasi',	# Access Control
-)
+]

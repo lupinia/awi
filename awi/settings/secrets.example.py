@@ -12,7 +12,7 @@
 # =================
 #	IP Addresses
 #	At the top for easier editing
-INTERNAL_IPS = ('',)
+INTERNAL_IPS = ['',]
 
 
 # =================
@@ -36,7 +36,7 @@ SECONDLIFE_API_KEY = ''
 
 # =================
 #	Email
-ADMINS = (('', ''),)
+ADMINS = [('', ''),]
 MANAGERS = ADMINS
 SERVER_EMAIL = ''
 
@@ -72,7 +72,7 @@ DEERCONNECT_HEALTHCHECK_USERAGENT = ''
 #	Infrastructure
 DATABASES = {
 	'default': {
-		'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+		'ENGINE': 'django.db.backends.postgresql', 
 		'NAME': '',
 		'USER': '',
 		'PASSWORD': '',

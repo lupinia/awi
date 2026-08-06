@@ -7,7 +7,7 @@
 #	=================
 
 from django.contrib import admin
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from awi_access.admin import access_admin
 from deerfind.admin import g2_inline
