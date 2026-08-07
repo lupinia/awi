@@ -14,7 +14,7 @@ ROOT_URLCONF = 'awi.urls'
 
 # =================
 #	Middleware Config
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'dagasi.middleware.UserPrefsMiddleware',

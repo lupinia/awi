@@ -25,4 +25,4 @@ DEFAULT_THEME = 'showcase'
 DEFAULT_THEME_COLOR = 'purple'
 
 #	Middleware got a little interesting, to get the caching middleware inserted in the correct order, but not on the dev server.
-MIDDLEWARE_CLASSES = ['django.middleware.cache.UpdateCacheMiddleware',] + MIDDLEWARE_CLASSES + ['django.middleware.cache.FetchFromCacheMiddleware',]
+MIDDLEWARE = ['django.middleware.cache.UpdateCacheMiddleware',] + MIDDLEWARE + ['django.middleware.cache.FetchFromCacheMiddleware',]
