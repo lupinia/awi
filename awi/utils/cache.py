@@ -138,6 +138,18 @@ class ModelCacheMixin(object):
 		if self.objcache_id:
 			default_cache_obj.delete_many(self.cache_keys(keys))
 	
+	def cache_touch(self, key, timeout=None):
+		"""Proxy for future cache.touch(), to renew a key's expiration date without altering it"""
+		if hasattr(default_cache_obj, 'touch'):
+			return default_cache_obj.touch(self.cache_key(key), timeout)
+		else:
+			curval = self.cache_get(self.cache_key(key))
+			if curval is None:
+				return False
+			else:
+				self.cache_set(self.cache_key(key), curval, timeout)
+				return True
+	
 	
 	# System methods and overrides
 	def save(self, *args, **kwargs):
