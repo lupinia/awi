@@ -13,9 +13,9 @@ from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 
-from awi.utils.models import TimestampModel
-from awi.utils.rand import rand_char_list, rand_int_list
-from awi.utils.types import is_int
+from coreutils.models import TimestampModel
+from coreutils.rand import rand_char_list, rand_int_list
+from coreutils.typeutils import is_int
 
 @python_2_unicode_compatible
 class license_plate_region_group(TimestampModel):

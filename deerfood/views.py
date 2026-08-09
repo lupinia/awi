@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
 
-from awi.utils.errors import BadRequest
+from coreutils.errors import BadRequest
 from deerfood.models import menu_item, menu_section, menu_flag
 from deertrees.views import special_feature_view
 

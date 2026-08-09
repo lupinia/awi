@@ -25,8 +25,8 @@ from datetime import datetime
 from fractions import Fraction
 from PIL import Image, ImageOps
 
-from awi.utils.models import TimestampModel
-from awi.utils.text import format_html, summarize
+from coreutils.models import TimestampModel
+from coreutils.text import format_html, summarize
 from awi_access.models import access_control
 from deertrees.models import leaf, category, tag
 from sunset.utils import watermark, hash_file

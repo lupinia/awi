@@ -18,7 +18,7 @@ from awi.urls import (
 	handler500,
 	urlpatterns,
 )
-from awi.utils.errors import system_error, request_error
+from coreutils.errors import system_error, request_error
 from awi_access.views import denied_error
 from deerfind.views import not_found
 

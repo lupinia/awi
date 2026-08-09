@@ -14,7 +14,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 
-from awi.utils.models import TimestampModel
+from coreutils.models import TimestampModel
 
 @python_2_unicode_compatible
 class currency(models.Model):

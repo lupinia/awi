@@ -11,7 +11,7 @@ from django.contrib.sites.models import Site
 from django.contrib.sites.middleware import CurrentSiteMiddleware as CurrentSiteMiddlewareRaw
 from django.core.cache import cache
 
-SITE_CACHE_PREFIX = 'awi.utils.sites'
+SITE_CACHE_PREFIX = 'coreutils.sites'
 
 def get_site(pk=None):
 	"""Retrieve a specific Site object from cache if possible"""

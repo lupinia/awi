@@ -11,7 +11,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 
-from awi.utils.models import TimestampModel
+from coreutils.models import TimestampModel
 from gridutils.models import device
 
 @python_2_unicode_compatible

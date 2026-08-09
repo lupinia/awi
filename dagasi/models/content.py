@@ -17,11 +17,11 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.text import slugify
 
-from awi.utils import types as typeutils
-from awi.utils.cache import ModelCacheMixin
-from awi.utils.sites import get_current_site
-from awi.utils.hash import hash_sha256
-from awi.utils.models import params_to_Q
+from coreutils import typeutils
+from coreutils.cache import ModelCacheMixin
+from coreutils.sites import get_current_site
+from coreutils.hash import hash_sha256
+from coreutils.models import params_to_Q
 from dagasi.types import status
 
 # QUERYSETS AND MANAGERS

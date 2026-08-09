@@ -8,7 +8,7 @@
 
 from django.utils.safestring import mark_safe
 
-from awi.utils.types import is_int, is_string
+from coreutils.typeutils import is_int, is_string
 
 def imgfield_as_html(obj, imgfield, urlfield=None, width=None, height=None, alt='', default=None, darkbg=False):
 	"""

@@ -21,7 +21,7 @@ from django.utils import timezone
 from django.views.generic import DetailView, TemplateView
 from django.views.generic.edit import FormView
 
-from awi.utils.types import is_int
+from coreutils.typeutils import is_int
 from awi_access.forms import age_verify_form
 from awi_access.models import check_mature, user_settings
 

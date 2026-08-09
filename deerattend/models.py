@@ -15,9 +15,9 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.safestring import mark_safe
 
-from awi.utils.models import TimestampModel
-from awi.utils.sites import get_current_site
-from awi.utils.text import summarize
+from coreutils.models import TimestampModel
+from coreutils.sites import get_current_site
+from coreutils.text import summarize
 
 @python_2_unicode_compatible
 class venue(TimestampModel):

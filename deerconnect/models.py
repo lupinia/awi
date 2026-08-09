@@ -12,8 +12,8 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 
 from awi_access.models import access_control
-from awi.utils.models import TimestampModel
-from awi.utils.text import summarize
+from coreutils.models import TimestampModel
+from coreutils.text import summarize
 from deertrees.models import leaf, category
 
 @python_2_unicode_compatible

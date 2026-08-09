@@ -16,7 +16,7 @@ from django.views.decorators.cache import cache_control, never_cache
 
 from honeypot.decorators import check_honeypot
 
-from awi.utils.errors import system_error, request_error
+from coreutils.errors import system_error, request_error
 from awi.sitemaps import SITEMAP_OBJECTS
 from awi_access import views as access_views
 from deerbooks import views as deerbooks_views

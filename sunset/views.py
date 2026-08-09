@@ -15,9 +15,9 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView
 
-from awi.utils.errors import BadRequest
-from awi.utils.views import json_response
-from awi.utils.types import is_int
+from coreutils.errors import BadRequest
+from coreutils.views import json_response
+from coreutils.typeutils import is_int
 from awi_access.models import access_query
 from deerfind.utils import urlpath
 from deertrees.models import category, tag

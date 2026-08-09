@@ -11,7 +11,7 @@ import re
 
 from django.conf import settings
 
-from awi.utils.types import is_iterable, is_string
+from coreutils.typeutils import is_iterable, is_string
 
 vector_types = {
 	'float':'float',		# Default, can be anything

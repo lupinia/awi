@@ -14,8 +14,8 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.views.generic import ListView
 
-from awi.utils.errors import BadRequest
-from awi.utils.views import json_response
+from coreutils.errors import BadRequest
+from coreutils.views import json_response
 from awi_access.models import check_mature
 from deerattend.models import attendance_flag, event, event_instance, event_type, venue
 from deertrees.views import special_feature_view

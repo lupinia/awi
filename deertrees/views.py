@@ -17,8 +17,8 @@ from django.utils import timezone
 from django.utils.module_loading import import_string
 from django.views.generic import DetailView, ListView, TemplateView
 
-from awi.utils.errors import BadRequest
-from awi.utils.types import is_int
+from coreutils.errors import BadRequest
+from coreutils.typeutils import is_int
 from awi_access.models import access_query
 from awi_access.views import access_view
 from deerfind.utils import g2_lookup, urlpath

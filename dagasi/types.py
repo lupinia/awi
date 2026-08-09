@@ -8,7 +8,7 @@
 
 from django.conf import settings
 
-from awi.utils import types as typeutils
+from coreutils import typeutils
 
 class status(object):
 	"""

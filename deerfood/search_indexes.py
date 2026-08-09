@@ -10,7 +10,7 @@ from django.utils import timezone
 
 from haystack import indexes
 
-from awi.utils.sites import get_site_pks
+from coreutils.sites import get_site_pks
 from deerfood.models import menu_item
 
 class food_index(indexes.SearchIndex, indexes.Indexable):

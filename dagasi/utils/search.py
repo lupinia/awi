@@ -11,8 +11,8 @@ from django.conf import settings
 from haystack import indexes
 from haystack.query import SearchQuerySet, SQ
 
-from awi.utils import types as typeutils
-from awi.utils.search import params_to_SQ
+from coreutils import typeutils
+from coreutils.search import params_to_SQ
 
 class SecuredSearchQuerySet(SearchQuerySet):
 	"""

@@ -46,5 +46,6 @@ INSTALLED_APPS = [
 	'static_precompiler',
 	
 	#	My Apps - System/Core
+	'coreutils',	# Standard Django/Python utilities
 	'dagasi',	# Access Control
 ]

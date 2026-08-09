@@ -10,7 +10,7 @@ from django.utils import timezone
 
 from haystack import indexes
 
-from awi.utils.sites import get_site_pks
+from coreutils.sites import get_site_pks
 from deertrees.models import category, tag
 
 class category_index(indexes.SearchIndex, indexes.Indexable):

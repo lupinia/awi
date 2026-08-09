@@ -14,8 +14,8 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView
 
-from awi.utils.errors import BadRequest
-from awi.utils.types import is_int
+from coreutils.errors import BadRequest
+from coreutils.typeutils import is_int
 from awi_access.models import access_query
 from deerbooks.models import page, toc
 from deerfind.utils import urlpath

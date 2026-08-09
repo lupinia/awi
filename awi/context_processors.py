@@ -11,7 +11,7 @@ import os
 from django.conf import settings
 from django.utils import timezone
 
-from awi.utils.sites import get_current_site
+from coreutils.sites import get_current_site
 
 def core(request):
 	"""

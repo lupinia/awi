@@ -20,8 +20,8 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 
-from awi.utils.models import TimestampModel
-from awi.utils.rand import rand_int_list
+from coreutils.models import TimestampModel
+from coreutils.rand import rand_int_list
 from gridutils.utils import (
 	device_type_choices,
 	location_model,

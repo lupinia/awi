@@ -22,7 +22,7 @@ from django.utils.module_loading import import_string
 from haystack.query import SearchQuerySet, SQ
 from haystack.inputs import AutoQuery
 
-from awi.utils.search import FacetedSearchForm, FacetedSearchView
+from coreutils.search import FacetedSearchForm, FacetedSearchView
 from awi_access.models import check_mature, access_search
 from awi_access.utils import add_new_block
 from awi_access.views import denied_error

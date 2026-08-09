@@ -13,7 +13,7 @@ from dateutil import parser as dateparser
 from django.conf import settings
 from django.utils import timezone
 
-from awi.utils import types as typeutils
+from coreutils import typeutils
 
 # Object Definitions
 class DN(object):

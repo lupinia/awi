@@ -21,8 +21,8 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 
-from awi.utils.models import TimestampModel
-from awi.utils.sites import get_current_site
+from coreutils.models import TimestampModel
+from coreutils.sites import get_current_site
 
 @python_2_unicode_compatible
 class city(TimestampModel):

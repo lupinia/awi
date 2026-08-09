@@ -8,7 +8,7 @@
 
 from django.contrib import admin
 
-from awi.utils.admin import imgfield_as_html
+from coreutils.admin import imgfield_as_html
 from awi_access.admin import access_admin
 from deertrees.admin import leaf_admin
 

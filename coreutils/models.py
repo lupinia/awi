@@ -9,7 +9,7 @@
 from django.db import models
 from django.utils import timezone
 
-from awi.utils import types as typeutils
+from coreutils import typeutils
 
 def dict_key_choices(source_dict):
 	"""

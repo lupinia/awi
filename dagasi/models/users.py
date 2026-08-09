@@ -18,8 +18,8 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import slugify
 
-from awi.utils.hash import hash_sha256
-from awi.utils.models import TimestampModel
+from coreutils.hash import hash_sha256
+from coreutils.models import TimestampModel
 from dagasi.types import status
 
 @python_2_unicode_compatible
