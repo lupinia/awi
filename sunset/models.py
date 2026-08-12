@@ -101,6 +101,11 @@ class image(leaf):
 		('lr', 'Lightroom (InstanceID vs OrigID)'),
 		('ps', 'Photoshop (InstanceID vs DocID)'),
 	)
+	BRIGHTNESS_CHOICES = (
+		(-1, 'Dark'),
+		(0, 'Neutral'),
+		(1, 'Light'),
+	)
 	SHORTCODE_PREFIX = 'i'
 	
 	# Basic content fields
@@ -128,6 +133,7 @@ class image(leaf):
 	crop_horizontal_old = models.CharField(max_length=2, default='c', choices=CENTER_CHOICES_H, verbose_name='crop alignment (horizontal)')
 	crop_vertical_old = models.CharField(max_length=2, default='c', choices=CENTER_CHOICES_V, verbose_name='crop alignment (vertical)')
 	public_domain = models.BooleanField(default=False, db_index=True, help_text='If this is checked, this image will be treated as a public-domain release.')
+	brightness = models.SmallIntegerField(choices=BRIGHTNESS_CHOICES, default=0, blank=True, help_text='Overall image brightness, used for adjusting overlay opacity.')
 	
 	# Geotagging
 	geodata_lat = models.DecimalField(decimal_places=15, max_digits=20, db_index=True, blank=True, null=True, verbose_name='latitude', help_text='Positive numbers are northern hemisphere, negative numbers are southern.')
@@ -165,6 +171,15 @@ class image(leaf):
 	@property
 	def crop_vertical(self):
 		return self.crop_vertical_old
+	
+	@property
+	def brightness_class(self):
+		if self.brightness < 0:
+			return 'dark'
+		elif self.brightness > 0:
+			return 'light'
+		else:
+			return ''
 	
 	def __str__(self):
 		if self.title:
