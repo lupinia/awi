@@ -6,6 +6,7 @@
 #	Utility functions/objects for Django models
 #	=================
 
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
@@ -42,6 +43,24 @@ def params_to_Q(params):
 			chain = chain & models.Q(**{k:v,})
 	
 	return chain
+
+
+# Field validators
+def validate_lowercase(value):
+	"""
+	Django field validator to check whether the input is lowercase
+	Does nothing if input contains no letters
+	"""
+	if typeutils.is_string(value) and value.isalpha() and not value.islower():
+		raise ValidationError("Must only use lowercase letters.")
+
+def validate_uppercase(value):
+	"""
+	Django field validator to check whether the input is uppercase
+	Does nothing if input contains no letters
+	"""
+	if typeutils.is_string(value) and value.isalpha() and not value.isupper():
+		raise ValidationError("Must only use capital/uppercase letters.")
 
 
 # Abstract model base classes and mixin classes
