@@ -247,9 +247,9 @@ class image(leaf):
 		
 		if self.crop_vertical == 't':
 			center_v = 0.0
-		elif self.crop_horizontal == 'ct':
+		elif self.crop_vertical == 'ct':
 			center_v = 0.25
-		elif self.crop_horizontal == 'cb':
+		elif self.crop_vertical == 'cb':
 			center_v = 0.75
 		elif self.crop_vertical == 'b':
 			center_v = 1.0
