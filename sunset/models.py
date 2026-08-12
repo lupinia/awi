@@ -125,8 +125,8 @@ class image(leaf):
 	idmode = models.CharField(max_length=8, null=True, choices=IDMODE_CHOICES)
 	
 	# Extra metadata
-	crop_horizontal = models.CharField(max_length=2, default='c', choices=CENTER_CHOICES_H, verbose_name='crop alignment (horizontal)')
-	crop_vertical = models.CharField(max_length=2, default='c', choices=CENTER_CHOICES_V, verbose_name='crop alignment (vertical)')
+	crop_horizontal_old = models.CharField(max_length=2, default='c', choices=CENTER_CHOICES_H, verbose_name='crop alignment (horizontal)')
+	crop_vertical_old = models.CharField(max_length=2, default='c', choices=CENTER_CHOICES_V, verbose_name='crop alignment (vertical)')
 	public_domain = models.BooleanField(default=False, db_index=True, help_text='If this is checked, this image will be treated as a public-domain release.')
 	
 	# Geotagging
@@ -157,6 +157,14 @@ class image(leaf):
 	def slug(self):
 		"""Legacy support after https://github.com/lupinia/awi/issues/171"""
 		return self.basename
+	
+	@property
+	def crop_horizontal(self):
+		return self.crop_horizontal_old
+	
+	@property
+	def crop_vertical(self):
+		return self.crop_vertical_old
 	
 	def __str__(self):
 		if self.title:
