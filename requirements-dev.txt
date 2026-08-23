@@ -24,3 +24,7 @@ sqlparse
 #	Related to https://github.com/lupinia/awi/issues/264
 opencv-python-headless<4.3
 numpy
+#
+#	https://github.com/lupinia/awi/issues/27
+geopy<2.0
+geographiclib<2.0

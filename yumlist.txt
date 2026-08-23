@@ -1,6 +1,10 @@
+gdal
+gdal-libs
+geos
 ghostscript
 libmemcached
 perl-Image-ExifTool
+proj
 texinfo
 texinfo-tex
 texlive
