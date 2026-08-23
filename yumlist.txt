@@ -17,3 +17,4 @@ texlive-fontbook
 texlive-fontwrap
 texlive-ptext
 texlive-xetex
+xmlsec1

@@ -29,5 +29,15 @@ numpy
 geopy<2.0
 geographiclib<2.0
 #
+#	https://github.com/lupinia/awi/issues/64
+cryptography>3.0,<3.4
+django-rest-auth==0.9.5				# Unmaintained
+django-saml2-auth==2.2.1			# Unmaintained
+djangorestframework<3.12
+djangorestframework-jwt==1.11.0		# Unmaintained
+pyOpenSSL<22.0
+pysaml2<5.0
+defusedxml
+#
 #	https://github.com/lupinia/awi/issues/343
 django-xmlrpc==0.1.8				# Requires manual installation
