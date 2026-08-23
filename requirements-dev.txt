@@ -28,3 +28,6 @@ numpy
 #	https://github.com/lupinia/awi/issues/27
 geopy<2.0
 geographiclib<2.0
+#
+#	https://github.com/lupinia/awi/issues/343
+django-xmlrpc==0.1.8				# Requires manual installation
