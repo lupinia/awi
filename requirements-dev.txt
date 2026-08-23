@@ -12,8 +12,8 @@
 #	Additional packages only required for dev, not for production
 #	=================
 django-debug-toolbar<2.0
-django-debug-toolbar-line-profiler
-django-haystack-panel
+django-debug-toolbar-line-profiler==0.6.1	# Unmaintained
+django-haystack-panel==0.2.1				# Unmaintained
 sqlparse
 #	=================
 #	Requirements for new features in development
