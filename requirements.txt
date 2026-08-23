@@ -30,12 +30,18 @@ rubber==1.4				# Requires manual installation, and there's a name collision in p
 #	=================
 psycopg2	# Recommend installing this manually
 bleach
+botocore
+boto3
 certifi
 dicttoxml
 html2text
 libsass
 PyExifTool
 pylibmc
+python-dateutil
 python-magic
+pytz
 requests
+simplejson
+six
 urllib3

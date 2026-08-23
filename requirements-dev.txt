@@ -14,6 +14,7 @@
 django-debug-toolbar<2.0
 django-debug-toolbar-line-profiler==0.6.1	# Unmaintained
 django-haystack-panel==0.2.1				# Unmaintained
+line-profiler
 sqlparse
 #	=================
 #	Requirements for new features in development
