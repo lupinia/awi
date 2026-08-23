@@ -9,7 +9,6 @@
 #	Specific versions needed:
 #	=================
 beautifulsoup<3.2.2
-django-classy-tags<1.0
 django-admin-tools==0.9.0		# Unmaintained
 django-haystack<3.0
 django-honeypot<1.0
@@ -31,7 +30,6 @@ rubber==1.4				# Requires manual installation, and there's a name collision in p
 #	=================
 psycopg2	# Recommend installing this manually
 bleach
-boto
 certifi
 dicttoxml
 html2text
