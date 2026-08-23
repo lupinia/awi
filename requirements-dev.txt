@@ -1,0 +1,25 @@
+#	Lupinia Studios
+#	By Natasha L.
+#	www.lupinia.net | github.com/lupinia
+#	
+#	=================
+#	Python Requirements and Dependencies (Dev)
+#	This list was manually assembled
+#	Include the production requirements
+#	=================
+-r requirements.txt
+#	=================
+#	Additional packages only required for dev, not for production
+#	=================
+django-debug-toolbar<2.0
+django-debug-toolbar-line-profiler
+django-haystack-panel
+sqlparse
+#	=================
+#	Requirements for new features in development
+#	May change or be removed before pushing to production
+#	=================
+#	Experimental image duplicate analysis
+#	Related to https://github.com/lupinia/awi/issues/264
+opencv-python-headless<4.3
+numpy
